@@ -38,16 +38,31 @@ class DashedRect extends StatelessWidget {
               color: color!, strokeWidth: strokeWidth!, gap: gap!),
           child: MaterialButton(
             onPressed: onTap,
-            child: Center(
-                child: commonText(
-              text: title!,
-              context: context,
-              textSize: displayWidth(context) * 0.04,
-              textColor: Theme.of(context).brightness == Brightness.dark
+            child: Row(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: displayWidth(context) * 0.05),
+                  child: Icon(
+                    Icons.file_upload_outlined,
+                    color: blueColor,
+                  ),
+                ),
+
+                SizedBox(
+                  width: displayWidth(context) * 0.02,
+                ),
+
+                commonText(
+                  text: title!,
+                  context: context,
+                  textSize: displayWidth(context) * 0.04,
+                  textColor: Theme.of(context).brightness == Brightness.dark
                   ? primaryTextColor!
-                  : Colors.black,
-              fontWeight: FontWeight.w500,
-            )),
+                  : blueColor,
+                  fontWeight: FontWeight.w500,
+                ),
+              ],
+            ),
           ),
         ),
       ),

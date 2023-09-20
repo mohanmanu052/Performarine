@@ -113,7 +113,7 @@ class _CommonTextFieldState extends State<CommonTextField> {
                 color: Theme.of(context).brightness == Brightness.dark
                     ? Colors.white
                     : Colors.grey,
-                fontSize: displayWidth(context) * 0.04,
+                fontSize: displayWidth(context) * 0.032,
                 fontFamily: outfit),
             labelStyle: TextStyle(
                 color: Theme.of(context).brightness == Brightness.dark

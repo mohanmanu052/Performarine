@@ -186,13 +186,13 @@ class _FeedbackReportState extends State<FeedbackReport> {
                       child: CommonTextField(
                           controller: descriptionController,
                           focusNode: descriptionFocusNode,
-                          labelText: 'Description',
-                          hintText: '',
+                          //labelText: 'Enter Your Feedback',
+                          hintText: 'Enter Your Feedback',
                           suffixText: null,
                           textInputAction: TextInputAction.done,
-                          textInputType: TextInputType.text,
+                          textInputType: TextInputType.multiline,
                           textCapitalization: TextCapitalization.words,
-                          maxLines: null,
+                          maxLines: 6,
                           prefixIcon: null,
                           requestFocusNode: null,
                           obscureText: false,
@@ -212,7 +212,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
                       uploadImageFunction();
                       Utils.customPrint(
                           'FIIALLL: ${finalSelectedFiles.length}');
-                    }, Colors.grey),
+                    }, blueColor),
                   ),
 
                   Container(
