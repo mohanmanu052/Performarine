@@ -88,8 +88,12 @@ class _ResetPasswordState extends State<ResetPassword> {
               {
                 Get.offAll(SignInScreen(calledFrom:'ResetPassword'));
               }
-              else if(widget.isCalledFrom == 'HomePage'){
-                Get.offAll(BottomNavigation());
+              else if(widget.isCalledFrom == 'Dashboard'){
+                print("else new in reset password--");
+                if(sharedPreferences != null){
+                  sharedPreferences!.setBool('reset_dialog_opened',true);
+                }
+                Get.offAll(BottomNavigation(isComingFromReset: false,));
               }
               else
               {
@@ -110,182 +114,190 @@ class _ResetPasswordState extends State<ResetPassword> {
               textSize: displayWidth(context) * 0.05,
               textAlign: TextAlign.start),
         ),
-        body: Stack(
-          children: [
-            Positioned(
-                left: 0,
-                bottom: displayHeight(context) * 0.06,
-                child: ZigZagLineWidget()),
-            Form(
-                key: formKey,
-                child: Container(
-                  height: displayHeight(context),
-                  margin: const EdgeInsets.symmetric(horizontal: 25),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        SizedBox(height: displayHeight(context) * 0.08),
-                        Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 25),
-                          child: Image.asset(
-                            'assets/images/sign_in_img.png',
+        body: WillPopScope(
+          onWillPop: ()async{
+            if(sharedPreferences != null){
+              sharedPreferences!.setBool('reset_dialog_opened',true);
+            }
+            return true;
+          },
+          child: Stack(
+            children: [
+              Positioned(
+                  left: 0,
+                  bottom: displayHeight(context) * 0.06,
+                  child: ZigZagLineWidget()),
+              Form(
+                  key: formKey,
+                  child: Container(
+                    height: displayHeight(context),
+                    margin: const EdgeInsets.symmetric(horizontal: 25),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          SizedBox(height: displayHeight(context) * 0.08),
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 25),
+                            child: Image.asset(
+                              'assets/images/sign_in_img.png',
+                            ),
                           ),
-                        ),
 
-                        SizedBox(height: displayHeight(context) * 0.1),
+                          SizedBox(height: displayHeight(context) * 0.1),
 
-                        CommonTextField(
-                          //key: emailFormFieldKey,
-                            controller: newPasswordController,
-                            focusNode: newPasswordFocusNode,
-                            labelText: 'Enter New Password\*',
-                            hintText: '',
-                            suffixText: null,
-                            textInputAction: TextInputAction.next,
-                            textInputType: TextInputType.text,
-                            textCapitalization: TextCapitalization.words,
-                            maxLength: 52,
-                            prefixIcon: null,
-                            requestFocusNode: reenterPasswordFocusNode,
-                            obscureText: true,
-                            readOnly: false,
-                            onTap: () {},
-                            onChanged: (value) {},
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Enter New Password';
-                              } else if (!RegExp(
-                                  r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[.!@#\$&*~]).{8,}$')
-                                  .hasMatch(value)) {
-                                return 'Password must contain at least 8 characters and \n include : \n * At least one lowercase letter (a-z) \n '
-                                    '* At least one uppercase letter (A-Z) \n * At least one number (0-9) \n * At least one special character (e.g: !.@#\$&*~)';
-                              }
-                              return null;
-                            },
-                            onFieldSubmitted: (value) {
-                            },
-                            onSaved: (String value) {
-                              Utils.customPrint(value);
-                              CustomLogger().logWithFile(Level.info, "New password $value -> $page");
-                            }),
-                        SizedBox(height: displayWidth(context) * 0.03),
+                          CommonTextField(
+                            //key: emailFormFieldKey,
+                              controller: newPasswordController,
+                              focusNode: newPasswordFocusNode,
+                              labelText: 'Enter New Password\*',
+                              hintText: '',
+                              suffixText: null,
+                              textInputAction: TextInputAction.next,
+                              textInputType: TextInputType.text,
+                              textCapitalization: TextCapitalization.words,
+                              maxLength: 52,
+                              prefixIcon: null,
+                              requestFocusNode: reenterPasswordFocusNode,
+                              obscureText: true,
+                              readOnly: false,
+                              onTap: () {},
+                              onChanged: (value) {},
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Enter New Password';
+                                } else if (!RegExp(
+                                    r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[.!@#\$&*~]).{8,}$')
+                                    .hasMatch(value)) {
+                                  return 'Password must contain at least 8 characters and \n include : \n * At least one lowercase letter (a-z) \n '
+                                      '* At least one uppercase letter (A-Z) \n * At least one number (0-9) \n * At least one special character (e.g: !.@#\$&*~)';
+                                }
+                                return null;
+                              },
+                              onFieldSubmitted: (value) {
+                              },
+                              onSaved: (String value) {
+                                Utils.customPrint(value);
+                                CustomLogger().logWithFile(Level.info, "New password $value -> $page");
+                              }),
+                          SizedBox(height: displayWidth(context) * 0.03),
 
-                        CommonTextField(
-                            controller: reenterPasswordController,
-                            focusNode: reenterPasswordFocusNode,
-                            labelText: 'Confirm New Password\*',
-                            hintText: '',
-                            suffixText: null,
-                            textInputAction: TextInputAction.next,
-                            textInputType: TextInputType.emailAddress,
-                            textCapitalization: TextCapitalization.words,
-                            maxLength: 52,
-                            prefixIcon: null,
-                            requestFocusNode: null,
-                            obscureText: true,
-                            readOnly: false,
-                            onTap: () {},
-                            onChanged: (value) {},
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                isConfirmPasswordValid = false;
-                                return 'Enter Confirm New Password';
-                              } else if (reenterPasswordController.text !=
-                                  newPasswordController.text) {
-                                isConfirmPasswordValid = false;
-                                return "Passwords don\'t match";
-                              }
+                          CommonTextField(
+                              controller: reenterPasswordController,
+                              focusNode: reenterPasswordFocusNode,
+                              labelText: 'Confirm New Password\*',
+                              hintText: '',
+                              suffixText: null,
+                              textInputAction: TextInputAction.next,
+                              textInputType: TextInputType.emailAddress,
+                              textCapitalization: TextCapitalization.words,
+                              maxLength: 52,
+                              prefixIcon: null,
+                              requestFocusNode: null,
+                              obscureText: true,
+                              readOnly: false,
+                              onTap: () {},
+                              onChanged: (value) {},
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  isConfirmPasswordValid = false;
+                                  return 'Enter Confirm New Password';
+                                } else if (reenterPasswordController.text !=
+                                    newPasswordController.text) {
+                                  isConfirmPasswordValid = false;
+                                  return "Passwords don\'t match";
+                                }
 
-                              isConfirmPasswordValid = true;
+                                isConfirmPasswordValid = true;
 
-                              return null;
-                            },
-                            onFieldSubmitted: (value) {
-                            },
-                            onSaved: (String value) {
-                              Utils.customPrint(value);
-                              CustomLogger().logWithFile(Level.info, "Confirm New password $value -> $page");
-                            }),
+                                return null;
+                              },
+                              onFieldSubmitted: (value) {
+                              },
+                              onSaved: (String value) {
+                                Utils.customPrint(value);
+                                CustomLogger().logWithFile(Level.info, "Confirm New password $value -> $page");
+                              }),
 
-                        SizedBox(height: displayHeight(context) * 0.2),
+                          SizedBox(height: displayHeight(context) * 0.2),
 
-                        isBtnClick! ? Center(
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                  circularProgressColor),
-                            ))
-                            :     CommonButtons.getActionButton(
-                            title: 'Update Password',
-                            context: context,
-                            fontSize: displayWidth(context) * 0.044,
-                            textColor: Colors.white,
-                            buttonPrimaryColor: buttonBGColor,
-                            borderColor: buttonBGColor,
-                            width: displayWidth(context),
-                            onTap: () async {
-                              if (formKey.currentState!.validate()) {
-                                bool check = await Utils().check(scaffoldKey);
+                          isBtnClick! ? Center(
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                    circularProgressColor),
+                              ))
+                              :     CommonButtons.getActionButton(
+                              title: 'Update Password',
+                              context: context,
+                              fontSize: displayWidth(context) * 0.044,
+                              textColor: Colors.white,
+                              buttonPrimaryColor: buttonBGColor,
+                              borderColor: buttonBGColor,
+                              width: displayWidth(context),
+                              onTap: () async {
+                                if (formKey.currentState!.validate()) {
+                                  bool check = await Utils().check(scaffoldKey);
 
-                                Utils.customPrint("NETWORK $check");
-                                CustomLogger().logWithFile(Level.info, "NETWORK$check  -> $page");
+                                  Utils.customPrint("NETWORK $check");
+                                  CustomLogger().logWithFile(Level.info, "NETWORK$check  -> $page");
 
-                                FocusScope.of(context)
-                                    .requestFocus(FocusNode());
-                                if(check){
-                                  setState(() {
-                                    isBtnClick = true;
-                                  });
+                                  FocusScope.of(context)
+                                      .requestFocus(FocusNode());
+                                  if(check){
+                                    setState(() {
+                                      isBtnClick = true;
+                                    });
 
-                                  commonProvider.resetPassword(context, widget.token! != null ? widget.token! : "", newPasswordController.text.trim(), scaffoldKey).then((value){
-                                    if(value != null){
-                                      setState(() {
-                                        isBtnClick = false;
-                                      });
-                                    Utils.customPrint("Status code of change password is: ${value.statusCode}");
-                                      CustomLogger().logWithFile(Level.info, "Status code of change password is: ${value.statusCode}  -> $page");
+                                    commonProvider.resetPassword(context, widget.token! != null ? widget.token! : "", newPasswordController.text.trim(), scaffoldKey).then((value){
+                                      if(value != null){
+                                        setState(() {
+                                          isBtnClick = false;
+                                        });
+                                      Utils.customPrint("Status code of change password is: ${value.statusCode}");
+                                        CustomLogger().logWithFile(Level.info, "Status code of change password is: ${value.statusCode}  -> $page");
 
-                                      if(value.statusCode == 200 && value.message == "Password reset was successfully completed!"){
-                                        if(widget.isCalledFrom == "HomePage"){
+                                        if(value.statusCode == 200 && value.message == "Password reset was successfully completed!"){
+                                          if(widget.isCalledFrom == "Dashboard"){
+                                              Navigator.pop(context);
+                                          } else{
+                                            signOut();
+                                          }
+
+                                        } else if(value.message == "link Expired !!"){
+                                          if(widget.isCalledFrom == "Dashboard"){
                                             Navigator.pop(context);
-                                        } else{
-                                          signOut();
-                                        }
+                                          } else{
+                                            CustomLogger().logWithFile(Level.info, "User navigating into sign in scren -> $page");
+                                            Navigator.pushAndRemoveUntil(
+                                                context,
+                                                MaterialPageRoute(builder: (context) => const SignInScreen(calledFrom:'ResetPassword')),
+                                                ModalRoute.withName(""));
+                                          }
 
-                                      } else if(value.message == "link Expired !!"){
-                                        if(widget.isCalledFrom == "HomePage"){
-                                          Navigator.pop(context);
-                                        } else{
-                                          CustomLogger().logWithFile(Level.info, "User navigating into sign in scren -> $page");
-                                          Navigator.pushAndRemoveUntil(
-                                              context,
-                                              MaterialPageRoute(builder: (context) => const SignInScreen(calledFrom:'ResetPassword')),
-                                              ModalRoute.withName(""));
                                         }
-
+                                      } else{
+                                        setState(() {
+                                          isBtnClick = false;
+                                        });
                                       }
-                                    } else{
+                                    }).catchError((e){
                                       setState(() {
                                         isBtnClick = false;
                                       });
-                                    }
-                                  }).catchError((e){
+                                    });
+                                  } else{
                                     setState(() {
                                       isBtnClick = false;
                                     });
-                                  });
-                                } else{
-                                  setState(() {
-                                    isBtnClick = false;
-                                  });
+                                  }
                                 }
-                              }
-                            }),
-                      ],
+                              }),
+                        ],
+                      ),
                     ),
-                  ),
-                )
-            )
-          ],
+                  )
+              )
+            ],
+          ),
         ),
       ),
     );

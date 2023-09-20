@@ -1200,7 +1200,7 @@ if(!isSyncSignoutClicked){
     }
 
     Navigator.of(context).pop();
-    Navigator.of(context).pop();
+   // Navigator.of(context).pop();
 
     if (!vesselErrorOccurred && !tripErrorOccurred) {
       if (isSync == true) {

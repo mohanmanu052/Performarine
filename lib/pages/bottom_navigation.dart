@@ -41,7 +41,7 @@ class BottomNavigation extends StatefulWidget {
   final bool? isAppKilled;
   bool? isComingFromReset;
   String token;
-   BottomNavigation({Key? key, this.tripData = const [], this.tabIndex = 0, this.isComingFromReset, this.token = "", this.isAppKilled = false}) : super(key: key);
+   BottomNavigation({Key? key, this.tripData = const [], this.tabIndex = 0, this.isComingFromReset = false, this.token = "", this.isAppKilled = false}) : super(key: key);
 
   @override
   State<BottomNavigation> createState() => _BottomNavigationState();
@@ -104,7 +104,7 @@ ScreenshotController screen_shot_controller=ScreenshotController();
       String updatedToken = arguments?['token'] ?? "";
 
       setState(() {});
-
+      bool? isTripStarted = sharedPreferences!.getBool('trip_started');
       Utils.customPrint("isComingFromReset: ${isComingFrom}");
       if(mounted){
         if(isComingFrom != null && isComingFrom )
@@ -112,8 +112,13 @@ ScreenshotController screen_shot_controller=ScreenshotController();
           Future.delayed(Duration(microseconds: 500), (){
 
             Utils.customPrint("XXXXXXXXX ${isThereCurrentDialogShowing(context)}");
+            if(isTripStarted ?? false){
+             // showResetPasswordDialogBox(context);
+            } else{
+              Get.to(ResetPassword(token: updatedToken,isCalledFrom: 'Dashboard',));
+            }
 
-            if(!isThereCurrentDialogShowing(context))
+          /*  if(!isThereCurrentDialogShowing(context))
             {
               WidgetsBinding.instance.addPostFrameCallback((duration)
               {
@@ -121,7 +126,7 @@ ScreenshotController screen_shot_controller=ScreenshotController();
                 showResetPasswordDialogBox(context,updatedToken);
 
               });
-            }
+            } */
           });
         }
       }
@@ -169,11 +174,17 @@ ScreenshotController screen_shot_controller=ScreenshotController();
       {
         Future.delayed(Duration(microseconds: 500), (){
           print("RESET PASSWORD INIT ${isThereCurrentDialogShowing(context)}");
-          if(!isThereCurrentDialogShowing(context)){
-            widget.isComingFromReset = false;
-            print("RESET PASSWORD 5 ${widget.isComingFromReset}");
-            showResetPasswordDialogBox(context, widget.token);
+          if(isTripStarted ?? false){
+           // showResetPasswordDialogBox(context);
+          } else {
+            Get.to(
+                ResetPassword(token: widget.token, isCalledFrom: 'Dashboard',));
           }
+          // if(!isThereCurrentDialogShowing(context)){
+          //   widget.isComingFromReset = false;
+          //   print("RESET PASSWORD 5 ${widget.isComingFromReset}");
+          //   showResetPasswordDialogBox(context, widget.token);
+          // }
 
         });
       }
@@ -224,8 +235,10 @@ ScreenshotController screen_shot_controller=ScreenshotController();
               Future.delayed(Duration(microseconds: 500), (){
                 Utils.customPrint("XXXXXXXXX ${isThereCurrentDialogShowing(context)}");
                 bool? result;
+                bool? isTripStarted;
                 if(sharedPreferences != null){
                   result = sharedPreferences!.getBool('reset_dialog_opened');
+                  isTripStarted = sharedPreferences!.getBool('trip_started');
                 }
 
                 if(!isThereCurrentDialogShowing(context))
@@ -235,7 +248,14 @@ ScreenshotController screen_shot_controller=ScreenshotController();
                     if(isComingFrom != null){
                       if(!isComingFrom){
                         print("RESET PASSWORD LIFECYCLE");
-                        showResetPasswordDialogBox(context,updatedToken);
+
+                        if(isTripStarted ?? false){
+                          print("Trip runnnig status3: $isTripStarted");
+                         //  showResetPasswordDialogBox(context);
+                        } else {
+                          Get.to(ResetPassword(token: widget.token,
+                            isCalledFrom: 'Dashboard',));
+                        }
                       }
                     }
                   });
@@ -682,7 +702,7 @@ ScreenshotController screen_shot_controller=ScreenshotController();
         });
   }
 
-  showResetPasswordDialogBox(BuildContext context,String token) {
+  showResetPasswordDialogBox(BuildContext context) {
     if(sharedPreferences != null){
       sharedPreferences!.setBool('reset_dialog_opened', true);
     }
@@ -749,7 +769,7 @@ ScreenshotController screen_shot_controller=ScreenshotController();
                                 child: CommonButtons.getAcceptButton(
                                     'Continue', context, blueColor,
                                         () async {
-                                      Navigator.pop(dialogContext);
+                                  /*    Navigator.pop(dialogContext);
 
                                       if(sharedPreferences != null){
                                         sharedPreferences!.setBool('reset_dialog_opened', false);
@@ -759,7 +779,7 @@ ScreenshotController screen_shot_controller=ScreenshotController();
 
                                       var result = await Navigator.push(
                                         context,
-                                        MaterialPageRoute(builder: (context) => ResetPassword(token: token, isCalledFrom:  "HomePage",)),);
+                                        MaterialPageRoute(builder: (context) => ResetPassword(token: token, isCalledFrom:  "HomePage",)),); */
                                     },
                                     displayWidth(context) * 0.65,
                                     displayHeight(context) * 0.054,
@@ -770,7 +790,7 @@ ScreenshotController screen_shot_controller=ScreenshotController();
                                     '',
                                     fontWeight: FontWeight.w500),
                               ),
-                              SizedBox(height: 4,),
+                           /*   SizedBox(height: 4,),
                               Center(
                                 child: CommonButtons.getAcceptButton(
                                     'Cancel', context, Colors.transparent,
@@ -788,7 +808,7 @@ ScreenshotController screen_shot_controller=ScreenshotController();
                                     Colors.transparent,
                                     '',
                                     fontWeight: FontWeight.w500),
-                              ),
+                              ), */
                             ],
                           ),
                         ),
