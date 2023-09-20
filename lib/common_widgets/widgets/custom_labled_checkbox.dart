@@ -17,6 +17,7 @@ class CustomLabeledCheckbox extends StatelessWidget {
     required this.label,
     required this.value,
     required this.onChanged,
+    this.orientation,
     this.checkboxType: CheckboxType.Child,
     required this.activeColor,
   })  : assert(label != null),
@@ -33,6 +34,8 @@ class CustomLabeledCheckbox extends StatelessWidget {
   ValueChanged<bool> onChanged;
   CheckboxType checkboxType;
   Color activeColor;
+  Orientation ?orientation;
+
 
   void _onChanged() {
     if (value != null) {
@@ -67,7 +70,10 @@ class CustomLabeledCheckbox extends StatelessWidget {
             Text(
               label,
               style: TextStyle(
-                fontSize: displayWidth(context) * 0.04,
+                fontSize: orientation!=null&&orientation==Orientation.landscape?displayWidth(context) * 0.03:
+                
+                
+                displayWidth(context) * 0.04,
                   fontWeight: FontWeight.bold, color: Colors.black,fontFamily: outfit),
             )
           ],

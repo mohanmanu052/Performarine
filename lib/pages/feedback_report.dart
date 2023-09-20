@@ -1,6 +1,7 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/provider/common_provider.dart';
@@ -60,11 +61,30 @@ class _FeedbackReportState extends State<FeedbackReport> {
   @override
   void initState() {
     super.initState();
+  SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp,
+  ]);
 
     commonProvider = context.read<CommonProvider>();
     commonProvider.init();
     nameController  = TextEditingController();
     descriptionController = TextEditingController();
+  }
+  
+
+
+  @override
+  void dispose() {
+      SystemChrome.setPreferredOrientations([
+    DeviceOrientation.landscapeRight,
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
+    // TODO: implement dispose
+    super.dispose();
   }
 
   @override
