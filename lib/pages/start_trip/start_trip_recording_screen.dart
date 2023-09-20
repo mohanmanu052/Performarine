@@ -1032,6 +1032,14 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                   borderColor: blueColor,
                                   width: displayWidth(context),
                                   onTap: () async {
+
+
+                                  if(vesselData.isEmpty)
+                                    {
+                                      addNewVesselDialogBox(context);
+                                    }
+else{
+
                                     if (selectedValue == null) {
                                       Utils.customPrint(
                                           'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
@@ -1364,6 +1372,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                           }
                                         }
                                       }*/
+}
                                   },
                                 ),
                               ),
@@ -2333,9 +2342,9 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                         buttonText: 'Ok',
                         buttonOnTap: () async {
                           Get.back();
-
-                          await openAppSettings();
-                        },
+                   await openAppSettings();
+}
+                        
                       );
                     }).then((value) {
                   isLocationDialogBoxOpen = false;
