@@ -436,12 +436,12 @@ class Utils {
     var canada = tz.getLocation('Canada/Pacific');
     var now = tz.TZDateTime.now(canada).toUtc();
     var localNow = DateTime.now();
-    Utils.customPrint(DateFormat('dd-MM-yyyy hh:mm a').format(now));
-    CustomLogger().logWithFile(Level.info, "${DateFormat('dd-MM-yyyy hh:mm a').format(now)} -> Utils");
+    Utils.customPrint(DateFormat('yyyy-MM-dd hh:mm a').format(now));
+    CustomLogger().logWithFile(Level.info, "${DateFormat('yyyy-MM-dd hh:mm a').format(now)} -> Utils");
 
     /// TZ
-    Utils.customPrint(DateFormat('dd-MM-yyyy hh:mm a').format(localNow));
-    CustomLogger().logWithFile(Level.info, "${DateFormat('dd-MM-yyyy hh:mm a').format(localNow)} -> Utils");
+    Utils.customPrint(DateFormat('yyyy-MM-dd hh:mm a').format(localNow));
+    CustomLogger().logWithFile(Level.info, "${DateFormat('yyyy-MM-dd hh:mm a').format(localNow)} -> Utils");
 
     /// LOCAL
     return now.toString();
