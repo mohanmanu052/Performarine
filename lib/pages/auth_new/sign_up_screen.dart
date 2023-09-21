@@ -122,7 +122,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         'assets/images/performarine_logo.png',
                       ),
                     ),
-                    SizedBox(height: displayHeight(context) * 0.04),
+                    SizedBox(height: displayHeight(context) * 0.03),
                     commonText(
                         context: context,
                         text: 'Register',
@@ -133,155 +133,164 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         fontFamily: outfit
                     ),
                     SizedBox(height: displayHeight(context) * 0.02),
-                    Container(
-                      height: displayHeight(context) * 0.067,
-                      width: displayWidth(context) * 0.9,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(15)),
-                          color: authBtnColors
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          commonText(
-                              context: context,
-                              text: 'Sign Up with',
-                              fontWeight: FontWeight.w500,
-                              textColor: Colors.black,
-                              textSize: displayWidth(context) * 0.03,
-                              textAlign: TextAlign.start,
-                              fontFamily: outfit
-                          ),
-                          SizedBox(width: displayWidth(context) * 0.04),
-                          isGoogleSignInBtnClicked
-                              ? Center(
-                              child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                    circularProgressColor),
-                              ))
-                              : InkWell(
-                            onTap: () async {
-                              bool check = await Utils().check(scaffoldKey);
-
-                              if (check) {
-                                GoogleSignInAccount? googleSignInAccount;
-
-                                if (await googleSignIn.isSignedIn()) {
-                                  googleSignIn.signOut();
-                                  googleSignInAccount =
-                                  await googleSignIn.signIn();
-                                } else {
-                                  googleSignInAccount =
-                                  await googleSignIn.signIn();
-                                }
-
-                                if (googleSignInAccount == null) {
-                                  // TODO handle
-                                  setState(() {
-                                    isGoogleSignInBtnClicked = false;
-                                  });
-                                } else {
-                                  try {
-                                    Utils.customPrint(
-                                        'NAME: ${googleSignInAccount.id}');
-                                    Utils.customPrint(
-                                        'Email: ${googleSignInAccount.email}');
-                                    Utils.customPrint(
-                                        'Display Name: ${googleSignInAccount.displayName}');
-                                    Utils.customPrint(
-                                        'PhotoURL: ${googleSignInAccount.photoUrl}');
-                                    Utils.customPrint(
-                                        'ServerAuthCode: ${googleSignInAccount.serverAuthCode}');
-                                    Utils.customPrint(
-                                        'AuthHeaders: ${googleSignInAccount.authHeaders}');
-                                    Utils.customPrint(
-                                        'Google SignIn Account: ${googleSignInAccount.toString()}');
-
-                                    CustomLogger().logWithFile(Level.info, "NAME: ${googleSignInAccount.id} -> $page");
-                                    CustomLogger().logWithFile(Level.info, "Email: ${googleSignInAccount.email} -> $page");
-                                    CustomLogger().logWithFile(Level.info, "Display Name: ${googleSignInAccount.displayName} -> $page");
-                                    CustomLogger().logWithFile(Level.info, "PhotoURL: ${googleSignInAccount.photoUrl} -> $page");
-                                    CustomLogger().logWithFile(Level.info, "ServerAuthCode: ${googleSignInAccount.serverAuthCode} -> $page");
-                                    CustomLogger().logWithFile(Level.info, "AuthHeaders: ${googleSignInAccount.authHeaders} -> $page");
-                                    CustomLogger().logWithFile(Level.info, "Google SignIn Account: ${googleSignInAccount.toString()} -> $page");
-
+                    InkWell(
+                                                    onTap: () async {
+                                bool check = await Utils().check(scaffoldKey);
+                    
+                                if (check) {
+                                  GoogleSignInAccount? googleSignInAccount;
+                    
+                                  if (await googleSignIn.isSignedIn()) {
+                                    googleSignIn.signOut();
+                                    googleSignInAccount =
+                                    await googleSignIn.signIn();
+                                  } else {
+                                    googleSignInAccount =
+                                    await googleSignIn.signIn();
+                                  }
+                    
+                                  if (googleSignInAccount == null) {
+                                    // TODO handle
                                     setState(() {
-                                      isGoogleSignInBtnClicked = true;
+                                      isGoogleSignInBtnClicked = false;
                                     });
-
-                                    commonProvider
-                                        .registerUser(
-                                        context,
-                                        googleSignInAccount.email,
-                                        '',
-                                        "",
-                                        '',
-                                        '',
-                                        '',
-                                        '',
-                                        '',
-                                        true,
-                                        googleSignInAccount.id,
-                                        googleSignInAccount.photoUrl ??
-                                            '',
-                                        scaffoldKey)
-                                        .then((value) {
+                                  } else {
+                                    try {
+                                      Utils.customPrint(
+                                          'NAME: ${googleSignInAccount.id}');
+                                      Utils.customPrint(
+                                          'Email: ${googleSignInAccount.email}');
+                                      Utils.customPrint(
+                                          'Display Name: ${googleSignInAccount.displayName}');
+                                      Utils.customPrint(
+                                          'PhotoURL: ${googleSignInAccount.photoUrl}');
+                                      Utils.customPrint(
+                                          'ServerAuthCode: ${googleSignInAccount.serverAuthCode}');
+                                      Utils.customPrint(
+                                          'AuthHeaders: ${googleSignInAccount.authHeaders}');
+                                      Utils.customPrint(
+                                          'Google SignIn Account: ${googleSignInAccount.toString()}');
+                    
+                                      CustomLogger().logWithFile(Level.info, "NAME: ${googleSignInAccount.id} -> $page");
+                                      CustomLogger().logWithFile(Level.info, "Email: ${googleSignInAccount.email} -> $page");
+                                      CustomLogger().logWithFile(Level.info, "Display Name: ${googleSignInAccount.displayName} -> $page");
+                                      CustomLogger().logWithFile(Level.info, "PhotoURL: ${googleSignInAccount.photoUrl} -> $page");
+                                      CustomLogger().logWithFile(Level.info, "ServerAuthCode: ${googleSignInAccount.serverAuthCode} -> $page");
+                                      CustomLogger().logWithFile(Level.info, "AuthHeaders: ${googleSignInAccount.authHeaders} -> $page");
+                                      CustomLogger().logWithFile(Level.info, "Google SignIn Account: ${googleSignInAccount.toString()} -> $page");
+                    
                                       setState(() {
-                                        isGoogleSignInBtnClicked = false;
+                                        isGoogleSignInBtnClicked = true;
                                       });
-
-                                      if (value != null) {
+                    
+                                      commonProvider
+                                          .registerUser(
+                                          context,
+                                          googleSignInAccount.email,
+                                          '',
+                                          "",
+                                          '',
+                                          '',
+                                          '',
+                                          '',
+                                          '',
+                                          true,
+                                          googleSignInAccount.id,
+                                          googleSignInAccount.photoUrl ??
+                                              '',
+                                          scaffoldKey)
+                                          .then((value) {
                                         setState(() {
                                           isGoogleSignInBtnClicked = false;
                                         });
-
-                                        if (value.status!) {
+                    
+                                        if (value != null) {
                                           setState(() {
-                                            isGoogleSignInBtnClicked =
-                                            false;
+                                            isGoogleSignInBtnClicked = false;
                                           });
-                                          Future.delayed(
-                                              Duration(seconds: 2), () {
-                                            Navigator.pushAndRemoveUntil(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) => SignInScreen(),
-                                                ),
-                                                ModalRoute.withName(""));
-                                          });
+                    
+                                          if (value.status!) {
+                                            setState(() {
+                                              isGoogleSignInBtnClicked =
+                                              false;
+                                            });
+                                            Future.delayed(
+                                                Duration(seconds: 2), () {
+                                              Navigator.pushAndRemoveUntil(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => SignInScreen(),
+                                                  ),
+                                                  ModalRoute.withName(""));
+                                            });
+                                          } else {
+                                            setState(() {
+                                              isGoogleSignInBtnClicked =
+                                              false;
+                                            });
+                                          }
                                         } else {
                                           setState(() {
-                                            isGoogleSignInBtnClicked =
-                                            false;
+                                            isGoogleSignInBtnClicked = false;
                                           });
                                         }
-                                      } else {
+                                      }).catchError((e) {
                                         setState(() {
                                           isGoogleSignInBtnClicked = false;
                                         });
-                                      }
-                                    }).catchError((e) {
-                                      setState(() {
-                                        isGoogleSignInBtnClicked = false;
                                       });
-                                    });
-                                  } catch (e) {
-                                    Utils.customPrint('EXE: $e');
-                                    CustomLogger().logWithFile(Level.error, "EXE: $e -> $page");
-                                    // TODO handle
+                                    } catch (e) {
+                                      Utils.customPrint('EXE: $e');
+                                      CustomLogger().logWithFile(Level.error, "EXE: $e -> $page");
+                                      // TODO handle
+                                    }
                                   }
                                 }
-                              }
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(0.0),
-                              child: Image.asset(
-                                'assets/images/google_logo.png',
-                                height: displayHeight(context) * 0.03,
-                              ),
+                              },
+
+                      child:
+                      
+                      isGoogleSignInBtnClicked
+                                ? SizedBox(
+                                                          height: displayHeight(context) * 0.067,
+                        width: displayWidth(context) * 0.9,
+
+                                  child: Center(
+                                  child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        circularProgressColor),
+                                  )),
+                                )
+                                :
+                       Container(
+                        height: displayHeight(context) * 0.067,
+                        width: displayWidth(context) * 0.9,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(15)),
+                            color: authBtnColors
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            commonText(
+                                context: context,
+                                text: 'Sign Up with',
+                                fontWeight: FontWeight.w500,
+                                textColor: Colors.black,
+                                textSize: displayWidth(context) * 0.03,
+                                textAlign: TextAlign.start,
+                                fontFamily: outfit
                             ),
-                          ),
-                        ],
+                            SizedBox(width: displayWidth(context) * 0.04),
+                             Padding(
+                                  padding: const EdgeInsets.all(0.0),
+                                  child: Image.asset(
+                                    'assets/images/google_logo.png',
+                                    height: displayHeight(context) * 0.03,
+                                  ),
+                                ),
+                          ],
+                        ),
                       ),
                     ),
                     SizedBox(height: displayHeight(context) * 0.012),
@@ -359,9 +368,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           validator: (value) {
                             if (value!.isEmpty) {
                               if (selectedCountry == 'USA') {
-                                return 'Enter Code';
+                                return 'Enter Zip Code';
                               } else {
-                                return 'Enter Code';
+                                return 'Enter Postal Code';
                               }
                             }
                             return null;
@@ -723,7 +732,7 @@ class CircularRadioTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: () {
         onChanged!(!value!);
       },
