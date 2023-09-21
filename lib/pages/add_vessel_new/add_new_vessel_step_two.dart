@@ -118,7 +118,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
         moldedBeamController.text = appendAsInt(widget.addVesselData!.beam!);
         moldedDepthController.text = appendAsInt(widget.addVesselData!.draft!);
         sizeController.text = widget.addVesselData!.vesselSize!.toString();
-        capacityController.text = widget.addVesselData!.capacity!.toString();
+      //  capacityController.text = widget.addVesselData!.capacity!.toString();
         builtYearController.text = widget.addVesselData!.builtYear!.toString();
 
       }
@@ -359,7 +359,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                           CustomLogger().logWithFile(Level.info, "Vessel Size $value -> $page");
                         }),
                   ),
-                  SizedBox(height: displayHeight(context) * 0.015),
+              /*    SizedBox(height: displayHeight(context) * 0.015),
                   Form(
                     key: capacityFormKey,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -390,7 +390,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                           Utils.customPrint(value);
                           CustomLogger().logWithFile(Level.info, "Vessel Capacity $value -> $page");
                         }),
-                  ),
+                  ), */
                   SizedBox(height: displayHeight(context) * 0.015),
                   Form(
                     key: builtYearFormKey,
@@ -453,8 +453,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                           width: displayWidth(context),
                           onTap: () async {
                             if (freeBoardFormKey.currentState!.validate() && lengthFormKey.currentState!.validate() && beamFormKey.currentState!.validate()
-                                && draftFormKey.currentState!.validate() && sizeFormKey.currentState!.validate() && capacityFormKey.currentState!.validate()
-                                && builtYearFormKey.currentState!.validate()) {
+                                && draftFormKey.currentState!.validate() && sizeFormKey.currentState!.validate() && builtYearFormKey.currentState!.validate()) {
                               setState(() {
                                 isBtnClicked = true;
                               });
@@ -477,8 +476,8 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                                   double.parse(moldedDepthController.text);
                               commonProvider.addVesselRequestModel!.vesselSize =
                                   double.parse(sizeController.text);
-                              commonProvider.addVesselRequestModel!.capacity =
-                                  int.parse(capacityController.text);
+                              commonProvider.addVesselRequestModel!.capacity = 0;
+                                //  int.parse(capacityController.text);
                               commonProvider.addVesselRequestModel!.builtYear =
                                   builtYearController.text;
                               commonProvider.addVesselRequestModel!.id =

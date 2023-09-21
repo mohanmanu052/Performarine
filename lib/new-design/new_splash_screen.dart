@@ -366,10 +366,10 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
   Future<void> initUniLinks() async {
     Uri? initialLink;
     try {
-      bool? isInitialUriHandled =
-          sharedPreferences!.getBool('is_initial_uri_handled') ?? false;
-
-      if (!isInitialUriHandled) {
+      // bool? isInitialUriHandled =
+      //     sharedPreferences!.getBool('is_initial_uri_handled') ?? false;
+      //
+      // if (!isInitialUriHandled) {
         sharedPreferences!.setBool('is_initial_uri_handled', true);
         initialLink = await getInitialUri();
 
@@ -421,13 +421,13 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
             checkIfUserIsLoggedIn();
           });
         }
-      }
-      else{
-        checkIfTripIsRunning();
-        Future.delayed(Duration(seconds: 4), () {
-          checkIfUserIsLoggedIn();
-        });
-      }
+      // }
+      // else{
+      //   checkIfTripIsRunning();
+      //   Future.delayed(Duration(seconds: 4), () {
+      //     checkIfUserIsLoggedIn();
+      //   });
+      // }
     } on PlatformException {
       // Handle exception by warning the user their action did not succeed
       // return?
