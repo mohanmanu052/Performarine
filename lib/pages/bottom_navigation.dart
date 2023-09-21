@@ -10,6 +10,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
+import 'package:performarine/pages/add_vessel_new/add_new_vessel_screen.dart';
 import 'package:performarine/pages/auth/reset_password.dart';
 import 'package:performarine/pages/custom_drawer.dart';
 import 'package:performarine/pages/dashboard/dashboard.dart';
@@ -373,7 +374,7 @@ ScreenshotController screen_shot_controller=ScreenshotController();
                   : _bottomNavIndex == 3 ? 'Trips' : 'Vessels' ,
               fontWeight: FontWeight.w700,
               textColor: Colors.black87,
-              textSize: displayWidth(context) * 0.05,
+              textSize:orientation==Orientation.portrait? displayWidth(context) * 0.05:displayWidth(context) * 0.03,
               fontFamily: outfit
             ),
             actions: [
@@ -397,7 +398,7 @@ ScreenshotController screen_shot_controller=ScreenshotController();
           bottomNavigationBar: Container(
                      height:
                      
-                     orientation==Orientation.portrait? displayHeight(context) * 0.1:displayHeight(context) * 0.2,
+                     orientation==Orientation.portrait? displayHeight(context) * 0.1:displayHeight(context) * 0.18,
 
             child: ClipRRect(
               child: Container(
@@ -422,6 +423,15 @@ ScreenshotController screen_shot_controller=ScreenshotController();
                         }
 
                           if(index == 2){
+
+    List<CreateVessel> localVesselList =
+    await _databaseService.vessels();
+
+    if(localVesselList.isEmpty){
+      addNewVesselDialogBox(context);
+    }
+else{
+
 
                            if(!commonProvider.onTripEndClicked)
                              {
@@ -469,6 +479,7 @@ ScreenshotController screen_shot_controller=ScreenshotController();
                                );
                              }
                           }
+                          }
                           else{
                             setState(() {
                               _bottomNavIndex = index;
@@ -507,8 +518,8 @@ ScreenshotController screen_shot_controller=ScreenshotController();
     return Padding(
       padding: EdgeInsets.only(top:orientation==Orientation.portrait? 13:0),
       child: AnimatedContainer(
-        width: displayWidth(context) * 0.13,
-          height:orientation==Orientation.portrait? displayHeight(context) * 0.07:displayHeight(context) * 0.2,
+        width:orientation==Orientation.portrait? displayWidth(context) * 0.13:displayWidth(context) * 0.11,
+          height:orientation==Orientation.portrait? displayHeight(context) * 0.07:displayHeight(context) * 0.16,
           alignment: Alignment.center,
           duration: Duration(milliseconds: 0),
           decoration: !isSelected
@@ -1105,4 +1116,124 @@ ScreenshotController screen_shot_controller=ScreenshotController();
           });
         });
   }
+
+
+    addNewVesselDialogBox(BuildContext context) {
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: StatefulBuilder(
+              builder: (ctx, setDialogState) {
+                return Container(
+                  height: displayHeight(context) * 0.45,
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 8.0, right: 8.0, top: 15, bottom: 15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+                        ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              //color: Color(0xfff2fffb),
+                              child: Image.asset(
+                                'assets/images/boat.gif',
+                                height: displayHeight(context) * 0.1,
+                                width: displayWidth(context),
+                                fit: BoxFit.contain,
+                              ),
+                            )),
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8),
+                          child: commonText(
+                              context: context,
+                              text:
+                              'No vessel available, Please add vessel to continue',
+                              fontWeight: FontWeight.w500,
+                              textColor: Colors.black87,
+                              textSize: displayWidth(context) * 0.038,
+                              textAlign: TextAlign.center),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.012,
+                        ),
+                        Center(
+                          child: Column(
+                            children: [
+                              Container(
+                                margin: EdgeInsets.only(
+                                  top: 8.0,
+                                ),
+                                child: Center(
+                                  child: CommonButtons.getAcceptButton(
+                                      'Add Vessel', context, blueColor,
+                                          () async {
+                                            Navigator.of(context).pop();
+
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                builder: (context) =>
+                                                AddNewVesselPage(calledFrom: 'bottomNav',)));
+                                          },
+                                      displayWidth(context) * 0.65,
+                                      displayHeight(context) * 0.054,
+                                      primaryColor,
+                                      Colors.white,
+                                      displayHeight(context) * 0.02,
+                                      blueColor,
+                                      '',
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 8.0,
+                              ),
+                              Center(
+                                child: CommonButtons.getAcceptButton(
+                                    'Cancel', context, Colors.transparent,
+                                        () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    displayWidth(context) * 0.65,
+                                    displayHeight(context) * 0.054,
+                                    primaryColor,
+                                    Theme.of(context).brightness ==
+                                        Brightness.dark
+                                        ? Colors.white
+                                        : blueColor,
+                                    displayHeight(context) * 0.018,
+                                    Colors.white,
+                                    '',
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.01,
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        });
+  }
 }
+

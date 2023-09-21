@@ -943,8 +943,11 @@ childrenValue!.clear();
                                                 Radius.circular(15))),
                                         errorStyle: TextStyle(
                                             fontFamily: inter,
-                                            fontSize:
-                                            displayWidth(context) * 0.025),
+                                            fontSize:orientation==Orientation.portrait?
+                                            displayWidth(context) * 0.025:displayWidth(context) * 0.015
+                                            
+                                            
+                                            ),
                                         focusedErrorBorder: OutlineInputBorder(
                                             borderSide: BorderSide(
                                                 width: 1.5,
@@ -1172,8 +1175,8 @@ childrenValue!.clear();
                                               Radius.circular(15))),
                                       errorStyle: TextStyle(
                                           fontFamily: inter,
-                                          fontSize:
-                                          displayWidth(context) * 0.034,
+                                            fontSize:orientation==Orientation.portrait?
+                                            displayWidth(context) * 0.025:displayWidth(context) * 0.015
                                           
                                           
                                           ),
@@ -1492,13 +1495,13 @@ childrenValue!.clear();
                                   },
 
                                orientation==Orientation.portrait?   displayWidth(context) * 0.8:displayWidth(context) * 0.4,
-                                 orientation==Orientation.portrait? displayHeight(context) * 0.065:displayHeight(context) * 0.090,
+                                 orientation==Orientation.portrait? displayHeight(context) * 0.065:displayHeight(context) * 0.12,
                                   Colors.grey.shade400,
                                   Theme.of(context).brightness ==
                                           Brightness.dark
                                       ? Colors.white
                                       : Colors.white,
-                                orientation==Orientation.portrait?  displayHeight(context) * 0.021:displayHeight(context) * 0.032,
+                                orientation==Orientation.portrait?  displayHeight(context) * 0.021:displayHeight(context) * 0.037,
                                   blueColor,
                                   '',
                                 ),
@@ -1510,7 +1513,7 @@ childrenValue!.clear();
                                         child: GestureDetector(
                                             onTap:  widget.onScreenShotCaptureCallback,
                                             child: UserFeedback()
-                                                .getUserFeedback(context)),
+                                                .getUserFeedback(context,orientation: orientation)),
                                       )
                                     : Container(),
                               ],
@@ -1819,7 +1822,7 @@ ReportsDataTable(tripList: tripList, finalData: finalData),
                               child: GestureDetector(
                                   onTap:widget.onScreenShotCaptureCallback,
                                   child: UserFeedback()
-                                      .getUserFeedback(context)),
+                                      .getUserFeedback(context,orientation: orientation)),
                             ),
                           ],
                         )
@@ -2655,7 +2658,7 @@ Utils.showSnackBar(context,
                   },
                   child: Container(
                     width: displayWidth(context) * 0.385,
-                    height: displayWidth(context) * 0.1,
+                    height:orientation==Orientation.portrait? displayWidth(context) * 0.1:displayWidth(context) * 0.075,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
                         color: reportDropdownColor),
@@ -2703,7 +2706,7 @@ Utils.showSnackBar(context,
                   },
                   child: Container(
                     width: displayWidth(context) * 0.385,
-                    height: displayWidth(context) * 0.1,
+                    height:orientation==Orientation.portrait? displayWidth(context) * 0.1:displayWidth(context) * 0.075,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
                         color: reportDropdownColor
@@ -3083,6 +3086,7 @@ Utils.showSnackBar(context,
                               padding: EdgeInsets.only(
                                   left: displayWidth(context) * 0.046),
                               child: CustomLabeledCheckbox(
+                                orientation: orientation,
                     
                                 label: 'Select All',
                                 value: parentValue != null ? parentValue! : false,

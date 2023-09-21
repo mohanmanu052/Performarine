@@ -9,8 +9,9 @@ import '../utils/colors.dart';
 import 'common_widgets.dart';
 
 class UserFeedback{
+
   
-  Widget getUserFeedback(BuildContext context){
+  Widget getUserFeedback(BuildContext context,{Orientation orientation=Orientation.portrait}){
 
     double value = Platform.isIOS ? displayHeight(context) * 0.015 : 0;
 
@@ -24,7 +25,10 @@ class UserFeedback{
           Icon(
             Icons.warning,
             color: userFeedbackBtnColor,
-            size: displayWidth(context) * 0.035,
+            size:orientation==Orientation.portrait?
+            
+            
+             displayWidth(context) * 0.035:displayWidth(context) * 0.025,
           ),
 
           SizedBox(
@@ -36,7 +40,7 @@ class UserFeedback{
               text: 'Feedback',
               fontWeight: FontWeight.w300,
               textColor: userFeedbackBtnColor,
-              textSize: displayWidth(context) * 0.032,
+              textSize:orientation==Orientation.portrait? displayWidth(context) * 0.032:displayWidth(context) * 0.02,
               textAlign: TextAlign.start,
             fontFamily: inter
           ),
@@ -46,7 +50,7 @@ class UserFeedback{
               text: ' / Report',
               fontWeight: FontWeight.w300,
               textColor: userFeedbackBtnColor,
-              textSize: displayWidth(context) * 0.032,
+              textSize:orientation==Orientation.portrait? displayWidth(context) * 0.032:displayWidth(context) * 0.02,
               textAlign: TextAlign.start,
               fontFamily: inter
           )
