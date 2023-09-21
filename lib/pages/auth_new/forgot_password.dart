@@ -127,6 +127,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       width: displayWidth(context),
                       onTap: () async {
                         if(formKey.currentState!.validate()){
+                          FocusManager.instance.primaryFocus?.unfocus();
+
                           bool check = await Utils().check(scaffoldKey);
                           if(check){
                             setState(() {
