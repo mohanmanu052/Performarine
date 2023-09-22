@@ -320,29 +320,29 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: [
-                                            commonText(
-                                                context: context,
-                                                text:
-                                                '${vesselData!.capacity}$cubicCapacity',
-                                                fontWeight: FontWeight.w500,
-                                                textColor: Colors.white,
-                                                textSize:
-                                                displayWidth(context) * 0.038,
-                                                textAlign: TextAlign.start),
-                                            commonText(
-                                                context: context,
-                                                text: 'Capacity',
-                                                fontWeight: FontWeight.w400,
-                                                textColor: Colors.white,
-                                                textSize:
-                                                displayWidth(context) * 0.024,
-                                                textAlign: TextAlign.start),
-                                          ],
-                                        ),
+                                        // Column(
+                                        //   crossAxisAlignment:
+                                        //   CrossAxisAlignment.start,
+                                        //   children: [
+                                        //     commonText(
+                                        //         context: context,
+                                        //         text:
+                                        //         '${vesselData!.capacity}$cubicCapacity',
+                                        //         fontWeight: FontWeight.w500,
+                                        //         textColor: Colors.white,
+                                        //         textSize:
+                                        //         displayWidth(context) * 0.038,
+                                        //         textAlign: TextAlign.start),
+                                        //     commonText(
+                                        //         context: context,
+                                        //         text: 'Capacity',
+                                        //         fontWeight: FontWeight.w400,
+                                        //         textColor: Colors.white,
+                                        //         textSize:
+                                        //         displayWidth(context) * 0.024,
+                                        //         textAlign: TextAlign.start),
+                                        //   ],
+                                        // ),
                                         SizedBox(
                                           width:
                                           displayWidth(context) * 0.05,
