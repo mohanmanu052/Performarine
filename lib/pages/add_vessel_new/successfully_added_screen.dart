@@ -297,33 +297,33 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: [
-                                      commonText(
-                                          context: context,
-                                          text:
-                                          '${widget.data!.capacity}$cubicCapacity',
-                                          fontWeight: FontWeight.w500,
-                                          textColor: Colors.white,
-                                          textSize:
-                                          displayWidth(context) * 0.038,
-                                          textAlign: TextAlign.start),
-                                      commonText(
-                                          context: context,
-                                          text: 'Capacity',
-                                          fontWeight: FontWeight.w400,
-                                          textColor: Colors.white,
-                                          textSize:
-                                          displayWidth(context) * 0.024,
-                                          textAlign: TextAlign.start),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    width:
-                                    displayWidth(context) * 0.05,
-                                  ),
+                                  // Column(
+                                  //   crossAxisAlignment:
+                                  //   CrossAxisAlignment.start,
+                                  //   children: [
+                                  //     commonText(
+                                  //         context: context,
+                                  //         text:
+                                  //         '${widget.data!.capacity}$cubicCapacity',
+                                  //         fontWeight: FontWeight.w500,
+                                  //         textColor: Colors.white,
+                                  //         textSize:
+                                  //         displayWidth(context) * 0.038,
+                                  //         textAlign: TextAlign.start),
+                                  //     commonText(
+                                  //         context: context,
+                                  //         text: 'Capacity',
+                                  //         fontWeight: FontWeight.w400,
+                                  //         textColor: Colors.white,
+                                  //         textSize:
+                                  //         displayWidth(context) * 0.024,
+                                  //         textAlign: TextAlign.start),
+                                  //   ],
+                                  // ),
+                                  // SizedBox(
+                                  //   width:
+                                  //   displayWidth(context) * 0.05,
+                                  // ),
                                   Column(
                                     crossAxisAlignment:
                                     CrossAxisAlignment.start,

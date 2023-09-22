@@ -1386,6 +1386,7 @@ childrenValue!.clear();
                                         avgSpeed1 = null;
                                         fuelUsage = null;
                                         powerUsage = null;
+                                        isEndDateSected=true;
                                         finalData.clear();
                                         durationGraphData.clear();
 
@@ -1884,6 +1885,7 @@ ReportsDataTable(tripList: tripList, finalData: finalData),
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
+                margin: EdgeInsets.only( left:orentation==Orientation.portrait? 10:20),
                 width: displayWidth(context)/2,
                 child: Text(
                                     "$selectedVesselName",
@@ -1907,29 +1909,29 @@ ReportsDataTable(tripList: tripList, finalData: finalData),
                     margin: EdgeInsets.only(left: 4),
                     child: Column(
                       children: [
-                        Container(
-                          alignment: Alignment.center,
-                          child: Text(
-                            capacity??'-',
-                        textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                fontFamily: inter,
-                                fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.035:displayWidth(context) * 0.025,
-                                color: blutoothDialogTxtColor),
-                          ),
-                        ),
-                        SizedBox(
-                          height: displayHeight(context) * 0.008,
-                        ),
-                        Text(
-                          "Capacity",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontFamily: inter,
-                              fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
-                              color: blutoothDialogTxtColor),
-                        ),
+                        // Container(
+                        //   alignment: Alignment.center,
+                        //   child: Text(
+                        //     capacity??'-',
+                        // textAlign: TextAlign.center,
+                        //     style: TextStyle(
+                        //         fontWeight: FontWeight.w700,
+                        //         fontFamily: inter,
+                        //         fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.035:displayWidth(context) * 0.025,
+                        //         color: blutoothDialogTxtColor),
+                        //   ),
+                        // ),
+                        // SizedBox(
+                        //   height: displayHeight(context) * 0.008,
+                        // ),
+                        // Text(
+                        //   "Capacity",
+                        //   style: TextStyle(
+                        //       fontWeight: FontWeight.w500,
+                        //       fontFamily: inter,
+                        //       fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
+                        //       color: blutoothDialogTxtColor),
+                        // ),
                       ],
                     ),
                   ),
@@ -2697,12 +2699,26 @@ Utils.showSnackBar(context,
                 ),
                 GestureDetector(
                   onTap: () {
+if(!isSelectStartDate){
+
+
+                                            Utils.showSnackBar(context,
+                                              scaffoldKey: scaffoldKey,
+                                              message:
+                                                  'Please Select The Start Date',
+                                              duration: 2);
+
+  
+}
+else{
+
                     setState(() {
                       isEndDateSected=false;
                       isEndDate = true;
                       selectDateOption = 2;
                       isSelectEndDate = true;
                     });
+                  }
                   },
                   child: Container(
                     width: displayWidth(context) * 0.385,

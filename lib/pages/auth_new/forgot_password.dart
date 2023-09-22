@@ -96,12 +96,19 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       onTap: () {},
                       onChanged: (value) {},
                       validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Enter your Email';
-                        }else if (!EmailValidator.validate(value)) {
-                          return 'Enter valid email';
-                        }
-                        return null;
+                            if (value!.isEmpty) {
+                              return 'Enter your Email';
+                            }
+                            if (!EmailValidator.validate(value)) {
+                              return 'Enter Valid Email';
+                            } else if (EmailValidator.validate(value)) {
+                              String emailExt = value.split('.').last;
+
+                              if (!['com', 'in', 'us'].contains(emailExt)) {
+                                return 'Enter valid email';
+                              }
+                            }
+                            return null;
                       },
                       onFieldSubmitted: (value) {
                       },
@@ -112,11 +119,14 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
                   SizedBox(height: displayHeight(context) * 0.035),
 
-                  isBtnClick! ? Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                            circularProgressColor),
-                      ))
+                  isBtnClick! ? SizedBox(
+                    height : displayHeight(context) * 0.065,
+                    child: Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              blueColor),
+                        )),
+                  )
                       :   CommonButtons.getActionButton(
                       title: 'Send Reset Password Link',
                       context: context,

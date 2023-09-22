@@ -346,12 +346,19 @@ class _SignInScreenState extends State<SignInScreen> {
                             onTap: () {},
                             onChanged: (value) {},
                             validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Enter Your Email';
-                              } else if (!EmailValidator.validate(value)) {
-                                return 'Enter Valid Email';
+                            if (value!.isEmpty) {
+                              return 'Enter your Email';
+                            }
+                            if (!EmailValidator.validate(value)) {
+                              return 'Enter Valid Email';
+                            } else if (EmailValidator.validate(value)) {
+                              String emailExt = value.split('.').last;
+
+                              if (!['com', 'in', 'us'].contains(emailExt)) {
+                                return 'Enter valid email';
                               }
-                              return null;
+                            }
+                            return null;
                             },
                             onFieldSubmitted: (value) {
                             },

@@ -200,50 +200,50 @@ Widget vesselSingleViewRichText(
   return Row(
     mainAxisAlignment: MainAxisAlignment.start,
     children: [
-      Flexible(
-        child: Column(
-          children: [
+      // Flexible(
+      //   child: Column(
+      //     children: [
 
-            Text(
-              '${capacity!}CC',
-              textAlign: TextAlign.start,
-              style: TextStyle(
-                fontSize: displayWidth(context!) * 0.038,
-                color: color,
-                fontFamily: outfit,
-                fontWeight: FontWeight.w600,
-              ),
-              overflow: TextOverflow.ellipsis,
-              softWrap: true,
-              maxLines: 1,
-            ),
+      //       Text(
+      //         '${capacity!}CC',
+      //         textAlign: TextAlign.start,
+      //         style: TextStyle(
+      //           fontSize: displayWidth(context!) * 0.038,
+      //           color: color,
+      //           fontFamily: outfit,
+      //           fontWeight: FontWeight.w600,
+      //         ),
+      //         overflow: TextOverflow.ellipsis,
+      //         softWrap: true,
+      //         maxLines: 1,
+      //       ),
 
-            Text(
-              'Capacity',
-              textAlign: TextAlign.start,
-              style: TextStyle(
-                fontSize: displayWidth(context) * 0.03,
-                color: Colors.black87,
-                fontFamily: poppins,
-                fontWeight: FontWeight.w500,
-              ),
-              overflow: TextOverflow.ellipsis,
-              softWrap: true,
-              maxLines: 1,
-            ),
-          ],
-        ),
-      ),
+      //       Text(
+      //         'Capacity',
+      //         textAlign: TextAlign.start,
+      //         style: TextStyle(
+      //           fontSize: displayWidth(context) * 0.03,
+      //           color: Colors.black87,
+      //           fontFamily: poppins,
+      //           fontWeight: FontWeight.w500,
+      //         ),
+      //         overflow: TextOverflow.ellipsis,
+      //         softWrap: true,
+      //         maxLines: 1,
+      //       ),
+      //     ],
+      //   ),
+      // ),
+      // SizedBox(
+      //   width: displayWidth(context) * 0.02,
+      // ),
+      // Container(
+      //   height: displayHeight(context!) * 0.03,
+      //   color: Colors.grey,
+      //   width: displayWidth(context) * 0.0045,
+      // ),
       SizedBox(
-        width: displayWidth(context) * 0.02,
-      ),
-      Container(
-        height: displayHeight(context) * 0.03,
-        color: Colors.grey,
-        width: displayWidth(context) * 0.0045,
-      ),
-      SizedBox(
-        width: displayWidth(context) * 0.025,
+        width: displayWidth(context!) * 0.025,
       ),
       Flexible(
         child: Column(
