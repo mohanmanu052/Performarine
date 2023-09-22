@@ -1117,14 +1117,14 @@ if(!isSyncSignoutClicked){
 
         Directory tripDir = await getApplicationDocumentsDirectory();
 
+        var sensorInfo = await Utils().getSensorObjectWithAvailability();
+
         if (tripSyncOrNot == 0) {
           var queryParameters;
           queryParameters = {
             "id": getTrip[i].id,
             "load": getTrip[i].currentLoad,
-            "sensorInfo": [
-              {"make": "qualicom", "name": "gps"}
-            ],
+            "sensorInfo": sensorInfo['sensorInfo'],
             "deviceInfo": {
               "deviceId": Platform.isAndroid ? androidDeviceInfo!.id : '',
               "model": Platform.isAndroid
