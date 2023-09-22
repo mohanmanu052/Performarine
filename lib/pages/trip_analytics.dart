@@ -1800,14 +1800,14 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     Utils.customPrint('START POSITION 0 ${startPosition}');
 
     Directory tripDir = await getApplicationDocumentsDirectory();
+    var sensorInfo = await Utils().getSensorObjectWithAvailability();
+
 
     var queryParameters;
     queryParameters = {
       "id": tripData.id,
       "load": tripData.currentLoad,
-      "sensorInfo": [
-        {"make": "qualicom", "name": "gps"}
-      ],
+      "sensorInfo": sensorInfo['sensorInfo'],
       "deviceInfo": {
         "deviceId": Platform.isAndroid ? androidDeviceInfo!.id : '',
         "model": Platform.isAndroid

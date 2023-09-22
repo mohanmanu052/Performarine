@@ -5,6 +5,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_sensors/flutter_sensors.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
@@ -656,13 +657,16 @@ class _TripWidgetState extends State<TripWidget> {
 
     Directory tripDir = await getApplicationDocumentsDirectory();
 
+    var sensorInfo = await Utils().getSensorObjectWithAvailability();
+
+    Utils.customPrint("SENSOR INFO ${sensorInfo['sensorInfo']}");
+
     var queryParameters;
     queryParameters = {
       "id": tripData.id,
       "load": tripData.currentLoad,
-      "sensorInfo": [
-        {"make": "qualicom", "name": "gps"}
-      ],
+      "sensorInfo": sensorInfo['sensorInfo'],
+      //"sensorInfo": {"make": "qualicom", "name": "gps"},
       "deviceInfo": {
         "deviceId": Platform.isAndroid ? androidDeviceInfo!.id : '',
         "model": Platform.isAndroid
