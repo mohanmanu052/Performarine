@@ -17,6 +17,7 @@ import '../common_widgets/widgets/common_widgets.dart';
 import 'dart:io';
 
 import '../common_widgets/widgets/log_level.dart';
+import 'bottom_navigation.dart';
 class FeedbackReport extends StatefulWidget {
   final String? imagePath;
   File? file;
@@ -113,6 +114,23 @@ class _FeedbackReportState extends State<FeedbackReport> {
             textColor: Colors.black,
             textSize: displayWidth(context) * 0.05,
             textAlign: TextAlign.start),
+        actions: [
+          Container(
+            margin: EdgeInsets.only(right: 8),
+            child: IconButton(
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => BottomNavigation()),
+                    ModalRoute.withName(""));
+              },
+              icon: Image.asset('assets/icons/performarine_appbar_icon.png'),
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
+            ),
+          )
+        ],
       ),
       body: Form(
         child: Stack(
@@ -227,7 +245,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
                   Container(
                     margin: EdgeInsets.only(top: 15.0, bottom: 10),
                     child: CommonButtons.getDottedButton(
-                        'Upload Images', context, () {
+                        'Upload files', context, () {
                       unFocusKeyBoard(context);
                       uploadImageFunction();
                       Utils.customPrint(

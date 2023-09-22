@@ -48,6 +48,7 @@ bool isAppKilledFromBGMain = true;
 Timer? timer;
 Timer? tripDurationTimer;
 Directory? ourDirectory;
+bool isComingFromUnilinkMain = false;
 
 FlutterBluePlus? flutterBluePlus;
 
@@ -397,6 +398,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               {
                 if(isUserLoggedIn)
                   {
+                    isComingFromUnilinkMain = false;
                     sharedPreferences!.setBool('reset_dialog_opened', false);
                     Get.to(BottomNavigation(isComingFromReset: true,token: uri.queryParameters['verify'].toString(),),arguments: arguments);
                     CustomLogger().logWithFile(Level.info, "User navigating to home page -> $page ");
@@ -404,7 +406,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               }
             else
               {
-                Get.to(ResetPassword(token: uri.queryParameters['verify'].toString(),));
+                isComingFromUnilinkMain = true;
+                Get.to(ResetPassword(token: uri.queryParameters['verify'].toString(),isCalledFrom: "Main",));
                 CustomLogger().logWithFile(Level.info, "User navigating to reset password screen -> $page ");
               }
 

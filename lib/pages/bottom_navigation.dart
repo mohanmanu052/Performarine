@@ -113,11 +113,11 @@ ScreenshotController screen_shot_controller=ScreenshotController();
           Future.delayed(Duration(microseconds: 500), (){
 
             Utils.customPrint("XXXXXXXXX ${isThereCurrentDialogShowing(context)}");
-            if(isTripStarted ?? false){
-             // showResetPasswordDialogBox(context);
-            } else{
-              Get.to(ResetPassword(token: updatedToken,isCalledFrom: 'Dashboard',));
-            }
+            // if(isTripStarted ?? false){
+            //  // showResetPasswordDialogBox(context);
+            // } else{
+               Get.to(ResetPassword(token: updatedToken,isCalledFrom: 'Dashboard',));
+            // }
 
           /*  if(!isThereCurrentDialogShowing(context))
             {
@@ -173,14 +173,14 @@ ScreenshotController screen_shot_controller=ScreenshotController();
       print("RESET PASSWORD 3");
       if(widget.isComingFromReset!)
       {
-        Future.delayed(Duration(microseconds: 500), (){
+        Future.delayed(Duration(microseconds: 1000), (){
           print("RESET PASSWORD INIT ${isThereCurrentDialogShowing(context)}");
-          if(isTripStarted ?? false){
-           // showResetPasswordDialogBox(context);
-          } else {
+          // if(isTripStarted ?? false){
+          //  // showResetPasswordDialogBox(context);
+          // } else {
             Get.to(
                 ResetPassword(token: widget.token, isCalledFrom: 'Dashboard',));
-          }
+         // }
           // if(!isThereCurrentDialogShowing(context)){
           //   widget.isComingFromReset = false;
           //   print("RESET PASSWORD 5 ${widget.isComingFromReset}");
@@ -250,13 +250,13 @@ ScreenshotController screen_shot_controller=ScreenshotController();
                       if(!isComingFrom){
                         print("RESET PASSWORD LIFECYCLE");
 
-                        if(isTripStarted ?? false){
-                          print("Trip runnnig status3: $isTripStarted");
-                         //  showResetPasswordDialogBox(context);
-                        } else {
+                        // if(isTripStarted ?? false){
+                        //   print("Trip runnnig status3: $isTripStarted");
+                        //  //  showResetPasswordDialogBox(context);
+                        // } else {
                           Get.to(ResetPassword(token: widget.token,
                             isCalledFrom: 'Dashboard',));
-                        }
+                        // }
                       }
                     }
                   });
@@ -300,7 +300,11 @@ ScreenshotController screen_shot_controller=ScreenshotController();
 
     return WillPopScope(
       onWillPop: () async {
-        return Utils.onAppExitCallBack(context, scaffoldKey);
+        if(widget.isComingFromReset ?? false){
+          return false;
+        } else{
+          return Utils.onAppExitCallBack(context, scaffoldKey);
+        }
       },
       child:
       
