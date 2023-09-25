@@ -117,7 +117,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           if (value!.isEmpty) {
                             return 'Enter Email';
                           }else if (!EmailValidator.validate(value)) {
-                            return 'Enter valid email';
+                            return 'Enter valid Email';
                           }
                           return null;
                         },

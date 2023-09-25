@@ -412,7 +412,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               String emailExt = value.split('.').last;
 
                               if (!['com', 'in', 'us'].contains(emailExt)) {
-                                return 'Enter valid email';
+                                return 'Enter valid Email';
                               }
                             }
                             return null;

@@ -379,8 +379,8 @@ class SensorInfo {
   });
 
   factory SensorInfo.fromJson(Map<String, dynamic> json) => SensorInfo(
-        make: sensorInfoMakeValues.map[json["make"]]!,
-        name: nameValues.map[json["name"]]!,
+        make: sensorInfoMakeValues.map[json["make"]],
+        name: nameValues.map[json["name"]],
       );
 
   Map<String, dynamic> toJson() => {

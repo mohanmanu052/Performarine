@@ -166,7 +166,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             if (value!.isEmpty) {
                               return 'Enter Email';
                             } else if (!EmailValidator.validate(value)) {
-                              return 'Enter valid email';
+                              return 'Enter valid Email';
                             }
                             return null;
                           },

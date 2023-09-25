@@ -8,8 +8,8 @@ import '../../../common_widgets/utils/colors.dart';
 class ReportsDataTable extends StatefulWidget {
     List<Map<String, dynamic>> tripList = [];
       List<Map<String, dynamic>> finalData = [];
-
-   ReportsDataTable({super.key,required this.tripList,required this.finalData});
+Function(int index)? onTapCallBack;
+   ReportsDataTable({super.key,required this.tripList,required this.finalData,this.onTapCallBack});
 
   @override
   State<ReportsDataTable> createState() => _ReportsDataTableState();
@@ -125,6 +125,9 @@ class _ReportsDataTableState extends State<ReportsDataTable> {
 
 
                                                         onTap:(){
+
+widget.onTapCallBack!(widget.tripList.indexOf(person));
+
                                                               setState(() {
       selectedRowIndex =  widget.tripList.indexOf(person);
     });
@@ -146,6 +149,8 @@ class _ReportsDataTableState extends State<ReportsDataTable> {
                           
                           ),
                                                                                   onTap:(){
+                                                                                    widget.onTapCallBack!(widget.tripList.indexOf(person));
+
                                                               setState(() {
       selectedRowIndex =  widget.tripList.indexOf(person);
     });
@@ -171,6 +176,8 @@ class _ReportsDataTableState extends State<ReportsDataTable> {
                           
                           
                                                                                  onTap:(){
+                                                                                  widget.onTapCallBack!(widget.tripList.indexOf(person));
+
                                                               setState(() {
       selectedRowIndex =  widget.tripList.indexOf(person);
     });
@@ -194,6 +201,8 @@ class _ReportsDataTableState extends State<ReportsDataTable> {
                           )),
 
                                                                                   onTap:(){
+                                                                                    widget.onTapCallBack!(widget.tripList.indexOf(person));
+
                                                               setState(() {
       selectedRowIndex =  widget.tripList.indexOf(person);
     });
@@ -217,6 +226,8 @@ class _ReportsDataTableState extends State<ReportsDataTable> {
                           )),
                           
                                                                                   onTap:(){
+                                                                                    widget.onTapCallBack!(widget.tripList.indexOf(person));
+
                                                               setState(() {
       selectedRowIndex =  widget.tripList.indexOf(person);
     });
