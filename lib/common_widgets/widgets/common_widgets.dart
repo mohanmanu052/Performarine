@@ -1756,7 +1756,7 @@ Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
                     children: [
                       commonText(
                           context: context,
-                          text: '803 Ltr',
+                          text: '803 $liters',
                           fontWeight: FontWeight.w600,
                           textColor: Colors.black,
                           textSize: displayWidth(context) * 0.044,

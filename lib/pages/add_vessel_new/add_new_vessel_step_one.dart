@@ -437,7 +437,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                     child: CommonTextField(
                         controller: fuelCapacityController,
                         focusNode: fuelCapacityFocusNode,
-                        labelText: 'Fuel ($litre)',
+                        labelText: 'Fuel($liters)',
                         hintText: '',
                         suffixText: null,
                         textInputAction: selectedEngineType == 'Hybrid'

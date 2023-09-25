@@ -125,6 +125,16 @@ String? imageUrl;
 List<Vessels>? vesselList;
   final DatabaseService _databaseService = DatabaseService();
 
+  ScrollController _tripDurationSrollController = ScrollController();
+    ScrollController _avgSpeedSrollController = ScrollController();
+  ScrollController _fuelUsageSrollController = ScrollController();
+    ScrollController _powerUsageSrollController = ScrollController();
+ScrollController _mainScrollController=ScrollController();
+
+
+
+TooltipBehavior? tooltipBehaviorDurationGraph;
+
   //Convertion of date time into month/day/year format
   String convertIntoMonthDayYear(DateTime date) {
     String dateString = DateFormat('yyyy-MM-dd').format(date);
@@ -479,6 +489,10 @@ childrenValue!.clear();
       String? vesselID,
       List<String>? selectedTripListID}) async {
     try {
+                                              isEndDateSected=true;
+setState(() {
+  
+});
       await commonProvider
           .getReportData(
               startDate ?? "",
@@ -847,6 +861,7 @@ childrenValue!.clear();
       
       
        SingleChildScrollView(
+        controller: _mainScrollController,
         child: Container(
           margin: EdgeInsets.symmetric(horizontal: 17, vertical: 17),
           child: Column(
@@ -1386,7 +1401,6 @@ childrenValue!.clear();
                                         avgSpeed1 = null;
                                         fuelUsage = null;
                                         powerUsage = null;
-                                        isEndDateSected=true;
                                         finalData.clear();
                                         durationGraphData.clear();
 
@@ -1758,7 +1772,7 @@ childrenValue!.clear();
                                   ),
                            // table(context)!,
 
-ReportsDataTable(tripList: tripList, finalData: finalData),
+ReportsDataTable(tripList: tripList, finalData: finalData,onTapCallBack: scorllToParticularPostion),
 
                             SizedBox(
                               height: displayWidth(context) * 0.03,
@@ -1885,7 +1899,7 @@ ReportsDataTable(tripList: tripList, finalData: finalData),
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                margin: EdgeInsets.only( left:orentation==Orientation.portrait? 10:20),
+                margin: EdgeInsets.only( left:orentation==Orientation.portrait? 10:0),
                 width: displayWidth(context)/2,
                 child: Text(
                                     "$selectedVesselName",
@@ -2031,11 +2045,12 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
 
   //Trip duration graph
   Widget tripDurationGraph(BuildContext context, double graph_height) {
-    TooltipBehavior tooltipBehavior = TooltipBehavior(
+     tooltipBehaviorDurationGraph = TooltipBehavior(
       enable: true,
+      shouldAlwaysShow: false,
       color: commonBackgroundColor,
       borderWidth: 1,
-      activationMode: ActivationMode.singleTap,
+     // activationMode: ActivationMode.singleTap,
       builder: (dynamic data, dynamic point, dynamic series, dynamic dataIndex,
           dynamic pointIndex) {
         CartesianChartPoint currentPoint = point;
@@ -2126,27 +2141,36 @@ Utils.showSnackBar(context,
     
      SingleChildScrollView(
       scrollDirection: Axis.horizontal,
+      controller: _tripDurationSrollController,
       child: SizedBox(
         width: durationColumnSeriesData.length > 3
             ? (1.5 * 100 * durationColumnSeriesData.length)
-            : displayWidth(context),
+             : displayWidth(context),
         height: graph_height,
-        child: SfCartesianChart(
-
-          tooltipBehavior: tooltipBehavior,
+        child: 
+        
+        SfCartesianChart(
+          
+          tooltipBehavior: tooltipBehaviorDurationGraph,
           enableSideBySideSeriesPlacement: true,
           primaryXAxis: CategoryAxis(
+              labelPlacement: LabelPlacement.betweenTicks, // Or LabelPlacement.onTicks
+
+
               autoScrollingMode: AutoScrollingMode.end,
-              labelAlignment: LabelAlignment.center,
+              labelAlignment: LabelAlignment.start,
               labelStyle: TextStyle(
                 color: Colors.black,
+                
                 fontSize: displayWidth(context) * 0.034,
                 fontWeight: FontWeight.w500,
                 fontFamily: poppins,
               )),
           primaryYAxis: NumericAxis(
+            
               axisLine: AxisLine(
                 width: 0,
+                
               ),
               title: AxisTitle(
                   text: 'Minutes',
@@ -2185,7 +2209,7 @@ Utils.showSnackBar(context,
           series: 
           
           durationColumnSeriesData,
-        ),
+         )
       ),
     );
   }
@@ -2282,6 +2306,7 @@ Utils.showSnackBar(context,
     );
 
     return SingleChildScrollView(
+      controller: _avgSpeedSrollController,
       scrollDirection: Axis.horizontal,
       child: SizedBox(
         width: avgSpeedColumnSeriesData.length > 3
@@ -2433,6 +2458,7 @@ Utils.showSnackBar(context,
     );
 
     return SingleChildScrollView(
+      controller: _fuelUsageSrollController,
       scrollDirection: Axis.horizontal,
       child: SizedBox(
         width: fuelUsageColumnSeriesData.length > 3
@@ -2584,6 +2610,7 @@ Utils.showSnackBar(context,
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
+      controller: _powerUsageSrollController,
       child: SizedBox(
         width: powerUsageColumnSeriesData.length > 3
             ? (1.5 * 100 * powerUsageColumnSeriesData.length)
@@ -3200,6 +3227,55 @@ else{
               valueColor: AlwaysStoppedAnimation<Color>(blueColor),
             ),
           );
+  }
+
+
+
+  void scorllToParticularPostion(int index){
+            final scrollPosition = index* 150.0;
+            
+            _mainScrollController.animateTo(
+  0.0, // Scroll to the top
+  duration: Duration(milliseconds: 300), // Adjust the duration as needed
+  curve: Curves.easeInOut, // Specify the easing curve
+);
+
+             // Calculate the scroll position based on your data
+if(selectedButton=="trip duration"){
+        _tripDurationSrollController.animateTo(
+          scrollPosition,
+          duration: Duration(milliseconds: 500), // Adjust the duration as needed
+          curve: Curves.easeInOut,
+        );
+
+}else if(selectedButton=='avg speed'){
+          _avgSpeedSrollController.animateTo(
+          scrollPosition,
+          duration: Duration(milliseconds: 500), // Adjust the duration as needed
+          curve: Curves.easeInOut,
+        );
+
+}else if(selectedButton=='fuel usage'){
+            _fuelUsageSrollController.animateTo(
+          scrollPosition,
+          duration: Duration(milliseconds: 500), // Adjust the duration as needed
+          curve: Curves.easeInOut,
+        );
+
+
+}else{
+              _powerUsageSrollController.animateTo(
+          scrollPosition,
+          duration: Duration(milliseconds: 500), // Adjust the duration as needed
+          curve: Curves.easeInOut,
+        );
+
+}
+
+
+
+
+
   }
 }
 
