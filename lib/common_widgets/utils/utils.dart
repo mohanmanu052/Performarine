@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
@@ -24,6 +23,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_sensors/flutter_sensors.dart' as s;
 
 import '../widgets/location_permission_dialog.dart';
 import '../widgets/log_level.dart';
@@ -64,9 +64,9 @@ class Utils {
   //To display snackbar
   static void showSnackBar(BuildContext context,
       {GlobalKey<ScaffoldState>? scaffoldKey,
-      String? message,
-      int duration = 3,
-      bool status = true}) {
+        String? message,
+        int duration = 3,
+        bool status = true}) {
     var brightness = SchedulerBinding.instance.window.platformBrightness;
     bool isDarkMode = brightness == Brightness.dark;
 
@@ -85,13 +85,13 @@ class Utils {
           ),
           Flexible(
               child: Text(
-            message!,
-            softWrap: true,
-            overflow: TextOverflow.clip,
-            style: TextStyle(
-              color: isDarkMode ? Colors.white : Colors.white,
-            ),
-          )),
+                message!,
+                softWrap: true,
+                overflow: TextOverflow.clip,
+                style: TextStyle(
+                  color: isDarkMode ? Colors.white : Colors.white,
+                ),
+              )),
         ],
       ),
       duration: Duration(seconds: duration),
@@ -102,9 +102,9 @@ class Utils {
 
   // Trigger when user tap on back button of device
   static Future<bool> onAppExitCallBack(
-    BuildContext context,
-    GlobalKey<ScaffoldState> scaffoldKey,
-  ) {
+      BuildContext context,
+      GlobalKey<ScaffoldState> scaffoldKey,
+      ) {
     DateTime now = DateTime.now();
     if (currentBackPressedTime == null ||
         now.difference(currentBackPressedTime!) > Duration(seconds: 2)) {
@@ -134,19 +134,21 @@ class Utils {
         bool isGranted = await Permission.locationWhenInUse.isGranted;
         Utils.customPrint("LOCATION PERMISSION $isGranted");
         Utils.customPrint('LOCCC: ${await Permission.location.isGranted}');
-        Utils.customPrint('LOCCC: ${await Permission.locationWhenInUse.isGranted}');
-        Utils.customPrint('LOCCC: ${await Permission.locationAlways.isGranted}');
+        Utils.customPrint(
+            'LOCCC: ${await Permission.locationWhenInUse.isGranted}');
+        Utils.customPrint(
+            'LOCCC: ${await Permission.locationAlways.isGranted}');
         if (!isGranted) {
           Utils.showSnackBar(context,
               scaffoldKey: scaffoldKey,
               message:
-                  'Location permissions are denied without permissions we are unable to start the trip');
+              'Location permissions are denied without permissions we are unable to start the trip');
           Future.delayed(Duration(seconds: 2), () async {
             //await openAppSettings();
           });
         }
       } else if (status == PermissionStatus.permanentlyDenied) {
-        if(Platform.isIOS){
+        if (Platform.isIOS) {
           if (!await geo.Geolocator.isLocationServiceEnabled()) {
             showDialog(
                 context: context,
@@ -165,8 +167,7 @@ class Utils {
                   );
                 });
             return;
-          }
-          else{
+          } else {
             Utils.showSnackBar(context,
                 scaffoldKey: scaffoldKey,
                 message:
@@ -175,7 +176,7 @@ class Utils {
               await openAppSettings();
             });
           }
-        }else{
+        } else {
           Utils.showSnackBar(context,
               scaffoldKey: scaffoldKey,
               message:
@@ -183,9 +184,7 @@ class Utils {
           Future.delayed(Duration(seconds: 2), () async {
             await openAppSettings();
           });
-
         }
-
       }
     }
 
@@ -222,7 +221,6 @@ class Utils {
   //To get storage permission of user
   static Future<bool> getStoragePermission(BuildContext context,
       [Permission permission = Permission.storage]) async {
-
     bool isPermissionGranted = false;
 
     if (Platform.isAndroid) {
@@ -260,10 +258,10 @@ class Utils {
 
     return isPermissionGranted;
   }
+
   // Check user is connected to internet or not
   Future<bool> check(GlobalKey<ScaffoldState> scaffoldKey,
       {bool userConfig = false, VoidCallback? onRetryTap}) async {
-
     try {
       final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
@@ -297,7 +295,6 @@ class Utils {
   //To get user notification permission
   static Future<bool> getNotificationPermission(BuildContext context,
       [Permission permission = Permission.notification]) async {
-
     bool isPermissionGranted = false;
     try {
       if (await permission.request().isGranted) {
@@ -357,11 +354,9 @@ class Utils {
                                 fit: BoxFit.contain,
                               ),
                             )),
-
                         SizedBox(
                           height: displayHeight(context) * 0.02,
                         ),
-
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0, right: 8),
                           child: commonText(
@@ -370,7 +365,8 @@ class Utils {
                               fontWeight: FontWeight.w400,
                               textColor: Colors.black,
                               textSize: displayWidth(context) * 0.042,
-                              textAlign: TextAlign.center, fontFamily: outfit),
+                              textAlign: TextAlign.center,
+                              fontFamily: outfit),
                         ),
                         SizedBox(
                           height: displayHeight(context) * 0.01,
@@ -378,17 +374,14 @@ class Utils {
                         Column(
                           children: [
                             Container(
-                              margin: EdgeInsets.only(
-                                  left: 10,
-                                  right: 10
-                              ),
+                              margin: EdgeInsets.only(left: 10, right: 10),
                               child: Center(
                                 child: CommonButtons.getAcceptButton(
                                     'End Trip',
                                     context,
                                     endTripBtnColor,
                                     endTripBtnClick,
-                                    displayWidth(context) ,
+                                    displayWidth(context),
                                     displayHeight(context) * 0.05,
                                     primaryColor,
                                     Colors.white,
@@ -403,7 +396,10 @@ class Utils {
                             ),
                             Center(
                               child: CommonButtons.getAcceptButton(
-                                  'Cancel', context, Colors.transparent, onCancelClick,
+                                  'Cancel',
+                                  context,
+                                  Colors.transparent,
+                                  onCancelClick,
                                   displayWidth(context) * 0.65,
                                   displayHeight(context) * 0.054,
                                   primaryColor,
@@ -437,11 +433,13 @@ class Utils {
     var now = tz.TZDateTime.now(canada).toUtc();
     var localNow = DateTime.now();
     Utils.customPrint(DateFormat('yyyy-MM-dd hh:mm a').format(now));
-    CustomLogger().logWithFile(Level.info, "${DateFormat('yyyy-MM-dd hh:mm a').format(now)} -> Utils");
+    CustomLogger().logWithFile(
+        Level.info, "${DateFormat('yyyy-MM-dd hh:mm a').format(now)} -> Utils");
 
     /// TZ
     Utils.customPrint(DateFormat('yyyy-MM-dd hh:mm a').format(localNow));
-    CustomLogger().logWithFile(Level.info, "${DateFormat('yyyy-MM-dd hh:mm a').format(localNow)} -> Utils");
+    CustomLogger().logWithFile(Level.info,
+        "${DateFormat('yyyy-MM-dd hh:mm a').format(localNow)} -> Utils");
 
     /// LOCAL
     return now.toString();
@@ -456,9 +454,12 @@ class Utils {
     return "${twoDigit(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
   }
 
-  static int convertDurationToSeconds(String duration){
+  static int convertDurationToSeconds(String duration) {
     List<String> splitted = duration.split(':');
-    Duration convertedDuration = Duration(hours: int.parse(splitted[0].isEmpty ? '0' : splitted[0]), minutes: int.parse(splitted[1].isEmpty ? '0' : splitted[1]), seconds: int.parse(splitted[2].isEmpty ? '0': splitted[2]));
+    Duration convertedDuration = Duration(
+        hours: int.parse(splitted[0].isEmpty ? '0' : splitted[0]),
+        minutes: int.parse(splitted[1].isEmpty ? '0' : splitted[1]),
+        seconds: int.parse(splitted[2].isEmpty ? '0' : splitted[2]));
     return convertedDuration.inSeconds;
   }
 
@@ -470,14 +471,14 @@ class Utils {
 
   // Custom print through out the project
   static customPrint(String text) {
-    if(!kReleaseMode)
-      {
-        debugPrint('$text');
-      }
+    if (!kReleaseMode) {
+      debugPrint('$text');
+    }
   }
 
   //End trip dialog for user confirmation to end trip
-  showDeleteTripDialog(BuildContext context, {VoidCallback? endTripBtnClick, VoidCallback? onCancelClick}) {
+  showDeleteTripDialog(BuildContext context,
+      {VoidCallback? endTripBtnClick, VoidCallback? onCancelClick}) {
     return showDialog(
         barrierDismissible: false,
         context: context,
@@ -488,7 +489,8 @@ class Utils {
                 return Container(
                   height: displayHeight(context) * 0.42,
                   width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+                  decoration:
+                  BoxDecoration(borderRadius: BorderRadius.circular(20)),
                   child: Padding(
                     padding: const EdgeInsets.only(
                         left: 8.0, right: 8.0, top: 15, bottom: 15),
@@ -517,7 +519,8 @@ class Utils {
                           padding: const EdgeInsets.only(left: 8.0, right: 8),
                           child: commonText(
                               context: context,
-                              text: 'Your trip is less than 10s going to be archive. Do you want to End the trip ?',
+                              text:
+                              'Your trip is less than 10s going to be archive. Do you want to End the trip ?',
                               fontWeight: FontWeight.w500,
                               textColor: Colors.black87,
                               textSize: displayWidth(context) * 0.042,
@@ -579,33 +582,80 @@ class Utils {
         });
   }
 
-  checkIfTripDurationIsGraterThan10Seconds(List<String> splittedDuration)
-  {
+  checkIfTripDurationIsGraterThan10Seconds(List<String> splittedDuration) {
     int hour = int.parse(splittedDuration[0]);
     int min = int.parse(splittedDuration[1]);
     int sec = int.parse(splittedDuration[2]);
 
-    if(hour > 0)
-      {
+    if (hour > 0) {
+      return true;
+    } else {
+      if (min > 0) {
         return true;
+      } else {
+        if (sec > 10) {
+          return true;
+        } else {
+          return false;
+        }
       }
-    else
-      {
-        if(min > 0)
-          {
-            return true;
-          }
-        else
-          {
-            if(sec > 10)
-              {
-                return true;
-              }
-            else
-              {
-                return false;
-              }
-          }
-      }
+    }
+  }
+
+  Future<Map<String, dynamic>> getSensorObjectWithAvailability() async {
+    bool gyroscopeAvailable =
+    await s.SensorManager().isSensorAvailable(s.Sensors.GYROSCOPE);
+    bool accelerometerAvailable =
+    await s.SensorManager().isSensorAvailable(s.Sensors.ACCELEROMETER);
+    bool magnetometerAvailable =
+    await s.SensorManager().isSensorAvailable(s.Sensors.MAGNETIC_FIELD);
+    bool userAccelerometerAvailable = await s.SensorManager()
+        .isSensorAvailable(s.Sensors.LINEAR_ACCELERATION);
+
+    Utils.customPrint("ACC SESNSOR AVA $accelerometerAvailable");
+    Utils.customPrint("GYRO SESNSOR AVA $gyroscopeAvailable");
+    Utils.customPrint("USERACCC SESNSOR AVA $userAccelerometerAvailable");
+    Utils.customPrint("MAGNO SESNSOR AVA $magnetometerAvailable");
+
+    Map<String, dynamic> sensorData = {};
+
+    if (gyroscopeAvailable) {
+      sensorData['GYRO'] = [
+        {"name": "X", "IndexPosition": 0, "units": "rad/s"},
+        {"name": "Y", "IndexPosition": 1, "units": "rad/s"},
+        {"name": "Z", "IndexPosition": 2, "units": "rad/s"}
+      ];
+    }
+
+    if (accelerometerAvailable) {
+      sensorData['ACC'] = [
+        {"name": "X", "IndexPosition": 0, "units": "m/s^2"},
+        {"name": "Y", "IndexPosition": 1, "units": "m/s^2"},
+        {"name": "Z", "IndexPosition": 2, "units": "m/s^2"}
+      ];
+    }
+
+    if (magnetometerAvailable) {
+      sensorData['MAG'] = [
+        {"name": "X", "IndexPosition": 0, "units": "μT"},
+        {"name": "Y", "IndexPosition": 1, "units": "μT"},
+        {"name": "Z", "IndexPosition": 2, "units": "μT"}
+      ];
+    }
+
+    if (userAccelerometerAvailable) {
+      sensorData['UACC'] = [
+        {"name": "X", "IndxPosition": 0, "units": "m/s^2"},
+        {"name": "Y", "IndxPosition": 1, "units": "m/s^2"},
+        {"name": "Z", "IndxPosition": 2, "units": "m/s^2"}
+      ];
+    }
+
+    Map<String, dynamic> sensorInfo = {
+      "sensorInfo": [sensorData]
+    };
+
+    print('All SENSOR INFO: $sensorInfo');
+    return sensorInfo;
   }
 }

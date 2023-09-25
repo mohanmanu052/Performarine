@@ -60,6 +60,7 @@ class DashedRect extends StatelessWidget {
                   ? primaryTextColor!
                   : blueColor,
                   fontWeight: FontWeight.w500,
+                  fontFamily: 'Inter'
                 ),
               ],
             ),

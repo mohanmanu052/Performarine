@@ -219,7 +219,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                               Navigator.pushAndRemoveUntil(
                                                   context,
                                                   MaterialPageRoute(
-                                                    builder: (context) => SignInScreen(),
+                                                    builder: (context) => SignInScreen(calledFrom: 'SignUp'),
                                                   ),
                                                   ModalRoute.withName(""));
                                             });
@@ -258,7 +258,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   child: Center(
                                   child: CircularProgressIndicator(
                                     valueColor: AlwaysStoppedAnimation<Color>(
-                                        circularProgressColor),
+                                        blueColor),
                                   )),
                                 )
                                 :
@@ -444,17 +444,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           onChanged: (String value) {},
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return 'Enter Mobile Number';
+                              return 'Enter Phone Number';
                             }
                             if (value.length > 10 || value.length < 10) {
-                              return 'Enter Valid Mobile Number';
+                              return 'Enter Valid Phone Number';
                             }
 
                             return null;
                           },
                           onSaved: (String value) {
                             Utils.customPrint(value);
-                            CustomLogger().logWithFile(Level.info, "Mobile Number $value -> $page");
+                            CustomLogger().logWithFile(Level.info, "Phone Number $value -> $page");
                           }),
                     ),
                     SizedBox(height: displayHeight(context) * 0.01),
@@ -596,7 +596,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ? Center(
                         child: CircularProgressIndicator(
                           valueColor: AlwaysStoppedAnimation<Color>(
-                              circularProgressColor),
+                              blueColor),
                         ))
                         : CommonButtons.getActionButton(
                         title: 'Register',
@@ -652,7 +652,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                             Navigator.pushAndRemoveUntil(
                                                 context,
                                                 MaterialPageRoute(
-                                                  builder: (context) => SignInScreen(),
+                                                  builder: (context) => SignInScreen(calledFrom: 'SignUp'),
                                                 ),
                                                 ModalRoute.withName(""));
                                           });
@@ -691,7 +691,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => SignInScreen(),
+                                            builder: (context) => SignInScreen(calledFrom: 'SignUp'),
                                           ),);
                                     },
                                   text: ' Sign In',

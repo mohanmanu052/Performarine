@@ -399,6 +399,7 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
             };
             if (isUserLoggedIn != null) {
               if (isUserLoggedIn) {
+                isComingFromUnilinkMain = false;
                 sharedPreferences!.setBool('reset_dialog_opened', false);
                 Get.offAll(
                     BottomNavigation(
@@ -409,6 +410,7 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
               }
             } else {
               Future.delayed(Duration(seconds: 2), () {
+                isComingFromUnilinkMain = true;
                 Get.offAll(ResetPassword(
                     token: initialLink!.queryParameters['verify'].toString(),
                     isCalledFrom: "Main"));

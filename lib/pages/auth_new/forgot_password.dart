@@ -164,7 +164,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              SignInScreen(),
+                                              SignInScreen(calledFrom: 'forgotPassword',),
                                         ),
                                         ModalRoute.withName(""));
                                   });
@@ -239,7 +239,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                     Navigator.pushAndRemoveUntil(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => SignInScreen(),
+                                          builder: (context) => SignInScreen(calledFrom: 'forgotPassword',),
                                         ),
                                         ModalRoute.withName(""));
                                   },
