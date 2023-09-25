@@ -334,7 +334,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                     child: CommonTextField(
                         controller: sizeController,
                         focusNode: sizeFocusNode,
-                        labelText: 'Size',
+                        labelText: 'Size ($hp)',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,

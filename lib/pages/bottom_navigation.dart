@@ -300,7 +300,7 @@ ScreenshotController screen_shot_controller=ScreenshotController();
 
     return WillPopScope(
       onWillPop: () async {
-        if(widget.isComingFromReset ?? false){
+        if(isComingFromUnilinkMain || widget.isComingFromReset!){
           return false;
         } else{
           return Utils.onAppExitCallBack(context, scaffoldKey);

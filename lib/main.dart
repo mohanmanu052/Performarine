@@ -398,7 +398,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               {
                 if(isUserLoggedIn)
                   {
-                    isComingFromUnilinkMain = false;
+                    isComingFromUnilinkMain = true;
                     sharedPreferences!.setBool('reset_dialog_opened', false);
                     Get.to(BottomNavigation(isComingFromReset: true,token: uri.queryParameters['verify'].toString(),),arguments: arguments);
                     CustomLogger().logWithFile(Level.info, "User navigating to home page -> $page ");
