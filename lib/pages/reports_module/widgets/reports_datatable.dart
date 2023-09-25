@@ -5,10 +5,18 @@ import 'package:performarine/common_widgets/utils/constants.dart';
 
 import '../../../common_widgets/utils/colors.dart';
 
-class ReportsDataTable extends StatelessWidget {
+class ReportsDataTable extends StatefulWidget {
     List<Map<String, dynamic>> tripList = [];
       List<Map<String, dynamic>> finalData = [];
 
+   ReportsDataTable({super.key,required this.tripList,required this.finalData});
+
+  @override
+  State<ReportsDataTable> createState() => _ReportsDataTableState();
+}
+
+class _ReportsDataTableState extends State<ReportsDataTable> {
+  int selectedRowIndex = -1;
   dynamic dateWithZeros(String timesString) {
     String dateString = timesString;
     List<String> dateParts = dateString.split('-'); // ['3', '3', '2023']
@@ -19,9 +27,6 @@ class ReportsDataTable extends StatelessWidget {
     return formattedDate;
   }
 
-
-   ReportsDataTable({super.key,required this.tripList,required this.finalData});
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -29,6 +34,7 @@ class ReportsDataTable extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.all(12.0),
         child: DataTable(
+        
           columnSpacing: displayWidth(context) * 0.07,
           dividerThickness: 1,
           columns: [
@@ -77,8 +83,29 @@ class ReportsDataTable extends StatelessWidget {
             )),
           ],
           rows: [
-            ...tripList.map((person) => DataRow(cells: [
+            ...widget.tripList.map((person) =>
+            
+            
+            
+             DataRow(
+              
+              
+//                 onSelectChanged: (isSelected) {
+//     setState(() {
+//       selectedRowIndex = isSelected??false ? widget.tripList.indexOf(person) : -1;
+//     });
+//  },
+  color: MaterialStateProperty.all(
+    selectedRowIndex ==widget.tripList.indexOf(person)
+        ? reroprtHighlightBackgroundColor // Change the background color for the selected row
+        : null, // Use null to keep the default background color
+  ),
+
+
+              
+              cells: [
                   DataCell(
+                  
                     Align(
                         alignment: Alignment.center,
                         child: Text(dateWithZeros(person['date'],
@@ -91,7 +118,20 @@ class ReportsDataTable extends StatelessWidget {
                         ),
 
 
-                            textAlign: TextAlign.center)),
+                            textAlign: TextAlign.center),
+                            
+                            
+                            ),
+
+
+                                                        onTap:(){
+                                                              setState(() {
+      selectedRowIndex =  widget.tripList.indexOf(person);
+    });
+
+                              
+                            }
+
                   ),
                   DataCell(Align(
                       alignment: Alignment.center,
@@ -104,7 +144,18 @@ class ReportsDataTable extends StatelessWidget {
 
                       )
                           
-                          )),
+                          ),
+                                                                                  onTap:(){
+                                                              setState(() {
+      selectedRowIndex =  widget.tripList.indexOf(person);
+    });
+
+                              
+                            }
+
+                          
+                          
+                          ),
                   DataCell(Align(
                       alignment: Alignment.center,
                       child: Text('${person['avgSpeed']!}',
@@ -116,7 +167,19 @@ class ReportsDataTable extends StatelessWidget {
 
 
                           
-                          ))),
+                          )),
+                          
+                          
+                                                                                 onTap:(){
+                                                              setState(() {
+      selectedRowIndex =  widget.tripList.indexOf(person);
+    });
+
+                              
+                            }
+ 
+                          
+                          ),
                   DataCell(Align(
                       alignment: Alignment.center,
                       child: Text('${person['fuelUsage']}',
@@ -128,7 +191,19 @@ class ReportsDataTable extends StatelessWidget {
 
 
                           
-                          ))),
+                          )),
+
+                                                                                  onTap:(){
+                                                              setState(() {
+      selectedRowIndex =  widget.tripList.indexOf(person);
+    });
+
+                              
+                            }
+
+                          
+                          
+                          ),
                   DataCell(Align(
                       alignment: Alignment.center,
                       child: Text('${person['powerUsage']}',
@@ -139,9 +214,20 @@ class ReportsDataTable extends StatelessWidget {
                         ),
 
 
-                          ))),
+                          )),
+                          
+                                                                                  onTap:(){
+                                                              setState(() {
+      selectedRowIndex =  widget.tripList.indexOf(person);
+    });
+
+                              
+                            }
+
+                          
+                          ),
                 ])),
-            ...finalData.map((e) => DataRow(cells: [
+            ...widget.finalData.map((e) => DataRow(cells: [
                   DataCell(
                     Text(
                      'Average',
