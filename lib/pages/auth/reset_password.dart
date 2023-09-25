@@ -66,8 +66,9 @@ class _ResetPasswordState extends State<ResetPassword> {
             Get.offAll(SignInScreen(calledFrom:'ResetPassword'));
             return false;
           }
-        else if(widget.isCalledFrom == 'HomePage'){
-          Get.offAll(BottomNavigation());
+        else if(widget.isCalledFrom == 'Dashboard'){
+          isComingFromUnilinkMain = true;
+          Get.offAll(BottomNavigation(isComingFromReset: false,));
           return false;
         }
         else
@@ -90,6 +91,7 @@ class _ResetPasswordState extends State<ResetPassword> {
               }
               else if(widget.isCalledFrom == 'Dashboard'){
                 print("else new in reset password--");
+                isComingFromUnilinkMain = true;
                 if(sharedPreferences != null){
                   sharedPreferences!.setBool('reset_dialog_opened',true);
                 }

@@ -243,7 +243,7 @@ class _TripWidgetState extends State<TripWidget> {
 
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.only(top: 12, bottom: 12, left: paddingValue),
+                  padding: EdgeInsets.only(top: 12, bottom: 12, left: displayWidth(context) * 0.015),
                   /*decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     color: backgroundColor,
@@ -271,7 +271,7 @@ class _TripWidgetState extends State<TripWidget> {
                             child: commonText(
                               context: context,
                               text:
-                              '${DateFormat('yyyy-MM-dd hh:mm').format(DateTime.parse(widget.tripList!.createdAt!))}',
+                              '${DateFormat('yyyy-MM-dd ').add_jm().format(DateTime.parse(widget.tripList!.createdAt!))}',
                               fontWeight: FontWeight.w500,
                               textColor: Colors.black,
                               textSize: displayWidth(context) * 0.016,
@@ -282,7 +282,7 @@ class _TripWidgetState extends State<TripWidget> {
                             child: commonText(
                               context: context,
                               text:
-                              '${DateFormat('yyyy/MM/dd hh:mm').format(DateTime.parse(widget.tripList!.createdAt!))}  ${widget.tripList?.updatedAt != null ? '-${DateFormat('yyy/MM/dd hh:mm').format(DateTime.parse(widget.tripList!.updatedAt!))}' : ''}',
+                              '${DateFormat('yyyy/MM/dd ').add_jm().format(DateTime.parse(widget.tripList!.createdAt!))}  ${widget.tripList?.updatedAt != null ? '-${DateFormat('yyy/MM/dd ').add_jm().format(DateTime.parse(widget.tripList!.updatedAt!))}' : ''}',
                               fontWeight: FontWeight.w500,
                               textColor: Colors.black,
                               textSize: displayWidth(context) * 0.016,

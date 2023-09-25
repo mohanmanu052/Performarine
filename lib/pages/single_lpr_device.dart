@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:logger/logger.dart';
+import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 
 import '../common_widgets/utils/common_size_helper.dart';
@@ -125,6 +126,7 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
                   height: 25,
                   width: 25,
                   child: CircularProgressIndicator(
+                    color: blueColor,
                     strokeWidth: 3,
                   ))
               : Container(

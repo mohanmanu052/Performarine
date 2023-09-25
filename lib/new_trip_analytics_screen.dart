@@ -807,7 +807,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
 
                                      commonText(
                                        context: context,
-                                       text: 'Ltr',
+                                       text: '$liters',
                                        fontWeight: FontWeight.w400,
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.022,

@@ -399,7 +399,7 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
             };
             if (isUserLoggedIn != null) {
               if (isUserLoggedIn) {
-                isComingFromUnilinkMain = false;
+                isComingFromUnilinkMain = true;
                 sharedPreferences!.setBool('reset_dialog_opened', false);
                 Get.offAll(
                     BottomNavigation(
