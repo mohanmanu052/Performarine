@@ -1465,7 +1465,7 @@ setState(() {
                                           Utils.showSnackBar(context,
                                               scaffoldKey: scaffoldKey,
                                               message:
-                                                  'Please select the start date',
+                                                  'Please Select the Start Date',
                                               duration: 2);
                                         } else if (!isSelectedEndDay!) {
                                           setState(() {
@@ -1474,7 +1474,7 @@ setState(() {
                                           Utils.showSnackBar(context,
                                               scaffoldKey: scaffoldKey,
                                               message:
-                                                  'Please select the end date',
+                                                  'Please Select the End Date',
                                               duration: 2);
                                         }
                                       } else if (selectedCaseType == 2) {
@@ -1499,7 +1499,7 @@ setState(() {
                                             Utils.showSnackBar(context,
                                                 scaffoldKey: scaffoldKey,
                                                 message:
-                                                    'Please select the Trip Id',
+                                                    'Please Select the Trip',
                                                 duration: 2);
                                           }
                                         }
@@ -2173,7 +2173,7 @@ Utils.showSnackBar(context,
                 
               ),
               title: AxisTitle(
-                  text: 'Minutes',
+                  text: 'Time ($minutes)',
                   textStyle: TextStyle(
                     color: Colors.black,
                     fontSize: displayWidth(context) * 0.028,
@@ -2329,7 +2329,7 @@ Utils.showSnackBar(context,
               // interval: 5,
               axisLine: AxisLine(width: 2),
               title: AxisTitle(
-                  text: 'Knots',
+                  text: 'Speed ($knotReport)',
                   textStyle: TextStyle(
                     color: Colors.black,
                     fontSize: displayWidth(context) * 0.028,
@@ -2480,7 +2480,7 @@ Utils.showSnackBar(context,
               labelFormat: '{value}',
               axisLine: AxisLine(width: 2),
               title: AxisTitle(
-                  text: 'Liters',
+                  text: 'Volume ($literReport)',
                   textStyle: TextStyle(
                     color: Colors.black,
                     fontSize: displayWidth(context) * 0.028,
@@ -2630,7 +2630,7 @@ Utils.showSnackBar(context,
           primaryYAxis: NumericAxis(
               axisLine: AxisLine(width: 2),
               title: AxisTitle(
-                  text: 'Wats',
+                  text: 'Power ($watsReport)',
                   textStyle: TextStyle(
                     color: Colors.black,
                     fontSize: displayWidth(context) * 0.028,
@@ -3114,7 +3114,7 @@ else{
                     ? Container(
                       padding: EdgeInsets.all(8),
                         child: commonText(
-                            text: 'No Trips available',
+                            text: 'No Trips Available',
                             textSize: displayWidth(context) * 0.030,
                             textColor: primaryColor))
                     : IgnorePointer(

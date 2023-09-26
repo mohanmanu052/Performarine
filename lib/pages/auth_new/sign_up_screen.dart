@@ -318,7 +318,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           onChanged: (String value) {
                             setState(() {
                               selectedCountry = value;
-
+                              zipCodeController.clear();
                               Utils.customPrint('country $selectedCountry');
                               CustomLogger().logWithFile(Level.info, "country $selectedCountry -> $page");
                             });
@@ -387,7 +387,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       child: CommonTextField(
                           controller: emailController,
                           focusNode: emailFocusNode,
-                          labelText: 'Enter your Email',
+                          labelText: 'Enter Your Email',
                           hintText: '',
                           suffixText: null,
                           textInputAction: TextInputAction.next,
@@ -404,7 +404,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           onChanged: (String value) {},
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return 'Enter your Email';
+                              return 'Enter Your Email';
                             }
                             if (!EmailValidator.validate(value)) {
                               return 'Enter Valid Email';
@@ -412,7 +412,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               String emailExt = value.split('.').last;
 
                               if (!['com', 'in', 'us'].contains(emailExt)) {
-                                return 'Enter valid Email';
+                                return 'Enter Valid Email';
                               }
                             }
                             return null;
@@ -520,7 +520,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             } else if (createPasswordController.text !=
                                 confirmPasswordController.text) {
                               isConfirmPasswordValid = false;
-                              return "Passwords don\'t match";
+                              return "Passwords Don\'t Match";
                             }
 
                             isConfirmPasswordValid = true;

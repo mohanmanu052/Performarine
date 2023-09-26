@@ -17,6 +17,17 @@ const year = 'YYYY';
 const hp = 'hp';
 const pound = 'lb';
 const cubicCapacity = 'cc';
+const gallons = 'gal';
+const kg = 'kg';
+const cad = 'CAD';
+const nauticalMiles = 'Nautical Miles';
+const meters = 'meters';
+const knots = 'kt';
+const cardinal = 'T';
+const minutes = 'Minutes';
+const knotReport = 'Knots';
+const literReport = 'Liters';
+const watsReport = 'Wats';
 
 String logLevel = "info";
 

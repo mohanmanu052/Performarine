@@ -82,7 +82,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     //key: emailFormFieldKey,
                       controller: emailController,
                       focusNode: emailFocusNode,
-                      labelText: 'Enter your Email',
+                      labelText: 'Enter Your Email',
                       hintText: '',
                       suffixText: null,
                       textInputAction: TextInputAction.done,
@@ -105,7 +105,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               String emailExt = value.split('.').last;
 
                               if (!['com', 'in', 'us'].contains(emailExt)) {
-                                return 'Enter valid email';
+                                return 'Enter Valid Email';
                               }
                             }
                             return null;

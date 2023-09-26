@@ -54,7 +54,7 @@ class DownloadTrip {
             Utils.showSnackBar(
               context,
               scaffoldKey: scaffoldKey,
-              message: 'File downloaded successfully',
+              message: 'File Downloaded Successfully',
             );
           }
         } else {
@@ -85,7 +85,7 @@ class DownloadTrip {
               Utils.showSnackBar(
                 context,
                 scaffoldKey: scaffoldKey,
-                message: 'File downloaded successfully',
+                message: 'File Downloaded Successfully',
               );
             }
           }
@@ -119,7 +119,7 @@ class DownloadTrip {
           Utils.showSnackBar(
             context,
             scaffoldKey: scaffoldKey,
-            message: 'File downloaded successfully',
+            message: 'File Downloaded Successfully',
           );
         }
       }
@@ -153,7 +153,7 @@ class DownloadTrip {
         Utils.showSnackBar(
           context,
           scaffoldKey: scaffoldKey,
-          message: 'File downloaded successfully',
+          message: 'File Downloaded Successfully',
         );
       }
     }
@@ -322,7 +322,7 @@ class DownloadTrip {
               Utils.showSnackBar(
                 context,
                 scaffoldKey: scaffoldKey,
-                message: 'File downloaded successfully',
+                message: 'File Downloaded Successfully',
               );
             });
           } on d.DioError catch (e) {
@@ -359,7 +359,7 @@ class DownloadTrip {
                 Utils.showSnackBar(
                   context,
                   scaffoldKey: scaffoldKey,
-                  message: 'File downloaded successfully',
+                  message: 'File Downloaded Successfully',
                 );
               });
             } on d.DioError catch (e) {
@@ -395,7 +395,7 @@ class DownloadTrip {
             Utils.showSnackBar(
               context,
               scaffoldKey: scaffoldKey,
-              message: 'File downloaded successfully',
+              message: 'File Downloaded Successfully',
             );
           });
         } on d.DioError catch (e) {
@@ -439,7 +439,7 @@ class DownloadTrip {
           Utils.showSnackBar(
             context,
             scaffoldKey: scaffoldKey,
-            message: 'File downloaded successfully',
+            message: 'File Downloaded Successfully',
           );
         });
       } on d.DioError catch (e) {

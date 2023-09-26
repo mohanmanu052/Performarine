@@ -347,7 +347,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             onChanged: (value) {},
                             validator: (value) {
                             if (value!.isEmpty) {
-                              return 'Enter your Email';
+                              return 'Enter Your Email';
                             }
                             if (!EmailValidator.validate(value)) {
                               return 'Enter Valid Email';
@@ -392,7 +392,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               } else if (!RegExp(
                                   r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[.!@#\$&*~]).{8,}$')
                                   .hasMatch(value)) {
-                                return 'Invalid password';
+                                return 'Invalid Password';
                               }
                               return null;
                             },

@@ -576,7 +576,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                                     Utils.showSnackBar(context,
                                         scaffoldKey: scaffoldKey,
                                         message:
-                                        "Vessel details updated successfully");
+                                        "Vessel Details Updated Successfully");
 
                                     _databaseService.updateIsSyncStatus(0,
                                         widget.addVesselData!.id!.toString());
@@ -615,7 +615,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                                   });
                                   Utils.showSnackBar(context,
                                       scaffoldKey: scaffoldKey,
-                                      message: "Vessel created successfully");
+                                      message: "Vessel Created Successfully");
                                   commonProvider.selectedImageFiles = [];
                                   Navigator.pushReplacement(
                                     context,
