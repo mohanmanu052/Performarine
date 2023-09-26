@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+
 ReportModel reportModelFromJson(String str) =>
     ReportModel.fromJson(json.decode(str));
 
@@ -120,6 +122,7 @@ class TripModel {
 class TripsByDate {
   String? id;
   String? load;
+  Color? dataLineColor=Colors.blue;
   List<String>? startPosition;
   List<String>? endPosition;
   List<SensorInfo>? sensorInfo;
@@ -158,6 +161,7 @@ class TripsByDate {
     this.createdBy,
     this.createdAt,
     this.updatedBy,
+    this.dataLineColor,
     this.updatedAt,
     this.filePath,
     this.syncCreatedAt,
