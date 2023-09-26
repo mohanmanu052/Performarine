@@ -605,7 +605,7 @@ class _TripListScreenState extends State<TripListScreen> {
                                       Utils.showSnackBar(context,
                                           scaffoldKey: scaffoldKey,
                                           message:
-                                              'File downloaded successfully');
+                                              'File Downloaded Successfully');
                                     }
 
                                   },

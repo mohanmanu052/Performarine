@@ -654,17 +654,18 @@ else{
                                         }
 
                                         Utils.customPrint("Click on GO TO TRIP 2");
+                                        if(mounted){
+                                          Navigator.of(dialogContext).pop();
 
-                                        Navigator.of(dialogContext).pop();
-
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => TripRecordingScreen(
-                                              tripId: tripId,
-                                              vesselId: tripData![1],
-                                              vesselName: tripData[2],
-                                              tripIsRunningOrNot: runningTrip)),
-                                        );
+                                          Navigator.push(
+                                            dialogContext,
+                                            MaterialPageRoute(builder: (context) => TripRecordingScreen(
+                                                tripId: tripId,
+                                                vesselId: tripData![1],
+                                                vesselName: tripData[2],
+                                                tripIsRunningOrNot: runningTrip)),
+                                          );
+                                        }
 
                                         Utils.customPrint("Click on GO TO TRIP 3");
 
@@ -686,7 +687,10 @@ else{
                               Center(
                                 child: CommonButtons.getAcceptButton(
                                     'Ok go back', context, Colors.transparent, () {
-                                  Navigator.of(context).pop();
+                                      if(mounted){
+                                      //  Navigator.of(context).pop();
+                                        Navigator.of(dialogContext,rootNavigator: true).pop();
+                                      }
                                 },
                                     displayWidth(context) * 0.65,
                                     displayHeight(context) * 0.054,
@@ -1205,13 +1209,16 @@ else{
                                   child: CommonButtons.getAcceptButton(
                                       'Add Vessel', context, blueColor,
                                           () async {
-                                            Navigator.of(context).pop();
+                                        if(mounted){
+                                          //Navigator.of(context).pop();
+                                          Navigator.of(dialogContext,rootNavigator: true).pop();
 
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                builder: (context) =>
-                                                AddNewVesselPage(calledFrom: 'bottomNav',)));
+                                          Navigator.push(
+                                              dialogContext,
+                                              MaterialPageRoute(
+                                                  builder: (dialogContext) =>
+                                                      AddNewVesselPage(calledFrom: 'bottomNav',)));
+                                        }
                                           },
                                       displayWidth(context) * 0.65,
                                       displayHeight(context) * 0.054,
@@ -1230,7 +1237,10 @@ else{
                                 child: CommonButtons.getAcceptButton(
                                     'Cancel', context, Colors.transparent,
                                         () {
-                                      Navigator.of(context).pop();
+                                      if(mounted){
+                                       // Navigator.of(context).pop();
+                                        Navigator.of(dialogContext,rootNavigator: true).pop();
+                                      }
                                     },
                                     displayWidth(context) * 0.65,
                                     displayHeight(context) * 0.054,

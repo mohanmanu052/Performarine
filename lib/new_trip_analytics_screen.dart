@@ -440,7 +440,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                   commonText(
                                                       context: context,
                                                       text:
-                                                      '${vesselData!.fuelCapacity!} L'
+                                                      '${vesselData!.fuelCapacity!} $liters'
                                                           .toString(),
                                                       fontWeight: FontWeight.w400,
                                                       textColor: Colors.white,
@@ -584,7 +584,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                           .fuelCapacity ==
                                                           null
                                                           ? '-'
-                                                          : '${vesselData!.fuelCapacity!} L'
+                                                          : '${vesselData!.fuelCapacity!} $liters'
                                                           .toString(),
                                                       fontWeight: FontWeight.w400,
                                                       textColor: Colors.white,
@@ -765,7 +765,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                      SizedBox(height: displayHeight(context) * 0.005,),
                                      commonText(
                                        context: context,
-                                       text: 'CAD',
+                                       text: cad,
                                        fontWeight: FontWeight.w400,
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.022,
@@ -840,7 +840,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
     
                                      commonText(
                                        context: context,
-                                       text: 'Nautical Miles',
+                                       text: nauticalMiles,
                                        fontWeight: FontWeight.w400,
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.022,
@@ -949,7 +949,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
 
                                      commonText(
                                        context: context,
-                                       text: 'kg',
+                                       text: kg,
                                        fontWeight: FontWeight.w400,
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.022,
@@ -982,7 +982,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
 
                                      commonText(
                                        context: context,
-                                       text: 'CAD',
+                                       text: cad,
                                        fontWeight: FontWeight.w400,
                                        textColor: Colors.black,
                                        textSize: displayWidth(context) * 0.022,
@@ -1090,7 +1090,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
     
                               commonText(
                                 context: context,
-                                text: 'meters',
+                                text: meters,
                                 fontWeight: FontWeight.w400,
                                 textColor: Colors.black,
                                 textSize: displayWidth(context) * 0.022,
@@ -1117,7 +1117,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
     
                               commonText(
                                 context: context,
-                                text: 'Minutes',
+                                text: minutes,
                                 fontWeight: FontWeight.w400,
                                 textColor: Colors.black,
                                 textSize: displayWidth(context) * 0.022,
@@ -1144,7 +1144,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
     
                               commonText(
                                 context: context,
-                                text: 'kt',
+                                text: knots,
                                 fontWeight: FontWeight.w400,
                                 textColor: Colors.black,
                                 textSize: displayWidth(context) * 0.022,
@@ -1171,7 +1171,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
     
                               commonText(
                                 context: context,
-                                text: 'T',
+                                text: cardinal,
                                 fontWeight: FontWeight.w400,
                                 textColor: Colors.black,
                                 textSize: displayWidth(context) * 0.022,

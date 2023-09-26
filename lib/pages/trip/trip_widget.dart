@@ -282,7 +282,7 @@ class _TripWidgetState extends State<TripWidget> {
                             child: commonText(
                               context: context,
                               text:
-                              '${DateFormat('yyyy/MM/dd ').add_jm().format(DateTime.parse(widget.tripList!.createdAt!))}  ${widget.tripList?.updatedAt != null ? '-${DateFormat('yyy/MM/dd ').add_jm().format(DateTime.parse(widget.tripList!.updatedAt!))}' : ''}',
+                              '${DateFormat('yyyy-MM-dd ').add_jm().format(DateTime.parse(widget.tripList!.createdAt!))}  ${widget.tripList?.updatedAt != null ? '- ${DateFormat('yyyy-MM-dd ').add_jm().format(DateTime.parse(widget.tripList!.updatedAt!))}' : ''}',
                               fontWeight: FontWeight.w500,
                               textColor: Colors.black,
                               textSize: displayWidth(context) * 0.016,

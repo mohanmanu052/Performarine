@@ -111,7 +111,7 @@ class Utils {
       currentBackPressedTime = now;
       Utils.showSnackBar(context,
           scaffoldKey: scaffoldKey,
-          message: 'Please press back again to exit',
+          message: 'Please Press Back Again to Exit',
           duration: 2);
       return Future.value(false);
     }

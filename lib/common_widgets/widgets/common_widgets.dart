@@ -492,7 +492,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                               commonText(
                                   context: context,
                                   text:
-                                  '${vesselData.fuelCapacity!} L'
+                                  '${vesselData.fuelCapacity!} $liters'
                                       .toString(),
                                   fontWeight: FontWeight.w500,
                                   textColor: backgroundColor,
@@ -637,7 +637,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                       .fuelCapacity ==
                                       null
                                       ? '-'
-                                      : '${vesselData.fuelCapacity!} L'
+                                      : '${vesselData.fuelCapacity!} $liters'
                                       .toString(),
                                   fontWeight: FontWeight.w500,
                                   textColor: backgroundColor,
@@ -1033,7 +1033,7 @@ Widget OldVesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                 commonText(
                                     context: context,
                                     text:
-                                    '${vesselData.fuelCapacity!}gal'
+                                    '${vesselData.fuelCapacity!}$gallons'
                                         .toString(),
                                     fontWeight: FontWeight.w500,
                                     textColor: Colors.white,
@@ -1173,7 +1173,7 @@ Widget OldVesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                                         .fuelCapacity ==
                                         null
                                         ? '-'
-                                        : '${vesselData.fuelCapacity!}gal'
+                                        : '${vesselData.fuelCapacity!}$gallons'
                                         .toString(),
                                     fontWeight: FontWeight.w500,
                                     textColor: Colors.white,
@@ -1346,7 +1346,7 @@ showDialogBox(BuildContext context, CreateVessel vesselData,
                                 Utils.showSnackBar(context,
                                     scaffoldKey: scaffoldKey,
                                     message:
-                                    'Vessel unretired successfully.');
+                                    'Vessel Unretired Successfully.');
                                 Navigator.of(dialogContext).pop();
                                 Navigator.pushAndRemoveUntil(
                                     context,
@@ -1794,7 +1794,7 @@ Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
                     children: [
                       commonText(
                           context: context,
-                          text: '23 kg',
+                          text: '23 $kg',
                           fontWeight: FontWeight.w600,
                           textColor: Colors.black,
                           textSize: displayWidth(context) * 0.044,
@@ -1828,7 +1828,7 @@ Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
                     children: [
                       commonText(
                           context: context,
-                          text: '10 kg',
+                          text: '10 $kg',
                           fontWeight: FontWeight.w600,
                           textColor: Colors.black,
                           textSize: displayWidth(context) * 0.044,

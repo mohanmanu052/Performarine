@@ -207,7 +207,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                                 commonText(
                                                     context: context,
                                                     text:
-                                                    '${widget.vessel!.fuelCapacity!} L'
+                                                    '${widget.vessel!.fuelCapacity!} $liters'
                                                         .toString(),
                                                     fontWeight: FontWeight.w500,
                                                     textColor: Colors.white,
@@ -355,7 +355,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                                         .fuelCapacity ==
                                                         null
                                                         ? '-'
-                                                        : '${widget.vessel!.fuelCapacity!} L'
+                                                        : '${widget.vessel!.fuelCapacity!} $liters'
                                                         .toString(),
                                                     fontWeight: FontWeight.w500,
                                                     textColor: Colors.white,
@@ -944,7 +944,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                   Utils.showSnackBar(context,
                                       scaffoldKey: widget.scaffoldKey,
                                       message:
-                                      'Vessel retired successfully.');
+                                      'Vessel Retired Successfully.');
 
                                   Navigator.of(dialogContext).pop();
 
