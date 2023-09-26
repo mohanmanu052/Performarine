@@ -130,7 +130,18 @@ List<Vessels>? vesselList;
   ScrollController _fuelUsageSrollController = ScrollController();
     ScrollController _powerUsageSrollController = ScrollController();
 ScrollController _mainScrollController=ScrollController();
+int? selectedRowIndex;
+  Color defaultColor = Colors.green; // Default bar color
+  Color highlightColor = Colors.blue; // Color to highlight the bar
+// List<Color> barColors = List.generate(
+//   triSpeedList.length,
+//   (index) => Colors.black, // Initialize with a default color
+// );
 
+List<Color> barColors = []; 
+
+  // Define a list of colors for each bar
+  //Map<int, Color> barColors = {};
 
 
 TooltipBehavior? tooltipBehaviorDurationGraph;
@@ -311,6 +322,9 @@ TooltipBehavior? tooltipBehaviorDurationGraph;
 
     return double.parse('$totalMinutes.${parts[2]}');
   }
+
+
+
 
   //To get all vessels while enter into report screen
   getVesselAndTripsData() async {
@@ -594,9 +608,18 @@ setState(() {
                     "trip duration data is: ${durationGraphData[i].tripsByDate![j].id}");
                 CustomLogger().logWithFile(Level.info,
                     "trip duration data is: ${durationGraphData[i].tripsByDate![j].id} -> $page");
+                                    Utils.customPrint(
+                    "selected row index : ${selectedRowIndex.toString()}    ${durationGraphData[i].toString()} ");
+
+
+
+
                 if (duration(triSpeedList[i].tripsByDate![j].duration!) > 0) {
+                        final Color barColor = (selectedRowIndex == j) ? Colors.red : Colors.black;
+
                   durationColumnSeriesData.add(ColumnSeries<TripModel, String>(
-                    color: circularProgressColor,
+                  
+                  //  color: durationGraphData[j]==selectedRowIndex?Colors.red:circularProgressColor,
                     width: 0.4,
                     enableTooltip: true,
                     dataSource: triSpeedList,
@@ -615,6 +638,22 @@ setState(() {
                             ? durationWithSeconds(
                                 triSpeedList[i].tripsByDate![j].duration!)
                             : null,
+
+//pointColorMapper: (_, __) => barColor, 
+
+
+                                                        pointColorMapper: (TripModel tripData, int index) {
+
+return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].tripsByDate![j].dataLineColor : blueColor;
+
+
+ },
+
+
+
+                    
+
+
                     onPointTap: (ChartPointDetails args) {
                       if (mounted) {
                         selectedIndex = triSpeedList[i].tripsByDate![j].id!;
@@ -632,7 +671,14 @@ setState(() {
                 }
                 if (triSpeedList[i].tripsByDate![j].avgSpeed! > 0) {
                   avgSpeedColumnSeriesData.add(ColumnSeries<TripModel, String>(
-                    color: circularProgressColor,
+                                                        pointColorMapper: (TripModel tripData, int index) {
+
+return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].tripsByDate![j].dataLineColor : blueColor;
+
+
+ },
+
+
                     dataSource: triSpeedList,
                     width: 0.4,
                     enableTooltip: true,
@@ -658,7 +704,14 @@ setState(() {
 
                 if (triSpeedList[i].tripsByDate![j].fuelConsumption! > 0) {
                   fuelUsageColumnSeriesData.add(ColumnSeries<TripModel, String>(
-                    color: circularProgressColor,
+                                                        pointColorMapper: (TripModel tripData, int index) {
+
+return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].tripsByDate![j].dataLineColor : blueColor;
+
+
+ },
+
+
                     width: 0.4,
                     enableTooltip: true,
                     dataSource: triSpeedList,
@@ -688,7 +741,14 @@ setState(() {
                 if (triSpeedList[i].tripsByDate![j].avgPower! > 0) {
                   powerUsageColumnSeriesData
                       .add(ColumnSeries<TripModel, String>(
-                    color: circularProgressColor,
+                                                        pointColorMapper: (TripModel tripData, int index) {
+
+return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].tripsByDate![j].dataLineColor : blueColor;
+
+
+ },
+
+
                     width: 0.4,
                     enableTooltip: true,
                     dataSource: triSpeedList,
@@ -833,6 +893,10 @@ setState(() {
   @override
   void initState() {
     super.initState();
+    barColors = List.generate(
+      tripList.length,
+      (index) => Colors.black, // Initialize with a default color
+    );
     commonProvider = context.read<CommonProvider>();
     parentValue = false;
     isTripsAreAvailable = true;
@@ -3231,9 +3295,28 @@ else{
 
 
 
-  void scorllToParticularPostion(int index){
+  void scorllToParticularPostion(int index,dynamic persondata){
+
+            for (int i = 0; i < durationGraphData.length; i++) {
+              for (int j = 0;
+                  j < durationGraphData[i].tripsByDate!.length;
+                  j++) {
+                    durationGraphData[i].tripsByDate![j].dataLineColor = blueColor;
+                    if(durationGraphData[i].tripsByDate![j].id==persondata['tripDetails']){
+durationGraphData[i].tripsByDate![j].dataLineColor=Colors.red;
+
+                    }
+
+                  }
+                  
+                  
+                  }
+
             final scrollPosition = index* 150.0;
-            
+            selectedRowIndex=index;
+            setState(() {
+              
+            });
             _mainScrollController.animateTo(
   0.0, // Scroll to the top
   duration: Duration(milliseconds: 300), // Adjust the duration as needed
