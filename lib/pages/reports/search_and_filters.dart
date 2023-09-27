@@ -11,6 +11,7 @@ import 'package:performarine/new_trip_analytics_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+//import 'package:performarine/sync_chart/lib/charts.dart';
 
 import '../../common_widgets/utils/colors.dart';
 import '../../common_widgets/utils/utils.dart';
