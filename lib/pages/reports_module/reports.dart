@@ -3303,7 +3303,7 @@ else{
                   j++) {
                     durationGraphData[i].tripsByDate![j].dataLineColor = blueColor;
                     if(durationGraphData[i].tripsByDate![j].id==persondata['tripDetails']){
-durationGraphData[i].tripsByDate![j].dataLineColor=Colors.red;
+durationGraphData[i].tripsByDate![j].dataLineColor=Colors.green;
 
                     }
 
