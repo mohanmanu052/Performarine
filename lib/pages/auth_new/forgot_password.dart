@@ -97,7 +97,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       onChanged: (value) {},
                       validator: (value) {
                             if (value!.isEmpty) {
-                              return 'Enter your Email';
+                              return 'Enter Your Email';
                             }
                             if (!EmailValidator.validate(value)) {
                               return 'Enter Valid Email';

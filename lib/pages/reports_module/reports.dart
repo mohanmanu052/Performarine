@@ -1457,6 +1457,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                         isExpandedTile = true;
                                         avgSpeed = null;
                                         avgDuration = null;
+                                        isSelectStartDate=false;
                                         avgFuelConsumption = null;
                                         avgPower = null;
                                         triSpeedList.clear();
@@ -2746,6 +2747,7 @@ Utils.showSnackBar(context,
                       isStartDate = true;
                       selectDateOption = 1;
                       isSelectStartDate = true;
+
                       isStartDateSelected=false;
                     });
                   },
@@ -2790,26 +2792,36 @@ Utils.showSnackBar(context,
                 ),
                 GestureDetector(
                   onTap: () {
-if(!isSelectStartDate){
+                    if(isSelectedStartDay!){
+                      if(!isSelectStartDate){
 
 
-                                            Utils.showSnackBar(context,
-                                              scaffoldKey: scaffoldKey,
-                                              message:
-                                                  'Please Select The Start Date',
-                                              duration: 2);
+                        Utils.showSnackBar(context,
+                            scaffoldKey: scaffoldKey,
+                            message:
+                            'Please Select The Start Date',
+                            duration: 2);
 
-  
-}
-else{
 
-                    setState(() {
-                      isEndDateSected=false;
-                      isEndDate = true;
-                      selectDateOption = 2;
-                      isSelectEndDate = true;
-                    });
-                  }
+                      }
+                      else{
+
+                        setState(() {
+                          isEndDateSected=false;
+                          isEndDate = true;
+                          selectDateOption = 2;
+
+                          isSelectEndDate = true;
+                        });
+                      }
+                    } else{
+                      Utils.showSnackBar(context,
+                          scaffoldKey: scaffoldKey,
+                          message:
+                          'Please Select Start Date.',
+                          duration: 2);
+                    }
+
                   },
                   child: Container(
                     width: displayWidth(context) * 0.385,
@@ -2855,161 +2867,164 @@ else{
           height: displayWidth(context) * 0.04,
         ),
         selectDateOption == 1 && isSelectStartDate
-            ? Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                        left: displayWidth(context) * 0.045,
-                        right: displayWidth(context) * 0.045),
-                    child: Container(
-                      width: displayWidth(context),
-                      height: 50,
-                      decoration: BoxDecoration(
-                          color: calenderHeaderBackgroundColor,
-                          borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(
-                              30,
-                            ),
-                            topLeft: Radius.circular(
-                              30,
-                            ),
-                          )),
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                            left: displayWidth(context) * 0.03,
-                           top:orientation==Orientation.portrait? displayWidth(context) * 0.05:displayWidth(context) * 0.01
-                            ),
-                        child: Text(
-                          "Select Start Date",
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w700,
-                              fontFamily: 'DM Sans'
+            ? Visibility(
+           visible: isSelectStartDate!,
+              child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(
+                          left: displayWidth(context) * 0.045,
+                          right: displayWidth(context) * 0.045),
+                      child: Container(
+                        width: displayWidth(context),
+                        height: 50,
+                        decoration: BoxDecoration(
+                            color: calenderHeaderBackgroundColor,
+                            borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(
+                                30,
                               ),
+                              topLeft: Radius.circular(
+                                30,
+                              ),
+                            )),
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                              left: displayWidth(context) * 0.03,
+                             top:orientation==Orientation.portrait? displayWidth(context) * 0.05:displayWidth(context) * 0.01
+                              ),
+                          child: Text(
+                            "Select Start Date",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w700,
+                                fontFamily: 'DM Sans'
+                                ),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        left: displayWidth(context) * 0.045,
-                        right: displayWidth(context) * 0.045),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(20),bottomRight: Radius.circular(20)
-                        )
-                      ),
-                      child: Visibility(
-                        visible: !isEndDateSected!,
-                        child: IgnorePointer(
-                                                        ignoring: isBtnClick??false,
-                      
-                          child: TableCalendar(
-                            
-                            
-                            daysOfWeekVisible: true,
-                            focusedDay: selectedDateForStartDate,
-                            firstDay: firstDate,
-                            lastDay: lastDate,
-                            
-                            onFormatChanged: (CalendarFormat _format) {},
-                            calendarBuilders: CalendarBuilders(
-                              
-                              selectedBuilder: (context, date, events) => Container(
-                                  margin: const EdgeInsets.all(5.0),
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                      color: blueColor,
-                                      borderRadius: BorderRadius.circular(15)
-                                      //shape: BoxShape.circle
-                                      
+                    Padding(
+                      padding: EdgeInsets.only(
+                          left: displayWidth(context) * 0.045,
+                          right: displayWidth(context) * 0.045),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(20),bottomRight: Radius.circular(20)
+                          )
+                        ),
+                        child: Visibility(
+                          visible: !isEndDateSected!,
+                          child: IgnorePointer(
+                                                          ignoring: isBtnClick??false,
+
+                            child: TableCalendar(
+
+
+                              daysOfWeekVisible: true,
+                              focusedDay: selectedDateForStartDate,
+                              firstDay: firstDate,
+                              lastDay: lastDate,
+
+                              onFormatChanged: (CalendarFormat _format) {},
+                              calendarBuilders: CalendarBuilders(
+
+                                selectedBuilder: (context, date, events) => Container(
+                                    margin: const EdgeInsets.all(5.0),
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                        color: blueColor,
+                                        borderRadius: BorderRadius.circular(15)
+                                        //shape: BoxShape.circle
+
+                                        ),
+                                    child: Text(
+                                      date.day.toString(),
+                                      style: TextStyle(color: Colors.white,
+                                      fontFamily: dmsans
                                       ),
-                                  child: Text(
-                                    date.day.toString(),
-                                    style: TextStyle(color: Colors.white,
-                                    fontFamily: dmsans
-                                    ),
-                                  )),
-                            ),
-                            calendarStyle: CalendarStyle(
-                              
-                              
-                                    todayDecoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                                        border: Border.all(
-                        
-                                          color: blueColor,
-                                        )),
-                                isTodayHighlighted: true,
-                                selectedDecoration: BoxDecoration(
-                                                              borderRadius: BorderRadius.circular(8),
-                                            
-                                  // color: blueColor,
-                                 shape: BoxShape.rectangle,
-                                ),
-                                selectedTextStyle: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 22.0,
-                                    fontFamily: dmsans,
-                                    color: Colors.pink),
-                                todayTextStyle: TextStyle(
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 16.0,
-                                    fontFamily: dmsans,
-                                    color: selectedDateForStartDate == DateTime.now()
-                                        ? Colors.white
-                                        : blueColor)),
-                            selectedDayPredicate: (DateTime date) {
-                              return isSameDay(selectedDateForStartDate, date);
-                            },
-                            startingDayOfWeek: StartingDayOfWeek.monday,
-                            onDaySelected: (DateTime? selectDay, DateTime? focusDay) {
-                              setState(() {
-                                isSelectedStartDay = true;
-                                selectedDateForStartDate = selectDay!;
-                                focusedDay = focusDay!;
-                                focusedDayString = focusDay.toString();
-                                pickStartDate = convertIntoMonthDayYear(selectDay);
-                                selectedStartDateFromCal = selectDay;
-                                isStartDateSelected=true;
-                                isSelectEndDate=true;
-                        selectDateOption = 2;
-                        isSelectEndDate = true;
-                      
-                                Utils.customPrint("pick start date: $pickStartDate");
-                                CustomLogger().logWithFile(Level.info,
-                                    "pick start date: $pickStartDate -> $page");
-                              });
-                              Utils.customPrint("focusedDay: $focusDay");
-                              CustomLogger().logWithFile(
-                                  Level.info, "focused Day: $focusedDay -> $page");
-                            },
-                            headerStyle: HeaderStyle(
-                                              titleCentered: true,
-                                              
-                                              titleTextStyle: TextStyle(fontSize: 17,
-                                              fontFamily: dmsans,
-                                              fontWeight: FontWeight.w600,
-                                              color: blackcolorCalender
-                                              
-                                              ), // Center the month title
-                        
-                              formatButtonVisible: false,
-                              formatButtonDecoration: BoxDecoration(
-                                color: Colors.black,
-                                borderRadius: BorderRadius.circular(22.0),
+                                    )),
                               ),
-                              formatButtonTextStyle: TextStyle(color: Colors.white),
-                              formatButtonShowsNext: false,
+                              calendarStyle: CalendarStyle(
+
+
+                                      todayDecoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                                          border: Border.all(
+
+                                            color: blueColor,
+                                          )),
+                                  isTodayHighlighted: true,
+                                  selectedDecoration: BoxDecoration(
+                                                                borderRadius: BorderRadius.circular(8),
+
+                                    // color: blueColor,
+                                   shape: BoxShape.rectangle,
+                                  ),
+                                  selectedTextStyle: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 22.0,
+                                      fontFamily: dmsans,
+                                      color: Colors.pink),
+                                  todayTextStyle: TextStyle(
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 16.0,
+                                      fontFamily: dmsans,
+                                      color: selectedDateForStartDate == DateTime.now()
+                                          ? Colors.white
+                                          : blueColor)),
+                              selectedDayPredicate: (DateTime date) {
+                                return isSameDay(selectedDateForStartDate, date);
+                              },
+                              startingDayOfWeek: StartingDayOfWeek.monday,
+                              onDaySelected: (DateTime? selectDay, DateTime? focusDay) {
+                                setState(() {
+                                  isSelectedStartDay = true;
+                                  selectedDateForStartDate = selectDay!;
+                                  focusedDay = focusDay!;
+                                  focusedDayString = focusDay.toString();
+                                  pickStartDate = convertIntoMonthDayYear(selectDay);
+                                  selectedStartDateFromCal = selectDay;
+                                  isStartDateSelected=true;
+                                  isSelectEndDate=true;
+                          selectDateOption = 2;
+                          isSelectEndDate = true;
+
+                                  Utils.customPrint("pick start date: $pickStartDate");
+                                  CustomLogger().logWithFile(Level.info,
+                                      "pick start date: $pickStartDate -> $page");
+                                });
+                                Utils.customPrint("focusedDay: $focusDay");
+                                CustomLogger().logWithFile(
+                                    Level.info, "focused Day: $focusedDay -> $page");
+                              },
+                              headerStyle: HeaderStyle(
+                                                titleCentered: true,
+
+                                                titleTextStyle: TextStyle(fontSize: 17,
+                                                fontFamily: dmsans,
+                                                fontWeight: FontWeight.w600,
+                                                color: blackcolorCalender
+
+                                                ), // Center the month title
+
+                                formatButtonVisible: false,
+                                formatButtonDecoration: BoxDecoration(
+                                  color: Colors.black,
+                                  borderRadius: BorderRadius.circular(22.0),
+                                ),
+                                formatButtonTextStyle: TextStyle(color: Colors.white),
+                                formatButtonShowsNext: false,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              )
+                  ],
+                ),
+            )
             : isSelectEndDate
                 ? Visibility(
                                           visible: !isEndDateSected!,
