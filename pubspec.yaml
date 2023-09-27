@@ -94,6 +94,7 @@ dependencies:
   animated_bottom_navigation_bar: ^1.2.0
   dropdown_button2: ^2.0.0
   fluttertoast: ^8.2.2
+  #syncfusion_flutter_core: ^23.1.36
 
 
 dependency_overrides:

@@ -11,6 +11,7 @@ import 'package:performarine/pages/reports_module/widgets/reports_datatable.dart
 import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
+//import 'package:performarine/sync_chart/lib/charts.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../common_widgets/utils/colors.dart';
@@ -73,9 +74,13 @@ class _ReportsModuleState extends State<ReportsModule> {
   String selectedButton = 'trip duration';
   String selectedIndex = "";
   final List<ChartSeries> durationColumnSeriesData = [];
+  final List<ChartSeries> tempDurationColumnSeriesData = [];
   final List<ChartSeries> avgSpeedColumnSeriesData = [];
+  final List<ChartSeries> tempAvgSpeedColumnSeriesData = [];
   final List<ChartSeries> fuelUsageColumnSeriesData = [];
+  final List<ChartSeries> tempFuelUsageColumnSeriesData = [];
   final List<ChartSeries> powerUsageColumnSeriesData = [];
+  final List<ChartSeries> tempPowerUsageColumnSeriesData = [];
   double? avgSpeed = 0.0;
   dynamic avgDuration = 0;
   dynamic avgFuelConsumption;
@@ -129,6 +134,8 @@ List<Vessels>? vesselList;
     ScrollController _avgSpeedSrollController = ScrollController();
   ScrollController _fuelUsageSrollController = ScrollController();
     ScrollController _powerUsageSrollController = ScrollController();
+
+  bool isStickyYAxisVisible = false;
 ScrollController _mainScrollController=ScrollController();
 int? selectedRowIndex;
   Color defaultColor = Colors.green; // Default bar color
@@ -322,9 +329,6 @@ TooltipBehavior? tooltipBehaviorDurationGraph;
 
     return double.parse('$totalMinutes.${parts[2]}');
   }
-
-
-
 
   //To get all vessels while enter into report screen
   getVesselAndTripsData() async {
@@ -548,9 +552,13 @@ setState(() {
                 durationGraphData.clear();
 
                 durationColumnSeriesData.clear();
+                tempDurationColumnSeriesData.clear();
                 avgSpeedColumnSeriesData.clear();
+                tempAvgSpeedColumnSeriesData.clear();
                 fuelUsageColumnSeriesData.clear();
+                tempFuelUsageColumnSeriesData.clear();
                 powerUsageColumnSeriesData.clear();
+                tempPowerUsageColumnSeriesData.clear();
               });
             }
 
@@ -668,17 +676,45 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                     dataLabelSettings: DataLabelSettings(isVisible: false),
                     spacing: 0.1,
                   ));
+
+                  tempDurationColumnSeriesData.add(ColumnSeries<TripModel, String>(
+                          width: 0.4,
+                          color: Colors.transparent,
+                          enableTooltip: true,
+                          dataSource: triSpeedList,
+                          xValueMapper: (TripModel tripData, _) =>'',
+                          yValueMapper: (TripModel tripData, _) =>
+                          durationWithSeconds(
+                              triSpeedList[i].tripsByDate![j].duration!) >
+                              0
+                              ? durationWithSeconds(
+                              triSpeedList[i].tripsByDate![j].duration!)
+                              : null,
+
+                          pointColorMapper: (TripModel tripData, int index) {
+                            return Colors.transparent;
+                            //return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].tripsByDate![j].dataLineColor : blueColor;
+                            },
+                          onPointTap: (ChartPointDetails args) {
+                            if (mounted) {
+                              selectedIndex = triSpeedList[i].tripsByDate![j].id!;
+                              Utils.customPrint("selected index: $selectedIndex");
+                              CustomLogger().logWithFile(Level.info,
+                                  "selected index: $selectedIndex -> $page");
+                            }
+                          },
+                          name: 'Trip Duration',
+                          emptyPointSettings:
+                          EmptyPointSettings(mode: EmptyPointMode.drop),
+                          dataLabelSettings: DataLabelSettings(isVisible: false),
+                          spacing: 0.1,
+                        ));
                 }
                 if (triSpeedList[i].tripsByDate![j].avgSpeed! > 0) {
                   avgSpeedColumnSeriesData.add(ColumnSeries<TripModel, String>(
                                                         pointColorMapper: (TripModel tripData, int index) {
-
-return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].tripsByDate![j].dataLineColor : blueColor;
-
-
+                                                          return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].tripsByDate![j].dataLineColor : blueColor;
  },
-
-
                     dataSource: triSpeedList,
                     width: 0.4,
                     enableTooltip: true,
@@ -688,6 +724,35 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                         triSpeedList[i].tripsByDate![j].avgSpeed! > 0
                             ? triSpeedList[i].tripsByDate![j].avgSpeed!
                             : null,
+                    onPointTap: (ChartPointDetails args) {
+                      if (mounted) {
+                        selectedIndex = triSpeedList[i].tripsByDate![j].id!;
+                        Utils.customPrint("selected index: $selectedIndex");
+                        CustomLogger().logWithFile(Level.info,
+                            "selected index: $selectedIndex -> $page");
+                      }
+                    },
+                    name: 'Avg Speed',
+                    dataLabelSettings: DataLabelSettings(isVisible: false),
+                    spacing: 0.1,
+                  ));
+
+                  tempAvgSpeedColumnSeriesData.add(ColumnSeries<TripModel, String>(
+                    pointColorMapper: (TripModel tripData, int index) {
+                      return Colors.transparent;
+                      //return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].tripsByDate![j].dataLineColor : blueColor;
+
+
+                    },
+                    dataSource: triSpeedList,
+                    width: 0.4,
+                    color: Colors.transparent,
+                    enableTooltip: true,
+                    xValueMapper: (TripModel tripData, _) =>'',
+                    yValueMapper: (TripModel tripData, _) =>
+                    triSpeedList[i].tripsByDate![j].avgSpeed! > 0
+                        ? triSpeedList[i].tripsByDate![j].avgSpeed!
+                        : null,
                     onPointTap: (ChartPointDetails args) {
                       if (mounted) {
                         selectedIndex = triSpeedList[i].tripsByDate![j].id!;
@@ -908,6 +973,8 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
       getVesselAndTripsData();
     });
     tripDurationButtonColor = true;
+
+    addListenerToControllers();
   }
 
   @override
@@ -919,11 +986,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
       key: scaffoldKey,
       body:         OrientationBuilder(
   builder: (context, orientation) {
-    return 
-      
-
-      
-      
+    return
        SingleChildScrollView(
         controller: _mainScrollController,
         child: Container(
@@ -1148,12 +1211,16 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                                                 
                                             durationColumnSeriesData
                                                 .clear();
+                                            tempDurationColumnSeriesData.clear();
                                             avgSpeedColumnSeriesData
                                                 .clear();
+                                            tempAvgSpeedColumnSeriesData.clear();
                                             fuelUsageColumnSeriesData
                                                 .clear();
+                                            tempFuelUsageColumnSeriesData.clear();
                                             powerUsageColumnSeriesData
                                                 .clear();
+                                            tempPowerUsageColumnSeriesData.clear();
                                             selectedTripIdList!.clear();
                                             selectedTripLabelList!.clear();
                                           });
@@ -1470,9 +1537,13 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                         durationGraphData.clear();
 
                                         durationColumnSeriesData.clear();
+                                        tempDurationColumnSeriesData.clear();
                                         avgSpeedColumnSeriesData.clear();
+                                        tempAvgSpeedColumnSeriesData.clear();
                                         fuelUsageColumnSeriesData.clear();
+                                        tempFuelUsageColumnSeriesData.clear();
                                         powerUsageColumnSeriesData.clear();
+                                        tempPowerUsageColumnSeriesData.clear();
                                       });
 
                                       // _collapseExpansionTile();
@@ -1669,6 +1740,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                         onTap: () {
                                           setState(() {
                                             selectedButton = 'trip duration';
+                                            isStickyYAxisVisible = false;
                                             tripDurationButtonColor = true;
                                             avgSpeedButtonColor = false;
                                             fuelUsageButtonColor = false;
@@ -1708,6 +1780,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                         onTap: () {
                                           setState(() {
                                             selectedButton = 'avg speed';
+                                            isStickyYAxisVisible = false;
                                             tripDurationButtonColor = false;
                                             avgSpeedButtonColor = true;
                                             fuelUsageButtonColor = false;
@@ -1746,6 +1819,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                         onTap: () {
                                           setState(() {
                                             selectedButton = 'fuel usage';
+                                            isStickyYAxisVisible = false;
                                             tripDurationButtonColor = false;
                                             avgSpeedButtonColor = false;
                                             fuelUsageButtonColor = true;
@@ -1784,6 +1858,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                         onTap: () {
                                           setState(() {
                                             selectedButton = 'power usage';
+                                            isStickyYAxisVisible = false;
                                             tripDurationButtonColor = false;
                                             avgSpeedButtonColor = false;
                                             fuelUsageButtonColor = false;
@@ -1925,10 +2000,7 @@ ReportsDataTable(tripList: tripList, finalData: finalData,onTapCallBack: scorllT
           color: selectDayBackgroundColor),
       child: Row(
         children: [
-
-
           Container(
-            
             alignment: Alignment.center,
             margin: EdgeInsets.only(left: 8,top: 2),
             height: orentation==Orientation.portrait?displayHeight(context) * 0.1:displayHeight(context) * 0.5,
@@ -1938,24 +2010,14 @@ ReportsDataTable(tripList: tripList, finalData: finalData,onTapCallBack: scorllT
                       image: imageUrl!=null&&imageUrl!.isNotEmpty?
                       DecorationImage(  
                         fit: BoxFit.cover,
-                      
                           image:
                           FileImage(
                           File(imageUrl??''))):                     
                             DecorationImage(
                             fit: BoxFit.cover,
                             image:AssetImage("assets/images/vessel_default_img.png",)
-
-
-                      
-                      
-                      
                   ),
                 )),
-          
-          
-
-
           SizedBox(
             width: displayWidth(context) * 0.04,
           ),
@@ -1967,8 +2029,7 @@ ReportsDataTable(tripList: tripList, finalData: finalData,onTapCallBack: scorllT
                 margin: EdgeInsets.only( left:orentation==Orientation.portrait? 10:0),
                 width: displayWidth(context)/2,
                 child: Text(
-                                    "$selectedVesselName",
-
+                  "$selectedVesselName",
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -2115,7 +2176,6 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
       shouldAlwaysShow: false,
       color: commonBackgroundColor,
       borderWidth: 1,
-     // activationMode: ActivationMode.singleTap,
       builder: (dynamic data, dynamic point, dynamic series, dynamic dataIndex,
           dynamic pointIndex) {
         CartesianChartPoint currentPoint = point;
@@ -2200,83 +2260,126 @@ Utils.showSnackBar(context,
         );
       },
     );
-
     return
-    
-    
-     SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      controller: _tripDurationSrollController,
-      child: SizedBox(
-        width: durationColumnSeriesData.length > 3
-            ? (1.5 * 100 * durationColumnSeriesData.length)
-             : displayWidth(context),
-        height: graph_height,
-        child: 
-        
-        SfCartesianChart(
-          
-          tooltipBehavior: tooltipBehaviorDurationGraph,
-          enableSideBySideSeriesPlacement: true,
-          primaryXAxis: CategoryAxis(
-              labelPlacement: LabelPlacement.betweenTicks, // Or LabelPlacement.onTicks
-
-
-              autoScrollingMode: AutoScrollingMode.end,
-              labelAlignment: LabelAlignment.start,
-              labelStyle: TextStyle(
-                color: Colors.black,
-                
-                fontSize: displayWidth(context) * 0.034,
-                fontWeight: FontWeight.w500,
-                fontFamily: poppins,
-              )),
-          primaryYAxis: NumericAxis(
-            
-              axisLine: AxisLine(
-                width: 0,
-                
-              ),
-              title: AxisTitle(
-                  text: 'Time ($minutes)',
-                  textStyle: TextStyle(
+     Stack(
+       children: [
+         SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          controller: _tripDurationSrollController,
+          child: SizedBox(
+            width: durationColumnSeriesData.length > 3
+                ? (1.5 * 100 * durationColumnSeriesData.length)
+                 : displayWidth(context),
+            height: graph_height,
+            child:
+            SfCartesianChart(
+              tooltipBehavior: tooltipBehaviorDurationGraph,
+              enableSideBySideSeriesPlacement: true,
+              primaryXAxis: CategoryAxis(
+                isVisible: true,
+                  labelPlacement: LabelPlacement.betweenTicks, // Or LabelPlacement.onTicks
+                  autoScrollingMode: AutoScrollingMode.end,
+                  labelAlignment: LabelAlignment.start,
+                  labelStyle: TextStyle(
                     color: Colors.black,
-                    fontSize: displayWidth(context) * 0.028,
+                    fontSize: displayWidth(context) * 0.034,
                     fontWeight: FontWeight.w500,
                     fontFamily: poppins,
                   )),
-              majorTickLines: MajorTickLines(width: 0),
-              minorTickLines: MinorTickLines(width: 0),
-              labelStyle: TextStyle(
-                color: Colors.black,
-                fontSize: displayWidth(context) * 0.034,
-                fontWeight: FontWeight.w500,
-                fontFamily: poppins,
-              ),
-              plotBands: [
-                PlotBand(
-                    text: 'avg ${avgDuration} min',
-                    isVisible: true,
-                    start: avgDuration,
-                    end: avgDuration,
-                    borderWidth: 2,
-                    borderColor: Colors.grey.shade400,
-                    shouldRenderAboveSeries: true,
-                    textStyle: TextStyle(
-                      color: Colors.black,
-                      fontSize: displayWidth(context) * 0.028,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: poppins,
-                    ),
-                    dashArray: <double>[4, 8],
-                    horizontalTextAlignment: TextAnchor.start),
-              ]),
-          series: 
-          
-          durationColumnSeriesData,
-         )
-      ),
-    );
+              primaryYAxis: NumericAxis(
+                  axisLine: AxisLine(
+                    width: 0,
+                  ),
+                  title: AxisTitle(
+                      text: 'Time ($minutes)',
+                      textStyle: TextStyle(
+                        color: Colors.black,
+                        fontSize: displayWidth(context) * 0.028,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: poppins,
+                      )),
+                  majorTickLines: MajorTickLines(width: 0),
+                  minorTickLines: MinorTickLines(width: 0),
+                  labelStyle: TextStyle(
+                    color: Colors.black,
+                    fontSize: displayWidth(context) * 0.034,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: poppins,
+                  ),
+                  plotBands: [
+                    PlotBand(
+                        text: 'avg ${avgDuration} min',
+                        isVisible: true,
+                        start: avgDuration,
+                        end: avgDuration,
+                        borderWidth: 2,
+                        borderColor: Colors.grey.shade400,
+                        shouldRenderAboveSeries: true,
+                        textStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: displayWidth(context) * 0.028,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: poppins,
+                        ),
+                        dashArray: <double>[4, 8],
+                        horizontalTextAlignment: TextAnchor.start),
+                  ]),
+              series: durationColumnSeriesData,
+             )
+          ),
+    ),
+         Positioned(
+           top: 0,
+           bottom: 0,
+           left: 0,
+           child: !isStickyYAxisVisible ? SizedBox()
+           : Container(
+               width: displayWidth(context) * 0.19,
+               height: graph_height,
+               color: Colors.white,
+               child: SfCartesianChart(
+                 plotAreaBorderWidth: 0,
+                 tooltipBehavior: tooltipBehaviorDurationGraph,
+                 enableSideBySideSeriesPlacement: true,
+                 primaryXAxis: CategoryAxis(
+                     isVisible: true,
+                     labelPlacement: LabelPlacement.betweenTicks, // Or LabelPlacement.onTicks
+                     autoScrollingMode: AutoScrollingMode.end,
+                     labelAlignment: LabelAlignment.start,
+                     labelStyle: TextStyle(
+                       color: Colors.black,
+                       fontSize: displayWidth(context) * 0.034,
+                       fontWeight: FontWeight.w500,
+                       fontFamily: poppins,
+                     )),
+                 primaryYAxis: NumericAxis(
+                     axisLine: AxisLine(
+                       width: 0,
+                       color: Colors.transparent
+                     ),
+                     title: AxisTitle(
+                         text: 'Time ($minutes)',
+                         textStyle: TextStyle(
+                           color: Colors.black,
+                           fontSize: displayWidth(context) * 0.028,
+                           fontWeight: FontWeight.w500,
+                           fontFamily: poppins,
+                         )),
+                     majorTickLines: MajorTickLines(width: 0),
+                     minorTickLines: MinorTickLines(width: 0),
+                     labelStyle: TextStyle(
+                       color: Colors.black,
+                       fontSize: displayWidth(context) * 0.034,
+                       fontWeight: FontWeight.w500,
+                       fontFamily: poppins,
+                     ),
+                     plotBands: []),
+                 series: tempDurationColumnSeriesData,
+               )
+           ),
+         ),
+       ],
+     );
   }
 
   // Average speed graph in reports
@@ -2370,64 +2473,115 @@ Utils.showSnackBar(context,
       },
     );
 
-    return SingleChildScrollView(
-      controller: _avgSpeedSrollController,
-      scrollDirection: Axis.horizontal,
-      child: SizedBox(
-        width: avgSpeedColumnSeriesData.length > 3
-            ? (1.5 * 100 * avgSpeedColumnSeriesData.length)
-            : displayWidth(context),
-        height: graph_height,
-        child: SfCartesianChart(
-          // palette: barsColor,
-          tooltipBehavior: tooltipBehavior,
-          primaryXAxis: CategoryAxis(
-              autoScrollingMode: AutoScrollingMode.end,
-              labelAlignment: LabelAlignment.center,
-              labelStyle: TextStyle(
-                color: Colors.black,
-                fontSize: displayWidth(context) * 0.034,
-                fontWeight: FontWeight.w500,
-                fontFamily: poppins,
-              )),
-          primaryYAxis: NumericAxis(
-              // interval: 5,
-              axisLine: AxisLine(width: 2),
-              title: AxisTitle(
-                  text: 'Speed ($knotReport)',
-                  textStyle: TextStyle(
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          controller: _avgSpeedSrollController,
+          scrollDirection: Axis.horizontal,
+          child: SizedBox(
+            width: avgSpeedColumnSeriesData.length > 3
+                ? (1.5 * 100 * avgSpeedColumnSeriesData.length)
+                : displayWidth(context),
+            height: graph_height,
+            child: SfCartesianChart(
+              // palette: barsColor,
+              tooltipBehavior: tooltipBehavior,
+              primaryXAxis: CategoryAxis(
+                  isVisible: true,
+                  autoScrollingMode: AutoScrollingMode.end,
+                  labelAlignment: LabelAlignment.center,
+                  labelStyle: TextStyle(
                     color: Colors.black,
-                    fontSize: displayWidth(context) * 0.028,
+                    fontSize: displayWidth(context) * 0.034,
                     fontWeight: FontWeight.w500,
                     fontFamily: poppins,
                   )),
-              labelStyle: TextStyle(
-                color: Colors.black,
-                fontSize: displayWidth(context) * 0.034,
-                fontWeight: FontWeight.w500,
-                fontFamily: poppins,
-              ),
-              plotBands: <PlotBand>[
-                PlotBand(
-                  text: 'avg ${avgSpeed}$speedKnot',
-                  isVisible: true,
-                  start: avgSpeed,
-                  end: avgSpeed,
-                  borderWidth: 2,
-                  borderColor: Colors.grey,
-                  textStyle: TextStyle(
+              primaryYAxis: NumericAxis(
+                  // interval: 5,
+                  axisLine: AxisLine(width: 2),
+                  title: AxisTitle(
+                      text: 'Speed ($knotReport)',
+                      textStyle: TextStyle(
+                        color: Colors.black,
+                        fontSize: displayWidth(context) * 0.028,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: poppins,
+                      )),
+                  labelStyle: TextStyle(
                     color: Colors.black,
-                    fontSize: displayWidth(context) * 0.028,
+                    fontSize: displayWidth(context) * 0.034,
                     fontWeight: FontWeight.w500,
                     fontFamily: poppins,
                   ),
-                  dashArray: <double>[4, 8],
-                  horizontalTextAlignment: TextAnchor.start,
-                ),
-              ]),
-          series: avgSpeedColumnSeriesData,
+                  plotBands: <PlotBand>[
+                    PlotBand(
+                      text: 'avg ${avgSpeed}$speedKnot',
+                      isVisible: true,
+                      start: avgSpeed,
+                      end: avgSpeed,
+                      borderWidth: 2,
+                      borderColor: Colors.grey,
+                      textStyle: TextStyle(
+                        color: Colors.black,
+                        fontSize: displayWidth(context) * 0.028,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: poppins,
+                      ),
+                      dashArray: <double>[4, 8],
+                      horizontalTextAlignment: TextAnchor.start,
+                    ),
+                  ]),
+              series: avgSpeedColumnSeriesData,
+            ),
+          ),
         ),
-      ),
+        Positioned(
+          top: 0,
+          bottom: 0,
+          left: 0,
+          child: !isStickyYAxisVisible ? SizedBox()
+              : Container(
+                width: displayWidth(context) * 0.15,
+                color: Colors.white,
+                height: graph_height,
+                child: SfCartesianChart(
+                  // palette: barsColor,
+                  tooltipBehavior: tooltipBehavior,
+                  primaryXAxis: CategoryAxis(
+                      isVisible: true,
+                      autoScrollingMode: AutoScrollingMode.end,
+                      labelAlignment: LabelAlignment.center,
+                      labelStyle: TextStyle(
+                        color: Colors.black,
+                        fontSize: displayWidth(context) * 0.034,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: poppins,
+                      )),
+                  primaryYAxis: NumericAxis(
+                    // interval: 5,
+                      axisLine: AxisLine(width: 2,
+                        color: Colors.transparent
+                      ),
+                      title: AxisTitle(
+                          text: 'Speed ($knotReport)',
+                          textStyle: TextStyle(
+                            color: Colors.black,
+                            fontSize: displayWidth(context) * 0.028,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: poppins,
+                          )),
+                      labelStyle: TextStyle(
+                        color: Colors.black,
+                        fontSize: displayWidth(context) * 0.034,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: poppins,
+                      ),
+                      plotBands: <PlotBand>[]),
+                  series: tempAvgSpeedColumnSeriesData,
+                ),
+              ),
+        ),
+      ],
     );
   }
 
@@ -3308,8 +3462,6 @@ Utils.showSnackBar(context,
           );
   }
 
-
-
   void scorllToParticularPostion(int index,dynamic persondata){
 
             for (int i = 0; i < durationGraphData.length; i++) {
@@ -3373,6 +3525,129 @@ if(selectedButton=="trip duration"){
 
 
 
+
+  }
+
+  addListenerToControllers(){
+    _tripDurationSrollController.addListener(() {
+      if(_tripDurationSrollController.position.maxScrollExtent == _tripDurationSrollController.position.pixels)
+      {
+
+      }
+      else
+      {
+        setState(() {
+          if(!isStickyYAxisVisible)
+          {
+            isStickyYAxisVisible = true;
+          }
+        });
+
+        if(_tripDurationSrollController.offset <= 51.0)
+        {
+          setState(() {
+            isStickyYAxisVisible = false;
+          });
+        }
+        bool isTop = _tripDurationSrollController.position.pixels == 0;
+        if(isTop)
+        {
+          setState(() {
+            isStickyYAxisVisible = false;
+          });
+        }
+      }
+    });
+
+    _avgSpeedSrollController.addListener(() {
+      if(_avgSpeedSrollController.position.maxScrollExtent == _avgSpeedSrollController.position.pixels)
+      {
+
+      }
+      else
+      {
+        setState(() {
+          if(!isStickyYAxisVisible)
+          {
+            isStickyYAxisVisible = true;
+          }
+        });
+
+        if(_avgSpeedSrollController.offset <= 51.0)
+        {
+          setState(() {
+            isStickyYAxisVisible = false;
+          });
+        }
+        bool isTop = _avgSpeedSrollController.position.pixels == 0;
+        if(isTop)
+        {
+          setState(() {
+            isStickyYAxisVisible = false;
+          });
+        }
+      }
+    });
+
+    _fuelUsageSrollController.addListener(() {
+      if(_fuelUsageSrollController.position.maxScrollExtent == _fuelUsageSrollController.position.pixels)
+      {
+
+      }
+      else
+      {
+        setState(() {
+          if(!isStickyYAxisVisible)
+          {
+            isStickyYAxisVisible = true;
+          }
+        });
+
+        if(_fuelUsageSrollController.offset <= 51.0)
+        {
+          setState(() {
+            isStickyYAxisVisible = false;
+          });
+        }
+        bool isTop = _fuelUsageSrollController.position.pixels == 0;
+        if(isTop)
+        {
+          setState(() {
+            isStickyYAxisVisible = false;
+          });
+        }
+      }
+    });
+
+    _powerUsageSrollController.addListener(() {
+      if(_powerUsageSrollController.position.maxScrollExtent == _powerUsageSrollController.position.pixels)
+      {
+
+      }
+      else
+      {
+        setState(() {
+          if(!isStickyYAxisVisible)
+          {
+            isStickyYAxisVisible = true;
+          }
+        });
+
+        if(_powerUsageSrollController.offset <= 51.0)
+        {
+          setState(() {
+            isStickyYAxisVisible = false;
+          });
+        }
+        bool isTop = _powerUsageSrollController.position.pixels == 0;
+        if(isTop)
+        {
+          setState(() {
+            isStickyYAxisVisible = false;
+          });
+        }
+      }
+    });
 
   }
 }
