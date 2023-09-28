@@ -128,6 +128,7 @@ String? imageUrl;
   String? builtYear;
   String? registerNumber;
 List<Vessels>? vesselList;
+int selectedBarIndex = -1;
   final DatabaseService _databaseService = DatabaseService();
 
   ScrollController _tripDurationSrollController = ScrollController();
@@ -668,6 +669,26 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                         Utils.customPrint("selected index: $selectedIndex");
                         CustomLogger().logWithFile(Level.info,
                             "selected index: $selectedIndex -> $page");
+                        setState(() {
+
+                          // for (int i = 0; i < durationGraphData.length; i++) {
+                          //   for (int j = 0;
+                          //   j < durationGraphData[i].tripsByDate!.length;
+                          //   j++) {
+                          //     durationGraphData[i].tripsByDate![j].dataLineColor = blueColor;
+                          //     if(triSpeedList[i].tripsByDate![j].id! == durationGraphData[i].tripsByDate![j].id){
+                          //       durationGraphData[i].tripsByDate![j].dataLineColor=Colors.green;
+                          //
+                          //     } else{
+                          //       durationGraphData[i].tripsByDate![j].dataLineColor = blueColor;
+                          //     }
+                          //
+                          //   }
+                          //
+                          //
+                          // }
+                          selectedBarIndex = args.seriesIndex!;
+                        });
                       }
                     },
                     name: 'Trip Duration',
@@ -1524,7 +1545,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                         isExpandedTile = true;
                                         avgSpeed = null;
                                         avgDuration = null;
-                                        isSelectStartDate=false;
+                                       // isSelectStartDate=false;
                                         avgFuelConsumption = null;
                                         avgPower = null;
                                         triSpeedList.clear();
@@ -1912,7 +1933,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                   ),
                            // table(context)!,
 
-ReportsDataTable(tripList: tripList, finalData: finalData,onTapCallBack: scorllToParticularPostion),
+ReportsDataTable(tripList: tripList, finalData: finalData,onTapCallBack: scorllToParticularPostion,barIndex: selectedBarIndex, ),
 
                             SizedBox(
                               height: displayWidth(context) * 0.03,
@@ -3022,7 +3043,7 @@ Utils.showSnackBar(context,
         ),
         selectDateOption == 1 && isSelectStartDate
             ? Visibility(
-           visible: isSelectStartDate!,
+           visible: !isEndDateSected!,
               child: Column(
                   children: [
                     Padding(

@@ -138,7 +138,7 @@ registerBackgroundTask() async{
 Future<void> performarineLogFile() async {
   final Directory directory = await getApplicationDocumentsDirectory();
   mainFile = File('${directory.path}/performarinelogs_$formattedDate.log');
-  Utils.customPrint("file path: $mainFile");
+ // Utils.customPrint("file path: $mainFile");
 }
 
 createFolder() async{

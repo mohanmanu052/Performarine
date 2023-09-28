@@ -37,7 +37,7 @@ class CustomLogger{
   Future<void> writeToLogFile(String logMessage,LogEvent logEvent) async {
     final Directory directory = await getApplicationDocumentsDirectory();
     mainFile = File('${directory.path}/performarinelogs_$formattedDate.log');
-    Utils.customPrint("file path: $mainFile");
+   // Utils.customPrint("file path: $mainFile");
     if(logLevel == "info"){
       if(logEvent.level.name == "info"){
         await mainFile?.writeAsString(logMessage + '\n', mode: FileMode.append);

@@ -9,7 +9,8 @@ class ReportsDataTable extends StatefulWidget {
     List<Map<String, dynamic>> tripList = [];
       List<Map<String, dynamic>> finalData = [];
 Function(int index,dynamic personData)? onTapCallBack;
-   ReportsDataTable({super.key,required this.tripList,required this.finalData,this.onTapCallBack});
+    int? barIndex;
+   ReportsDataTable({super.key,required this.tripList,required this.finalData,this.onTapCallBack,this.barIndex = -1});
 
   @override
   State<ReportsDataTable> createState() => _ReportsDataTableState();
@@ -17,6 +18,8 @@ Function(int index,dynamic personData)? onTapCallBack;
 
 class _ReportsDataTableState extends State<ReportsDataTable> {
   int selectedRowIndex = -1;
+  int selectedBarIndex = -1;
+  int? index;
   dynamic dateWithZeros(String timesString) {
     String dateString = timesString;
     List<String> dateParts = dateString.split('-'); // ['3', '3', '2023']
@@ -26,6 +29,13 @@ class _ReportsDataTableState extends State<ReportsDataTable> {
     String formattedDate = '$year-$day-$month'; // '2023-03-03'
     return formattedDate;
   }
+
+  @override
+  void didUpdateWidget(covariant ReportsDataTable oldWidget) {
+   selectedBarIndex = widget.barIndex!;
+    super.didUpdateWidget(oldWidget);
+  }
+
 
   @override
   Widget build(BuildContext context) {
