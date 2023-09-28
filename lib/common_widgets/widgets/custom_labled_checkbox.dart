@@ -275,7 +275,7 @@ Container(
                      style: TextStyle(
                          fontWeight: FontWeight.bold,
                          fontFamily: outfit,
-                         fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.032:displayWidth(context) * 0.022,
+                         fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.030:displayWidth(context) * 0.022,
                          color: blutoothDialogTxtColor),
                    ),
              
