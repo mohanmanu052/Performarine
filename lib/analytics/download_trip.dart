@@ -178,7 +178,9 @@ class DownloadTrip {
     if (Platform.isAndroid) {
       androidInfo = await DeviceInfoPlugin().androidInfo;
 
-      String fileName = imageUrl.split('/').last;
+      String fileName = imageUrl.split('/').last.length > 30
+          ? '${imageUrl.split('/').last.split('-').first}.${imageUrl.split('/').last.split('.').last}'
+          : imageUrl.split('/').last;
 
       if (androidInfo.version.sdkInt < 29) {
         isStoragePermitted = await Permission.storage.status;
@@ -237,7 +239,6 @@ class DownloadTrip {
         } on d.DioError catch (e) {
           Utils.customPrint('DOWNLOAD EXE: ${e.error}');
           CustomLogger().logWithFile(Level.error, "DOWNLOAD EXE: ${e.error} -> $page");
-
         }
       }
     } else {
