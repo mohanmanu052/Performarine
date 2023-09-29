@@ -645,11 +645,20 @@ class Utils {
 
     if (userAccelerometerAvailable) {
       sensorData['UACC'] = [
-        {"name": "X", "IndxPosition": 0, "units": "m/s^2"},
-        {"name": "Y", "IndxPosition": 1, "units": "m/s^2"},
-        {"name": "Z", "IndxPosition": 2, "units": "m/s^2"}
+        {"name": "X", "IndexPosition": 0, "units": "m/s^2"},
+        {"name": "Y", "IndexPosition": 1, "units": "m/s^2"},
+        {"name": "Z", "IndexPosition": 2, "units": "m/s^2"}
       ];
     }
+    sensorData['GPS'] = [
+      {"name": "latitude", "IndexPosition": 0, "units": "degree"},
+      {"name": "longitude", "IndexPosition": 1, "units": "degree"},
+      {"name": "accuracy", "IndexPosition": 2, "units": "percentage"},
+      {"name": "altitide", "IndexPosition": 3, "units": "meter"},
+      {"name": "heading", "IndexPosition": 4, "units": "directions"},
+      {"name": "speed", "IndexPosition": 5, "units": "m/s"},
+      {"name": "speedAccuracy", "IndexPosition": 6, "units": "m/s"}
+    ];
 
     Map<String, dynamic> sensorInfo = {
       "sensorInfo": [sensorData]
