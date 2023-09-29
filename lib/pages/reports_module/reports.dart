@@ -669,7 +669,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                         Utils.customPrint("selected index: $selectedIndex");
                         CustomLogger().logWithFile(Level.info,
                             "selected index: $selectedIndex -> $page");
-                        setState(() {
+                      //  setState(() {
 
                           // for (int i = 0; i < durationGraphData.length; i++) {
                           //   for (int j = 0;
@@ -688,7 +688,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                           //
                           // }
                           selectedBarIndex = args.seriesIndex!;
-                        });
+                        //});
                       }
                     },
                     name: 'Trip Duration',
@@ -2216,7 +2216,7 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
   Widget tripDurationGraph(BuildContext context, double graph_height) {
      tooltipBehaviorDurationGraph = TooltipBehavior(
       enable: true,
-      shouldAlwaysShow: false,
+      shouldAlwaysShow: true,
       color: commonBackgroundColor,
       borderWidth: 1,
       builder: (dynamic data, dynamic point, dynamic series, dynamic dataIndex,
@@ -2433,6 +2433,7 @@ Utils.showSnackBar(context,
       borderWidth: 1,
       // activationMode: ActivationMode.singleTap,
       duration: 5000,
+      shouldAlwaysShow: true,
       tooltipPosition: TooltipPosition.pointer,
       builder: (dynamic data, dynamic point, dynamic series, dynamic dataIndex,
           dynamic pointIndex) {
@@ -2632,6 +2633,7 @@ Utils.showSnackBar(context,
   Widget fuelUsageGraph(BuildContext context, double graph_height) {
     TooltipBehavior tooltipBehavior = TooltipBehavior(
       enable: true,
+      shouldAlwaysShow: true,
       color: commonBackgroundColor,
       builder: (dynamic data, dynamic point, dynamic series, dynamic dataIndex,
           dynamic pointIndex) {
@@ -2782,6 +2784,8 @@ Utils.showSnackBar(context,
   Widget powerUsageGraph(BuildContext context, double graph_height) {
     TooltipBehavior tooltipBehavior = TooltipBehavior(
       enable: true,
+
+      shouldAlwaysShow: true,
       color: commonBackgroundColor,
       builder: (dynamic data, dynamic point, dynamic series, dynamic dataIndex,
           dynamic pointIndex) {

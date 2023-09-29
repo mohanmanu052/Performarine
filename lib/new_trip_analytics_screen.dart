@@ -1142,10 +1142,10 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                 textColor: Colors.black,
                                 textSize: displayWidth(context) * 0.044,
                               ),
-    
+    //Todo Add Kt From Constatnts Sameer
                               commonText(
                                 context: context,
-                                text: knots,
+                                text: "KT",
                                 fontWeight: FontWeight.w400,
                                 textColor: Colors.black,
                                 textSize: displayWidth(context) * 0.022,
