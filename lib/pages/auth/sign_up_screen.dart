@@ -349,7 +349,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         textInputAction: TextInputAction.next,
                         textInputType: selectedCountry == 'USA'
                             ? TextInputType.number
-                            : TextInputType.number,
+                            : TextInputType.text,
                         textCapitalization: TextCapitalization.characters,
                         maxLength: null, //selectedCountry == 'USA' ? 5 : 7,
                         prefixIcon: null,
