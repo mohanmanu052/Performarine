@@ -81,6 +81,8 @@ class _ReportsModuleState extends State<ReportsModule> {
   final List<ChartSeries> tempFuelUsageColumnSeriesData = [];
   final List<ChartSeries> powerUsageColumnSeriesData = [];
   final List<ChartSeries> tempPowerUsageColumnSeriesData = [];
+  GlobalKey<ReportsDataTableState> reportsDataTableKey = GlobalKey();
+
   double? avgSpeed = 0.0;
   dynamic avgDuration = 0;
   dynamic avgFuelConsumption;
@@ -129,6 +131,9 @@ String? imageUrl;
   String? registerNumber;
 List<Vessels>? vesselList;
 int selectedBarIndex = -1;
+
+int get _getItemBarItem =>selectedBarIndex;
+
   final DatabaseService _databaseService = DatabaseService();
 
   ScrollController _tripDurationSrollController = ScrollController();
@@ -664,8 +669,26 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
 
 
                     onPointTap: (ChartPointDetails args) {
+
+                      reportsDataTableKey.currentState!.setSelectedRowIndex!(args.seriesIndex!);
+                                          durationGraphData[i].tripsByDate![j].dataLineColor = blueColor;
+triSpeedList[i].tripsByDate![j].dataLineColor=Colors.green;
+setState(() {
+  
+});
+print('the color assigining was----------------'+triSpeedList[i].tripsByDate![j].dataLineColor.toString());
+                    
+
+                      reportsDataTableKey.currentState!.setState(() {
+                        reportsDataTableKey.currentState!.selectedRowIndex=args.seriesIndex!;
+
+                      });
+
+
                       if (mounted) {
                         selectedIndex = triSpeedList[i].tripsByDate![j].id!;
+
+                        triSpeedList[i].tripsByDate![j].SelectedDataIndex=args.pointIndex;
                         Utils.customPrint("selected index: $selectedIndex");
                         CustomLogger().logWithFile(Level.info,
                             "selected index: $selectedIndex -> $page");
@@ -746,6 +769,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                             ? triSpeedList[i].tripsByDate![j].avgSpeed!
                             : null,
                     onPointTap: (ChartPointDetails args) {
+                      reportsDataTableKey.currentState?.selectedRowIndex=args.pointIndex??0;
                       if (mounted) {
                         selectedIndex = triSpeedList[i].tripsByDate![j].id!;
                         Utils.customPrint("selected index: $selectedIndex");
@@ -1969,7 +1993,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                   ),
                            // table(context)!,
 
-ReportsDataTable(tripList: tripList, finalData: finalData,onTapCallBack: scorllToParticularPostion,barIndex: selectedBarIndex, ),
+ReportsDataTable(tripList: tripList, finalData: finalData,onTapCallBack: scorllToParticularPostion,barIndex: selectedBarIndex,key: reportsDataTableKey, ),
 
                             SizedBox(
                               height: displayWidth(context) * 0.03,
@@ -3521,6 +3545,11 @@ Utils.showSnackBar(context,
               valueColor: AlwaysStoppedAnimation<Color>(blueColor),
             ),
           );
+  }
+
+  void getTappedItemBarIndex(int index){
+    selectedBarIndex=index;
+
   }
 
   void scorllToParticularPostion(int index,dynamic persondata){

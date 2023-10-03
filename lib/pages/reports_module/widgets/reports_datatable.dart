@@ -9,17 +9,28 @@ class ReportsDataTable extends StatefulWidget {
     List<Map<String, dynamic>> tripList = [];
       List<Map<String, dynamic>> finalData = [];
 Function(int index,dynamic personData)? onTapCallBack;
+dynamic? globalkey;
+
+
     int? barIndex;
-   ReportsDataTable({super.key,required this.tripList,required this.finalData,this.onTapCallBack,this.barIndex = -1});
+   ReportsDataTable({super.key,required this.tripList,required this.finalData,this.onTapCallBack,this.barIndex = -1,
+this.globalkey
+
+   });
 
   @override
-  State<ReportsDataTable> createState() => _ReportsDataTableState();
+  State<ReportsDataTable> createState() => ReportsDataTableState();
 }
 
-class _ReportsDataTableState extends State<ReportsDataTable> {
+class ReportsDataTableState extends State<ReportsDataTable> {
   int selectedRowIndex = -1;
   int selectedBarIndex = -1;
   int? index;
+  int? index2=0;
+  Function(int index1) setSelectedRowIndex=(selectedRowIndex){
+print('the selected row index was-------------'+selectedRowIndex.toString());
+  };
+
   dynamic dateWithZeros(String timesString) {
     String dateString = timesString;
     List<String> dateParts = dateString.split('-'); // ['3', '3', '2023']
@@ -30,16 +41,27 @@ class _ReportsDataTableState extends State<ReportsDataTable> {
     return formattedDate;
   }
 
+  // @override
+  // void didUpdateWidget(covariant ReportsDataTable oldWidget) {
+  //  selectedBarIndex = widget.barIndex!;
+  //   super.didUpdateWidget(oldWidget);
+  // }
   @override
   void didUpdateWidget(covariant ReportsDataTable oldWidget) {
-   selectedBarIndex = widget.barIndex!;
+    // Use the selectedBarIndex from the widget instead of a local variable
+    selectedBarIndex = widget.barIndex!;
+
     super.didUpdateWidget(oldWidget);
   }
 
 
+
   @override
   Widget build(BuildContext context) {
+print('the report datatable index was----------'+selectedRowIndex.toString());
+
     return SingleChildScrollView(
+      key: widget.globalkey,
       scrollDirection: Axis.horizontal,
       child: Padding(
         padding: EdgeInsets.all(12.0),
@@ -94,7 +116,7 @@ class _ReportsDataTableState extends State<ReportsDataTable> {
           ],
           rows: [
             ...widget.tripList.map((person) =>
-            
+
             
             
              DataRow(
@@ -136,6 +158,7 @@ class _ReportsDataTableState extends State<ReportsDataTable> {
 
                                                         onTap:(){
 
+                      print('the reportTable data was------------'+widget.tripList.toString());
 widget.onTapCallBack!(widget.tripList.indexOf(person),person);
                                                               setState(() {
       selectedRowIndex =  widget.tripList.indexOf(person);
