@@ -141,6 +141,7 @@ class TripsByDate {
   double? distance;
   double? speed;
   double? avgSpeed;
+  int?SelectedDataIndex;
   MissingLineNumbers? missingLineNumbers;
   List<String>? sensorType;
   bool? vesselAnalyticsCalc;
@@ -168,6 +169,7 @@ class TripsByDate {
     this.syncUpdatedAt,
     this.duration,
     this.distance,
+    this.SelectedDataIndex,
     this.speed,
     this.avgSpeed,
     this.missingLineNumbers,
