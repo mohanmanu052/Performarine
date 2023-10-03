@@ -192,6 +192,7 @@ class CreateVessel {
     data['lengthOverall'] = this.lengthOverall;
     data['beam'] = this.beam;
     data['draft'] = this.draft;
+    data['displacement'] = this.displacement;
     data['vesselSize'] = this.vesselSize;
     data['capacity'] = this.capacity;
     data['isSync'] = this.isSync;

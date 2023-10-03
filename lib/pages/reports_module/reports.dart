@@ -669,7 +669,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
 
                       reportsDataTableKey.currentState!.setSelectedRowIndex!(args.seriesIndex!);
                                           durationGraphData[i].tripsByDate![j].dataLineColor = blueColor;
-triSpeedList[i].tripsByDate![j].dataLineColor=Colors.green;
+triSpeedList[i].tripsByDate![j].dataLineColor=reroprtHighlightBackgroundColor;
 setState(() {
   
 });
@@ -3557,7 +3557,7 @@ Utils.showSnackBar(context,
                   j++) {
                     durationGraphData[i].tripsByDate![j].dataLineColor = blueColor;
                     if(durationGraphData[i].tripsByDate![j].id==persondata['tripDetails']){
-durationGraphData[i].tripsByDate![j].dataLineColor=Colors.green;
+durationGraphData[i].tripsByDate![j].dataLineColor=reroprtHighlightBackgroundColor;
 
                     }
 
