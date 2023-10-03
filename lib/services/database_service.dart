@@ -68,6 +68,7 @@ class DatabaseService {
       ' lengthOverall DOUBLE,'
       ' beam DOUBLE, '
       'draft DOUBLE, '
+      'displacement TEXT, '
       'vesselSize INTEGER, '
       'capacity INTEGER,'
       'builtYear TEXT ,'

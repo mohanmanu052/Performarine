@@ -34,6 +34,7 @@ class CreateVessel {
   String? avgSpeed;*/
   int? isCloud;
   List<File?>? selectedImages;
+  String? displacement;
 
   CreateVessel(
       {this.id,
@@ -65,7 +66,9 @@ class CreateVessel {
       this.avgSpeed,*/
       this.isCloud,
       this.imageURLs,
-      this.selectedImages});
+      this.selectedImages,
+        this.displacement
+      });
 
   CreateVessel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -82,6 +85,7 @@ class CreateVessel {
     lengthOverall = json['lengthOverall'];
     beam = json['beam'];
     draft = json['draft'];
+    displacement = json['displacement'] != null ? json['displacement'] : "";
     vesselSize = json['vesselSize'];
     capacity = json['capacity'];
     builtYear = json['builtYear'];
@@ -118,6 +122,7 @@ class CreateVessel {
       'lengthOverall': lengthOverall,
       'beam': beam,
       'draft': draft,
+      'displacement': displacement,
       'vesselSize': vesselSize,
       'capacity': capacity,
       'builtYear': builtYear,
@@ -152,6 +157,7 @@ class CreateVessel {
       lengthOverall: map['lengthOverall'],
       beam: map['beam'],
       draft: map['draft'],
+      displacement: map['displacement'] ?? "",
       vesselSize: map['vesselSize'] ?? 0.0,
       capacity: map['capacity'],
       builtYear: map['builtYear'],
@@ -186,6 +192,7 @@ class CreateVessel {
     data['lengthOverall'] = this.lengthOverall;
     data['beam'] = this.beam;
     data['draft'] = this.draft;
+    data['displacement'] = this.displacement;
     data['vesselSize'] = this.vesselSize;
     data['capacity'] = this.capacity;
     data['isSync'] = this.isSync;

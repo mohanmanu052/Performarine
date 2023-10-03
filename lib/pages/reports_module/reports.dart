@@ -301,7 +301,7 @@ TooltipBehavior? fuelUsageToolTip;
         ));
     int totalMinutes = dateTime.hour * 60 + dateTime.minute;
 
-    Utils.customPrint('TOTAL MIN: $totalMinutes');
+    // Utils.customPrint('TOTAL MIN: $totalMinutes');
     CustomLogger().logWithFile(Level.info, "TOTAL MIN: $totalMinutes -> $page");
 
     return double.parse('$totalMinutes.${parts[2]}');
@@ -629,9 +629,6 @@ setState(() {
                     "trip duration data is: ${durationGraphData[i].tripsByDate![j].id} -> $page");
                                     Utils.customPrint(
                     "selected row index : ${selectedRowIndex.toString()}    ${durationGraphData[i].toString()} ");
-
-
-
 
                 if (duration(triSpeedList[i].tripsByDate![j].duration!) > 0) {
                         final Color barColor = (selectedRowIndex == j) ? Colors.red : Colors.black;
@@ -1131,7 +1128,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                 child: DropdownButtonHideUnderline(
                                   child: FormField(
                                     builder: (state) {
-            return
+                                  return
                                      DropdownButtonFormField2<DropdownItem>(
                                       
                                       isExpanded: true,
@@ -1831,12 +1828,15 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                             fuelUsageButtonColor = false;
                                             powerUsageButtonColor = false;
                                           });
-                                          _tripDurationSrollController.animateTo(
-                                            0.0,
-                                            duration: Duration(seconds: 2),
-                                            curve: Curves.fastOutSlowIn,
-                                          );
-                                          // _tripDurationSrollController.jumpTo(value)
+                                          Future.delayed(Duration(seconds: 1), (){
+                                            if(_tripDurationSrollController.positions.isNotEmpty){
+                                              _tripDurationSrollController.animateTo(
+                                                0.0,
+                                                duration: Duration(seconds: 2),
+                                                curve: Curves.fastOutSlowIn,
+                                              );
+                                            }
+                                          });
                                         },
                                         child: Container(
                                           width: displayWidth(context) * 0.20,
@@ -1877,12 +1877,15 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                             fuelUsageButtonColor = false;
                                             powerUsageButtonColor = false;
                                           });
-                                          _avgSpeedSrollController.animateTo(
-                                            0.0,
-                                            duration: Duration(seconds: 2),
-                                            curve: Curves.fastOutSlowIn,
-                                          );
-
+                                          Future.delayed(Duration(seconds: 1), (){
+                                            if(_avgSpeedSrollController.positions.isNotEmpty){
+                                              _avgSpeedSrollController.animateTo(
+                                                0.0,
+                                                duration: Duration(seconds: 2),
+                                                curve: Curves.fastOutSlowIn,
+                                              );
+                                            }
+                                          });
                                         },
                                         child: Container(
                                           width: displayWidth(context) * 0.18,
@@ -1922,11 +1925,15 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                             fuelUsageButtonColor = true;
                                             powerUsageButtonColor = false;
                                           });
-                                          _fuelUsageSrollController.animateTo(
-                                            0.0,
-                                            duration: Duration(seconds: 2),
-                                            curve: Curves.fastOutSlowIn,
-                                          );
+                                          Future.delayed(Duration(seconds: 1), (){
+                                            if(_fuelUsageSrollController.positions.isNotEmpty){
+                                              _fuelUsageSrollController.animateTo(
+                                                0.0,
+                                                duration: Duration(seconds: 2),
+                                                curve: Curves.fastOutSlowIn,
+                                              );
+                                            }
+                                          });
                                         },
                                         child: Container(
                                           width: displayWidth(context) * 0.20,
@@ -1966,11 +1973,15 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                             fuelUsageButtonColor = false;
                                             powerUsageButtonColor = true;
                                           });
-                                          _powerUsageSrollController.animateTo(
-                                            0.0,
-                                            duration: Duration(seconds: 2),
-                                            curve: Curves.fastOutSlowIn,
-                                          );
+                                          Future.delayed(Duration(seconds: 1), (){
+                                            if(_powerUsageSrollController.positions.isNotEmpty){
+                                              _powerUsageSrollController.animateTo(
+                                                0.0,
+                                                duration: Duration(seconds: 2),
+                                                curve: Curves.fastOutSlowIn,
+                                              );
+                                            }
+                                          });
                                         },
                                         child: Container(
                                           width: displayWidth(context) * 0.22,
@@ -3586,7 +3597,7 @@ Utils.showSnackBar(context,
                   j++) {
                     durationGraphData[i].tripsByDate![j].dataLineColor = blueColor;
                     if(durationGraphData[i].tripsByDate![j].id==persondata['tripDetails']){
-durationGraphData[i].tripsByDate![j].dataLineColor=Colors.green;
+durationGraphData[i].tripsByDate![j].dataLineColor=reroprtHighlightBackgroundColor;
 
                     }
 

@@ -661,6 +661,7 @@ class _TripWidgetState extends State<TripWidget> {
 
     Utils.customPrint("SENSOR INFO ${sensorInfo['sensorInfo']}");
 
+
     var queryParameters;
     queryParameters = {
       "id": tripData.id,

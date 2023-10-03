@@ -374,7 +374,7 @@ ScreenshotController screen_shot_controller=ScreenshotController();
           backgroundColor: backgroundColor,
           key: scaffoldKey,
           resizeToAvoidBottomInset: false,
-          drawer: CustomDrawer(scaffoldKey: scaffoldKey,),
+          drawer: CustomDrawer(scaffoldKey: scaffoldKey,orientation: orientation,),
           appBar: AppBar(
             backgroundColor: backgroundColor,
             elevation: 0,
