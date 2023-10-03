@@ -715,7 +715,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                         children: [
                                                           commonText(
                                                               context: context,
-                                                              text: '4500 $pound',
+                                                              text: '${widget.vessel!.displacement} $pound',
                                                               fontWeight: FontWeight.w700,
                                                               textColor: Colors.black,
                                                               textSize:

@@ -215,7 +215,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                   isBtnClick! ? Center(
                       child: CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(
-                            circularProgressColor),
+                            blueColor),
                       ))
                       :     CommonButtons.getActionButton(
                       title: 'Update Password',
