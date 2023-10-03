@@ -625,9 +625,6 @@ setState(() {
                                     Utils.customPrint(
                     "selected row index : ${selectedRowIndex.toString()}    ${durationGraphData[i].toString()} ");
 
-
-
-
                 if (duration(triSpeedList[i].tripsByDate![j].duration!) > 0) {
                         final Color barColor = (selectedRowIndex == j) ? Colors.red : Colors.black;
 
@@ -1091,7 +1088,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                 child: DropdownButtonHideUnderline(
                                   child: FormField(
                                     builder: (state) {
-            return
+                                  return
                                      DropdownButtonFormField2<DropdownItem>(
                                       
                                       isExpanded: true,
