@@ -2030,7 +2030,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                   ),
                            // table(context)!,
 
-ReportsDataTable(tripList: tripList, finalData: finalData,onTapCallBack: scorllToParticularPostion,barIndex: selectedBarIndex,key: reportsDataTableKey, ),
+ReportsDataTable(tripList: tripList, finalData: finalData,onTapCallBack: scorllToParticularPostion,barIndex: selectedBarIndex,key: reportsDataTableKey,orientation: orientation, ),
 
                             SizedBox(
                               height: displayWidth(context) * 0.03,
@@ -3589,7 +3589,7 @@ Utils.showSnackBar(context,
 
   }
 
-  void scorllToParticularPostion(int index,dynamic persondata){
+  void scorllToParticularPostion(int index,dynamic persondata,Orientation orientation){
 
             for (int i = 0; i < durationGraphData.length; i++) {
               for (int j = 0;
@@ -3597,7 +3597,7 @@ Utils.showSnackBar(context,
                   j++) {
                     durationGraphData[i].tripsByDate![j].dataLineColor = blueColor;
                     if(durationGraphData[i].tripsByDate![j].id==persondata['tripDetails']){
-durationGraphData[i].tripsByDate![j].dataLineColor=reroprtHighlightBackgroundColor;
+durationGraphData[i].tripsByDate![j].dataLineColor=Colors.green;
 
                     }
 
@@ -3611,11 +3611,26 @@ durationGraphData[i].tripsByDate![j].dataLineColor=reroprtHighlightBackgroundCol
             setState(() {
               
             });
+if(orientation==Orientation.portrait){
             _mainScrollController.animateTo(
   0.0, // Scroll to the top
   duration: Duration(milliseconds: 300), // Adjust the duration as needed
   curve: Curves.easeInOut, // Specify the easing curve
 );
+
+
+}else{
+
+            _mainScrollController.animateTo(
+  300, // Scroll to the top
+  duration: Duration(milliseconds: 300), // Adjust the duration as needed
+  curve: Curves.easeInOut, // Specify the easing curve
+);
+
+
+
+}
+
 
              // Calculate the scroll position based on your data
 if(selectedButton=="trip duration"){

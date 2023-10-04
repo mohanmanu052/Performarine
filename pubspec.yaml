@@ -8,11 +8,11 @@ version: 1.0.0+1
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
-
 dependencies:
-  cupertino_icons: ^1.0.2
   flutter:
     sdk: flutter
+
+  cupertino_icons: ^1.0.2
 #  uuid: ^3.0.7
   objectid: 2.0.0
  # font_awesome_flutter: ^10.2.1
@@ -70,9 +70,11 @@ dependencies:
   flutter_blue_plus: ^1.5.2
   bluetooth_enable_fork: ^0.1.6
   table_calendar: ^3.0.0
-  syncfusion_flutter_charts: 21.2.4
   background_locator_2:
     path: ./performarine_location_tracker
+  syncfusion_flutter_charts: 
+    path: ./fluttercharts
+
   webview_flutter: ^2.0.14
   flutter_easyloading: ^3.0.5
   #airplane_mode_checker: ^2.0.0
@@ -95,6 +97,8 @@ dependencies:
   dropdown_button2: ^2.0.0
   fluttertoast: ^8.2.2
   #syncfusion_flutter_core: ^23.1.36
+  # intl: ^0.18.0
+
 
 
 dependency_overrides:
