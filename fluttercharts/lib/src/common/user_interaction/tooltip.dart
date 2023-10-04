@@ -78,7 +78,7 @@ class TooltipBehavior {
   ///   );
   /// }
   /// ```
-  final bool enable;
+   bool enable;
 
   /// Color of the tooltip.
   ///
@@ -101,7 +101,7 @@ class TooltipBehavior {
   ///   );
   /// }
   /// ```
-  final Color? color;
+   Color? color;
 
   /// Header of the tooltip. By default, the series name will be displayed in the header.
   ///
@@ -122,7 +122,7 @@ class TooltipBehavior {
   ///   );
   /// }
   /// ```
-  final String? header;
+   String? header;
 
   /// Opacity of the tooltip.
   ///
@@ -147,7 +147,7 @@ class TooltipBehavior {
   ///   );
   /// }
   /// ```
-  final double opacity;
+   double opacity;
 
   /// Customizes the tooltip text.
   ///
@@ -170,7 +170,7 @@ class TooltipBehavior {
   ///   );
   /// }
   /// ```
-  final TextStyle? textStyle;
+   TextStyle? textStyle;
 
   /// Specifies the number decimals to be displayed in tooltip text.
   ///
@@ -193,7 +193,7 @@ class TooltipBehavior {
   ///   );
   /// }
   /// ```
-  final int decimalPlaces;
+   int decimalPlaces;
 
   /// Formats the tooltip text.
   ///
@@ -219,7 +219,7 @@ class TooltipBehavior {
   ///   );
   /// }
   /// ```
-  final String? format;
+   String? format;
 
   /// Duration for animating the tooltip.
   ///
@@ -242,7 +242,7 @@ class TooltipBehavior {
   ///   );
   /// }
   /// ```
-  final int animationDuration;
+   int animationDuration;
 
   /// Toggles the visibility of the marker in the tooltip.
   ///
@@ -265,7 +265,7 @@ class TooltipBehavior {
   ///   );
   /// }
   /// ```
-  final bool canShowMarker;
+   bool canShowMarker;
 
   /// Gesture for activating the tooltip.
   ///
@@ -292,7 +292,7 @@ class TooltipBehavior {
   ///   );
   /// }
   /// ```
-  final ActivationMode activationMode;
+   ActivationMode activationMode;
 
   /// Border color of the tooltip.
   ///
@@ -316,7 +316,7 @@ class TooltipBehavior {
   ///   );
   /// }
   /// ```
-  final Color borderColor;
+   Color borderColor;
 
   /// Border width of the tooltip.
   ///
@@ -340,7 +340,7 @@ class TooltipBehavior {
   ///   );
   /// }
   /// ```
-  final double borderWidth;
+   double borderWidth;
 
   /// Builder of the tooltip.
   ///
@@ -372,7 +372,7 @@ class TooltipBehavior {
   ///   );
   /// }
   ///```
-  final ChartWidgetBuilder<dynamic>? builder;
+   ChartWidgetBuilder<dynamic>? builder;
 
   /// Color of the tooltip shadow.
   ///
@@ -395,7 +395,7 @@ class TooltipBehavior {
   ///   );
   /// }
   /// ```
-  final Color? shadowColor;
+   Color? shadowColor;
 
   /// Elevation of the tooltip.
   ///
@@ -418,7 +418,7 @@ class TooltipBehavior {
   ///   );
   /// }
   /// ```
-  final double elevation;
+   double elevation;
 
   /// Shows or hides the tooltip.
   ///
@@ -443,7 +443,7 @@ class TooltipBehavior {
   ///   );
   /// }
   /// ```
-  final bool shouldAlwaysShow;
+   bool shouldAlwaysShow;
 
   /// Duration for displaying the tooltip.
   ///
@@ -466,7 +466,7 @@ class TooltipBehavior {
   ///   );
   /// }
   /// ```
-  final double duration;
+   double duration;
 
   /// Alignment of the text in the tooltip.
   ///
@@ -489,7 +489,7 @@ class TooltipBehavior {
   ///   );
   /// }
   /// ```
-  final ChartAlignment textAlignment;
+   ChartAlignment textAlignment;
 
   /// Show tooltip at tapped position.
   ///
@@ -512,7 +512,7 @@ class TooltipBehavior {
   ///   );
   /// }
   /// ```
-  final TooltipPosition tooltipPosition;
+   TooltipPosition tooltipPosition;
 
   /// Share the tooltip with same index points.
   ///
@@ -535,7 +535,7 @@ class TooltipBehavior {
   ///   );
   /// }
   /// ```
-  final bool shared;
+   bool shared;
 
   @override
   bool operator ==(Object other) {
@@ -571,7 +571,7 @@ class TooltipBehavior {
 
   @override
   int get hashCode {
-    final List<Object?> values = <Object?>[
+     List<Object?> values = <Object?>[
       textStyle,
       activationMode,
       animationDuration,
@@ -604,7 +604,7 @@ class TooltipBehavior {
   /// * x & y - logical pixel values to position the tooltip.
   void showByPixel(double x, double y) {
     if (_stateProperties != null) {
-      final TooltipRenderingDetails renderingDetails =
+       TooltipRenderingDetails renderingDetails =
           TooltipHelper.getRenderingDetails(
               _stateProperties.renderingDetails.tooltipBehaviorRenderer);
       renderingDetails.internalShowByPixel(x, y);
@@ -622,17 +622,17 @@ class TooltipBehavior {
   void show(dynamic x, double y, [String? xAxisName, String? yAxisName]) {
     if (_stateProperties != null &&
         _stateProperties.chart is SfCartesianChart) {
-      final dynamic chart = _stateProperties.chart;
-      final RenderingDetails renderingDetails =
+       dynamic chart = _stateProperties.chart;
+       RenderingDetails renderingDetails =
           _stateProperties.renderingDetails;
-      final TooltipBehaviorRenderer tooltipBehaviorRenderer =
+       TooltipBehaviorRenderer tooltipBehaviorRenderer =
           renderingDetails.tooltipBehaviorRenderer;
       bool? isInsidePointRegion = false;
       ChartAxisRendererDetails? xAxisDetails, yAxisDetails;
       if (xAxisName != null && yAxisName != null) {
-        for (final ChartAxisRenderer axisRenderer
+        for ( ChartAxisRenderer axisRenderer
             in _stateProperties.chartAxis.axisRenderersCollection) {
-          final ChartAxisRendererDetails axisDetails =
+           ChartAxisRendererDetails axisDetails =
               AxisHelper.getAxisRendererDetails(axisRenderer);
           if (axisDetails.name == xAxisName) {
             xAxisDetails = axisDetails;
@@ -644,7 +644,7 @@ class TooltipBehavior {
         xAxisDetails = _stateProperties.chartAxis.primaryXAxisDetails;
         yAxisDetails = _stateProperties.chartAxis.primaryYAxisDetails;
       }
-      final ChartLocation position = calculatePoint(
+       ChartLocation position = calculatePoint(
           (x is DateTime &&
                   (xAxisDetails! is DateTimeCategoryAxisDetails) == false)
               ? x.millisecondsSinceEpoch
@@ -664,13 +664,13 @@ class TooltipBehavior {
       for (int i = 0;
           i < _stateProperties.chartSeries.visibleSeriesRenderers.length;
           i++) {
-        final SeriesRendererDetails seriesRendererDetails =
+         SeriesRendererDetails seriesRendererDetails =
             SeriesHelper.getSeriesRendererDetails(
                 _stateProperties.chartSeries.visibleSeriesRenderers[i]);
         if (seriesRendererDetails.visible! == true &&
             seriesRendererDetails.series.enableTooltip == true &&
             seriesRendererDetails.regionalData != null) {
-          final double padding = (seriesRendererDetails.seriesType ==
+           double padding = (seriesRendererDetails.seriesType ==
                       'bubble' ||
                   seriesRendererDetails.seriesType == 'scatter' ||
                   seriesRendererDetails.seriesType.contains('column') == true ||
@@ -679,8 +679,8 @@ class TooltipBehavior {
               : 15; // regional padding to detect smooth touch
           seriesRendererDetails.regionalData!
               .forEach((dynamic regionRect, dynamic values) {
-            final Rect region = regionRect[0];
-            final Rect paddedRegion = Rect.fromLTRB(
+             Rect region = regionRect[0];
+             Rect paddedRegion = Rect.fromLTRB(
                 region.left - padding,
                 region.top - padding,
                 region.right + padding,
@@ -697,7 +697,7 @@ class TooltipBehavior {
       } else if (renderingDetails.tooltipBehaviorRenderer
               ._tooltipRenderingDetails.tooltipTemplate ==
           null) {
-        final SfTooltipState? tooltipState =
+         SfTooltipState? tooltipState =
             tooltipBehaviorRenderer._tooltipRenderingDetails.chartTooltipState;
         if (isInsidePointRegion ?? false) {
           tooltipBehaviorRenderer._tooltipRenderingDetails
@@ -721,8 +721,9 @@ class TooltipBehavior {
   ///
   /// * pointIndex - index of the point for which the tooltip should be shown
   void showByIndex(int seriesIndex, int pointIndex) {
+    print('coming to toolTipShowingByIndex----');
     if (_stateProperties != null) {
-      final TooltipRenderingDetails renderingDetails =
+       TooltipRenderingDetails renderingDetails =
           TooltipHelper.getRenderingDetails(
               _stateProperties.renderingDetails.tooltipBehaviorRenderer);
       renderingDetails.internalShowByIndex(seriesIndex, pointIndex);
@@ -732,7 +733,7 @@ class TooltipBehavior {
   /// Hides the tooltip if it is displayed.
   void hide() {
     if (_stateProperties != null) {
-      final TooltipBehaviorRenderer tooltipBehaviorRenderer =
+       TooltipBehaviorRenderer tooltipBehaviorRenderer =
           _stateProperties.renderingDetails.tooltipBehaviorRenderer;
       // ignore: unnecessary_null_comparison
       if (tooltipBehaviorRenderer != null) {
@@ -763,7 +764,7 @@ class TooltipBehaviorRenderer with ChartBehavior {
     _tooltipRenderingDetails = TooltipRenderingDetails(_stateProperties);
   }
 
-  final dynamic _stateProperties;
+   dynamic _stateProperties;
 
   /// Specifies the rendering details of tooltip.
   late TooltipRenderingDetails _tooltipRenderingDetails;
@@ -868,13 +869,13 @@ class TooltipValue {
   TooltipValue(this.seriesIndex, this.pointIndex, [this.outlierIndex]);
 
   /// Index of the series.
-  final int? seriesIndex;
+   int? seriesIndex;
 
   /// Index of data points.
-  final int pointIndex;
+   int pointIndex;
 
   /// Index of outlier points.
-  final int? outlierIndex;
+   int? outlierIndex;
 
   /// Position of the pointer when the tooltip position mode is set as pointer.
   Offset? pointerPosition;

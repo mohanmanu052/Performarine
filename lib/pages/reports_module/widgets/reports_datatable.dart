@@ -12,7 +12,6 @@ class ReportsDataTable extends StatefulWidget {
 Function(int index,dynamic personData,Orientation orientation)? onTapCallBack;
 dynamic? globalkey;
 
-
     int? barIndex;
    ReportsDataTable({super.key,required this.tripList,required this.finalData,this.onTapCallBack,this.barIndex = -1,
 this.globalkey,this.orientation
@@ -28,6 +27,8 @@ class ReportsDataTableState extends State<ReportsDataTable> {
   int selectedBarIndex = -1;
   int? index;
   int? index2=0;
+  bool isToolTipShown=false;
+
   Function(int index1) setSelectedRowIndex=(selectedRowIndex){
 print('the selected row index was-------------'+selectedRowIndex.toString());
   };
