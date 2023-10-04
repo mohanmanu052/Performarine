@@ -149,7 +149,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     commonProvider = context.read<CommonProvider>();
 
-    Utils.customPrint('VESSEL Image ${isTripEndedOrNot}');
+    Utils.customPrint('VESSEL Image ${widget.vessel!.displacement!.isEmpty}');
 
     checkSensorAvailabelOrNot();
 
@@ -715,7 +715,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                         children: [
                                                           commonText(
                                                               context: context,
-                                                              text: '${widget.vessel!.displacement} $pound',
+                                                              text: widget.vessel!.displacement!.isEmpty ? '0 $pound': '${widget.vessel!.displacement} $pound',
                                                               fontWeight: FontWeight.w700,
                                                               textColor: Colors.black,
                                                               textSize:

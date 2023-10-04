@@ -18,6 +18,7 @@ import 'package:performarine/analytics/location_callback_handler.dart';
 import 'package:performarine/analytics/start_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
@@ -2118,7 +2119,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                               commonText(
                                   context: context,
                                   text:
-                                  'Last time you used performarine. there was a trip in progress. do you want to end the trip or continue?',
+                                  lastTimeUsedText,
                                   fontWeight: FontWeight.w500,
                                   textColor: Colors.black,
                                   textSize: displayWidth(context) * 0.04,

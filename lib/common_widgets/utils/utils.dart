@@ -361,7 +361,7 @@ class Utils {
                           padding: const EdgeInsets.only(left: 8.0, right: 8),
                           child: commonText(
                               context: context,
-                              text: 'Are you sure, you want to End the Trip?',
+                              text: endTripSubText,
                               fontWeight: FontWeight.w400,
                               textColor: Colors.black,
                               textSize: displayWidth(context) * 0.042,

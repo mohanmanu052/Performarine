@@ -23,6 +23,7 @@ import '../../common_widgets/widgets/user_feed_back.dart';
 import 'dart:io';
 
 import '../../main.dart';
+import '../common_widgets/utils/constants.dart';
 
 class OldTripViewListing extends StatefulWidget {
   String? vesselId, calledFrom;
@@ -363,7 +364,7 @@ class _OldTripViewListingState extends State<OldTripViewListing> {
                                   commonText(
                                       context: context,
                                       text:
-                                      'This action is irreversible. do you want to delete it?',
+                                      deleteTripSubText,
                                       fontWeight: FontWeight.w500,
                                       textColor: Colors.grey,
                                       textSize: displayWidth(ctx) * 0.036,
