@@ -84,6 +84,7 @@ class _ReportsModuleState extends State<ReportsModule> {
   final List<ChartSeries> powerUsageColumnSeriesData = [];
   final List<ChartSeries> tempPowerUsageColumnSeriesData = [];
   GlobalKey<ReportsDataTableState> reportsDataTableKey = GlobalKey();
+  ActivationMode tooltipactivationMode=ActivationMode.none;
 
   double? avgSpeed = 0.0;
   dynamic avgDuration = 0;
@@ -163,6 +164,8 @@ TooltipBehavior? powerUsageToolTip;
 TooltipBehavior? avgSpeedToolTip;
 TooltipBehavior? fuelUsageToolTip;
 
+
+bool bargraphtooltipBool=false;
 
   //Convertion of date time into month/day/year format
   String convertIntoMonthDayYear(DateTime date) {
@@ -671,7 +674,9 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
 
 
                     onPointTap: (ChartPointDetails args) {
+
                       reportsDataTableKey.currentState!.setSelectedRowIndex!(args.seriesIndex!);
+tooltipactivationMode=ActivationMode.singleTap;
 
             for (int i = 0; i < durationGraphData.length; i++) {
               for (int j = 0;
@@ -685,33 +690,39 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
 
                                           triSpeedList[i].tripsByDate![j].dataLineColor=Colors.green;
                                           setState(() {
+                                            print('the tool tip shown was---------------'+reportsDataTableKey.currentState!.isToolTipShown.toString());
+                                            reportsDataTableKey.currentState!.isToolTipShown=true;
+                                            bargraphtooltipBool=true;
+                                            tooltipactivationMode=ActivationMode.none;
+
+                                              // tooltipBehaviorDurationGraph!.enable=true;
+                                              // tooltipBehaviorDurationGraph!.activationMode=ActivationMode.singleTap;
+                 // tooltipBehaviorDurationGraph!.showByIndex(args.seriesIndex!, args.pointIndex!);
+
 
                                           });
 
+
+
+
+
+
 Future.delayed(Duration(milliseconds: 100),(){
-tooltipBehaviorDurationGraph!.showByIndex(args.seriesIndex!, args.pointIndex!);
+
+
+                  tooltipBehaviorDurationGraph!.showByIndex(args.seriesIndex!, args.pointIndex!);
+                      reportsDataTableKey.currentState!.setState(() {
+
+                                                         reportsDataTableKey.currentState!.isToolTipShown=false;
+                                                         });
 
 
 }
 );
 
 
-                                                                                      //tooltipBehaviorDurationGraph!.showByIndex(args.seriesIndex!, args.pointIndex!);
 
-                                  // setState(() {
-                                    
-                                  // });
                                   
-                                  
-                                  // tooltipBehaviorDurationGraph!.show(0, 0);   
-                                          // setState(() {
-                                            
-                                          // });
-//triSpeedList[i].tripsByDate![j].dataLineColor=Colors.green;
-// setState(() {
-  
-// });
-                                        //  commonProvider.updateIndex();
 
 
                       reportsDataTableKey.currentState!.setState(() {
@@ -806,6 +817,61 @@ tooltipBehaviorDurationGraph!.showByIndex(args.seriesIndex!, args.pointIndex!);
                             ? triSpeedList[i].tripsByDate![j].avgSpeed!
                             : null,
                     onPointTap: (ChartPointDetails args) {
+
+
+                                            reportsDataTableKey.currentState!.setSelectedRowIndex!(args.seriesIndex!);
+tooltipactivationMode=ActivationMode.singleTap;
+
+            for (int i = 0; i < durationGraphData.length; i++) {
+              for (int j = 0;
+                  j < durationGraphData[i].tripsByDate!.length;
+                  j++) {
+
+                    durationGraphData[i].tripsByDate![j].dataLineColor=null;
+                  }}
+
+
+
+                                          triSpeedList[i].tripsByDate![j].dataLineColor=Colors.green;
+                                          setState(() {
+                                            reportsDataTableKey.currentState!.isToolTipShown=true;
+                                            bargraphtooltipBool=true;
+                                            tooltipactivationMode=ActivationMode.none;
+
+
+
+                                          });
+
+
+
+
+
+
+Future.delayed(Duration(milliseconds: 100),(){
+
+
+                  avgSpeedToolTip!.showByIndex(args.seriesIndex!, args.pointIndex!);
+                      reportsDataTableKey.currentState!.setState(() {
+
+                                                         reportsDataTableKey.currentState!.isToolTipShown=false;
+                                                         });
+
+
+}
+);
+
+
+
+                                  
+
+
+                      reportsDataTableKey.currentState!.setState(() {
+                        reportsDataTableKey.currentState!.selectedRowIndex=args.seriesIndex!;
+
+                      });
+
+
+
                       reportsDataTableKey.currentState?.selectedRowIndex=args.pointIndex??0;
                       if (mounted) {
                         selectedIndex = triSpeedList[i].tripsByDate![j].id!;
@@ -1040,6 +1106,8 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
   @override
   void initState() {
     super.initState();
+
+
     barColors = List.generate(
       tripList.length,
       (index) => Colors.black, // Initialize with a default color
@@ -2289,7 +2357,8 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
   //Trip duration graph
   Widget tripDurationGraph(BuildContext context, double graph_height, Orientation orientation) {
      tooltipBehaviorDurationGraph = TooltipBehavior(
-      enable: true,
+      enable: reportsDataTableKey.currentState?.isToolTipShown,
+      activationMode: reportsDataTableKey.currentState?.isToolTipShown==null?ActivationMode.singleTap: tooltipactivationMode,
       shouldAlwaysShow: true,
       color: commonBackgroundColor,
       borderWidth: 1,
@@ -2375,7 +2444,7 @@ Utils.showSnackBar(context,
             ],
           ),
         );
-      },
+     },
     );
     return
      Stack(
@@ -2502,12 +2571,13 @@ Utils.showSnackBar(context,
   // Average speed graph in reports
   Widget avgSpeedGraph(BuildContext context, double graph_height, Orientation orientation) {
      avgSpeedToolTip = TooltipBehavior(
-      enable: true,
+      enable: reportsDataTableKey.currentState?.isToolTipShown,
+      activationMode: reportsDataTableKey.currentState?.isToolTipShown==null?ActivationMode.singleTap: tooltipactivationMode,
+      shouldAlwaysShow: true,
       color: commonBackgroundColor,
       borderWidth: 1,
       // activationMode: ActivationMode.singleTap,
-      duration: 5000,
-      shouldAlwaysShow: true,
+      //duration: 5000,
       tooltipPosition: TooltipPosition.pointer,
       builder: (dynamic data, dynamic point, dynamic series, dynamic dataIndex,
           dynamic pointIndex) {
@@ -2706,9 +2776,11 @@ Utils.showSnackBar(context,
   // Fuel usage graph on reports
   Widget fuelUsageGraph(BuildContext context, double graph_height, Orientation orientation) {
      fuelUsageToolTip = TooltipBehavior(
-      enable: true,
+      enable: reportsDataTableKey.currentState?.isToolTipShown,
+      activationMode: reportsDataTableKey.currentState?.isToolTipShown==null?ActivationMode.singleTap: tooltipactivationMode,
       shouldAlwaysShow: true,
       color: commonBackgroundColor,
+      borderWidth: 1,
       builder: (dynamic data, dynamic point, dynamic series, dynamic dataIndex,
           dynamic pointIndex) {
         CartesianChartPoint currentPoint = point;
@@ -2857,10 +2929,11 @@ Utils.showSnackBar(context,
   // Power usage graph on reports
   Widget powerUsageGraph(BuildContext context, double graph_height, Orientation orientation) {
      powerUsageToolTip = TooltipBehavior(
-      enable: true,
-
+      enable: reportsDataTableKey.currentState?.isToolTipShown,
+      activationMode: reportsDataTableKey.currentState?.isToolTipShown==null?ActivationMode.singleTap: tooltipactivationMode,
       shouldAlwaysShow: true,
       color: commonBackgroundColor,
+      borderWidth: 1,
       builder: (dynamic data, dynamic point, dynamic series, dynamic dataIndex,
           dynamic pointIndex) {
         CartesianChartPoint currentPoint = point;
@@ -3621,7 +3694,7 @@ if(orientation==Orientation.portrait){
 }else{
 
             _mainScrollController.animateTo(
-  300, // Scroll to the top
+  500, // Scroll to the top
   duration: Duration(milliseconds: 300), // Adjust the duration as needed
   curve: Curves.easeInOut, // Specify the easing curve
 );
