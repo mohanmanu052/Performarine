@@ -37,6 +37,8 @@ class ReportsModule extends StatefulWidget {
 class _ReportsModuleState extends State<ReportsModule> {
   String page = "Reports_module";
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
+      GlobalKey<SfCartesianChartState> dration_barchart_key= GlobalKey();
+
   final _formKey = GlobalKey<FormState>();
   final controller = ScreenshotController();
   late CommonProvider commonProvider;
@@ -132,7 +134,6 @@ String? imageUrl;
 List<Vessels>? vesselList;
 int selectedBarIndex = -1;
 
-int get _getItemBarItem =>selectedBarIndex;
 
   final DatabaseService _databaseService = DatabaseService();
 
@@ -158,6 +159,10 @@ List<Color> barColors = [];
 
 
 TooltipBehavior? tooltipBehaviorDurationGraph;
+TooltipBehavior? powerUsageToolTip;
+TooltipBehavior? avgSpeedToolTip;
+TooltipBehavior? fuelUsageToolTip;
+
 
   //Convertion of date time into month/day/year format
   String convertIntoMonthDayYear(DateTime date) {
@@ -666,20 +671,54 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
 
 
                     onPointTap: (ChartPointDetails args) {
-
                       reportsDataTableKey.currentState!.setSelectedRowIndex!(args.seriesIndex!);
-                                          durationGraphData[i].tripsByDate![j].dataLineColor = blueColor;
-triSpeedList[i].tripsByDate![j].dataLineColor=reroprtHighlightBackgroundColor;
-setState(() {
+
+            for (int i = 0; i < durationGraphData.length; i++) {
+              for (int j = 0;
+                  j < durationGraphData[i].tripsByDate!.length;
+                  j++) {
+
+                    durationGraphData[i].tripsByDate![j].dataLineColor=null;
+                  }}
+
+
+
+                                          triSpeedList[i].tripsByDate![j].dataLineColor=Colors.green;
+                                          setState(() {
+
+                                          });
+
+Future.delayed(Duration(milliseconds: 100),(){
+tooltipBehaviorDurationGraph!.showByIndex(args.seriesIndex!, args.pointIndex!);
+
+
+}
+);
+
+
+                                                                                      //tooltipBehaviorDurationGraph!.showByIndex(args.seriesIndex!, args.pointIndex!);
+
+                                  // setState(() {
+                                    
+                                  // });
+                                  
+                                  
+                                  // tooltipBehaviorDurationGraph!.show(0, 0);   
+                                          // setState(() {
+                                            
+                                          // });
+//triSpeedList[i].tripsByDate![j].dataLineColor=Colors.green;
+// setState(() {
   
-});
-print('the color assigining was----------------'+triSpeedList[i].tripsByDate![j].dataLineColor.toString());
-                    
+// });
+                                        //  commonProvider.updateIndex();
+
 
                       reportsDataTableKey.currentState!.setState(() {
                         reportsDataTableKey.currentState!.selectedRowIndex=args.seriesIndex!;
 
                       });
+
 
 
                       if (mounted) {
@@ -737,6 +776,7 @@ print('the color assigining was----------------'+triSpeedList[i].tripsByDate![j]
                             //return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].tripsByDate![j].dataLineColor : blueColor;
                             },
                           onPointTap: (ChartPointDetails args) {
+
                             if (mounted) {
                               selectedIndex = triSpeedList[i].tripsByDate![j].id!;
                               Utils.customPrint("selected index: $selectedIndex");
@@ -1990,7 +2030,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                   ),
                            // table(context)!,
 
-ReportsDataTable(tripList: tripList, finalData: finalData,onTapCallBack: scorllToParticularPostion,barIndex: selectedBarIndex,key: reportsDataTableKey, ),
+ReportsDataTable(tripList: tripList, finalData: finalData,onTapCallBack: scorllToParticularPostion,barIndex: selectedBarIndex,key: reportsDataTableKey,orientation: orientation, ),
 
                             SizedBox(
                               height: displayWidth(context) * 0.03,
@@ -2462,7 +2502,7 @@ Utils.showSnackBar(context,
 
   // Average speed graph in reports
   Widget avgSpeedGraph(BuildContext context, double graph_height) {
-    TooltipBehavior tooltipBehavior = TooltipBehavior(
+     avgSpeedToolTip = TooltipBehavior(
       enable: true,
       color: commonBackgroundColor,
       borderWidth: 1,
@@ -2564,7 +2604,7 @@ Utils.showSnackBar(context,
             height: graph_height,
             child: SfCartesianChart(
               // palette: barsColor,
-              tooltipBehavior: tooltipBehavior,
+              tooltipBehavior: avgSpeedToolTip,
               primaryXAxis: CategoryAxis(
                   isVisible: true,
                   autoScrollingMode: AutoScrollingMode.end,
@@ -2625,7 +2665,7 @@ Utils.showSnackBar(context,
                 height: graph_height,
                 child: SfCartesianChart(
                   // palette: barsColor,
-                  tooltipBehavior: tooltipBehavior,
+                  tooltipBehavior: avgSpeedToolTip,
                   primaryXAxis: CategoryAxis(
                       isVisible: true,
                       autoScrollingMode: AutoScrollingMode.end,
@@ -2666,7 +2706,7 @@ Utils.showSnackBar(context,
 
   // Fuel usage graph on reports
   Widget fuelUsageGraph(BuildContext context, double graph_height) {
-    TooltipBehavior tooltipBehavior = TooltipBehavior(
+     fuelUsageToolTip = TooltipBehavior(
       enable: true,
       shouldAlwaysShow: true,
       color: commonBackgroundColor,
@@ -2765,7 +2805,7 @@ Utils.showSnackBar(context,
             : displayWidth(context),
         height: displayHeight(context) * 0.4,
         child: SfCartesianChart(
-          tooltipBehavior: tooltipBehavior,
+          tooltipBehavior: fuelUsageToolTip,
           primaryXAxis: CategoryAxis(
               autoScrollingMode: AutoScrollingMode.end,
               labelAlignment: LabelAlignment.center,
@@ -2817,7 +2857,7 @@ Utils.showSnackBar(context,
 
   // Power usage graph on reports
   Widget powerUsageGraph(BuildContext context, double graph_height) {
-    TooltipBehavior tooltipBehavior = TooltipBehavior(
+     powerUsageToolTip = TooltipBehavior(
       enable: true,
 
       shouldAlwaysShow: true,
@@ -2918,7 +2958,7 @@ Utils.showSnackBar(context,
             : displayWidth(context),
         height: graph_height,
         child: SfCartesianChart(
-          tooltipBehavior: tooltipBehavior,
+          tooltipBehavior: powerUsageToolTip,
           primaryXAxis: CategoryAxis(
               autoScrollingMode: AutoScrollingMode.end,
               labelAlignment: LabelAlignment.center,
@@ -3549,7 +3589,7 @@ Utils.showSnackBar(context,
 
   }
 
-  void scorllToParticularPostion(int index,dynamic persondata){
+  void scorllToParticularPostion(int index,dynamic persondata,Orientation orientation){
 
             for (int i = 0; i < durationGraphData.length; i++) {
               for (int j = 0;
@@ -3557,7 +3597,7 @@ Utils.showSnackBar(context,
                   j++) {
                     durationGraphData[i].tripsByDate![j].dataLineColor = blueColor;
                     if(durationGraphData[i].tripsByDate![j].id==persondata['tripDetails']){
-durationGraphData[i].tripsByDate![j].dataLineColor=reroprtHighlightBackgroundColor;
+durationGraphData[i].tripsByDate![j].dataLineColor=Colors.green;
 
                     }
 
@@ -3571,11 +3611,26 @@ durationGraphData[i].tripsByDate![j].dataLineColor=reroprtHighlightBackgroundCol
             setState(() {
               
             });
+if(orientation==Orientation.portrait){
             _mainScrollController.animateTo(
   0.0, // Scroll to the top
   duration: Duration(milliseconds: 300), // Adjust the duration as needed
   curve: Curves.easeInOut, // Specify the easing curve
 );
+
+
+}else{
+
+            _mainScrollController.animateTo(
+  300, // Scroll to the top
+  duration: Duration(milliseconds: 300), // Adjust the duration as needed
+  curve: Curves.easeInOut, // Specify the easing curve
+);
+
+
+
+}
+
 
              // Calculate the scroll position based on your data
 if(selectedButton=="trip duration"){
