@@ -31,6 +31,7 @@ import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
 import '../analytics/location_callback_handler.dart';
+import '../common_widgets/utils/constants.dart';
 import '../common_widgets/widgets/user_feed_back.dart';
 import 'feedback_report.dart';
 
@@ -584,7 +585,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                               commonText(
                                   context: context,
                                   text:
-                                  'Last time you used performarine. there was a trip in progress. do you want to end the trip or continue?',
+                                  lastTimeUsedText,
                                   fontWeight: FontWeight.w500,
                                   textColor: Colors.black,
                                   textSize: displayWidth(context) * 0.04,

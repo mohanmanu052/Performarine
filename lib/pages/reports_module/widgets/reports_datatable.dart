@@ -8,13 +8,14 @@ import '../../../common_widgets/utils/colors.dart';
 class ReportsDataTable extends StatefulWidget {
     List<Map<String, dynamic>> tripList = [];
       List<Map<String, dynamic>> finalData = [];
-Function(int index,dynamic personData)? onTapCallBack;
+      Orientation? orientation;
+Function(int index,dynamic personData,Orientation orientation)? onTapCallBack;
 dynamic? globalkey;
 
 
     int? barIndex;
    ReportsDataTable({super.key,required this.tripList,required this.finalData,this.onTapCallBack,this.barIndex = -1,
-this.globalkey
+this.globalkey,this.orientation
 
    });
 
@@ -159,7 +160,7 @@ print('the report datatable index was----------'+selectedRowIndex.toString());
                                                         onTap:(){
 
                       print('the reportTable data was------------'+widget.tripList.toString());
-widget.onTapCallBack!(widget.tripList.indexOf(person),person);
+widget.onTapCallBack!(widget.tripList.indexOf(person),person,widget.orientation??Orientation.portrait);
                                                               setState(() {
       selectedRowIndex =  widget.tripList.indexOf(person);
     });
@@ -181,7 +182,7 @@ widget.onTapCallBack!(widget.tripList.indexOf(person),person);
                           
                           ),
                                                                                   onTap:(){
-widget.onTapCallBack!(widget.tripList.indexOf(person),person);
+widget.onTapCallBack!(widget.tripList.indexOf(person),person,widget.orientation??Orientation.portrait);
 
                                                               setState(() {
       selectedRowIndex =  widget.tripList.indexOf(person);
@@ -208,7 +209,7 @@ widget.onTapCallBack!(widget.tripList.indexOf(person),person);
                           
                           
                                                                                  onTap:(){
-widget.onTapCallBack!(widget.tripList.indexOf(person),person);
+widget.onTapCallBack!(widget.tripList.indexOf(person),person,widget.orientation??Orientation.portrait);
 
                                                               setState(() {
       selectedRowIndex =  widget.tripList.indexOf(person);
@@ -233,7 +234,7 @@ widget.onTapCallBack!(widget.tripList.indexOf(person),person);
                           )),
 
                                                                                   onTap:(){
-widget.onTapCallBack!(widget.tripList.indexOf(person),person);
+widget.onTapCallBack!(widget.tripList.indexOf(person),person,widget.orientation??Orientation.portrait);
 
                                                               setState(() {
       selectedRowIndex =  widget.tripList.indexOf(person);
@@ -258,7 +259,7 @@ widget.onTapCallBack!(widget.tripList.indexOf(person),person);
                           )),
                           
                                                                                   onTap:(){
-widget.onTapCallBack!(widget.tripList.indexOf(person),person);
+widget.onTapCallBack!(widget.tripList.indexOf(person),person,widget.orientation??Orientation.portrait);
 
                                                               setState(() {
       selectedRowIndex =  widget.tripList.indexOf(person);

@@ -31,3 +31,7 @@ const watsReport = 'Wats';
 
 String logLevel = "info";
 
+const lastTimeUsedText = 'Last time you used performarine, there was a trip in progress. Do you want to end the trip or continue?';
+const deleteTripSubText = 'This action is irreversible. Do you want to delete it?';
+const endTripSubText = 'Are you sure you want to end the trip?';
+

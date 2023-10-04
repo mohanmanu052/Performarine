@@ -1374,7 +1374,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                         child: commonText(
                                             context: context,
                                             text:
-                                            'This action is irreversible. do you want to delete it?',
+                                            deleteTripSubText,
                                             fontWeight: FontWeight.w500,
                                             textColor: Colors.grey,
                                             textSize: displayWidth(ctx) * 0.036,
