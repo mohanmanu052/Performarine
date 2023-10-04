@@ -1068,8 +1068,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
       key: scaffoldKey,
       body:         OrientationBuilder(
   builder: (context, orientation) {
-    return
-       SingleChildScrollView(
+    return SingleChildScrollView(
         controller: _mainScrollController,
         child: Container(
           margin: EdgeInsets.symmetric(horizontal: 17, vertical: 17),
@@ -2275,20 +2274,20 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
 
     switch (selectedButton.toLowerCase()) {
       case 'trip duration':
-        return tripDurationGraph(context,graph_height);
+        return tripDurationGraph(context,graph_height, orientation);
       case 'avg speed':
-        return avgSpeedGraph(context,graph_height);
+        return avgSpeedGraph(context,graph_height, orientation);
       case 'fuel usage':
-        return fuelUsageGraph(context,graph_height);
+        return fuelUsageGraph(context,graph_height, orientation);
       case 'power usage':
-        return powerUsageGraph(context,graph_height);
+        return powerUsageGraph(context,graph_height, orientation);
       default:
         return Container();
     }
   }
 
   //Trip duration graph
-  Widget tripDurationGraph(BuildContext context, double graph_height) {
+  Widget tripDurationGraph(BuildContext context, double graph_height, Orientation orientation) {
      tooltipBehaviorDurationGraph = TooltipBehavior(
       enable: true,
       shouldAlwaysShow: true,
@@ -2452,7 +2451,7 @@ Utils.showSnackBar(context,
            left: 0,
            child: !isStickyYAxisVisible ? SizedBox()
            : Container(
-               width: displayWidth(context) * 0.19,
+               width: orientation==Orientation.portrait? displayWidth(context) * 0.16: displayWidth(context) * 0.1128,
                height: graph_height,
                color: Colors.white,
                child: SfCartesianChart(
@@ -2501,7 +2500,7 @@ Utils.showSnackBar(context,
   }
 
   // Average speed graph in reports
-  Widget avgSpeedGraph(BuildContext context, double graph_height) {
+  Widget avgSpeedGraph(BuildContext context, double graph_height, Orientation orientation) {
      avgSpeedToolTip = TooltipBehavior(
       enable: true,
       color: commonBackgroundColor,
@@ -2660,7 +2659,7 @@ Utils.showSnackBar(context,
           left: 0,
           child: !isStickyYAxisVisible ? SizedBox()
               : Container(
-                width: displayWidth(context) * 0.14,
+                width: orientation==Orientation.portrait? displayWidth(context) * 0.168: displayWidth(context) * 0.121,
                 color: Colors.white,
                 height: graph_height,
                 child: SfCartesianChart(
@@ -2705,7 +2704,7 @@ Utils.showSnackBar(context,
   }
 
   // Fuel usage graph on reports
-  Widget fuelUsageGraph(BuildContext context, double graph_height) {
+  Widget fuelUsageGraph(BuildContext context, double graph_height, Orientation orientation) {
      fuelUsageToolTip = TooltipBehavior(
       enable: true,
       shouldAlwaysShow: true,
@@ -2856,7 +2855,7 @@ Utils.showSnackBar(context,
   }
 
   // Power usage graph on reports
-  Widget powerUsageGraph(BuildContext context, double graph_height) {
+  Widget powerUsageGraph(BuildContext context, double graph_height, Orientation orientation) {
      powerUsageToolTip = TooltipBehavior(
       enable: true,
 

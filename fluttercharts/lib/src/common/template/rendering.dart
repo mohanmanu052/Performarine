@@ -394,7 +394,7 @@ class ChartTemplate extends StatefulWidget {
 /// Represent the render object for circular data label template.
 class DataLabelTemplateStack extends Stack {
   /// Creating an argument constructor of DataLabelTemplateStack class.
-  const DataLabelTemplateStack(
+   DataLabelTemplateStack(
       {required this.renderingDetails,
       required this.stateProperties,
       required List<Widget> children})
