@@ -818,9 +818,19 @@ Future.delayed(Duration(milliseconds: 100),(){
                             : null,
                     onPointTap: (ChartPointDetails args) {
 
-
+print('the series index was----------------------'+args.seriesIndex.toString());
                                             reportsDataTableKey.currentState!.setSelectedRowIndex!(args.seriesIndex!);
 tooltipactivationMode=ActivationMode.singleTap;
+
+
+                      reportsDataTableKey.currentState!.setState(() {
+                        reportsDataTableKey.currentState!.selectedRowIndex=args.seriesIndex!;
+
+                      });
+
+
+
+                 //     reportsDataTableKey.currentState?.selectedRowIndex=args.pointIndex??0;
 
             for (int i = 0; i < durationGraphData.length; i++) {
               for (int j = 0;
@@ -851,10 +861,10 @@ Future.delayed(Duration(milliseconds: 100),(){
 
 
                   avgSpeedToolTip!.showByIndex(args.seriesIndex!, args.pointIndex!);
-                      reportsDataTableKey.currentState!.setState(() {
+                      // reportsDataTableKey.currentState!.setState(() {
 
-                                                         reportsDataTableKey.currentState!.isToolTipShown=false;
-                                                         });
+                      //                                    reportsDataTableKey.currentState!.isToolTipShown=false;
+                      //                                    });
 
 
 }
@@ -865,14 +875,7 @@ Future.delayed(Duration(milliseconds: 100),(){
                                   
 
 
-                      reportsDataTableKey.currentState!.setState(() {
-                        reportsDataTableKey.currentState!.selectedRowIndex=args.seriesIndex!;
 
-                      });
-
-
-
-                      reportsDataTableKey.currentState?.selectedRowIndex=args.pointIndex??0;
                       if (mounted) {
                         selectedIndex = triSpeedList[i].tripsByDate![j].id!;
                         Utils.customPrint("selected index: $selectedIndex");
