@@ -2360,7 +2360,7 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
   //Trip duration graph
   Widget tripDurationGraph(BuildContext context, double graph_height, Orientation orientation) {
      tooltipBehaviorDurationGraph = TooltipBehavior(
-      enable: reportsDataTableKey.currentState?.isToolTipShown,
+      enable: true/*reportsDataTableKey.currentState?.isToolTipShown*/,
       activationMode: reportsDataTableKey.currentState?.isToolTipShown==null?ActivationMode.singleTap: tooltipactivationMode,
       shouldAlwaysShow: true,
       color: commonBackgroundColor,
@@ -3713,7 +3713,11 @@ if(selectedButton=="trip duration"){
           scrollPosition,
           duration: Duration(milliseconds: 500), // Adjust the duration as needed
           curve: Curves.easeInOut,
-        );
+        ).then((value) {
+          Future.delayed(Duration(seconds: 1), (){
+            tooltipBehaviorDurationGraph!.showByIndex(selectedRowIndex!, 5);
+          });
+        });
 
 }else if(selectedButton=='avg speed'){
           _avgSpeedSrollController.animateTo(

@@ -91,7 +91,7 @@ class AddVesselApiProvider with ChangeNotifier {
           ? '2'
           : addVesselRequestModel.vesselStatus!.toString();
       request.fields['batteryCapacity'] = addVesselRequestModel.batteryCapacity!;
-      request.fields['displacement'] = addVesselRequestModel.displacement!;
+     // request.fields['displacement'] = addVesselRequestModel.displacement!;
       Utils.customPrint('Add VESSEL RESP : ' + jsonEncode(request.fields));
 
       http.StreamedResponse response = await request.send();
