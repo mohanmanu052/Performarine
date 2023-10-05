@@ -3676,6 +3676,11 @@ durationGraphData[i].tripsByDate![j].dataLineColor=Colors.green;
 
                     }
 
+                    if(dateWithZeros(persondata['date']) == dateWithZeros(durationGraphData[i].date!))
+                      {
+                        index = i;
+                      }
+
                   }
                   
                   
