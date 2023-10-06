@@ -86,22 +86,579 @@ class _CustomDrawerState extends State<CustomDrawer> {
     gmailTextSize = widget.orientation == Orientation.portrait ? displayWidth(context) * 0.03 : displayWidth(context) * 0.015;
     signOutText = widget.orientation == Orientation.portrait ? displayWidth(context) * 0.04 : displayWidth(context) * 0.025;
 
-    return Drawer(
-      backgroundColor: backgroundColor,
-      child: Container(
-        margin: widget.orientation == Orientation.portrait ? EdgeInsets.only(left: 30, right: 10.0, top: 10.0) : EdgeInsets.only(left: 10,right: 5,top: 5),
-       // width: widget.orientation == Orientation.portrait ? 500 : 400,
-        child: widget.orientation == Orientation.landscape
-            ? SingleChildScrollView(
-          child: Padding(
-            padding:  EdgeInsets.only(left: displayWidth(context) * 0.02),
-            child: Container(
-            //  width: 400,
-              // height: displayHeight(context) *2,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
+    return 
+    
+    
+    
+     Drawer(
+          backgroundColor: backgroundColor,
+          child: Container(
+            margin: widget.orientation == Orientation.portrait ? EdgeInsets.only(left: 30, right: 10.0, top: 10.0) : EdgeInsets.only(left: 10,right: 5,top: 5),
+           // width: widget.orientation == Orientation.portrait ? 500 : 400,
+            child: widget.orientation == Orientation.landscape
+                ? SingleChildScrollView(
+              child: Padding(
+                padding:  EdgeInsets.only(left: displayWidth(context) * 0.02),
+                child: Container(
+                //  width: 400,
+                  // height: displayHeight(context) *2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: displayHeight(context) * 0.05,
+                          ),
+                          Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+
+                                Image.asset('assets/images/home.png', height: displayHeight(context) * 0.04,),
+
+                                SizedBox(width: displayWidth(context) * 0.015,),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    commonText(
+                                        context: context,
+                                        text: 'Hey!',
+                                        fontWeight: FontWeight.w700,
+                                        textSize: textSize,
+                                        textAlign: TextAlign.start),
+                                    SizedBox(height: displayHeight(context) * 0.005,),
+                                    Flexible(
+                                      child: Text(
+                                        "${commonProvider.loginModel!.userEmail}",
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: gmailTextSize,
+                                          fontFamily: poppins,
+                                        ),
+                                        textAlign: TextAlign.start,
+                                        overflow: TextOverflow.clip,
+                                        softWrap: true,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                               /* Expanded(
+                                  child: RichText(
+                                    text: TextSpan(
+                                        text: "Hey ",
+                                        style: TextStyle(
+                                          color: Theme.of(context).brightness ==
+                                                  Brightness.dark
+                                              ? Colors.white
+                                              : Colors.black,
+                                          fontSize: displayWidth(context) * 0.04,
+                                        ),
+                                        children: <TextSpan>[
+                                          TextSpan(
+                                            text:
+                                                "${commonProvider.loginModel!.userEmail} !",
+                                            style: TextStyle(
+                                              color: Theme.of(context).brightness ==
+                                                      Brightness.dark
+                                                  ? Colors.white
+                                                  : Colors.blue,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: displayWidth(context) * 0.04,
+                                            ),
+                                          )
+                                        ]),
+                                  ),
+                                ),*/
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: displayHeight(context) * 0.06,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              /*InkWell(
+                                onTap: () {
+                                  CustomLogger().logWithFile(Level.info, "User Navigating to Home page -> $page");
+                                  Navigator.of(context).pop();
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => BottomNavigation(),
+                                      ),
+                                      ModalRoute.withName(""));
+
+
+                                },
+                                child: commonText(
+                                    context: context,
+                                    text: 'Dashboard',
+                                    fontWeight: FontWeight.w500,
+                                    textColor: blueColor,
+                                    textSize: textSize,
+                                    textAlign: TextAlign.start),
+                              ),
+                              SizedBox(
+                                height: displayHeight(context) * 0.02,
+                              ),*/
+                              InkWell(
+                                onTap: ()async {
+                                //  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                  await Future.delayed(Duration(milliseconds: 500), (){});
+
+                                  CustomLogger().logWithFile(Level.info, "User Navigating to Home page -> $page");
+                                  Navigator.of(context).pop();
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => BottomNavigation(),
+                                      ),
+                                      ModalRoute.withName(""));
+
+
+                                },
+                                child: commonText(
+                                    context: context,
+                                    text: 'My Vessels',
+                                    fontWeight: FontWeight.w400,
+                                    textColor: Colors.black54,
+                                    textSize: textSize,
+                                    textAlign: TextAlign.start),
+                              ),
+                              SizedBox(
+                                height: displayHeight(context) * 0.02,
+                              ),
+                              InkWell(
+                                onTap: ()async {
+                                 // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                  await Future.delayed(Duration(milliseconds: 500), (){});
+
+                                  CustomLogger().logWithFile(Level.info, "User Navigating to Add New Vessel Screen -> $page");
+                                  Navigator.of(context).pop();
+
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                             AddNewVesselPage()),
+                                  );
+                                },
+                                child: commonText(
+                                    context: context,
+                                    text: 'Create Vessels',
+                                    fontWeight: FontWeight.w400,
+                                    textColor: Colors.black54,
+                                    textSize: textSize,
+                                    textAlign: TextAlign.start),
+                              ),
+                              SizedBox(
+                                height: displayHeight(context) * 0.02,
+                              ),
+                              InkWell(
+                                onTap: ()async {
+                                 // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                  await Future.delayed(Duration(milliseconds: 500), (){});
+                                  CustomLogger().logWithFile(Level.info, "User Navigating to Retired Vessel Screen -> $page");
+                                  Navigator.of(context).pop();
+
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const RetiredVesselsScreen()),
+                                  );
+                                },
+                                child: commonText(
+                                    context: context,
+                                    text: 'Retired Vessels',
+                                    fontWeight: FontWeight.w400,
+                                    textColor: Colors.black54,
+                                    textSize: textSize,
+                                    textAlign: TextAlign.start),
+                              ),
+                              SizedBox(
+                                height: displayHeight(context) * 0.02,
+                              ),
+                           /*   InkWell(
+                                onTap: () {
+                                  CustomLogger().logWithFile(Level.info, "User Navigating to Search and Filter -> $page");
+                                  Navigator.of(context).pop();
+
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ReportsModule()),
+                                  );
+                                },
+                                child: commonText(
+                                    context: context,
+                                    text: 'Reports',
+                                    fontWeight: FontWeight.w500,
+                                    textColor: Colors.black54,
+                                    textSize: textSize,
+                                    textAlign: TextAlign.start),
+                              ),
+                              SizedBox(
+                                height: displayHeight(context) * 0.02,
+                              ), */
+                              InkWell(
+                                onTap: () async {
+
+                                 // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                  await Future.delayed(Duration(milliseconds: 500), (){});
+
+                                  bool? isTripStarted =
+                                      sharedPreferences!.getBool('trip_started');
+
+                                  var tripSyncDetails =
+                                      await _databaseService.tripSyncDetails();
+                                  var vesselsSyncDetails =
+                                      await _databaseService.vesselsSyncDetails();
+
+                                  Utils.customPrint(
+                                      "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
+                                  CustomLogger().logWithFile(Level.info, "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails-> $page");
+
+                                  if (isTripStarted != null) {
+                                    if (isTripStarted) {
+
+                                      if(commonProvider.bottomNavIndex != 1){
+                                        SystemChrome.setPreferredOrientations([
+                                          DeviceOrientation.portraitUp
+                                        ]);
+                                      }else{
+                                        SystemChrome.setPreferredOrientations([
+                                          DeviceOrientation.landscapeLeft,
+                                          DeviceOrientation.landscapeRight,
+                                          DeviceOrientation.portraitDown,
+                                          DeviceOrientation.portraitUp
+                                        ]);
+                                      }
+
+                                      Navigator.of(context).pop();
+                                      Utils.showSnackBar(context,
+                                          scaffoldKey: widget.scaffoldKey,
+                                          message:
+                                              'Please end the trip which is already running');
+                                    } else {
+                                      CustomLogger().logWithFile(Level.info, "User navigating to Sync Data Cloud to mobile screen-> $page");
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const SyncDataCloudToMobileScreen()),
+                                      );
+                                    }
+                                  } else {
+                                    if (vesselsSyncDetails || tripSyncDetails) {
+                                      showDialogBoxToUploadData(
+                                          context, widget.scaffoldKey!, false,widget.orientation??Orientation.portrait);
+                                    } else {
+                                      Navigator.of(context).pop();
+                                      CustomLogger().logWithFile(Level.info, "User navigating to Sync Data Cloud to mobile screen-> $page");
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const SyncDataCloudToMobileScreen()),
+                                      );
+                                    }
+                                  }
+                                },
+                                child: commonText(
+                                    context: context,
+                                    text: 'Sync from Cloud',
+                                    fontWeight: FontWeight.w400,
+                                    textColor: Colors.black54,
+                                    textSize: textSize,
+                                    textAlign: TextAlign.start),
+                              ),
+                           /*   DropdownButton<String>(
+                                focusColor:Colors.transparent,
+                                value: chosenValue,
+                                //elevation: 5,
+                                style: TextStyle(color: Colors.white),
+                                iconEnabledColor:Colors.black54,
+                                items: <String>[
+                                  'Info',
+                                  'Debug',
+                                  'Warning',
+                                  'Error',
+                                  'Verbose',
+                                ].map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: commonText(
+                                        context: context,
+                                        text: value,
+                                        fontWeight: FontWeight.w500,
+                                        textColor: Colors.black54,
+                                        textSize: textSize,
+                                        textAlign: TextAlign.start)
+                                  );
+                                }).toList(),
+                                hint: commonText(
+                                    context: context,
+                                    text: chosenValue,
+                                    fontWeight: FontWeight.w500,
+                                    textColor: Colors.black54,
+                                    textSize: textSize,
+                                    textAlign: TextAlign.start),
+
+                                onChanged: (String? value) {
+                                  setState(() {
+                                    chosenValue = value;
+                                    if(chosenValue == "Info"){
+                                      logLevel = "info";
+                                    } else if(chosenValue == "Debug"){
+                                      logLevel = "debug";
+                                    } else if(chosenValue == "Warning"){
+                                      logLevel = "warning";
+                                    } else if(chosenValue == "Error"){
+                                      logLevel = "error";
+                                    } else if(chosenValue == "Verbose"){
+                                      logLevel = "verbose";
+                                    }
+                                  });
+                                },
+                              ), */
+                              SizedBox(
+                                height: displayHeight(context) * 0.02,
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                      SizedBox(height: displayHeight(context) * 0.2),
+                      Container(
+                        alignment: Alignment.bottomLeft,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: displayHeight(context) * 0.02,
+                            ),
+                         commonProvider.loginModel!.loginType == "regular" ?   InkWell(
+                              onTap: ()async {
+
+                              //  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                await Future.delayed(Duration(milliseconds: 500), (){});
+
+                                bool? isTripStarted =
+                                sharedPreferences!.getBool('trip_started');
+
+                                var tripSyncDetails =
+                                    await _databaseService.tripSyncDetails();
+                                var vesselsSyncDetails =
+                                    await _databaseService.vesselsSyncDetails();
+
+                                Utils.customPrint(
+                                    "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
+                                CustomLogger().logWithFile(Level.info, "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails-> $page");
+
+                                if (isTripStarted != null) {
+                                  if (isTripStarted) {
+                                    Navigator.of(context).pop();
+                                    showEndTripDialogBox(context, );
+                                  } else {
+                                    if (vesselsSyncDetails || tripSyncDetails) {
+                                      CustomLogger().logWithFile(Level.warning, "showDialogBoxToUploadData pop up for user confirmation-> $page");
+                                      showDialogBoxToUploadData(context, widget.scaffoldKey!, true,widget.orientation??Orientation.portrait);
+                                    } else {
+                                      CustomLogger().logWithFile(Level.info, "User Navigating to change password screen-> $page");
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ChangePassword()),
+                                      );
+                                    }
+                                  }
+                                } else {
+                                  if (vesselsSyncDetails || tripSyncDetails) {
+                                    CustomLogger().logWithFile(Level.warning, "showDialogBoxToUploadData pop up for user confirmation-> $page");
+                                    showDialogBoxToUploadData(context, widget.scaffoldKey!, true,widget.orientation??Orientation.portrait);
+                                  } else {
+                                    CustomLogger().logWithFile(Level.info, "User Navigating to change password screen-> $page");
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ChangePassword()),
+                                    );
+                                  }
+                                }
+                              },
+                              child: commonText(
+                                  context: context,
+                                  text: 'Change Password',
+                                  fontWeight: FontWeight.w400,
+                                  textColor: Colors.black54,
+                                  textSize: textSize,
+                                  textAlign: TextAlign.start),
+                            ) : Container(),
+                            SizedBox(
+                              height: displayHeight(context) * 0.02,
+                            ),
+                            InkWell(
+                              onTap: ()async {
+                               // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                await Future.delayed(Duration(milliseconds: 500), (){});
+
+                                CustomLogger().logWithFile(Level.info, "User Navigating to Terms and Conditions screen-> $page");
+                                Navigator.of(context).pop();
+
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => CustomWebView(url:'https://${Urls.terms}', isPaccore: false)),
+                                );
+                              },
+                              child: commonText(
+                                  context: context,
+                                  text: 'Terms & Conditions',
+                                  fontWeight: FontWeight.w400,
+                                  textColor: Colors.black54,
+                                  textSize: textSize,
+                                  textAlign: TextAlign.start),
+                            ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.02,
+                            ),
+                            InkWell(
+                              onTap: ()async {
+                               // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                await Future.delayed(Duration(milliseconds: 500), (){});
+
+                                CustomLogger().logWithFile(Level.info, "User Navigating to Privacy and Policy screen-> $page");
+                                Navigator.of(context).pop();
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => CustomWebView(url: 'https://${Urls.privacy}',isPaccore: false)),
+                                );
+                              },
+                              child: commonText(
+                                  context: context,
+                                  text: 'Privacy Policy',
+                                  fontWeight: FontWeight.w400,
+                                  textColor: Colors.black54,
+                                  textSize: textSize,
+                                  textAlign: TextAlign.start),
+                            ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.02,
+                            ),
+                            InkWell(
+                              onTap: () async {
+                                //SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                await Future.delayed(Duration(milliseconds: 500), (){});
+
+                                bool? isTripStarted =
+                                    sharedPreferences!.getBool('trip_started');
+
+                                var tripSyncDetails =
+                                    await _databaseService.tripSyncDetails();
+                                var vesselsSyncDetails =
+                                    await _databaseService.vesselsSyncDetails();
+
+                                Utils.customPrint(
+                                    "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
+                                CustomLogger().logWithFile(Level.info, "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails -> $page");
+
+                                if (isTripStarted != null) {
+                                  if (isTripStarted) {
+                                    Navigator.of(context).pop();
+
+                                    CustomLogger().logWithFile(Level.warning, "show End trip dialog box for user confirmation -> $page");
+
+                                    showEndTripDialogBox(context);
+                                  } else {
+                                    if (vesselsSyncDetails || tripSyncDetails) {
+                                      showDialogBox(context, widget.scaffoldKey!,widget.orientation??Orientation.portrait);
+                                    } else {
+                                      signOut();
+                                    }
+                                  }
+                                } else {
+                                  if (vesselsSyncDetails || tripSyncDetails) {
+                                    showDialogBox(context, scaffoldKey,widget.orientation??Orientation.portrait);
+                                  } else {
+                                    signOut();
+                                  }
+                                }
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  commonText(
+                                      context: context,
+                                      text: 'Sign Out',
+                                      fontWeight: FontWeight.w400,
+                                      textColor: Colors.black54,
+                                      textSize: signOutText,
+                                      textAlign: TextAlign.start),
+                                  //Icon(Icons.logout, color: Colors.black54),
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: displayHeight(context) * 0.02,),
+                            commonText(
+                                text: 'Version $currentVersion',
+                                context: context,
+                                textSize: textSize,
+                                textColor: Colors.black54,
+                                fontWeight: FontWeight.w400),
+
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                commonText(
+                                    text: 'Powered by ',
+                                    context: context,
+                                    textSize: textSize,
+                                    textColor: Colors.grey,
+                                    fontWeight: FontWeight.w400),
+                                TextButton(
+                                  onPressed: ()async {
+                                   // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                    await Future.delayed(Duration(milliseconds: 500), (){});
+
+                                    Navigator.of(context).pop();
+
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => CustomWebView(url:'https://www.paccore.com/', isPaccore: true)),
+                                    );
+                                  },
+                                  child: Text('paccore.com',
+                                      style: TextStyle(
+                                          decoration: TextDecoration.underline,
+                                          fontSize: textSize,
+                                          color: blueColor,
+                                          fontWeight: FontWeight.w500)),
+                                )
+                              ],
+                            ),
+
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: displayHeight(context) * 0.05)
+                    ],
+                  ),
+                ),
+              ),
+            )
+            : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(
@@ -132,7 +689,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                     style: TextStyle(
                                       color: Colors.grey,
                                       fontWeight: FontWeight.w500,
-                                      fontSize: gmailTextSize,
+                                      fontSize: displayWidth(context) * 0.03,
                                       fontFamily: poppins,
                                     ),
                                     textAlign: TextAlign.start,
@@ -142,7 +699,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 ),
                               ],
                             )
-                           /* Expanded(
+                            /* Expanded(
                               child: RichText(
                                 text: TextSpan(
                                     text: "Hey ",
@@ -203,10 +760,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             height: displayHeight(context) * 0.02,
                           ),*/
                           InkWell(
-                            onTap: ()async {
-                            //  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-                              await Future.delayed(Duration(milliseconds: 500), (){});
-
+                            onTap: () {
                               CustomLogger().logWithFile(Level.info, "User Navigating to Home page -> $page");
                               Navigator.of(context).pop();
                               Navigator.pushAndRemoveUntil(
@@ -231,9 +785,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           ),
                           InkWell(
                             onTap: ()async {
-                             // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                            //  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                               await Future.delayed(Duration(milliseconds: 500), (){});
-
                               CustomLogger().logWithFile(Level.info, "User Navigating to Add New Vessel Screen -> $page");
                               Navigator.of(context).pop();
 
@@ -241,7 +794,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                         AddNewVesselPage()),
+                                        AddNewVesselPage()),
                               );
                             },
                             child: commonText(
@@ -256,9 +809,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             height: displayHeight(context) * 0.02,
                           ),
                           InkWell(
-                            onTap: ()async {
-                             // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-                              await Future.delayed(Duration(milliseconds: 500), (){});
+                            onTap: () {
+                            //  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                               CustomLogger().logWithFile(Level.info, "User Navigating to Retired Vessel Screen -> $page");
                               Navigator.of(context).pop();
 
@@ -266,7 +818,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        const RetiredVesselsScreen()),
+                                    const RetiredVesselsScreen()),
                               );
                             },
                             child: commonText(
@@ -280,7 +832,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           SizedBox(
                             height: displayHeight(context) * 0.02,
                           ),
-                       /*   InkWell(
+                          /*   InkWell(
                             onTap: () {
                               CustomLogger().logWithFile(Level.info, "User Navigating to Search and Filter -> $page");
                               Navigator.of(context).pop();
@@ -304,17 +856,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           ), */
                           InkWell(
                             onTap: () async {
-
                              // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-                              await Future.delayed(Duration(milliseconds: 500), (){});
-
                               bool? isTripStarted =
-                                  sharedPreferences!.getBool('trip_started');
+                              sharedPreferences!.getBool('trip_started');
 
                               var tripSyncDetails =
-                                  await _databaseService.tripSyncDetails();
+                              await _databaseService.tripSyncDetails();
                               var vesselsSyncDetails =
-                                  await _databaseService.vesselsSyncDetails();
+                              await _databaseService.vesselsSyncDetails();
 
                               Utils.customPrint(
                                   "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
@@ -322,38 +871,24 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
                               if (isTripStarted != null) {
                                 if (isTripStarted) {
-
-                                  if(commonProvider.bottomNavIndex != 1){
-                                    SystemChrome.setPreferredOrientations([
-                                      DeviceOrientation.portraitUp
-                                    ]);
-                                  }else{
-                                    SystemChrome.setPreferredOrientations([
-                                      DeviceOrientation.landscapeLeft,
-                                      DeviceOrientation.landscapeRight,
-                                      DeviceOrientation.portraitDown,
-                                      DeviceOrientation.portraitUp
-                                    ]);
-                                  }
-
                                   Navigator.of(context).pop();
                                   Utils.showSnackBar(context,
                                       scaffoldKey: widget.scaffoldKey,
                                       message:
-                                          'Please end the trip which is already running');
+                                      'Please end the trip which is already running');
                                 } else {
                                   CustomLogger().logWithFile(Level.info, "User navigating to Sync Data Cloud to mobile screen-> $page");
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const SyncDataCloudToMobileScreen()),
+                                        const SyncDataCloudToMobileScreen()),
                                   );
                                 }
                               } else {
                                 if (vesselsSyncDetails || tripSyncDetails) {
                                   showDialogBoxToUploadData(
-                                      context, widget.scaffoldKey!, false);
+                                      context, widget.scaffoldKey!, false,widget.orientation??Orientation.portrait);
                                 } else {
                                   Navigator.of(context).pop();
                                   CustomLogger().logWithFile(Level.info, "User navigating to Sync Data Cloud to mobile screen-> $page");
@@ -361,7 +896,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const SyncDataCloudToMobileScreen()),
+                                        const SyncDataCloudToMobileScreen()),
                                   );
                                 }
                               }
@@ -374,7 +909,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 textSize: textSize,
                                 textAlign: TextAlign.start),
                           ),
-                       /*   DropdownButton<String>(
+                          /*   DropdownButton<String>(
                             focusColor:Colors.transparent,
                             value: chosenValue,
                             //elevation: 5,
@@ -430,428 +965,17 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       )
                     ],
                   ),
-                  SizedBox(height: displayHeight(context) * 0.2),
-                  Container(
-                    alignment: Alignment.bottomLeft,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: displayHeight(context) * 0.02,
-                        ),
-                     commonProvider.loginModel!.loginType == "regular" ?   InkWell(
-                          onTap: ()async {
-
-                          //  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-                            await Future.delayed(Duration(milliseconds: 500), (){});
-
-                            bool? isTripStarted =
-                            sharedPreferences!.getBool('trip_started');
-
-                            var tripSyncDetails =
-                                await _databaseService.tripSyncDetails();
-                            var vesselsSyncDetails =
-                                await _databaseService.vesselsSyncDetails();
-
-                            Utils.customPrint(
-                                "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
-                            CustomLogger().logWithFile(Level.info, "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails-> $page");
-
-                            if (isTripStarted != null) {
-                              if (isTripStarted) {
-                                Navigator.of(context).pop();
-                                showEndTripDialogBox(context, );
-                              } else {
-                                if (vesselsSyncDetails || tripSyncDetails) {
-                                  CustomLogger().logWithFile(Level.warning, "showDialogBoxToUploadData pop up for user confirmation-> $page");
-                                  showDialogBoxToUploadData(context, widget.scaffoldKey!, true);
-                                } else {
-                                  CustomLogger().logWithFile(Level.info, "User Navigating to change password screen-> $page");
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ChangePassword()),
-                                  );
-                                }
-                              }
-                            } else {
-                              if (vesselsSyncDetails || tripSyncDetails) {
-                                CustomLogger().logWithFile(Level.warning, "showDialogBoxToUploadData pop up for user confirmation-> $page");
-                                showDialogBoxToUploadData(context, widget.scaffoldKey!, true);
-                              } else {
-                                CustomLogger().logWithFile(Level.info, "User Navigating to change password screen-> $page");
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ChangePassword()),
-                                );
-                              }
-                            }
-                          },
-                          child: commonText(
-                              context: context,
-                              text: 'Change Password',
-                              fontWeight: FontWeight.w400,
-                              textColor: Colors.black54,
-                              textSize: textSize,
-                              textAlign: TextAlign.start),
-                        ) : Container(),
-                        SizedBox(
-                          height: displayHeight(context) * 0.02,
-                        ),
-                        InkWell(
-                          onTap: ()async {
-                           // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-                            await Future.delayed(Duration(milliseconds: 500), (){});
-
-                            CustomLogger().logWithFile(Level.info, "User Navigating to Terms and Conditions screen-> $page");
-                            Navigator.of(context).pop();
-
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => CustomWebView(url:'https://${Urls.terms}', isPaccore: false)),
-                            );
-                          },
-                          child: commonText(
-                              context: context,
-                              text: 'Terms & Conditions',
-                              fontWeight: FontWeight.w400,
-                              textColor: Colors.black54,
-                              textSize: textSize,
-                              textAlign: TextAlign.start),
-                        ),
-                        SizedBox(
-                          height: displayHeight(context) * 0.02,
-                        ),
-                        InkWell(
-                          onTap: ()async {
-                           // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-                            await Future.delayed(Duration(milliseconds: 500), (){});
-
-                            CustomLogger().logWithFile(Level.info, "User Navigating to Privacy and Policy screen-> $page");
-                            Navigator.of(context).pop();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => CustomWebView(url: 'https://${Urls.privacy}',isPaccore: false)),
-                            );
-                          },
-                          child: commonText(
-                              context: context,
-                              text: 'Privacy Policy',
-                              fontWeight: FontWeight.w400,
-                              textColor: Colors.black54,
-                              textSize: textSize,
-                              textAlign: TextAlign.start),
-                        ),
-                        SizedBox(
-                          height: displayHeight(context) * 0.02,
-                        ),
-                        InkWell(
-                          onTap: () async {
-                            //SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-                            await Future.delayed(Duration(milliseconds: 500), (){});
-
-                            bool? isTripStarted =
-                                sharedPreferences!.getBool('trip_started');
-
-                            var tripSyncDetails =
-                                await _databaseService.tripSyncDetails();
-                            var vesselsSyncDetails =
-                                await _databaseService.vesselsSyncDetails();
-
-                            Utils.customPrint(
-                                "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
-                            CustomLogger().logWithFile(Level.info, "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails -> $page");
-
-                            if (isTripStarted != null) {
-                              if (isTripStarted) {
-                                Navigator.of(context).pop();
-
-                                CustomLogger().logWithFile(Level.warning, "show End trip dialog box for user confirmation -> $page");
-
-                                showEndTripDialogBox(context);
-                              } else {
-                                if (vesselsSyncDetails || tripSyncDetails) {
-                                  showDialogBox(context, widget.scaffoldKey!);
-                                } else {
-                                  signOut();
-                                }
-                              }
-                            } else {
-                              if (vesselsSyncDetails || tripSyncDetails) {
-                                showDialogBox(context, scaffoldKey);
-                              } else {
-                                signOut();
-                              }
-                            }
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              commonText(
-                                  context: context,
-                                  text: 'Sign Out',
-                                  fontWeight: FontWeight.w400,
-                                  textColor: Colors.black54,
-                                  textSize: signOutText,
-                                  textAlign: TextAlign.start),
-                              //Icon(Icons.logout, color: Colors.black54),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: displayHeight(context) * 0.02,),
-                        commonText(
-                            text: 'Version $currentVersion',
-                            context: context,
-                            textSize: textSize,
-                            textColor: Colors.black54,
-                            fontWeight: FontWeight.w400),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            commonText(
-                                text: 'Powered by ',
-                                context: context,
-                                textSize: textSize,
-                                textColor: Colors.grey,
-                                fontWeight: FontWeight.w400),
-                            TextButton(
-                              onPressed: ()async {
-                               // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-                                await Future.delayed(Duration(milliseconds: 500), (){});
-
-                                Navigator.of(context).pop();
-
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => CustomWebView(url:'https://www.paccore.com/', isPaccore: true)),
-                                );
-                              },
-                              child: Text('paccore.com',
-                                  style: TextStyle(
-                                      decoration: TextDecoration.underline,
-                                      fontSize: textSize,
-                                      color: blueColor,
-                                      fontWeight: FontWeight.w500)),
-                            )
-                          ],
-                        ),
-
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: displayHeight(context) * 0.05)
-                ],
-              ),
-            ),
-          ),
-        )
-        : Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: displayHeight(context) * 0.05,
-                  ),
-                  Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-
-                        Image.asset('assets/images/home.png', height: displayHeight(context) * 0.04,),
-
-                        SizedBox(width: displayWidth(context) * 0.015,),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            commonText(
-                                context: context,
-                                text: 'Hey!',
-                                fontWeight: FontWeight.w700,
-                                textSize: textSize,
-                                textAlign: TextAlign.start),
-                            SizedBox(height: displayHeight(context) * 0.005,),
-                            Flexible(
-                              child: Text(
-                                "${commonProvider.loginModel!.userEmail}",
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: displayWidth(context) * 0.03,
-                                  fontFamily: poppins,
-                                ),
-                                textAlign: TextAlign.start,
-                                overflow: TextOverflow.clip,
-                                softWrap: true,
-                              ),
-                            ),
-                          ],
-                        )
-                        /* Expanded(
-                          child: RichText(
-                            text: TextSpan(
-                                text: "Hey ",
-                                style: TextStyle(
-                                  color: Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? Colors.white
-                                      : Colors.black,
-                                  fontSize: displayWidth(context) * 0.04,
-                                ),
-                                children: <TextSpan>[
-                                  TextSpan(
-                                    text:
-                                        "${commonProvider.loginModel!.userEmail} !",
-                                    style: TextStyle(
-                                      color: Theme.of(context).brightness ==
-                                              Brightness.dark
-                                          ? Colors.white
-                                          : Colors.blue,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: displayWidth(context) * 0.04,
-                                    ),
-                                  )
-                                ]),
-                          ),
-                        ),*/
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: displayHeight(context) * 0.06,
-                  ),
-                  Column(
+                ),
+                Container(
+                  alignment: Alignment.bottomLeft,
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      /*InkWell(
-                        onTap: () {
-                          CustomLogger().logWithFile(Level.info, "User Navigating to Home page -> $page");
-                          Navigator.of(context).pop();
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => BottomNavigation(),
-                              ),
-                              ModalRoute.withName(""));
-
-
-                        },
-                        child: commonText(
-                            context: context,
-                            text: 'Dashboard',
-                            fontWeight: FontWeight.w500,
-                            textColor: blueColor,
-                            textSize: textSize,
-                            textAlign: TextAlign.start),
-                      ),
-                      SizedBox(
-                        height: displayHeight(context) * 0.02,
-                      ),*/
-                      InkWell(
-                        onTap: () {
-                          CustomLogger().logWithFile(Level.info, "User Navigating to Home page -> $page");
-                          Navigator.of(context).pop();
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => BottomNavigation(),
-                              ),
-                              ModalRoute.withName(""));
-
-
-                        },
-                        child: commonText(
-                            context: context,
-                            text: 'My Vessels',
-                            fontWeight: FontWeight.w400,
-                            textColor: Colors.black54,
-                            textSize: textSize,
-                            textAlign: TextAlign.start),
-                      ),
                       SizedBox(
                         height: displayHeight(context) * 0.02,
                       ),
-                      InkWell(
+                      commonProvider.loginModel!.loginType == "regular" ?   InkWell(
                         onTap: ()async {
-                        //  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-                          await Future.delayed(Duration(milliseconds: 500), (){});
-                          CustomLogger().logWithFile(Level.info, "User Navigating to Add New Vessel Screen -> $page");
-                          Navigator.of(context).pop();
-
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    AddNewVesselPage()),
-                          );
-                        },
-                        child: commonText(
-                            context: context,
-                            text: 'Create Vessels',
-                            fontWeight: FontWeight.w400,
-                            textColor: Colors.black54,
-                            textSize: textSize,
-                            textAlign: TextAlign.start),
-                      ),
-                      SizedBox(
-                        height: displayHeight(context) * 0.02,
-                      ),
-                      InkWell(
-                        onTap: () {
-                        //  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-                          CustomLogger().logWithFile(Level.info, "User Navigating to Retired Vessel Screen -> $page");
-                          Navigator.of(context).pop();
-
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                const RetiredVesselsScreen()),
-                          );
-                        },
-                        child: commonText(
-                            context: context,
-                            text: 'Retired Vessels',
-                            fontWeight: FontWeight.w400,
-                            textColor: Colors.black54,
-                            textSize: textSize,
-                            textAlign: TextAlign.start),
-                      ),
-                      SizedBox(
-                        height: displayHeight(context) * 0.02,
-                      ),
-                      /*   InkWell(
-                        onTap: () {
-                          CustomLogger().logWithFile(Level.info, "User Navigating to Search and Filter -> $page");
-                          Navigator.of(context).pop();
-
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ReportsModule()),
-                          );
-                        },
-                        child: commonText(
-                            context: context,
-                            text: 'Reports',
-                            fontWeight: FontWeight.w500,
-                            textColor: Colors.black54,
-                            textSize: textSize,
-                            textAlign: TextAlign.start),
-                      ),
-                      SizedBox(
-                        height: displayHeight(context) * 0.02,
-                      ), */
-                      InkWell(
-                        onTap: () async {
                          // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                           bool? isTripStarted =
                           sharedPreferences!.getBool('trip_started');
@@ -868,304 +992,184 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           if (isTripStarted != null) {
                             if (isTripStarted) {
                               Navigator.of(context).pop();
-                              Utils.showSnackBar(context,
-                                  scaffoldKey: widget.scaffoldKey,
-                                  message:
-                                  'Please end the trip which is already running');
+                              showEndTripDialogBox(context, );
                             } else {
-                              CustomLogger().logWithFile(Level.info, "User navigating to Sync Data Cloud to mobile screen-> $page");
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                    const SyncDataCloudToMobileScreen()),
-                              );
+                              if (vesselsSyncDetails || tripSyncDetails) {
+                                CustomLogger().logWithFile(Level.warning, "showDialogBoxToUploadData pop up for user confirmation-> $page");
+                                showDialogBoxToUploadData(context, widget.scaffoldKey!, true,widget.orientation??Orientation.portrait);
+                              } else {
+                                CustomLogger().logWithFile(Level.info, "User Navigating to change password screen-> $page");
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ChangePassword()),
+                                );
+                              }
                             }
                           } else {
                             if (vesselsSyncDetails || tripSyncDetails) {
-                              showDialogBoxToUploadData(
-                                  context, widget.scaffoldKey!, false);
+                              CustomLogger().logWithFile(Level.warning, "showDialogBoxToUploadData pop up for user confirmation-> $page");
+                              showDialogBoxToUploadData(context, widget.scaffoldKey!, true,widget.orientation??Orientation.portrait);
                             } else {
-                              Navigator.of(context).pop();
-                              CustomLogger().logWithFile(Level.info, "User navigating to Sync Data Cloud to mobile screen-> $page");
+                              CustomLogger().logWithFile(Level.info, "User Navigating to change password screen-> $page");
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                    const SyncDataCloudToMobileScreen()),
+                                    builder: (context) => ChangePassword()),
                               );
                             }
                           }
                         },
                         child: commonText(
                             context: context,
-                            text: 'Sync from Cloud',
+                            text: 'Change Password',
                             fontWeight: FontWeight.w400,
                             textColor: Colors.black54,
                             textSize: textSize,
                             textAlign: TextAlign.start),
-                      ),
-                      /*   DropdownButton<String>(
-                        focusColor:Colors.transparent,
-                        value: chosenValue,
-                        //elevation: 5,
-                        style: TextStyle(color: Colors.white),
-                        iconEnabledColor:Colors.black54,
-                        items: <String>[
-                          'Info',
-                          'Debug',
-                          'Warning',
-                          'Error',
-                          'Verbose',
-                        ].map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: commonText(
-                                context: context,
-                                text: value,
-                                fontWeight: FontWeight.w500,
-                                textColor: Colors.black54,
-                                textSize: textSize,
-                                textAlign: TextAlign.start)
-                          );
-                        }).toList(),
-                        hint: commonText(
-                            context: context,
-                            text: chosenValue,
-                            fontWeight: FontWeight.w500,
-                            textColor: Colors.black54,
-                            textSize: textSize,
-                            textAlign: TextAlign.start),
-
-                        onChanged: (String? value) {
-                          setState(() {
-                            chosenValue = value;
-                            if(chosenValue == "Info"){
-                              logLevel = "info";
-                            } else if(chosenValue == "Debug"){
-                              logLevel = "debug";
-                            } else if(chosenValue == "Warning"){
-                              logLevel = "warning";
-                            } else if(chosenValue == "Error"){
-                              logLevel = "error";
-                            } else if(chosenValue == "Verbose"){
-                              logLevel = "verbose";
-                            }
-                          });
-                        },
-                      ), */
+                      ) : Container(),
                       SizedBox(
                         height: displayHeight(context) * 0.02,
                       ),
-                    ],
-                  )
-                ],
-              ),
-            ),
-            Container(
-              alignment: Alignment.bottomLeft,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    height: displayHeight(context) * 0.02,
-                  ),
-                  commonProvider.loginModel!.loginType == "regular" ?   InkWell(
-                    onTap: ()async {
-                     // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-                      bool? isTripStarted =
-                      sharedPreferences!.getBool('trip_started');
-
-                      var tripSyncDetails =
-                      await _databaseService.tripSyncDetails();
-                      var vesselsSyncDetails =
-                      await _databaseService.vesselsSyncDetails();
-
-                      Utils.customPrint(
-                          "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
-                      CustomLogger().logWithFile(Level.info, "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails-> $page");
-
-                      if (isTripStarted != null) {
-                        if (isTripStarted) {
-                          Navigator.of(context).pop();
-                          showEndTripDialogBox(context, );
-                        } else {
-                          if (vesselsSyncDetails || tripSyncDetails) {
-                            CustomLogger().logWithFile(Level.warning, "showDialogBoxToUploadData pop up for user confirmation-> $page");
-                            showDialogBoxToUploadData(context, widget.scaffoldKey!, true);
-                          } else {
-                            CustomLogger().logWithFile(Level.info, "User Navigating to change password screen-> $page");
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ChangePassword()),
-                            );
-                          }
-                        }
-                      } else {
-                        if (vesselsSyncDetails || tripSyncDetails) {
-                          CustomLogger().logWithFile(Level.warning, "showDialogBoxToUploadData pop up for user confirmation-> $page");
-                          showDialogBoxToUploadData(context, widget.scaffoldKey!, true);
-                        } else {
-                          CustomLogger().logWithFile(Level.info, "User Navigating to change password screen-> $page");
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ChangePassword()),
-                          );
-                        }
-                      }
-                    },
-                    child: commonText(
-                        context: context,
-                        text: 'Change Password',
-                        fontWeight: FontWeight.w400,
-                        textColor: Colors.black54,
-                        textSize: textSize,
-                        textAlign: TextAlign.start),
-                  ) : Container(),
-                  SizedBox(
-                    height: displayHeight(context) * 0.02,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      CustomLogger().logWithFile(Level.info, "User Navigating to Terms and Conditions screen-> $page");
-                      Navigator.of(context).pop();
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CustomWebView(url:'https://${Urls.terms}', isPaccore: false)),
-                      );
-                    },
-                    child: commonText(
-                        context: context,
-                        text: 'Terms & Conditions',
-                        fontWeight: FontWeight.w400,
-                        textColor: Colors.black54,
-                        textSize: textSize,
-                        textAlign: TextAlign.start),
-                  ),
-                  SizedBox(
-                    height: displayHeight(context) * 0.02,
-                  ),
-                  InkWell(
-                    onTap: () {
-                      CustomLogger().logWithFile(Level.info, "User Navigating to Privacy and Policy screen-> $page");
-                      Navigator.of(context).pop();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CustomWebView(url: 'https://${Urls.privacy}',isPaccore: false)),
-                      );
-                    },
-                    child: commonText(
-                        context: context,
-                        text: 'Privacy Policy',
-                        fontWeight: FontWeight.w400,
-                        textColor: Colors.black54,
-                        textSize: textSize,
-                        textAlign: TextAlign.start),
-                  ),
-                  SizedBox(
-                    height: displayHeight(context) * 0.02,
-                  ),
-                  InkWell(
-                    onTap: () async {
-                     // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-                      bool? isTripStarted =
-                      sharedPreferences!.getBool('trip_started');
-
-                      var tripSyncDetails =
-                      await _databaseService.tripSyncDetails();
-                      var vesselsSyncDetails =
-                      await _databaseService.vesselsSyncDetails();
-
-                      Utils.customPrint(
-                          "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
-                      CustomLogger().logWithFile(Level.info, "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails -> $page");
-
-                      if (isTripStarted != null) {
-                        if (isTripStarted) {
-                          Navigator.of(context).pop();
-
-                          CustomLogger().logWithFile(Level.warning, "show End trip dialog box for user confirmation -> $page");
-
-                          showEndTripDialogBox(context);
-                        } else {
-                          if (vesselsSyncDetails || tripSyncDetails) {
-                            showDialogBox(context, widget.scaffoldKey!);
-                          } else {
-                            signOut();
-                          }
-                        }
-                      } else {
-                        if (vesselsSyncDetails || tripSyncDetails) {
-                          showDialogBox(context, scaffoldKey);
-                        } else {
-                          signOut();
-                        }
-                      }
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        commonText(
-                            context: context,
-                            text: 'Sign Out',
-                            fontWeight: FontWeight.w400,
-                            textColor: Colors.black54,
-                            textSize: displayWidth(context) * 0.04,
-                            textAlign: TextAlign.start),
-                        //Icon(Icons.logout, color: Colors.black54),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: displayHeight(context) * 0.02,),
-                  commonText(
-                      text: 'Version $currentVersion',
-                      context: context,
-                      textSize: displayWidth(context) * 0.03,
-                      textColor: Colors.black54,
-                      fontWeight: FontWeight.w400),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      commonText(
-                          text: 'Powered by ',
-                          context: context,
-                          textSize: displayWidth(context) * 0.03,
-                          textColor: Colors.grey,
-                          fontWeight: FontWeight.w400),
-                      TextButton(
-                        onPressed: () {
+                      InkWell(
+                        onTap: () {
+                          CustomLogger().logWithFile(Level.info, "User Navigating to Terms and Conditions screen-> $page");
                           Navigator.of(context).pop();
 
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => CustomWebView(url:'https://www.paccore.com/', isPaccore: true)),
+                                builder: (context) => CustomWebView(url:'https://${Urls.terms}', isPaccore: false)),
                           );
                         },
-                        child: Text('paccore.com',
-                            style: TextStyle(
-                                decoration: TextDecoration.underline,
-                                fontSize: displayWidth(context) * 0.035,
-                                color: blueColor,
-                                fontWeight: FontWeight.w500)),
-                      )
+                        child: commonText(
+                            context: context,
+                            text: 'Terms & Conditions',
+                            fontWeight: FontWeight.w400,
+                            textColor: Colors.black54,
+                            textSize: textSize,
+                            textAlign: TextAlign.start),
+                      ),
+                      SizedBox(
+                        height: displayHeight(context) * 0.02,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          CustomLogger().logWithFile(Level.info, "User Navigating to Privacy and Policy screen-> $page");
+                          Navigator.of(context).pop();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CustomWebView(url: 'https://${Urls.privacy}',isPaccore: false)),
+                          );
+                        },
+                        child: commonText(
+                            context: context,
+                            text: 'Privacy Policy',
+                            fontWeight: FontWeight.w400,
+                            textColor: Colors.black54,
+                            textSize: textSize,
+                            textAlign: TextAlign.start),
+                      ),
+                      SizedBox(
+                        height: displayHeight(context) * 0.02,
+                      ),
+                      InkWell(
+                        onTap: () async {
+                         // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                          bool? isTripStarted =
+                          sharedPreferences!.getBool('trip_started');
+
+                          var tripSyncDetails =
+                          await _databaseService.tripSyncDetails();
+                          var vesselsSyncDetails =
+                          await _databaseService.vesselsSyncDetails();
+
+                          Utils.customPrint(
+                              "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
+                          CustomLogger().logWithFile(Level.info, "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails -> $page");
+
+                          if (isTripStarted != null) {
+                            if (isTripStarted) {
+                              Navigator.of(context).pop();
+
+                              CustomLogger().logWithFile(Level.warning, "show End trip dialog box for user confirmation -> $page");
+
+                              showEndTripDialogBox(context);
+                            } else {
+                              if (vesselsSyncDetails || tripSyncDetails) {
+                                showDialogBox(context, widget.scaffoldKey!,widget.orientation??Orientation.portrait);
+                              } else {
+                                signOut();
+                              }
+                            }
+                          } else {
+                            if (vesselsSyncDetails || tripSyncDetails) {
+                              showDialogBox(context, scaffoldKey,widget.orientation??Orientation.portrait);
+                            } else {
+                              signOut();
+                            }
+                          }
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            commonText(
+                                context: context,
+                                text: 'Sign Out',
+                                fontWeight: FontWeight.w400,
+                                textColor: Colors.black54,
+                                textSize: displayWidth(context) * 0.04,
+                                textAlign: TextAlign.start),
+                            //Icon(Icons.logout, color: Colors.black54),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: displayHeight(context) * 0.02,),
+                      commonText(
+                          text: 'Version $currentVersion',
+                          context: context,
+                          textSize: displayWidth(context) * 0.03,
+                          textColor: Colors.black54,
+                          fontWeight: FontWeight.w400),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          commonText(
+                              text: 'Powered by ',
+                              context: context,
+                              textSize: displayWidth(context) * 0.03,
+                              textColor: Colors.grey,
+                              fontWeight: FontWeight.w400),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CustomWebView(url:'https://www.paccore.com/', isPaccore: true)),
+                              );
+                            },
+                            child: Text('paccore.com',
+                                style: TextStyle(
+                                    decoration: TextDecoration.underline,
+                                    fontSize: displayWidth(context) * 0.035,
+                                    color: blueColor,
+                                    fontWeight: FontWeight.w500)),
+                          )
+                        ],
+                      ),
+
                     ],
                   ),
-
-                ],
-              ),
+                ),
+                SizedBox(height: displayHeight(context) * 0.05)
+              ],
             ),
-            SizedBox(height: displayHeight(context) * 0.05)
-          ],
-        ),
-      ),
-    );
+          ));
+        
   }
 
   getVersion() async {
@@ -1201,7 +1205,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
         ModalRoute.withName(""));
   }
 
-  showDialogBox(BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) {
+  showDialogBox(BuildContext context, GlobalKey<ScaffoldState> scaffoldKey,Orientation orientation) {
     bool isSigningOut = false;
     return showDialog(
         barrierDismissible: false,
@@ -1214,8 +1218,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
             child: StatefulBuilder(
               builder: (ctx, setDialogState) {
                 return Container(
-                  height: displayHeight(context) * 0.42,
-                  width: MediaQuery.of(context).size.width,
+                  height:orientation==Orientation.portrait? displayHeight(context) * 0.42:displayHeight(context) * 0.60,
+                  width:orientation==Orientation.portrait? MediaQuery.of(context).size.width:MediaQuery.of(context).size.width/2,
                   child: Padding(
                     padding: const EdgeInsets.only(
                         left: 8.0, right: 8.0, top: 15, bottom: 15),
@@ -1246,7 +1250,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                           'There are some vessel & trips data not sync with cloud, do you want to proceed further?',
                                       fontWeight: FontWeight.w600,
                                       textColor: Colors.black,
-                                      textSize: displayWidth(context) * 0.038,
+                                  textSize:orientation==Orientation.portrait? displayWidth(context) * 0.038:displayWidth(context) * 0.010,
                                       textAlign: TextAlign.center,
                                   fontFamily: inter),
                                   SizedBox(
@@ -1260,7 +1264,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                             'Click Sync & Sign Out for not loosing local data which is not uploaded',
                                         fontWeight: FontWeight.w400,
                                         textColor: Colors.grey,
-                                        textSize: displayWidth(context) * 0.032,
+                                        textSize: orientation==Orientation.portrait? displayWidth(context) * 0.032:displayWidth(context) * 0.020,
                                         textAlign: TextAlign.center,
                                         fontFamily: inter),
                                   ),
@@ -1276,12 +1280,16 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   margin: EdgeInsets.only(
                                     top: 8.0,
                                   ),
-                                  child: isSigningOut
-                                      ? Container(
+                                  child: 
+                                  isSigningOut
+                                      ?
+                                       Container(
                                     height:  displayHeight(context) * 0.055,
                                       child: Center(child: CircularProgressIndicator(color: blueColor,)))
-                                      : Center(
-                                    child: CommonButtons.getAcceptButton(
+                                      : 
+                                      Center(
+                                    child:
+                                     CommonButtons.getAcceptButton(
                                         'Sync & Sign Out',
                                         context,
                                         blueColor, () async {
@@ -1395,7 +1403,7 @@ if(!isSyncSignoutClicked){
 
   ///To fetch data from cloud (Database)
   showDialogBoxToUploadData(
-      BuildContext context, GlobalKey<ScaffoldState> scaffoldKey, bool isChangePassword) {
+      BuildContext context, GlobalKey<ScaffoldState> scaffoldKey, bool isChangePassword,Orientation orientation) {
     return showDialog(
         barrierDismissible: false,
         context: context,
@@ -1407,8 +1415,8 @@ if(!isSyncSignoutClicked){
             child: StatefulBuilder(
               builder: (ctx, setDialogState) {
                 return Container(
-                  height: displayHeight(context) * 0.42,
-                  width: MediaQuery.of(context).size.width,
+                  height:orientation==Orientation.portrait? displayHeight(context) * 0.42:displayHeight(context) * 0.80,
+                  width:orientation==Orientation.portrait? MediaQuery.of(context).size.width:MediaQuery.of(context).size.width/2,
                   child: Padding(
                     padding: const EdgeInsets.only(
                         left: 8.0, right: 8.0, top: 5, bottom: 15),
@@ -1424,7 +1432,7 @@ if(!isSyncSignoutClicked){
                             Center(
                               child: Image.asset('assets/icons/export_img.png',
                                 //height: displayHeight(context) * 0.2,
-                                width: displayWidth(context) * 0.18,),
+                                width:orientation==Orientation.portrait? displayWidth(context) * 0.18:displayWidth(context) * 0.10),
                             ),
                             SizedBox(
                               height: displayHeight(context) * 0.01,
@@ -1439,16 +1447,16 @@ if(!isSyncSignoutClicked){
                                       'There are some vessel & trips data not sync with cloud, do you want to proceed further?',
                                       fontWeight: FontWeight.w600,
                                       textColor: Colors.black,
-                                      textSize: displayWidth(context) * 0.038,
+                                  textSize:orientation==Orientation.portrait? displayWidth(context) * 0.038:displayWidth(context) * 0.018,
                                       textAlign: TextAlign.center,
                                       fontFamily: inter),
                                   SizedBox(
-                                    height: displayHeight(context) * 0.015,
+                                    height:orientation==Orientation.portrait? displayHeight(context) * 0.015:displayHeight(context) * 0.030,
                                   ),
                                   isChangePassword
                                       ? Padding(
                                         padding: EdgeInsets.only(
-                                            left: displayWidth(context) * 0.06,
+                                            left:orientation==Orientation.portrait? displayWidth(context) * 0.06:0,
                                         ),
                                         child: Center(
                                           child: commonText(
@@ -1457,8 +1465,8 @@ if(!isSyncSignoutClicked){
                                           'Click Upload & Change Password for not loosing local data which is not uploaded',
                                           fontWeight: FontWeight.w400,
                                           textColor: Colors.grey,
-                                          textSize: displayWidth(context) * 0.032,
-                                          textAlign: TextAlign.start),
+                                  textSize:orientation==Orientation.portrait? displayWidth(context) * 0.032:displayWidth(context) * 0.012,
+                                          textAlign:orientation==Orientation.portrait? TextAlign.start:TextAlign.center),
                                         ),
                                       )
                                       : commonText(
@@ -1467,7 +1475,7 @@ if(!isSyncSignoutClicked){
                                       'Click Upload & Sync for not loosing local data which is not uploaded',
                                       fontWeight: FontWeight.w400,
                                       textColor: Colors.grey,
-                                      textSize: displayWidth(context) * 0.032,
+                                  textSize:orientation==Orientation.portrait? displayWidth(context) * 0.032:displayWidth(context) * 0.012,
                                       textAlign: TextAlign.center),
                                 ],
                               ),
@@ -1482,47 +1490,50 @@ if(!isSyncSignoutClicked){
                                     top: 8.0,
                                   ),
                                   child: Center(
-                                    child: isUploadStarted
-                                        ? Center(
-                                      child: Container(
-                                          height: displayHeight(context) * 0.055,
+                                    // child: isUploadStarted
+                                    //     ? 
+                                    //     Center(
+                                      child: 
+                                      
+                                      SizedBox(
+                                          height:orientation==Orientation.portrait? displayHeight(context) * 0.055:displayHeight(context) * 0.085,
                                           child: Center(
                                               child:
                                               CircularProgressIndicator(
                                                 color: blueColor,
                                               ))),
                                     )
-                                        : CommonButtons.getAcceptButton(
-                                        isChangePassword
-                                            ? 'Upload & Change Password'
-                                            : 'Upload & Sync',
-                                        context,
-                                        blueColor, () async {
-                                      //  Navigator.of(context).pop();
+                                  //       : CommonButtons.getAcceptButton(
+                                  //       isChangePassword
+                                  //           ? 'Upload & Change Password'
+                                  //           : 'Upload & Sync',
+                                  //       context,
+                                  //       blueColor, () async {
+                                  //     //  Navigator.of(context).pop();
 
-                                      bool internet =
-                                      await Utils().check(scaffoldKey);
-                                      setState(() {
-                                        isSync = true;
-                                      });
-                                      if (internet) {
-                                        if (mounted) {
-                                          setDialogState(() {
-                                            isUploadStarted = true;
-                                          });
-                                        }
-                                        syncAndSignOut(isChangePassword, context);
-                                      }
-                                    },
-                                        displayWidth(context) / 1.6,
-                                        displayHeight(context) * 0.055,
-                                        primaryColor,
-                                        Colors.white,
-                                        displayHeight(context) * 0.018,
-                                        blueColor,
-                                        '',
-                                        fontWeight: FontWeight.w500),
-                                  ),
+                                  //     bool internet =
+                                  //     await Utils().check(scaffoldKey);
+                                  //     setState(() {
+                                  //       isSync = true;
+                                  //     });
+                                  //     if (internet) {
+                                  //       if (mounted) {
+                                  //         setDialogState(() {
+                                  //           isUploadStarted = true;
+                                  //         });
+                                  //       }
+                                  //       syncAndSignOut(isChangePassword, context);
+                                  //     }
+                                  //   },
+                                  //     orientation==    Orientation.portrait?   displayWidth(context) / 1.6:displayWidth(context) / 3,
+                                  //  orientation==    Orientation.portrait?      displayHeight(context) * 0.055:displayHeight(context) * 0.085,
+                                  //       primaryColor,
+                                  //       Colors.white,
+                                  //    orientation==    Orientation.portrait?      displayHeight(context) * 0.018:displayHeight(context) * 0.030,
+                                  //       blueColor,
+                                  //       '',
+                                  //       fontWeight: FontWeight.w500),
+                                  // ),
                                 ),
                                 SizedBox(
                                   width: 15.0,
@@ -1572,14 +1583,14 @@ if(!isSyncSignoutClicked){
                                           }
 
                                         },
-                                        displayWidth(context) / 1.6,
-                                        displayHeight(context) * 0.055,
+                                      orientation==    Orientation.portrait?   displayWidth(context) / 1.6:displayWidth(context) / 3,
+                                   orientation==    Orientation.portrait?      displayHeight(context) * 0.055:displayHeight(context) * 0.085,
                                         Colors.transparent,
                                         Theme.of(context).brightness ==
                                             Brightness.dark
                                             ? Colors.white
                                             : blueColor,
-                                        displayHeight(context) * 0.015,
+                               orientation==    Orientation.portrait?         displayHeight(context) * 0.015:displayHeight(context) * 0.028,
                                         Colors.transparent,
                                         '',
                                         fontWeight: FontWeight.w500),

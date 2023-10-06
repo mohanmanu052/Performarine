@@ -1143,12 +1143,6 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
 
     addListenerToControllers();
   }
-@override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-  }
-
 
   
 
