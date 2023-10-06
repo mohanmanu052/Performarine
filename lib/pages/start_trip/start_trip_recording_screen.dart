@@ -159,12 +159,6 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     popupAnimationController.dispose();
     WidgetsBinding.instance.removeObserver(this);
 
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.portraitUp
-    ]);
   }
 
   @override

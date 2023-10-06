@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_sensors/flutter_sensors.dart' as s;
 import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
@@ -144,7 +145,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
+SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     tripIsRunningOrNot();
 
     commonProvider = context.read<CommonProvider>();
@@ -155,6 +156,26 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     getVesselAnalytics(widget.vessel!.id!);
   }
+
+
+  
+
+@override
+  void dispose() {
+        SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp
+
+    ]);
+
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+
+  
 
   /// To get running trip details
   getRunningTripDetails() async {

@@ -61,6 +61,7 @@ class _SyncDataCloudToMobileScreenState
   void initState() {
     // TODO: implement initState
     super.initState();
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
     commonProvider = context.read<CommonProvider>();
 
@@ -74,12 +75,12 @@ class _SyncDataCloudToMobileScreenState
     // TODO: implement dispose
     super.dispose();
 
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.portraitUp
-    ]);
+    // SystemChrome.setPreferredOrientations([
+    //   DeviceOrientation.landscapeLeft,
+    //   DeviceOrientation.landscapeRight,
+    //   DeviceOrientation.portraitDown,
+    //   DeviceOrientation.portraitUp
+    // ]);
   }
 
   /// To get user data from api if internet connection is on

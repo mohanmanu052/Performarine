@@ -84,6 +84,30 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
 
   }
 
+@override
+  void dispose() {
+    
+
+        SystemChrome.setPreferredOrientations([
+
+      DeviceOrientation.landscapeLeft,
+
+      DeviceOrientation.landscapeRight,
+
+      DeviceOrientation.portraitDown,
+
+      DeviceOrientation.portraitUp
+
+ 
+
+    ]);
+
+ 
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();

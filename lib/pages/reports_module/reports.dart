@@ -194,12 +194,29 @@ class _ReportsModuleState extends State<ReportsModule> {
 
       imageUrl = vesselData!.imageURLs ?? '';
 
-      setState(() {
-        builtYear = vessel.builtYear.toString() ?? '-';
-        capacity = vessel.capacity ?? '-';
-        registerNumber = vessel.regNumber ?? '-';
-      });
-    } else {}
+
+
+  void getVesselDetails(String id)async {
+    if(vesselList!=null&&vesselList!.isNotEmpty){
+    Vessels? vessel = vesselList!.firstWhere((vessel) => vessel.id == id, orElse: () => Vessels());
+   
+      CreateVessel? vesselData = await _databaseService
+        .getVesselFromVesselID(id);
+
+    imageUrl = vesselData!.imageURLs ?? '';
+
+
+  setState(() {
+       builtYear=vessel.builtYear.toString()??'-';
+  capacity=vessel.capacity??'-';
+  registerNumber=vessel.regNumber??'-';
+
+  });
+
+    }else{
+
+    }
+
   }
 
   //Convertion of date time into year-month-day format
@@ -1022,6 +1039,9 @@ class _ReportsModuleState extends State<ReportsModule> {
     return formattedDate;
   }
 
+
+
+
   @override
   void initState() {
     super.initState();
@@ -1054,6 +1074,8 @@ class _ReportsModuleState extends State<ReportsModule> {
     _selectionBehaviorDurationGraph = SelectionBehavior(enable: true);
     zoomPanBehavior = ZoomPanBehavior(enablePanning: true);
   }
+
+  
 
   @override
   void dispose() {
