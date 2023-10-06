@@ -65,7 +65,11 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
   void initState() {
     // TODO: implement initState
     super.initState();
-SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
     commonProvider = context.read<CommonProvider>();
     Wakelock.enable();
     tabController =

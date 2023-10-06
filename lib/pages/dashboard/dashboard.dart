@@ -82,12 +82,12 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
     // TODO: implement dispose
     super.dispose();
 
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.portraitUp
-    ]);
+    // SystemChrome.setPreferredOrientations([
+    //   DeviceOrientation.landscapeLeft,
+    //   DeviceOrientation.landscapeRight,
+    //   DeviceOrientation.portraitDown,
+    //   DeviceOrientation.portraitUp
+    // ]);
   }
 
   @override

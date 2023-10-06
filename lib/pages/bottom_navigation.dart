@@ -317,7 +317,7 @@ class _BottomNavigationState extends State<BottomNavigation>
         },
         child: OrientationBuilder(
             key: UniqueKey(),
-            builder: (context, orientation) {
+            builder: (ctx, orientation) {
               double iconHeight = orientation == Orientation.portrait
                   ? displayHeight(context) * 0.035
                   : displayHeight(context) * 0.060;
@@ -469,7 +469,9 @@ class _BottomNavigationState extends State<BottomNavigation>
                                     // ]);
                                   }
 
-                                  await Future.delayed(Duration(milliseconds: 500), (){});
+                                  await Future.delayed(Duration(milliseconds: 500), (){
+                                    print('INDEXXXXX: $index');
+                                  });
 
                                   if (index == 2) {
                                     List<CreateVessel> localVesselList =
@@ -755,7 +757,20 @@ class _BottomNavigationState extends State<BottomNavigation>
               },
             ),
           );
-        });
+        }).then((value) {
+          if(commonProvider.bottomNavIndex != 1){
+            SystemChrome.setPreferredOrientations([
+              DeviceOrientation.portraitUp
+            ]);
+          }else{
+            SystemChrome.setPreferredOrientations([
+              DeviceOrientation.landscapeLeft,
+              DeviceOrientation.landscapeRight,
+              DeviceOrientation.portraitDown,
+              DeviceOrientation.portraitUp
+            ]);
+          }
+    });
   }
 
   showResetPasswordDialogBox(BuildContext context) {

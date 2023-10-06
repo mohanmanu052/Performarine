@@ -322,6 +322,20 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
                               if (isTripStarted != null) {
                                 if (isTripStarted) {
+
+                                  if(commonProvider.bottomNavIndex != 1){
+                                    SystemChrome.setPreferredOrientations([
+                                      DeviceOrientation.portraitUp
+                                    ]);
+                                  }else{
+                                    SystemChrome.setPreferredOrientations([
+                                      DeviceOrientation.landscapeLeft,
+                                      DeviceOrientation.landscapeRight,
+                                      DeviceOrientation.portraitDown,
+                                      DeviceOrientation.portraitUp
+                                    ]);
+                                  }
+
                                   Navigator.of(context).pop();
                                   Utils.showSnackBar(context,
                                       scaffoldKey: widget.scaffoldKey,
@@ -1363,7 +1377,20 @@ if(!isSyncSignoutClicked){
               },
             ),
           );
-        });
+        }).then((value) {
+      if(commonProvider.bottomNavIndex != 1){
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.portraitUp
+        ]);
+      }else{
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.landscapeLeft,
+          DeviceOrientation.landscapeRight,
+          DeviceOrientation.portraitDown,
+          DeviceOrientation.portraitUp
+        ]);
+      }
+    });
   }
 
   ///To fetch data from cloud (Database)
@@ -1591,7 +1618,20 @@ if(!isSyncSignoutClicked){
               },
             ),
           );
-        });
+        }).then((value) {
+      if(commonProvider.bottomNavIndex != 1){
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.portraitUp
+        ]);
+      }else{
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.landscapeLeft,
+          DeviceOrientation.landscapeRight,
+          DeviceOrientation.portraitDown,
+          DeviceOrientation.portraitUp
+        ]);
+      }
+    });
   }
 
   /// If user have trip which is not uploaded then to sync data and sign out
@@ -1965,6 +2005,19 @@ if(!isSyncSignoutClicked){
               );
             }
           );
-        });
+        }).then((value) {
+      if(commonProvider.bottomNavIndex != 1){
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.portraitUp
+        ]);
+      }else{
+        SystemChrome.setPreferredOrientations([
+          DeviceOrientation.landscapeLeft,
+          DeviceOrientation.landscapeRight,
+          DeviceOrientation.portraitDown,
+          DeviceOrientation.portraitUp
+        ]);
+      }
+    });
   }
 }
