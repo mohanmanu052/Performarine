@@ -6,17 +6,23 @@ import 'package:performarine/common_widgets/utils/constants.dart';
 import '../../../common_widgets/utils/colors.dart';
 
 class ReportsDataTable extends StatefulWidget {
-    List<Map<String, dynamic>> tripList = [];
-      List<Map<String, dynamic>> finalData = [];
-      Orientation? orientation;
-Function(int index,dynamic personData,Orientation orientation)? onTapCallBack;
-dynamic? globalkey;
+  List<Map<String, dynamic>> tripList = [];
+  List<Map<String, dynamic>> finalData = [];
+  Orientation? orientation;
+  Function(int index, dynamic personData, Orientation orientation)?
+      onTapCallBack;
+  dynamic? globalkey;
 
-    int? barIndex;
-   ReportsDataTable({super.key,required this.tripList,required this.finalData,this.onTapCallBack,this.barIndex = -1,
-this.globalkey,this.orientation
+  int? barIndex;
 
-   });
+  ReportsDataTable(
+      {super.key,
+      required this.tripList,
+      required this.finalData,
+      this.onTapCallBack,
+      this.barIndex = -1,
+      this.globalkey,
+      this.orientation});
 
   @override
   State<ReportsDataTable> createState() => ReportsDataTableState();
@@ -26,11 +32,12 @@ class ReportsDataTableState extends State<ReportsDataTable> {
   int selectedRowIndex = -1;
   int selectedBarIndex = -1;
   int? index;
-  int? index2=0;
-  bool isToolTipShown=false;
+  int? index2 = 0;
+  bool isToolTipShown = false;
 
-  Function(int index1) setSelectedRowIndex=(selectedRowIndex){
-print('the selected row index was-------------'+selectedRowIndex.toString());
+  Function(int index1) setSelectedRowIndex = (selectedRowIndex) {
+    print('the selected row index was-------------' +
+        selectedRowIndex.toString());
   };
 
   dynamic dateWithZeros(String timesString) {
@@ -56,11 +63,10 @@ print('the selected row index was-------------'+selectedRowIndex.toString());
     super.didUpdateWidget(oldWidget);
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-print('the report datatable index was----------'+selectedRowIndex.toString());
+    print('the report datatable index was----------' +
+        selectedRowIndex.toString());
 
     return SingleChildScrollView(
       key: widget.globalkey,
@@ -68,7 +74,6 @@ print('the report datatable index was----------'+selectedRowIndex.toString());
       child: Padding(
         padding: EdgeInsets.all(12.0),
         child: DataTable(
-        
           columnSpacing: displayWidth(context) * 0.07,
           dividerThickness: 1,
           columns: [
@@ -77,7 +82,9 @@ print('the report datatable index was----------'+selectedRowIndex.toString());
                 child: Center(
                   child: Text(
                     'Date',
-                    style: TextStyle(color: tableHeaderColor,fontFamily: dmsans,
+                    style: TextStyle(
+                      color: tableHeaderColor,
+                      fontFamily: dmsans,
                     ),
                   ),
                 ),
@@ -87,7 +94,8 @@ print('the report datatable index was----------'+selectedRowIndex.toString());
                 label: Expanded(
               child: Center(
                 child: Text('Duration',
-                    style: TextStyle(color: tableHeaderColor,fontFamily: dmsans),
+                    style:
+                        TextStyle(color: tableHeaderColor, fontFamily: dmsans),
                     textAlign: TextAlign.center),
               ),
             )),
@@ -95,7 +103,8 @@ print('the report datatable index was----------'+selectedRowIndex.toString());
                 label: Expanded(
               child: Center(
                 child: Text('Avg Speed ($speedKnot)',
-                    style: TextStyle(color: tableHeaderColor,fontFamily: dmsans),
+                    style:
+                        TextStyle(color: tableHeaderColor, fontFamily: dmsans),
                     textAlign: TextAlign.center),
               ),
             )),
@@ -103,7 +112,8 @@ print('the report datatable index was----------'+selectedRowIndex.toString());
                 label: Expanded(
               child: Center(
                 child: Text('Fuel Usage ($liters)',
-                    style: TextStyle(color: tableHeaderColor,fontFamily: dmsans),
+                    style:
+                        TextStyle(color: tableHeaderColor, fontFamily: dmsans),
                     textAlign: TextAlign.center),
               ),
             )),
@@ -111,171 +121,117 @@ print('the report datatable index was----------'+selectedRowIndex.toString());
                 label: Expanded(
               child: Center(
                 child: Text('Power Usage ($watt)',
-                    style: TextStyle(color: tableHeaderColor,fontFamily: dmsans),
+                    style:
+                        TextStyle(color: tableHeaderColor, fontFamily: dmsans),
                     textAlign: TextAlign.center),
               ),
             )),
           ],
           rows: [
-            ...widget.tripList.map((person) =>
+            ...widget.tripList.map((person) => DataRow(
 
-            
-            
-             DataRow(
-              
-              
 //                 onSelectChanged: (isSelected) {
 //     setState(() {
 //       selectedRowIndex = isSelected??false ? widget.tripList.indexOf(person) : -1;
 //     });
 //  },
-  color: MaterialStateProperty.all(
-    selectedRowIndex ==widget.tripList.indexOf(person)
-        ? reroprtHighlightBackgroundColor // Change the background color for the selected row
-        : null, // Use null to keep the default background color
-  ),
+                    color: MaterialStateProperty.all(
+                      selectedRowIndex == widget.tripList.indexOf(person)
+                          ? reroprtHighlightBackgroundColor // Change the background color for the selected row
+                          : null, // Use null to keep the default background color
+                    ),
+                    cells: [
+                      DataCell(
+                          Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                                dateWithZeros(
+                                  person['date'],
+                                )!,
+                                style: TextStyle(
+                                    color: Colors.black, fontFamily: dmsans),
+                                textAlign: TextAlign.center),
+                          ), onTap: () {
+                        print('the reportTable data was------------' +
+                            widget.tripList.toString());
+                        widget.onTapCallBack!(widget.tripList.indexOf(person),
+                            person, widget.orientation ?? Orientation.portrait);
+                        setState(() {
+                          selectedRowIndex = widget.tripList.indexOf(person);
+                        });
+
+                      }),
+                      DataCell(
+                          Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                person['duration']!,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.black, fontFamily: dmsans),
+                              )), onTap: () {
+                        widget.onTapCallBack!(widget.tripList.indexOf(person),
+                            person, widget.orientation ?? Orientation.portrait);
+
+                        setState(() {
+                          selectedRowIndex = widget.tripList.indexOf(person);
+                        });
 
 
-              
-              cells: [
-                  DataCell(
-                  
-                    Align(
-                        alignment: Alignment.center,
-                        child: Text(dateWithZeros(person['date'],
-                        
-                        
-                        )!,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: dmsans
-                        ),
+                      }),
+                      DataCell(
+                          Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                '${person['avgSpeed']!}',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.black, fontFamily: dmsans),
+                              )), onTap: () {
+                        widget.onTapCallBack!(widget.tripList.indexOf(person),
+                            person, widget.orientation ?? Orientation.portrait);
 
+                        setState(() {
+                          selectedRowIndex = widget.tripList.indexOf(person);
+                        });
+                      }),
+                      DataCell(
+                          Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                '${person['fuelUsage']}',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.black, fontFamily: dmsans),
+                              )), onTap: () {
+                        widget.onTapCallBack!(widget.tripList.indexOf(person),
+                            person, widget.orientation ?? Orientation.portrait);
 
-                            textAlign: TextAlign.center),
-                            
-                            
-                            ),
+                        setState(() {
+                          selectedRowIndex = widget.tripList.indexOf(person);
+                        });
+                      }),
+                      DataCell(
+                          Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                '${person['powerUsage']}',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.black, fontFamily: dmsans),
+                              )), onTap: () {
+                        widget.onTapCallBack!(widget.tripList.indexOf(person),
+                            person, widget.orientation ?? Orientation.portrait);
 
-
-                                                        onTap:(){
-
-                      print('the reportTable data was------------'+widget.tripList.toString());
-widget.onTapCallBack!(widget.tripList.indexOf(person),person,widget.orientation??Orientation.portrait);
-                                                              setState(() {
-      selectedRowIndex =  widget.tripList.indexOf(person);
-    });
-
-                              
-                            }
-
-                  ),
-                  DataCell(Align(
-                      alignment: Alignment.center,
-                      child: Text(person['duration']!,
-                          textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: dmsans
-                        ),
-
-                      )
-                          
-                          ),
-                                                                                  onTap:(){
-widget.onTapCallBack!(widget.tripList.indexOf(person),person,widget.orientation??Orientation.portrait);
-
-                                                              setState(() {
-      selectedRowIndex =  widget.tripList.indexOf(person);
-    });
-
-                              
-                            }
-
-                          
-                          
-                          ),
-                  DataCell(Align(
-                      alignment: Alignment.center,
-                      child: Text('${person['avgSpeed']!}',
-                          textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: dmsans
-                        ),
-
-
-                          
-                          )),
-                          
-                          
-                                                                                 onTap:(){
-widget.onTapCallBack!(widget.tripList.indexOf(person),person,widget.orientation??Orientation.portrait);
-
-                                                              setState(() {
-      selectedRowIndex =  widget.tripList.indexOf(person);
-    });
-
-                              
-                            }
- 
-                          
-                          ),
-                  DataCell(Align(
-                      alignment: Alignment.center,
-                      child: Text('${person['fuelUsage']}',
-                          textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: dmsans
-                        ),
-
-
-                          
-                          )),
-
-                                                                                  onTap:(){
-widget.onTapCallBack!(widget.tripList.indexOf(person),person,widget.orientation??Orientation.portrait);
-
-                                                              setState(() {
-      selectedRowIndex =  widget.tripList.indexOf(person);
-    });
-
-                              
-                            }
-
-                          
-                          
-                          ),
-                  DataCell(Align(
-                      alignment: Alignment.center,
-                      child: Text('${person['powerUsage']}',
-                          textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: dmsans
-                        ),
-
-
-                          )),
-                          
-                                                                                  onTap:(){
-widget.onTapCallBack!(widget.tripList.indexOf(person),person,widget.orientation??Orientation.portrait);
-
-                                                              setState(() {
-      selectedRowIndex =  widget.tripList.indexOf(person);
-    });
-
-                              
-                            }
-
-                          
-                          ),
-                ])),
+                        setState(() {
+                          selectedRowIndex = widget.tripList.indexOf(person);
+                        });
+                      }),
+                    ])),
             ...widget.finalData.map((e) => DataRow(cells: [
                   DataCell(
                     Text(
-                     'Average',
+                      'Average',
                       style: TextStyle(
                           color: circularProgressColor,
                           fontFamily: dmsans,
@@ -288,8 +244,7 @@ widget.onTapCallBack!(widget.tripList.indexOf(person),person,widget.orientation?
                       e['duration']!,
                       style: TextStyle(
                           color: circularProgressColor,
-                                                    fontFamily: dmsans,
-
+                          fontFamily: dmsans,
                           fontWeight: FontWeight.w800),
                     ),
                   )),
@@ -298,8 +253,7 @@ widget.onTapCallBack!(widget.tripList.indexOf(person),person,widget.orientation?
                     child: Text('${e['avgSpeed'].toStringAsFixed(2)!}',
                         style: TextStyle(
                             color: circularProgressColor,
-                                                      fontFamily: dmsans,
-
+                            fontFamily: dmsans,
                             fontWeight: FontWeight.w800)),
                   )),
                   DataCell(Align(
@@ -307,8 +261,7 @@ widget.onTapCallBack!(widget.tripList.indexOf(person),person,widget.orientation?
                     child: Text('${e['fuelUsage']!}',
                         style: TextStyle(
                             color: circularProgressColor,
-                                                      fontFamily: dmsans,
-
+                            fontFamily: dmsans,
                             fontWeight: FontWeight.w800)),
                   )),
                   DataCell(Align(
@@ -316,8 +269,7 @@ widget.onTapCallBack!(widget.tripList.indexOf(person),person,widget.orientation?
                     child: Text('${e['powerUsage']!}',
                         style: TextStyle(
                             color: circularProgressColor,
-                                                      fontFamily: dmsans,
-
+                            fontFamily: dmsans,
                             fontWeight: FontWeight.w800)),
                   )),
                 ]))
@@ -325,6 +277,5 @@ widget.onTapCallBack!(widget.tripList.indexOf(person),person,widget.orientation?
         ),
       ),
     );
-  
   }
 }

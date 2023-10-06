@@ -901,6 +901,8 @@ class _TripWidgetNewState extends State<TripWidgetNew> {
           vesselData.vesselStatus;
       commonProvider.addVesselRequestModel!.batteryCapacity =
           vesselData.batteryCapacity;
+      commonProvider.addVesselRequestModel!.displacement =
+          vesselData.displacement;
 
       if (vesselData.imageURLs != null && vesselData.imageURLs!.isNotEmpty) {
         if (vesselData.imageURLs!.startsWith("https")) {

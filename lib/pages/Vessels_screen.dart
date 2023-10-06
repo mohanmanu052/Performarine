@@ -2,6 +2,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:performarine/pages/vessel_form.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
 import 'package:provider/provider.dart';
@@ -38,9 +39,24 @@ class _VesselsScreenState extends State<VesselsScreen> {
 
   @override
   void initState() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     commonProvider = context.read<CommonProvider>();
     getVesselFuture = _databaseService.vessels();
     super.initState();
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+
+    // SystemChrome.setPreferredOrientations([
+    //   DeviceOrientation.landscapeLeft,
+    //   DeviceOrientation.landscapeRight,
+    //   DeviceOrientation.portraitDown,
+    //   DeviceOrientation.portraitUp
+    // ]);
   }
 
   @override
