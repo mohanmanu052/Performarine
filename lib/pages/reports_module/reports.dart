@@ -39,7 +39,7 @@ class _ReportsModuleState extends State<ReportsModule> {
   String page = "Reports_module";
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
       GlobalKey<SfCartesianChartState> dration_barchart_key= GlobalKey();
-
+Function(dynamic args)? ponitTapCallBackArgs;
   final _formKey = GlobalKey<FormState>();
   final controller = ScreenshotController();
   late CommonProvider commonProvider;
@@ -106,6 +106,7 @@ class _ReportsModuleState extends State<ReportsModule> {
   List<TripModel> durationGraphData = [];
   double chartWidth = 0.0;
 String? imageUrl;
+int? pointIndex;
   bool? isExpansionCollapse = false;
   bool isExpandedTile = false;
   bool? isStartDate = false;
@@ -637,27 +638,40 @@ setState(() {
                 if (duration(triSpeedList[i].tripsByDate![j].duration!) > 0) {
                         final Color barColor = (selectedRowIndex == j) ? Colors.red : Colors.black;
 
-                  durationColumnSeriesData.add(ColumnSeries<TripModel, String>(
+
+
+
+
+
+                  durationColumnSeriesData.add(
+                   ColumnSeries<TripModel, String>(
                   
                   //  color: durationGraphData[j]==selectedRowIndex?Colors.red:circularProgressColor,
                     width: 0.4,
                     enableTooltip: true,
                     dataSource: triSpeedList,
-                    xValueMapper: (TripModel tripData, _) =>
-                        durationWithSeconds(
+                    xValueMapper: (TripModel tripData, data) {
+                      
+                     return   durationWithSeconds(
                                     triSpeedList[i].tripsByDate![j].duration!) >
                                 0
                             ? 
                             
                           dateWithZeros(triSpeedList[i].date??"")  
-                            : null,
-                    yValueMapper: (TripModel tripData, _) =>
-                        durationWithSeconds(
+                            : null;
+
+                    },
+                    yValueMapper: (TripModel tripData, data) {
+pointIndex=data;
+
+
+                     return   durationWithSeconds(
                                     triSpeedList[i].tripsByDate![j].duration!) >
                                 0
                             ? durationWithSeconds(
                                 triSpeedList[i].tripsByDate![j].duration!)
-                            : null,
+                            : null;
+                    },
 
 //pointColorMapper: (_, __) => barColor, 
 
@@ -674,7 +688,11 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                     
 
 
-                    onPointTap: (ChartPointDetails args) {
+                    onPointTap: 
+                    
+                    
+                    
+                    (ChartPointDetails args) {
 
                       reportsDataTableKey.currentState!.setSelectedRowIndex!(args.seriesIndex!);
 tooltipactivationMode=ActivationMode.singleTap;
@@ -691,7 +709,6 @@ tooltipactivationMode=ActivationMode.singleTap;
 
                                           triSpeedList[i].tripsByDate![j].dataLineColor=Colors.green;
                                           setState(() {
-                                            print('the tool tip shown was---------------'+reportsDataTableKey.currentState!.isToolTipShown.toString());
                                             reportsDataTableKey.currentState!.isToolTipShown=true;
                                             bargraphtooltipBool=true;
                                             tooltipactivationMode=ActivationMode.none;
@@ -740,26 +757,8 @@ Future.delayed(Duration(milliseconds: 100),(){
                         Utils.customPrint("selected index: $selectedIndex");
                         CustomLogger().logWithFile(Level.info,
                             "selected index: $selectedIndex -> $page");
-                      //  setState(() {
-
-                          // for (int i = 0; i < durationGraphData.length; i++) {
-                          //   for (int j = 0;
-                          //   j < durationGraphData[i].tripsByDate!.length;
-                          //   j++) {
-                          //     durationGraphData[i].tripsByDate![j].dataLineColor = blueColor;
-                          //     if(triSpeedList[i].tripsByDate![j].id! == durationGraphData[i].tripsByDate![j].id){
-                          //       durationGraphData[i].tripsByDate![j].dataLineColor=Colors.green;
-                          //
-                          //     } else{
-                          //       durationGraphData[i].tripsByDate![j].dataLineColor = blueColor;
-                          //     }
-                          //
-                          //   }
-                          //
-                          //
-                          // }
                           selectedBarIndex = args.seriesIndex!;
-                        //});
+                        
                       }
                     },
                     name: 'Trip Duration',
@@ -769,8 +768,10 @@ Future.delayed(Duration(milliseconds: 100),(){
                     spacing: 0.1,
                   ));
 
-                  tempDurationColumnSeriesData.add(ColumnSeries<TripModel, String>(
+                  tempDurationColumnSeriesData.add
+                  (ColumnSeries<TripModel, String>(
                           width: 0.4,
+
                           color: Colors.transparent,
                           enableTooltip: true,
                           dataSource: triSpeedList,
@@ -1908,6 +1909,25 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                     children: [
                                       GestureDetector(
                                         onTap: () {
+
+            for (int i = 0; i < durationGraphData.length; i++) {
+              for (int j = 0;
+                  j < durationGraphData[i].tripsByDate!.length;
+                  j++) {
+                    durationGraphData[i].tripsByDate![j].dataLineColor=null;
+                  }}
+
+
+                      reportsDataTableKey.currentState!.setState(() {
+                        reportsDataTableKey.currentState!.selectedRowIndex=-1;
+
+
+                                                         reportsDataTableKey.currentState!.isToolTipShown=false;
+                                                         });
+
+
+
+
                                           setState(() {
                                             selectedButton = 'trip duration';
                                             isStickyYAxisVisible = false;
@@ -1957,6 +1977,23 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                       ),
                                       GestureDetector(
                                         onTap: () {
+
+            for (int i = 0; i < durationGraphData.length; i++) {
+              for (int j = 0;
+                  j < durationGraphData[i].tripsByDate!.length;
+                  j++) {
+                    durationGraphData[i].tripsByDate![j].dataLineColor=null;
+                  }}
+
+
+                      reportsDataTableKey.currentState!.setState(() {
+                        reportsDataTableKey.currentState!.selectedRowIndex=-1;
+
+
+                                                         reportsDataTableKey.currentState!.isToolTipShown=false;
+                                                         });
+
+
                                           setState(() {
                                             selectedButton = 'avg speed';
                                             isStickyYAxisVisible = false;
@@ -2005,6 +2042,23 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                       ),
                                       GestureDetector(
                                         onTap: () {
+
+
+                                                      for (int i = 0; i < durationGraphData.length; i++) {
+              for (int j = 0;
+                  j < durationGraphData[i].tripsByDate!.length;
+                  j++) {
+                    durationGraphData[i].tripsByDate![j].dataLineColor=null;
+                  }}
+
+
+                      reportsDataTableKey.currentState!.setState(() {
+                        reportsDataTableKey.currentState!.selectedRowIndex=-1;
+
+
+                                                         reportsDataTableKey.currentState!.isToolTipShown=false;
+                                                         });
+
                                           setState(() {
                                             selectedButton = 'fuel usage';
                                             isStickyYAxisVisible = false;
@@ -2053,6 +2107,21 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                       ),
                                       GestureDetector(
                                         onTap: () {
+                                                      for (int i = 0; i < durationGraphData.length; i++) {
+              for (int j = 0;
+                  j < durationGraphData[i].tripsByDate!.length;
+                  j++) {
+                    durationGraphData[i].tripsByDate![j].dataLineColor=null;
+                  }}
+
+
+                      reportsDataTableKey.currentState!.setState(() {
+                        reportsDataTableKey.currentState!.selectedRowIndex=-1;
+
+
+                                                         reportsDataTableKey.currentState!.isToolTipShown=false;
+                                                         });
+
                                           setState(() {
                                             selectedButton = 'power usage';
                                             isStickyYAxisVisible = false;
@@ -2378,7 +2447,7 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
   //Trip duration graph
   Widget tripDurationGraph(BuildContext context, double graph_height, Orientation orientation) {
      tooltipBehaviorDurationGraph = TooltipBehavior(
-      enable: true/*reportsDataTableKey.currentState?.isToolTipShown*/,
+      enable: reportsDataTableKey.currentState?.isToolTipShown,
       activationMode: reportsDataTableKey.currentState?.isToolTipShown==null?ActivationMode.singleTap: tooltipactivationMode,
       shouldAlwaysShow: true,
       color: commonBackgroundColor,
@@ -2489,7 +2558,7 @@ Utils.showSnackBar(context,
                   labelAlignment: LabelAlignment.start,
                   labelStyle: TextStyle(
                     color: Colors.black,
-                    fontSize: displayWidth(context) * 0.034,
+                    fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.034: displayWidth(context) * 0.022,
                     fontWeight: FontWeight.w500,
                     fontFamily: poppins,
                   )),
@@ -2555,7 +2624,7 @@ Utils.showSnackBar(context,
                      labelAlignment: LabelAlignment.start,
                      labelStyle: TextStyle(
                        color: Colors.black,
-                       fontSize: displayWidth(context) * 0.034,
+                    fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.034: displayWidth(context) * 0.022,
                        fontWeight: FontWeight.w500,
                        fontFamily: poppins,
                      )),
@@ -2701,7 +2770,7 @@ Utils.showSnackBar(context,
                   labelAlignment: LabelAlignment.center,
                   labelStyle: TextStyle(
                     color: Colors.black,
-                    fontSize: displayWidth(context) * 0.034,
+                    fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.034: displayWidth(context) * 0.022,
                     fontWeight: FontWeight.w500,
                     fontFamily: poppins,
                   )),
@@ -2762,7 +2831,7 @@ Utils.showSnackBar(context,
                       labelAlignment: LabelAlignment.center,
                       labelStyle: TextStyle(
                         color: Colors.black,
-                        fontSize: displayWidth(context) * 0.034,
+                    fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.034: displayWidth(context) * 0.022,
                         fontWeight: FontWeight.w500,
                         fontFamily: poppins,
                       )),
@@ -2903,7 +2972,7 @@ Utils.showSnackBar(context,
               labelAlignment: LabelAlignment.center,
               labelStyle: TextStyle(
                 color: Colors.black,
-                fontSize: displayWidth(context) * 0.034,
+                    fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.034: displayWidth(context) * 0.022,
                 fontWeight: FontWeight.w500,
                 fontFamily: poppins,
               )),
@@ -3057,7 +3126,7 @@ Utils.showSnackBar(context,
               labelAlignment: LabelAlignment.center,
               labelStyle: TextStyle(
                 color: Colors.black,
-                fontSize: displayWidth(context) * 0.034,
+                    fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.034: displayWidth(context) * 0.022,
                 fontWeight: FontWeight.w500,
                 fontFamily: poppins,
               )),
@@ -3684,6 +3753,17 @@ Utils.showSnackBar(context,
 
   void scorllToParticularPostion(int index,dynamic persondata,Orientation orientation){
 
+tooltipactivationMode=ActivationMode.singleTap;
+                      reportsDataTableKey.currentState!.setState(() {
+
+                                                         reportsDataTableKey.currentState!.isToolTipShown=true;
+                                                         });
+
+
+
+
+
+
             for (int i = 0; i < durationGraphData.length; i++) {
               for (int j = 0;
                   j < durationGraphData[i].tripsByDate!.length;
@@ -3712,7 +3792,7 @@ durationGraphData[i].tripsByDate![j].dataLineColor=Colors.green;
 if(orientation==Orientation.portrait){
             _mainScrollController.animateTo(
   0.0, // Scroll to the top
-  duration: Duration(milliseconds: 300), // Adjust the duration as needed
+  duration: Duration(milliseconds: 100), // Adjust the duration as needed
   curve: Curves.easeInOut, // Specify the easing curve
 );
 
@@ -3721,7 +3801,7 @@ if(orientation==Orientation.portrait){
 
             _mainScrollController.animateTo(
   500, // Scroll to the top
-  duration: Duration(milliseconds: 300), // Adjust the duration as needed
+  duration: Duration(milliseconds: 100), // Adjust the duration as needed
   curve: Curves.easeInOut, // Specify the easing curve
 );
 
@@ -3734,27 +3814,39 @@ if(orientation==Orientation.portrait){
 if(selectedButton=="trip duration"){
         _tripDurationSrollController.animateTo(
           scrollPosition,
-          duration: Duration(milliseconds: 500), // Adjust the duration as needed
+          duration: Duration(milliseconds: 100), // Adjust the duration as needed
           curve: Curves.easeInOut,
         ).then((value) {
+
           Future.delayed(Duration(seconds: 1), (){
-            tooltipBehaviorDurationGraph!.showByIndex(selectedRowIndex!, 5);
+            tooltipBehaviorDurationGraph?.showByIndex(selectedRowIndex!, pointIndex??0);
           });
         });
 
 }else if(selectedButton=='avg speed'){
           _avgSpeedSrollController.animateTo(
           scrollPosition,
-          duration: Duration(milliseconds: 500), // Adjust the duration as needed
+          duration: Duration(milliseconds: 100), // Adjust the duration as needed
           curve: Curves.easeInOut,
-        );
+        ).then((value) {
+
+          Future.delayed(Duration(seconds: 1), (){
+            avgSpeedToolTip?.showByIndex(selectedRowIndex!, pointIndex??0);
+          });
+        });
 
 }else if(selectedButton=='fuel usage'){
             _fuelUsageSrollController.animateTo(
           scrollPosition,
-          duration: Duration(milliseconds: 500), // Adjust the duration as needed
+          duration: Duration(milliseconds: 100), // Adjust the duration as needed
           curve: Curves.easeInOut,
-        );
+        )..then((value) {
+
+          Future.delayed(Duration(seconds: 1), (){
+            fuelUsageToolTip!.showByIndex(selectedRowIndex!, pointIndex??0);
+          });
+        });
+
 
 
 }else{
@@ -3762,7 +3854,12 @@ if(selectedButton=="trip duration"){
           scrollPosition,
           duration: Duration(milliseconds: 500), // Adjust the duration as needed
           curve: Curves.easeInOut,
-        );
+        )..then((value) {
+
+          Future.delayed(Duration(seconds: 1), (){
+            powerUsageToolTip!.showByIndex(selectedRowIndex!, pointIndex??0);
+          });
+        });
 
 }
 
