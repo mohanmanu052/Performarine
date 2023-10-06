@@ -328,7 +328,12 @@ class Utils {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
-            child: StatefulBuilder(
+            child: OrientationBuilder(
+  builder: (context, orientation){
+
+            
+            
+        return    StatefulBuilder(
               builder: (ctx, setDialogState) {
                 return Container(
                   height: displayHeight(context) * 0.45,
@@ -364,7 +369,7 @@ class Utils {
                               text: endTripSubText,
                               fontWeight: FontWeight.w400,
                               textColor: Colors.black,
-                              textSize: displayWidth(context) * 0.042,
+                              textSize:orientation==Orientation.portrait? displayWidth(context) * 0.042: displayWidth(context) * 0.022,
                               textAlign: TextAlign.center,
                               fontFamily: outfit),
                         ),
@@ -422,7 +427,9 @@ class Utils {
                   ),
                 );
               },
-            ),
+  
+            );
+  })
           );
         });
   }

@@ -184,6 +184,7 @@ bool bargraphtooltipBool=false;
 
 
 
+
   void getVesselDetails(String id)async {
     if(vesselList!=null&&vesselList!.isNotEmpty){
     Vessels? vessel = vesselList!.firstWhere((vessel) => vessel.id == id, orElse: () => Vessels());
@@ -1108,6 +1109,9 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
     return formattedDate;
   }
 
+
+
+
   @override
   void initState() {
     super.initState();
@@ -1139,6 +1143,14 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
 
     addListenerToControllers();
   }
+@override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+
+  
 
   @override
   Widget build(BuildContext context) {

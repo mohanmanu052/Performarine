@@ -145,6 +145,7 @@ class _BottomNavigationState extends State<BottomNavigation>
   void initState() {
     // TODO: implement initState
     super.initState();
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
     WidgetsBinding.instance.addObserver(this);
 
@@ -457,15 +458,15 @@ class _BottomNavigationState extends State<BottomNavigation>
                                 labelPadding: EdgeInsets.zero,
                                 onTap: (index) async {
                                   if (index == 1) {
-                                    SystemChrome.setPreferredOrientations([
-                                      DeviceOrientation.portraitUp,
-                                      DeviceOrientation.landscapeLeft,
-                                      DeviceOrientation.landscapeRight,
-                                    ]);
+                                    // SystemChrome.setPreferredOrientations([
+                                    //   DeviceOrientation.portraitUp,
+                                    //   DeviceOrientation.landscapeLeft,
+                                    //   DeviceOrientation.landscapeRight,
+                                    // ]);
                                   } else {
-                                    SystemChrome.setPreferredOrientations([
-                                      DeviceOrientation.portraitUp,
-                                    ]);
+                                    // SystemChrome.setPreferredOrientations([
+                                    //   DeviceOrientation.portraitUp,
+                                    // ]);
                                   }
 
                                   await Future.delayed(Duration(milliseconds: 500), (){});
@@ -494,7 +495,7 @@ class _BottomNavigationState extends State<BottomNavigation>
                                                       .getTrip(tripData![0]);
 
                                               if (isTripStarted) {
-                                                showDialogBox(context);
+                                                showDialogBox(context,orientation);
                                                 return;
                                               } else {
                                                 Navigator.push(
@@ -603,7 +604,7 @@ class _BottomNavigationState extends State<BottomNavigation>
     );
   }
 
-  showDialogBox(BuildContext context) {
+  showDialogBox(BuildContext context,Orientation orientation) {
     return showDialog(
         barrierDismissible: false,
         context: context,
@@ -615,8 +616,8 @@ class _BottomNavigationState extends State<BottomNavigation>
             child: StatefulBuilder(
               builder: (ctx, setDialogState) {
                 return Container(
-                  height: displayHeight(context) * 0.45,
-                  width: MediaQuery.of(context).size.width,
+                  height:orientation==Orientation.portrait? displayHeight(context) * 0.45:displayHeight(context) * 0.60,
+                  width:orientation==Orientation.portrait? MediaQuery.of(context).size.width:MediaQuery.of(context).size.width/2,
                   child: Padding(
                     padding: const EdgeInsets.only(
                         left: 8.0, right: 8.0, top: 15, bottom: 15),
@@ -651,7 +652,7 @@ class _BottomNavigationState extends State<BottomNavigation>
                                       'There is a trip in progress. Please end the trip and come back here',
                                   fontWeight: FontWeight.w500,
                                   textColor: Colors.black87,
-                                  textSize: displayWidth(context) * 0.038,
+                                  textSize:orientation==Orientation.portrait? displayWidth(context) * 0.038:displayWidth(context) * 0.020,
                                   textAlign: TextAlign.center),
                             ],
                           ),
@@ -669,6 +670,8 @@ class _BottomNavigationState extends State<BottomNavigation>
                                 child: Center(
                                   child: CommonButtons.getAcceptButton(
                                       'Go to trip', context, blueColor,
+
+                                      
                                       () async {
                                     Utils.customPrint("Click on GO TO TRIP 1");
 
@@ -702,11 +705,11 @@ class _BottomNavigationState extends State<BottomNavigation>
 
                                     Utils.customPrint("Click on GO TO TRIP 3");
                                   },
-                                      displayWidth(context) * 0.65,
-                                      displayHeight(context) * 0.054,
+                                   orientation==Orientation.portrait?   displayWidth(context) * 0.65:displayWidth(context) * 0.25,
+                                    orientation==Orientation.portrait?  displayHeight(context) * 0.054:displayHeight(context) * 0.090,
                                       primaryColor,
                                       Colors.white,
-                                      displayHeight(context) * 0.02,
+                               orientation==    Orientation.portrait?    displayHeight(context) * 0.02:displayHeight(context) * 0.03,
                                       blueColor,
                                       '',
                                       fontFamily: outfit,
@@ -727,14 +730,14 @@ class _BottomNavigationState extends State<BottomNavigation>
                                         .pop();
                                   }
                                 },
-                                    displayWidth(context) * 0.65,
-                                    displayHeight(context) * 0.054,
+                                  orientation==    Orientation.portrait?     displayWidth(context) * 0.65:displayWidth(context) * 0.80,
+                                  orientation==    Orientation.portrait?  displayHeight(context) * 0.054:displayHeight(context) * 0.070,
                                     primaryColor,
                                     Theme.of(context).brightness ==
                                             Brightness.dark
                                         ? Colors.white
                                         : blueColor,
-                                    displayHeight(context) * 0.018,
+                               orientation==    Orientation.portrait?       displayHeight(context) * 0.018:displayHeight(context) * 0.025,
                                     Colors.white,
                                     '',
                                     fontWeight: FontWeight.w500),
@@ -743,7 +746,7 @@ class _BottomNavigationState extends State<BottomNavigation>
                           ),
                         ),
                         SizedBox(
-                          height: displayHeight(context) * 0.01,
+                          height:orientation==    Orientation.portrait?    displayHeight(context) * 0.01:0,
                         ),
                       ],
                     ),

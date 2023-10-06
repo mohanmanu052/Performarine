@@ -72,12 +72,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
     // TODO: implement dispose
     super.dispose();
 
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.portraitUp
-    ]);
+    // SystemChrome.setPreferredOrientations([
+    //   DeviceOrientation.landscapeLeft,
+    //   DeviceOrientation.landscapeRight,
+    //   DeviceOrientation.portraitDown,
+    //   DeviceOrientation.portraitUp
+    // ]);
   }
 
   @override
@@ -204,7 +204,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           ),*/
                           InkWell(
                             onTap: ()async {
-                              SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                            //  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                               await Future.delayed(Duration(milliseconds: 500), (){});
 
                               CustomLogger().logWithFile(Level.info, "User Navigating to Home page -> $page");
@@ -231,7 +231,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           ),
                           InkWell(
                             onTap: ()async {
-                              SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                             // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                               await Future.delayed(Duration(milliseconds: 500), (){});
 
                               CustomLogger().logWithFile(Level.info, "User Navigating to Add New Vessel Screen -> $page");
@@ -257,7 +257,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           ),
                           InkWell(
                             onTap: ()async {
-                              SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                             // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                               await Future.delayed(Duration(milliseconds: 500), (){});
                               CustomLogger().logWithFile(Level.info, "User Navigating to Retired Vessel Screen -> $page");
                               Navigator.of(context).pop();
@@ -305,7 +305,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           InkWell(
                             onTap: () async {
 
-                              SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                             // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                               await Future.delayed(Duration(milliseconds: 500), (){});
 
                               bool? isTripStarted =
@@ -428,7 +428,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                      commonProvider.loginModel!.loginType == "regular" ?   InkWell(
                           onTap: ()async {
 
-                            SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                          //  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                             await Future.delayed(Duration(milliseconds: 500), (){});
 
                             bool? isTripStarted =
@@ -487,7 +487,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         ),
                         InkWell(
                           onTap: ()async {
-                            SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                           // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                             await Future.delayed(Duration(milliseconds: 500), (){});
 
                             CustomLogger().logWithFile(Level.info, "User Navigating to Terms and Conditions screen-> $page");
@@ -512,7 +512,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         ),
                         InkWell(
                           onTap: ()async {
-                            SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                           // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                             await Future.delayed(Duration(milliseconds: 500), (){});
 
                             CustomLogger().logWithFile(Level.info, "User Navigating to Privacy and Policy screen-> $page");
@@ -536,7 +536,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         ),
                         InkWell(
                           onTap: () async {
-                            SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                            //SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                             await Future.delayed(Duration(milliseconds: 500), (){});
 
                             bool? isTripStarted =
@@ -606,7 +606,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 fontWeight: FontWeight.w400),
                             TextButton(
                               onPressed: ()async {
-                                SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                               // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                                 await Future.delayed(Duration(milliseconds: 500), (){});
 
                                 Navigator.of(context).pop();
@@ -767,7 +767,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       ),
                       InkWell(
                         onTap: ()async {
-                          SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                        //  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                           await Future.delayed(Duration(milliseconds: 500), (){});
                           CustomLogger().logWithFile(Level.info, "User Navigating to Add New Vessel Screen -> $page");
                           Navigator.of(context).pop();
@@ -792,7 +792,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       ),
                       InkWell(
                         onTap: () {
-                          SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                        //  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                           CustomLogger().logWithFile(Level.info, "User Navigating to Retired Vessel Screen -> $page");
                           Navigator.of(context).pop();
 
@@ -838,7 +838,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       ), */
                       InkWell(
                         onTap: () async {
-                          SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                         // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                           bool? isTripStarted =
                           sharedPreferences!.getBool('trip_started');
 
@@ -958,7 +958,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   ),
                   commonProvider.loginModel!.loginType == "regular" ?   InkWell(
                     onTap: ()async {
-                      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                     // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                       bool? isTripStarted =
                       sharedPreferences!.getBool('trip_started');
 
@@ -1058,7 +1058,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   ),
                   InkWell(
                     onTap: () async {
-                      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                     // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                       bool? isTripStarted =
                       sharedPreferences!.getBool('trip_started');
 
@@ -1815,147 +1815,155 @@ if(!isSyncSignoutClicked){
         barrierDismissible: false,
         context: context,
         builder: (BuildContext dialogContext) {
-          return Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: StatefulBuilder(
-              builder: (ctx, setDialogState) {
-                return Container(
-                  height: displayHeight(context) * 0.45,
-                  width: MediaQuery.of(context).size.width,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 8.0, right: 8.0, top: 15, bottom: 15),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: displayHeight(context) * 0.02,
-                        ),
+          return 
+          
+          
+          
+          OrientationBuilder(
+            builder: (context, orientation) {
+              return Dialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: StatefulBuilder(
+                  builder: (ctx, setDialogState) {
+                    return Container(
+                      height:orientation==Orientation.portrait? displayHeight(context) * 0.45:displayHeight(context) * 0.60,
+                      width:orientation==Orientation.portrait? MediaQuery.of(context).size.width:MediaQuery.of(context).size.width/2,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 8.0, right: 8.0, top: 15, bottom: 15),
+                        child: Column(
+                          mainAxisAlignment:orientation==Orientation.portrait? MainAxisAlignment.spaceBetween:MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment:orientation==Orientation.portrait? CrossAxisAlignment.start:CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              height: displayHeight(context) * 0.02,
+                            ),
 
-                        ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Container(
-                              //color: Color(0xfff2fffb),
-                              child: Image.asset(
-                                'assets/images/boat.gif',
-                                height: displayHeight(context) * 0.1,
-                                width: displayWidth(context),
-                                fit: BoxFit.contain,
+                            ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Container(
+                                  //color: Color(0xfff2fffb),
+                                  child: Image.asset(
+                                    'assets/images/boat.gif',
+                                    height: displayHeight(context) * 0.1,
+                                    width: displayWidth(context),
+                                    fit: BoxFit.contain,
+                                  ),
+                                )),
+
+                            SizedBox(
+                              height: displayHeight(context) * 0.02,
+                            ),
+
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0, right: 8),
+                              child: Column(
+                                children: [
+                                  commonText(
+                                      context: context,
+                                      text:
+                                      'Please end the trip which is already running',
+                                      fontWeight: FontWeight.w500,
+                                      textColor: Colors.black,
+                                      textSize:orientation==Orientation.portrait? displayWidth(context) * 0.04:displayWidth(context) * 0.02,
+                                      textAlign: TextAlign.center),
+                                ],
                               ),
-                            )),
+                            ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.012,
+                            ),
+                            Center(
+                              child: Column(
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.only(
+                                      top: 8.0,
+                                    ),
+                                    child: Center(
+                                      child: CommonButtons.getAcceptButton(
+                                          'Go to trip', context, blueColor,
+                                              () async {
 
-                        SizedBox(
-                          height: displayHeight(context) * 0.02,
-                        ),
-
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0, right: 8),
-                          child: Column(
-                            children: [
-                              commonText(
-                                  context: context,
-                                  text:
-                                  'Please end the trip which is already running',
-                                  fontWeight: FontWeight.w500,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.04,
-                                  textAlign: TextAlign.center),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: displayHeight(context) * 0.012,
-                        ),
-                        Center(
-                          child: Column(
-                            children: [
-                              Container(
-                                margin: EdgeInsets.only(
-                                  top: 8.0,
-                                ),
-                                child: Center(
-                                  child: CommonButtons.getAcceptButton(
-                                      'Go to trip', context, blueColor,
-                                          () async {
-
-                                        Utils.customPrint("Click on GO TO TRIP 1");
-                                        CustomLogger().logWithFile(Level.info, "Click on go to trip 1-> $page");
+                                            Utils.customPrint("Click on GO TO TRIP 1");
+                                            CustomLogger().logWithFile(Level.info, "Click on go to trip 1-> $page");
 
 
-                                        List<String>? tripData =
-                                        sharedPreferences!.getStringList('trip_data');
-                                        bool? runningTrip = sharedPreferences!.getBool("trip_started");
+                                            List<String>? tripData =
+                                            sharedPreferences!.getStringList('trip_data');
+                                            bool? runningTrip = sharedPreferences!.getBool("trip_started");
 
-                                        String tripId = '', vesselName = '';
-                                        if (tripData != null) {
-                                          tripId = tripData[0];
-                                          vesselName = tripData[1];
-                                        }
+                                            String tripId = '', vesselName = '';
+                                            if (tripData != null) {
+                                              tripId = tripData[0];
+                                              vesselName = tripData[1];
+                                            }
 
-                                        Utils.customPrint("Click on GO TO TRIP 2");
-                                        CustomLogger().logWithFile(Level.info, "Click on go to trip 2-> $page");
+                                            Utils.customPrint("Click on GO TO TRIP 2");
+                                            CustomLogger().logWithFile(Level.info, "Click on go to trip 2-> $page");
 
 
-                                        Navigator.of(dialogContext).pop();
+                                            Navigator.of(dialogContext).pop();
 
-                                        Navigator.push(
-                                          dialogContext,
-                                          MaterialPageRoute(builder: (context) => TripRecordingScreen(
-                                            tripId: tripId,
-                                            vesselId: tripData![1],
-                                            tripIsRunningOrNot: runningTrip,)),
-                                        );
+                                            Navigator.push(
+                                              dialogContext,
+                                              MaterialPageRoute(builder: (context) => TripRecordingScreen(
+                                                tripId: tripId,
+                                                vesselId: tripData![1],
+                                                tripIsRunningOrNot: runningTrip,)),
+                                            );
 
-                                        Utils.customPrint("Click on GO TO TRIP 3");
-                                        CustomLogger().logWithFile(Level.info, "Click on go to trip 3-> $page");
+                                            Utils.customPrint("Click on GO TO TRIP 3");
+                                            CustomLogger().logWithFile(Level.info, "Click on go to trip 3-> $page");
 
-                                      },
-                                      displayWidth(context) * 0.65,
-                                      displayHeight(context) * 0.054,
-                                      primaryColor,
-                                      Colors.white,
-                                      displayHeight(context) * 0.02,
-                                      blueColor,
-                                      '',
-                                      fontWeight: FontWeight.w500),
-                                ),
+                                          },
+                                   orientation==Orientation.portrait?   displayWidth(context) * 0.65:displayWidth(context) * 0.25,
+                                    orientation==Orientation.portrait?  displayHeight(context) * 0.054:displayHeight(context) * 0.090,
+                                          primaryColor,
+                                          Colors.white,
+                               orientation==    Orientation.portrait?    displayHeight(context) * 0.02:displayHeight(context) * 0.03,
+                                          blueColor,
+                                          '',
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 15.0,
+                                  ),
+                                  Center(
+                                    child: CommonButtons.getAcceptButton(
+                                        'Cancel', context, Colors.transparent, () {
+                                      Navigator.of(dialogContext).pop();
+                                    },
+                                  orientation==    Orientation.portrait?     displayWidth(context) * 0.65:displayWidth(context) * 0.80,
+                                  orientation==    Orientation.portrait?  displayHeight(context) * 0.054:displayHeight(context) * 0.070,
+                                        primaryColor,
+                                        Theme.of(context).brightness ==
+                                            Brightness.dark
+                                            ? Colors.white
+                                            : blueColor,
+                               orientation==    Orientation.portrait?       displayHeight(context) * 0.018:displayHeight(context) * 0.025,
+                                        Colors.white,
+                                        '',
+                                        fontWeight: FontWeight.w500),
+                                  ),
+
+                                ],
                               ),
-                              SizedBox(
-                                height: 15.0,
-                              ),
-                              Center(
-                                child: CommonButtons.getAcceptButton(
-                                    'Cancel', context, Colors.transparent, () {
-                                  Navigator.of(dialogContext).pop();
-                                },
-                                    displayWidth(context) * 0.65,
-                                    displayHeight(context) * 0.054,
-                                    primaryColor,
-                                    Theme.of(context).brightness ==
-                                        Brightness.dark
-                                        ? Colors.white
-                                        : blueColor,
-                                    displayHeight(context) * 0.018,
-                                    Colors.white,
-                                    '',
-                                    fontWeight: FontWeight.w500),
-                              ),
-
-                            ],
-                          ),
+                            ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.01,
+                            ),
+                          ],
                         ),
-                        SizedBox(
-                          height: displayHeight(context) * 0.01,
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
+                      ),
+                    );
+                  },
+                ),
+              );
+            }
           );
         });
   }

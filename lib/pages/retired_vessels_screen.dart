@@ -32,6 +32,7 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
 
   @override
   void initState() {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     // TODO: implement initState
     super.initState();
 
