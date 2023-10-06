@@ -1284,7 +1284,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   isSigningOut
                                       ?
                                        Container(
-                                    height:  displayHeight(context) * 0.055,
+                                          height:orientation==Orientation.portrait? displayHeight(context) * 0.055:displayHeight(context) * 0.085,
                                       child: Center(child: CircularProgressIndicator(color: blueColor,)))
                                       : 
                                       Center(
@@ -1490,9 +1490,9 @@ if(!isSyncSignoutClicked){
                                     top: 8.0,
                                   ),
                                   child: Center(
-                                    // child: isUploadStarted
-                                    //     ? 
-                                    //     Center(
+                                    child: isUploadStarted
+                                        ? 
+                                        Center(
                                       child: 
                                       
                                       SizedBox(
@@ -1503,37 +1503,37 @@ if(!isSyncSignoutClicked){
                                                 color: blueColor,
                                               ))),
                                     )
-                                  //       : CommonButtons.getAcceptButton(
-                                  //       isChangePassword
-                                  //           ? 'Upload & Change Password'
-                                  //           : 'Upload & Sync',
-                                  //       context,
-                                  //       blueColor, () async {
-                                  //     //  Navigator.of(context).pop();
+                                        : CommonButtons.getAcceptButton(
+                                        isChangePassword
+                                            ? 'Upload & Change Password'
+                                            : 'Upload & Sync',
+                                        context,
+                                        blueColor, () async {
+                                      //  Navigator.of(context).pop();
 
-                                  //     bool internet =
-                                  //     await Utils().check(scaffoldKey);
-                                  //     setState(() {
-                                  //       isSync = true;
-                                  //     });
-                                  //     if (internet) {
-                                  //       if (mounted) {
-                                  //         setDialogState(() {
-                                  //           isUploadStarted = true;
-                                  //         });
-                                  //       }
-                                  //       syncAndSignOut(isChangePassword, context);
-                                  //     }
-                                  //   },
-                                  //     orientation==    Orientation.portrait?   displayWidth(context) / 1.6:displayWidth(context) / 3,
-                                  //  orientation==    Orientation.portrait?      displayHeight(context) * 0.055:displayHeight(context) * 0.085,
-                                  //       primaryColor,
-                                  //       Colors.white,
-                                  //    orientation==    Orientation.portrait?      displayHeight(context) * 0.018:displayHeight(context) * 0.030,
-                                  //       blueColor,
-                                  //       '',
-                                  //       fontWeight: FontWeight.w500),
-                                  // ),
+                                      bool internet =
+                                      await Utils().check(scaffoldKey);
+                                      setState(() {
+                                        isSync = true;
+                                      });
+                                      if (internet) {
+                                        if (mounted) {
+                                          setDialogState(() {
+                                            isUploadStarted = true;
+                                          });
+                                        }
+                                        syncAndSignOut(isChangePassword, context);
+                                      }
+                                    },
+                                      orientation==    Orientation.portrait?   displayWidth(context) / 1.6:displayWidth(context) / 3,
+                                   orientation==    Orientation.portrait?      displayHeight(context) * 0.055:displayHeight(context) * 0.085,
+                                        primaryColor,
+                                        Colors.white,
+                                     orientation==    Orientation.portrait?      displayHeight(context) * 0.018:displayHeight(context) * 0.030,
+                                        blueColor,
+                                        '',
+                                        fontWeight: FontWeight.w500),
+                                  ),
                                 ),
                                 SizedBox(
                                   width: 15.0,
