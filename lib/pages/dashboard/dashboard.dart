@@ -4,6 +4,7 @@ import 'package:background_locator_2/settings/ios_settings.dart';
 import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -56,6 +57,10 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
   void initState() {
     super.initState();
 
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
     WidgetsBinding.instance.addObserver(this);
 
     commonProvider = context.read<CommonProvider>();
@@ -71,6 +76,18 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
     bool? isTripStarted = sharedPreferences!.getBool('trip_started');
 
     Utils.customPrint("IS APP KILLED FROM BG 1212 $isTripStarted");
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp
+    ]);
   }
 
   @override

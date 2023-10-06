@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/pages/add_vessel_new/add_new_vessel_step_two.dart';
 import 'package:screenshot/screenshot.dart';
@@ -37,7 +38,21 @@ class _AddNewVesselPageState extends State<AddNewVesselPage> {
   @override
   void initState() {
     super.initState();
+
     pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp
+    ]);
   }
 
   @override
