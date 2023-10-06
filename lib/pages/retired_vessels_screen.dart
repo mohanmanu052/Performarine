@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
@@ -35,6 +36,19 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
     super.initState();
 
     getVesselFuture = _databaseService.retiredVessels();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp
+    ]);
   }
 
   @override

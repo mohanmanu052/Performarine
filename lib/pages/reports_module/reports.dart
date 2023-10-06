@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/models/get_user_config_model.dart';
@@ -1110,6 +1111,14 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
   @override
   void initState() {
     super.initState();
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp
+    ]);
+
 
 
     barColors = List.generate(
