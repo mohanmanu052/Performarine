@@ -1140,6 +1140,15 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+  }
+
+  @override
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
 
