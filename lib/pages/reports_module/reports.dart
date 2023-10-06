@@ -184,15 +184,6 @@ class _ReportsModuleState extends State<ReportsModule> {
     return dateString;
   }
 
-  void getVesselDetails(String id) async {
-    if (vesselList != null && vesselList!.isNotEmpty) {
-      Vessels? vessel = vesselList!
-          .firstWhere((vessel) => vessel.id == id, orElse: () => Vessels());
-
-      CreateVessel? vesselData =
-          await _databaseService.getVesselFromVesselID(id);
-
-      imageUrl = vesselData!.imageURLs ?? '';
 
 
 
