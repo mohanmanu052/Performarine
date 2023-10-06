@@ -69,6 +69,19 @@ class _SyncDataCloudToMobileScreenState
     getUserData();
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp
+    ]);
+  }
+
   /// To get user data from api if internet connection is on
   getUserData() async {
     var bool = await Utils()
