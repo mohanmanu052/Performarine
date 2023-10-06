@@ -38,6 +38,7 @@ class _AddNewVesselPageState extends State<AddNewVesselPage> {
   @override
   void initState() {
     super.initState();
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
     pageController = PageController();
   }

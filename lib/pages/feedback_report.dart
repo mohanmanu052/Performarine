@@ -66,7 +66,6 @@ class _FeedbackReportState extends State<FeedbackReport> {
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp,
   ]);
-
     commonProvider = context.read<CommonProvider>();
     commonProvider.init();
     nameController  = TextEditingController();

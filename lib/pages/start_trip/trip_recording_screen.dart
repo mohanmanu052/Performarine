@@ -5,6 +5,7 @@ import 'package:background_locator_2/settings/android_settings.dart';
 import 'package:background_locator_2/settings/ios_settings.dart';
 import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:performarine/analytics/location_callback_handler.dart';
 import 'package:performarine/analytics/start_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
@@ -64,6 +65,10 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
 
     commonProvider = context.read<CommonProvider>();
     Wakelock.enable();
