@@ -802,8 +802,8 @@ Future.delayed(Duration(milliseconds: 100),(){
                           dataLabelSettings: DataLabelSettings(isVisible: false),
                           spacing: 0.1,
                         ));
-                }
-                if (triSpeedList[i].tripsByDate![j].avgSpeed! > 0) {
+                };
+              //  if (triSpeedList[i].tripsByDate![j].avgSpeed! > 0) {
                   avgSpeedColumnSeriesData.add(ColumnSeries<TripModel, String>(
                                                         pointColorMapper: (TripModel tripData, int index) {
                                                           return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].tripsByDate![j].dataLineColor : blueColor;
@@ -924,7 +924,7 @@ Future.delayed(Duration(milliseconds: 100),(){
                     dataLabelSettings: DataLabelSettings(isVisible: false),
                     spacing: 0.1,
                   ));
-                }
+             //   }
 
                 if (triSpeedList[i].tripsByDate![j].fuelConsumption! > 0) {
                   fuelUsageColumnSeriesData.add(ColumnSeries<TripModel, String>(

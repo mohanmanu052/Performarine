@@ -469,9 +469,9 @@ class _BottomNavigationState extends State<BottomNavigation>
                                     // ]);
                                   }
 
-                                  await Future.delayed(Duration(milliseconds: 500), (){
-                                    print('INDEXXXXX: $index');
-                                  });
+                                  // await Future.delayed(Duration(milliseconds: 500), (){
+                                  //   print('INDEXXXXX: $index');
+                                  // });
 
                                   if (index == 2) {
                                     List<CreateVessel> localVesselList =
@@ -757,20 +757,7 @@ class _BottomNavigationState extends State<BottomNavigation>
               },
             ),
           );
-        }).then((value) {
-          if(commonProvider.bottomNavIndex != 1){
-            SystemChrome.setPreferredOrientations([
-              DeviceOrientation.portraitUp
-            ]);
-          }else{
-            // SystemChrome.setPreferredOrientations([
-            //   DeviceOrientation.landscapeLeft,
-            //   DeviceOrientation.landscapeRight,
-            //   DeviceOrientation.portraitDown,
-            //   DeviceOrientation.portraitUp
-            // ]);
-          }
-    });
+        });
   }
 
   showResetPasswordDialogBox(BuildContext context) {
