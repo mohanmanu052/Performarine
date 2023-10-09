@@ -183,8 +183,6 @@ bool bargraphtooltipBool=false;
 
 
 
-
-
   void getVesselDetails(String id)async {
     if(vesselList!=null&&vesselList!.isNotEmpty){
     Vessels? vessel = vesselList!.firstWhere((vessel) => vessel.id == id, orElse: () => Vessels());
@@ -826,6 +824,8 @@ Future.delayed(Duration(milliseconds: 100),(){
                             ? triSpeedList[i].tripsByDate![j].avgSpeed!
                             : null,
                     onPointTap: (ChartPointDetails args) {
+                    //  print('the avg column data series length was---')
+                      print('avg column series args point index was---- ${args.pointIndex}     ${args.seriesIndex}');
 
 
                                             reportsDataTableKey.currentState!.setSelectedRowIndex!(args.seriesIndex!);
