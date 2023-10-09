@@ -2696,7 +2696,7 @@ class _ReportsModuleState extends State<ReportsModule> {
               child: SfCartesianChart(
                 tooltipBehavior: tooltipBehaviorDurationGraph,
                 enableSideBySideSeriesPlacement: true,
-                zoomPanBehavior: zoomPanBehavior,
+                //zoomPanBehavior: zoomPanBehavior,
                 primaryXAxis: CategoryAxis(
                     isVisible: true,
                     // autoScrollingDelta: 10,

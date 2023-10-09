@@ -116,11 +116,11 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
     if (widget.isEdit!) {
       //debugPrint("IMAGE 1212 ${widget.addVesselData!.imageURLs!}");
       if (widget.addVesselData != null) {
-        freeBoardController.text = appendAsInt(widget.addVesselData!.freeBoard!);
-        lengthOverallController.text = appendAsInt(widget.addVesselData!.lengthOverall!);
-        moldedBeamController.text = appendAsInt(widget.addVesselData!.beam!);
-        moldedDepthController.text = appendAsInt(widget.addVesselData!.draft!);
-        displacementController.text = widget.addVesselData!.displacement ?? "";
+        freeBoardController.text = widget.addVesselData!.freeBoard!.toString();
+        lengthOverallController.text = widget.addVesselData!.lengthOverall!.toString();
+        moldedBeamController.text = widget.addVesselData!.beam!.toString();
+        moldedDepthController.text = widget.addVesselData!.draft!.toString();
+        displacementController.text = widget.addVesselData!.displacement.toString();
         sizeController.text = widget.addVesselData!.vesselSize!.toString();
       //  capacityController.text = widget.addVesselData!.capacity!.toString();
         builtYearController.text = widget.addVesselData!.builtYear!.toString();
@@ -204,8 +204,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
-                        textInputType:
-                        TextInputType.number,
+                        textInputType: TextInputType.numberWithOptions(decimal: true),
                         textCapitalization: TextCapitalization.words,
                         maxLength: 6,
                         prefixIcon: null,
@@ -237,7 +236,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
-                        textInputType: TextInputType.number,
+                        textInputType: TextInputType.numberWithOptions(decimal: true),
                         textCapitalization: TextCapitalization.words,
                         maxLength: 6,
                         prefixIcon: null,
@@ -268,7 +267,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
-                        textInputType: TextInputType.number,
+                        textInputType: TextInputType.numberWithOptions(decimal: true),
                         textCapitalization: TextCapitalization.words,
                         maxLength: 6,
                         prefixIcon: null,
@@ -300,7 +299,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
-                        textInputType: TextInputType.number,
+                        textInputType: TextInputType.numberWithOptions(decimal: true),
                         textCapitalization: TextCapitalization.words,
                         maxLength: 6,
                         prefixIcon: null,
@@ -332,9 +331,9 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
-                        textInputType: TextInputType.number,
+                        textInputType: TextInputType.numberWithOptions(decimal: true),
                         textCapitalization: TextCapitalization.words,
-                        maxLength: 5,
+                        maxLength: 7,
                         prefixIcon: null,
                         requestFocusNode: sizeFocusNode,
                         obscureText: false,
@@ -374,7 +373,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
-                        textInputType: TextInputType.number,
+                        textInputType: TextInputType.numberWithOptions(decimal: true),
                         textCapitalization: TextCapitalization.words,
                         maxLength: 6,
                         prefixIcon: null,
