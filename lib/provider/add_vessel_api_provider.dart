@@ -102,9 +102,10 @@ class AddVesselApiProvider with ChangeNotifier {
       CustomLogger().logWithFile(Level.info, "Add VESSEL RESP : ' + ${jsonEncode(responseValue.body)}-> $page");
 
       var decodedData = json.decode(responseValue.body);
+        Utils.customPrint('Upload Trip body  was: ' + decodedData.toString());
 
       if (responseValue.statusCode == HttpStatus.ok) {
-        Utils.customPrint('Register Response : ' + responseValue.body);
+        Utils.customPrint('Upload Trip Response was: ' + responseValue.body);
         CustomLogger().logWithFile(Level.info, "API success of ${Urls.baseUrl}${Urls.createVessel} is: ${responseValue.statusCode}-> $page");
 
         addVesselModel =

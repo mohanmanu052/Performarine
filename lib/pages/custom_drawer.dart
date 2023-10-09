@@ -1211,194 +1211,202 @@ class _CustomDrawerState extends State<CustomDrawer> {
         barrierDismissible: false,
         context: context,
         builder: (BuildContext dialogContext) {
-          return Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: StatefulBuilder(
-              builder: (ctx, setDialogState) {
-                return Container(
-                  height:orientation==Orientation.portrait? displayHeight(context) * 0.42:displayHeight(context) * 0.60,
-                  width:orientation==Orientation.portrait? MediaQuery.of(context).size.width:MediaQuery.of(context).size.width/2,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 8.0, right: 8.0, top: 15, bottom: 15),
-                    child: Stack(
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+          return 
+          
+          OrientationBuilder(
+            builder: (context,orientation) {
+              return Dialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: StatefulBuilder(
+                  builder: (ctx, setDialogState) {
+                    return Container(
+                      height:orientation==Orientation.portrait? displayHeight(context) * 0.42:displayHeight(context) * 0.75,
+                      width:orientation==Orientation.portrait? MediaQuery.of(context).size.width:MediaQuery.of(context).size.width/2,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 8.0, right: 8.0, top: 15, bottom: 15),
+                        child: Stack(
                           children: [
-                            SizedBox(
-                              height: displayHeight(context) * 0.02,
-                            ),
-                            Center(
-                              child: Image.asset('assets/icons/export_img.png',
-                              //height: displayHeight(context) * 0.2,
-                              width: displayWidth(context) * 0.18,),
-                            ),
-                            SizedBox(
-                              height: displayHeight(context) * 0.01,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8.0, right: 8),
-                              child: Column(
-                                children: [
-                                  commonText(
-                                      context: context,
-                                      text:
-                                          'There are some vessel & trips data not sync with cloud, do you want to proceed further?',
-                                      fontWeight: FontWeight.w600,
-                                      textColor: Colors.black,
-                                  textSize:orientation==Orientation.portrait? displayWidth(context) * 0.038:displayWidth(context) * 0.010,
-                                      textAlign: TextAlign.center,
-                                  fontFamily: inter),
-                                  SizedBox(
-                                    height: displayHeight(context) * 0.015,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                                    child: commonText(
-                                        context: context,
-                                        text:
-                                            'Click Sync & Sign Out for not loosing local data which is not uploaded',
-                                        fontWeight: FontWeight.w400,
-                                        textColor: Colors.grey,
-                                        textSize: orientation==Orientation.portrait? displayWidth(context) * 0.032:displayWidth(context) * 0.020,
-                                        textAlign: TextAlign.center,
-                                        fontFamily: inter),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: displayHeight(context) * 0.01,
-                            ),
                             Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Container(
-                                  margin: EdgeInsets.only(
-                                    top: 8.0,
-                                  ),
-                                  child: 
-                                  isSigningOut
-                                      ?
-                                       Container(
-                                          height:orientation==Orientation.portrait? displayHeight(context) * 0.055:displayHeight(context) * 0.085,
-                                      child: Center(child: CircularProgressIndicator(color: blueColor,)))
-                                      : 
-                                      Center(
-                                    child:
-                                     CommonButtons.getAcceptButton(
-                                        'Sync & Sign Out',
-                                        context,
-                                        blueColor, () async {
-                                      bool internet =
-                                      await Utils().check(scaffoldKey);
-
-                                      if (internet) {
-                                        setDialogState(() {
-                                          isSyncSignoutClicked=true;
-                                          isSigningOut = true;
-                                        });
-
-                                        syncAndSignOut(false, context);
-                                      }
-                                    },
-                                        displayWidth(context) / 1.6,
-                                        displayHeight(context) * 0.055,
-                                        primaryColor,
-                                        Colors.white,
-                                        displayHeight(context) * 0.018,
-                                        blueColor,
-                                        '',
-                                        fontWeight: FontWeight.w500),
+                                SizedBox(
+                                  height: displayHeight(context) * 0.02,
+                                ),
+                                Center(
+                                  child: Image.asset('assets/icons/export_img.png',
+                                  //height: displayHeight(context) * 0.2,
+                                    width:orientation==Orientation.portrait? displayWidth(context) * 0.18:displayWidth(context) * 0.10),
+                                ),
+                                SizedBox(
+                                  height: displayHeight(context) * 0.01,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8.0, right: 8),
+                                  child: Column(
+                                    children: [
+                                      commonText(
+                                          context: context,
+                                          text:
+                                              'There are some vessel & trips data not sync with cloud, do you want to proceed further?',
+                                          fontWeight: FontWeight.w600,
+                                          textColor: Colors.black,
+                                      textSize:orientation==Orientation.portrait? displayWidth(context) * 0.038:displayWidth(context) * 0.020,
+                                          textAlign: TextAlign.center,
+                                      fontFamily: inter),
+                                      SizedBox(
+                                        height:orientation==Orientation.portrait? displayHeight(context) * 0.015:10,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                        child: commonText(
+                                            context: context,
+                                            text:
+                                                'Click Sync & Sign Out for not loosing local data which is not uploaded',
+                                            fontWeight: FontWeight.w400,
+                                            textColor: Colors.grey,
+                                            textSize: orientation==Orientation.portrait? displayWidth(context) * 0.032:displayWidth(context) * 0.015,
+                                            textAlign: TextAlign.center,
+                                            fontFamily: inter),
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 SizedBox(
-                                  width: 15.0,
+                                  height: displayHeight(context) * 0.01,
                                 ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(6),
+                                Column(
+                                  children: [
+                                    Container(
+                                      margin: EdgeInsets.only(
+                                        top: 8.0,
                                       ),
-                                  child: Center(
-                                    child: CommonButtons.getAcceptButton(
-                                        'Sign Out', context,  Colors.transparent,
-                                        () async {
+                                      child: 
+                                      isSigningOut
+                                          ?
+                                           Container(
+                                              height:orientation==Orientation.portrait? displayHeight(context) * 0.055:displayHeight(context) * 0.085,
+                                          child: Center(child: CircularProgressIndicator(color: blueColor,)))
+                                          : 
+                                          Center(
+                                        child:
+                                         CommonButtons.getAcceptButton(
+                                            'Sync & Sign Out',
+                                            context,
+                                            blueColor, () async {
+                                          bool internet =
+                                          await Utils().check(scaffoldKey);
+
+                                          if (internet) {
+                                            setDialogState(() {
+                                              isSyncSignoutClicked=true;
+                                              isSigningOut = true;
+                                            });
+
+                                            syncAndSignOut(false, context);
+                                          }
+                                        },
+                                         orientation==Orientation.portrait?   displayWidth(context) / 1.6:displayWidth(context) / 3,
+                                       orientation==    Orientation.portrait?      displayHeight(context) * 0.055:displayHeight(context) * 0.085,
+                                            primaryColor,
+                                            Colors.white,
+                                         orientation==    Orientation.portrait?      displayHeight(context) * 0.018:displayHeight(context) * 0.030,
+                                            blueColor,
+                                            '',
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 15.0,
+                                    ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(6),
+                                          ),
+                                      child: Center(
+                                        child: CommonButtons.getAcceptButton(
+                                            'Sign Out', context,  Colors.transparent,
+                                            () async {
 
 if(!isSyncSignoutClicked){
-                                      Navigator.of(context).pop();
+                                          Navigator.of(context).pop();
 
-                                      signOut();
+                                          signOut();
 
 }else{
 
 }
 
 
-                                          
-                                    },
-                                        displayWidth(context) / 1.6,
-                                        displayHeight(context) * 0.055,
-                                        primaryColor,
-                                        Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? Colors.white
-                                            : blueColor,
-                                        displayHeight(context) * 0.015,
-                                        Colors.transparent,
-                                        '',
-                                        fontWeight: FontWeight.w500),
-                                  ),
+                                              
+                                        },
+                                         orientation==Orientation.portrait?   displayWidth(context) / 1.6:displayWidth(context) / 3,
+                                       orientation==    Orientation.portrait?      displayHeight(context) * 0.055:displayHeight(context) * 0.085,
+                                            primaryColor,
+                                            Theme.of(context).brightness ==
+                                                    Brightness.dark
+                                                ? Colors.white
+                                                : blueColor,
+                                         orientation==    Orientation.portrait?      displayHeight(context) * 0.015:displayHeight(context) * 0.028,
+                                            Colors.transparent,
+                                            '',
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: displayHeight(context) * 0.01,
                                 ),
                               ],
                             ),
-                            SizedBox(
-                              height: displayHeight(context) * 0.01,
-                            ),
+                            Positioned(
+                              right: 10,
+                              top: 0,
+                              child: Container(
+                                height: 30,
+                                width: 30,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,),
+                                child: Center(
+                                  child: isUploadStarted
+                                      ? SizedBox()
+                                      : IconButton(
+                                      onPressed: () {
+                                        Navigator.pop(ctx);
+                                      },
+                                      icon:  Icon(Icons.close_rounded, color: buttonBGColor)),
+                                ),
+                              ),
+                            )
                           ],
                         ),
-                        Positioned(
-                          right: 10,
-                          top: 0,
-                          child: Container(
-                            height: 30,
-                            width: 30,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,),
-                            child: Center(
-                              child: isUploadStarted
-                                  ? SizedBox()
-                                  : IconButton(
-                                  onPressed: () {
-                                    Navigator.pop(ctx);
-                                  },
-                                  icon:  Icon(Icons.close_rounded, color: buttonBGColor)),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
+                      ),
+                    );
+                  },
+                ),
+              );
+            }
           );
-        }).then((value) {
-      if(commonProvider.bottomNavIndex != 1){
-        SystemChrome.setPreferredOrientations([
-          DeviceOrientation.portraitUp
-        ]);
-      }else{
-        SystemChrome.setPreferredOrientations([
-          DeviceOrientation.landscapeLeft,
-          DeviceOrientation.landscapeRight,
-          DeviceOrientation.portraitDown,
-          DeviceOrientation.portraitUp
-        ]);
-      }
-    });
+        });
+        
+    //     .then((value) {
+    //   if(commonProvider.bottomNavIndex != 1){
+    //     SystemChrome.setPreferredOrientations([
+    //       DeviceOrientation.portraitUp
+    //     ]);
+    //   }else{
+    //     SystemChrome.setPreferredOrientations([
+    //       DeviceOrientation.landscapeLeft,
+    //       DeviceOrientation.landscapeRight,
+    //       DeviceOrientation.portraitDown,
+    //       DeviceOrientation.portraitUp
+    //     ]);
+    //   }
+    // });
   }
 
   ///To fetch data from cloud (Database)
@@ -1408,226 +1416,230 @@ if(!isSyncSignoutClicked){
         barrierDismissible: false,
         context: context,
         builder: (BuildContext dialogBoxContext) {
-          return Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: StatefulBuilder(
-              builder: (ctx, setDialogState) {
-                return Container(
-                  height:orientation==Orientation.portrait? displayHeight(context) * 0.42:displayHeight(context) * 0.80,
-                  width:orientation==Orientation.portrait? MediaQuery.of(context).size.width:MediaQuery.of(context).size.width/2,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 8.0, right: 8.0, top: 5, bottom: 15),
-                    child: Stack(
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+          return OrientationBuilder(
+            builder: (context,orientation) {
+              return Dialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: StatefulBuilder(
+                  builder: (ctx, setDialogState) {
+                    return Container(
+                      height:orientation==Orientation.portrait? displayHeight(context) * 0.42:displayHeight(context) * 0.80,
+                      width:orientation==Orientation.portrait? MediaQuery.of(context).size.width:MediaQuery.of(context).size.width/2,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 8.0, right: 8.0, top: 5, bottom: 15),
+                        child: Stack(
                           children: [
-                            SizedBox(
-                              height: displayHeight(context) * 0.02,
-                            ),
-                            Center(
-                              child: Image.asset('assets/icons/export_img.png',
-                                //height: displayHeight(context) * 0.2,
-                                width:orientation==Orientation.portrait? displayWidth(context) * 0.18:displayWidth(context) * 0.10),
-                            ),
-                            SizedBox(
-                              height: displayHeight(context) * 0.01,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8.0, right: 8),
-                              child: Column(
-                                children: [
-                                  commonText(
-                                      context: context,
-                                      text:
-                                      'There are some vessel & trips data not sync with cloud, do you want to proceed further?',
-                                      fontWeight: FontWeight.w600,
-                                      textColor: Colors.black,
-                                  textSize:orientation==Orientation.portrait? displayWidth(context) * 0.038:displayWidth(context) * 0.018,
-                                      textAlign: TextAlign.center,
-                                      fontFamily: inter),
-                                  SizedBox(
-                                    height:orientation==Orientation.portrait? displayHeight(context) * 0.015:displayHeight(context) * 0.030,
-                                  ),
-                                  isChangePassword
-                                      ? Padding(
-                                        padding: EdgeInsets.only(
-                                            left:orientation==Orientation.portrait? displayWidth(context) * 0.06:0,
-                                        ),
-                                        child: Center(
-                                          child: commonText(
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  height: displayHeight(context) * 0.02,
+                                ),
+                                Center(
+                                  child: Image.asset('assets/icons/export_img.png',
+                                    //height: displayHeight(context) * 0.2,
+                                    width:orientation==Orientation.portrait? displayWidth(context) * 0.18:displayWidth(context) * 0.10),
+                                ),
+                                SizedBox(
+                                  height: displayHeight(context) * 0.01,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 8.0, right: 8),
+                                  child: Column(
+                                    children: [
+                                      commonText(
                                           context: context,
                                           text:
-                                          'Click Upload & Change Password for not loosing local data which is not uploaded',
+                                          'There are some vessel & trips data not sync with cloud, do you want to proceed further?',
+                                          fontWeight: FontWeight.w600,
+                                          textColor: Colors.black,
+                                      textSize:orientation==Orientation.portrait? displayWidth(context) * 0.038:displayWidth(context) * 0.018,
+                                          textAlign: TextAlign.center,
+                                          fontFamily: inter),
+                                      SizedBox(
+                                        height:orientation==Orientation.portrait? displayHeight(context) * 0.015:displayHeight(context) * 0.030,
+                                      ),
+                                      isChangePassword
+                                          ? Padding(
+                                            padding: EdgeInsets.only(
+                                                left:orientation==Orientation.portrait? displayWidth(context) * 0.06:0,
+                                            ),
+                                            child: Center(
+                                              child: commonText(
+                                              context: context,
+                                              text:
+                                              'Click Upload & Change Password for not loosing local data which is not uploaded',
+                                              fontWeight: FontWeight.w400,
+                                              textColor: Colors.grey,
+                                      textSize:orientation==Orientation.portrait? displayWidth(context) * 0.032:displayWidth(context) * 0.015,
+                                              textAlign:orientation==Orientation.portrait? TextAlign.start:TextAlign.center),
+                                            ),
+                                          )
+                                          : commonText(
+                                          context: context,
+                                          text:
+                                          'Click Upload & Sync for not loosing local data which is not uploaded',
                                           fontWeight: FontWeight.w400,
                                           textColor: Colors.grey,
-                                  textSize:orientation==Orientation.portrait? displayWidth(context) * 0.032:displayWidth(context) * 0.012,
-                                          textAlign:orientation==Orientation.portrait? TextAlign.start:TextAlign.center),
-                                        ),
-                                      )
-                                      : commonText(
-                                      context: context,
-                                      text:
-                                      'Click Upload & Sync for not loosing local data which is not uploaded',
-                                      fontWeight: FontWeight.w400,
-                                      textColor: Colors.grey,
-                                  textSize:orientation==Orientation.portrait? displayWidth(context) * 0.032:displayWidth(context) * 0.012,
-                                      textAlign: TextAlign.center),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: displayHeight(context) * 0.01,
-                            ),
-                            Column(
-                              children: [
-                                Container(
-                                  margin: EdgeInsets.only(
-                                    top: 8.0,
-                                  ),
-                                  child: Center(
-                                    child: isUploadStarted
-                                        ? 
-                                        Center(
-                                      child: 
-                                      
-                                      SizedBox(
-                                          height:orientation==Orientation.portrait? displayHeight(context) * 0.055:displayHeight(context) * 0.085,
-                                          child: Center(
-                                              child:
-                                              CircularProgressIndicator(
-                                                color: blueColor,
-                                              ))),
-                                    )
-                                        : CommonButtons.getAcceptButton(
-                                        isChangePassword
-                                            ? 'Upload & Change Password'
-                                            : 'Upload & Sync',
-                                        context,
-                                        blueColor, () async {
-                                      //  Navigator.of(context).pop();
-
-                                      bool internet =
-                                      await Utils().check(scaffoldKey);
-                                      setState(() {
-                                        isSync = true;
-                                      });
-                                      if (internet) {
-                                        if (mounted) {
-                                          setDialogState(() {
-                                            isUploadStarted = true;
-                                          });
-                                        }
-                                        syncAndSignOut(isChangePassword, context);
-                                      }
-                                    },
-                                      orientation==    Orientation.portrait?   displayWidth(context) / 1.6:displayWidth(context) / 3,
-                                   orientation==    Orientation.portrait?      displayHeight(context) * 0.055:displayHeight(context) * 0.085,
-                                        primaryColor,
-                                        Colors.white,
-                                     orientation==    Orientation.portrait?      displayHeight(context) * 0.018:displayHeight(context) * 0.030,
-                                        blueColor,
-                                        '',
-                                        fontWeight: FontWeight.w500),
+                                      textSize:orientation==Orientation.portrait? displayWidth(context) * 0.032:displayWidth(context) * 0.012,
+                                          textAlign: TextAlign.center),
+                                    ],
                                   ),
                                 ),
                                 SizedBox(
-                                  width: 15.0,
+                                  height: displayHeight(context) * 0.01,
                                 ),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Center(
-                                    child: CommonButtons.getAcceptButton(
-                                        isChangePassword
-                                            ? 'Skip & Change Password'
-                                            : 'Skip & Sync', context, Colors.transparent,
-                                            () {
-                                          if(isChangePassword)
-                                          {
-
-                                            if(!isSync){
-                                            Navigator.of(context).pop();
-                                            Navigator.of(context).pop();
-
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) => ChangePassword(isChange: true,)),
-                                            );
-
-                                          }else{
-
-                                          }
+                                Column(
+                                  children: [
+                                    Container(
+                                      margin: EdgeInsets.only(
+                                        top: 8.0,
+                                      ),
+                                      child: Center(
+                                        child: isUploadStarted
+                                            ? 
+                                            Center(
+                                          child: 
                                           
-                                          
-                                          }else
-                                          {
-                                            if(!isUploadStarted){
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                  const SyncDataCloudToMobileScreen()),
-                                            );
+                                          SizedBox(
+                                              height:orientation==Orientation.portrait? displayHeight(context) * 0.055:displayHeight(context) * 0.085,
+                                              child: Center(
+                                                  child:
+                                                  CircularProgressIndicator(
+                                                    color: blueColor,
+                                                  ))),
+                                        )
+                                            : CommonButtons.getAcceptButton(
+                                            isChangePassword
+                                                ? 'Upload & Change Password'
+                                                : 'Upload & Sync',
+                                            context,
+                                            blueColor, () async {
+                                          //  Navigator.of(context).pop();
 
+                                          bool internet =
+                                          await Utils().check(scaffoldKey);
+                                          setState(() {
+                                            isSync = true;
+                                          });
+                                          if (internet) {
+                                            if (mounted) {
+                                              setDialogState(() {
+                                                isUploadStarted = true;
+                                              });
                                             }
-                                            else{
-
-                                            }
+                                            syncAndSignOut(isChangePassword, context);
                                           }
-
                                         },
-                                      orientation==    Orientation.portrait?   displayWidth(context) / 1.6:displayWidth(context) / 3,
-                                   orientation==    Orientation.portrait?      displayHeight(context) * 0.055:displayHeight(context) * 0.085,
-                                        Colors.transparent,
-                                        Theme.of(context).brightness ==
-                                            Brightness.dark
-                                            ? Colors.white
-                                            : blueColor,
-                               orientation==    Orientation.portrait?         displayHeight(context) * 0.015:displayHeight(context) * 0.028,
-                                        Colors.transparent,
-                                        '',
-                                        fontWeight: FontWeight.w500),
-                                  ),
+                                          orientation==    Orientation.portrait?   displayWidth(context) / 1.6:displayWidth(context) / 3,
+                                       orientation==    Orientation.portrait?      displayHeight(context) * 0.055:displayHeight(context) * 0.085,
+                                            primaryColor,
+                                            Colors.white,
+                                         orientation==    Orientation.portrait?      displayHeight(context) * 0.018:displayHeight(context) * 0.030,
+                                            blueColor,
+                                            '',
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 15.0,
+                                    ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: Center(
+                                        child: CommonButtons.getAcceptButton(
+                                            isChangePassword
+                                                ? 'Skip & Change Password'
+                                                : 'Skip & Sync', context, Colors.transparent,
+                                                () {
+                                              if(isChangePassword)
+                                              {
+
+                                                if(!isSync){
+                                                Navigator.of(context).pop();
+                                                Navigator.of(context).pop();
+
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) => ChangePassword(isChange: true,)),
+                                                );
+
+                                              }else{
+
+                                              }
+                                              
+                                              
+                                              }else
+                                              {
+                                                if(!isUploadStarted){
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                      const SyncDataCloudToMobileScreen()),
+                                                );
+
+                                                }
+                                                else{
+
+                                                }
+                                              }
+
+                                            },
+                                          orientation==    Orientation.portrait?   displayWidth(context) / 1.6:displayWidth(context) / 3,
+                                       orientation==    Orientation.portrait?      displayHeight(context) * 0.055:displayHeight(context) * 0.085,
+                                            Colors.transparent,
+                                            Theme.of(context).brightness ==
+                                                Brightness.dark
+                                                ? Colors.white
+                                                : blueColor,
+                                   orientation==    Orientation.portrait?         displayHeight(context) * 0.015:displayHeight(context) * 0.028,
+                                            Colors.transparent,
+                                            '',
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: displayHeight(context) * 0.01,
                                 ),
                               ],
                             ),
-                            SizedBox(
-                              height: displayHeight(context) * 0.01,
-                            ),
+                            Positioned(
+                              right: 10,
+                              top: 0,
+                              child: Container(
+                                height: 30,
+                                width: 30,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,),
+                                child: Center(
+                                  child: isUploadStarted
+                                      ? SizedBox()
+                                      : IconButton(
+                                      onPressed: () {
+                                        Navigator.pop(ctx);
+                                      },
+                                      icon:  Icon(Icons.close_rounded, color: buttonBGColor)),
+                                ),
+                              ),
+                            )
                           ],
                         ),
-                        Positioned(
-                          right: 10,
-                          top: 0,
-                          child: Container(
-                            height: 30,
-                            width: 30,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,),
-                            child: Center(
-                              child: isUploadStarted
-                                  ? SizedBox()
-                                  : IconButton(
-                                  onPressed: () {
-                                    Navigator.pop(ctx);
-                                  },
-                                  icon:  Icon(Icons.close_rounded, color: buttonBGColor)),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
+                      ),
+                    );
+                  },
+                ),
+              );
+            }
           );
         }).then((value) {
       if(commonProvider.bottomNavIndex != 1){
@@ -1635,12 +1647,12 @@ if(!isSyncSignoutClicked){
           DeviceOrientation.portraitUp
         ]);
       }else{
-        SystemChrome.setPreferredOrientations([
-          DeviceOrientation.landscapeLeft,
-          DeviceOrientation.landscapeRight,
-          DeviceOrientation.portraitDown,
-          DeviceOrientation.portraitUp
-        ]);
+        // SystemChrome.setPreferredOrientations([
+        //   DeviceOrientation.landscapeLeft,
+        //   DeviceOrientation.landscapeRight,
+        //   DeviceOrientation.portraitDown,
+        //   DeviceOrientation.portraitUp
+        // ]);
       }
     });
   }

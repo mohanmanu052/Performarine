@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -13,7 +14,18 @@ class RouteMap extends StatefulWidget {
   _RouteMapState createState() => _RouteMapState();
 }
 
+
+
+
 class _RouteMapState extends State<RouteMap> {
+  @override
+  void initState() {
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     Utils.customPrint('https://' + "${Urls.baseUrl}/goeMaps/646651f3bc96c02b13879ac9");
