@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
+import 'package:performarine/pages/bottom_navigation.dart';
 import 'package:provider/provider.dart';
 
 import '../../common_widgets/utils/colors.dart';
@@ -89,6 +90,25 @@ class _ChangePasswordState extends State<ChangePassword> {
               ? Colors.white
               : Colors.black,
         ),
+        actions: [
+
+Container(
+margin: EdgeInsets.only(right: 8),
+child: IconButton(
+onPressed: () {
+Navigator.pushAndRemoveUntil(
+context,
+MaterialPageRoute(builder: (context) => BottomNavigation()),
+ModalRoute.withName(""));
+},
+icon: Image.asset('assets/icons/performarine_appbar_icon.png'),
+color: Theme.of(context).brightness == Brightness.dark
+? Colors.white
+: Colors.black,
+),
+),
+],
+
       ),
       body: SafeArea(
         child: Form(
