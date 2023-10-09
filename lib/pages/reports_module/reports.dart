@@ -2468,7 +2468,7 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
         CartesianChartPoint currentPoint = point;
         final String yValue = currentPoint.y.toString();
         return Container(
-          width: displayWidth(context) * 0.4,
+          width:orientation==Orientation.portrait? displayWidth(context) * 0.4:displayWidth(context)/4.2,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20),
@@ -2686,7 +2686,7 @@ Utils.showSnackBar(context,
         final double? yValue = currentPoint.y;
 
         return Container(
-          width: displayWidth(context) * 0.4,
+          width:orientation==Orientation.portrait? displayWidth(context) * 0.4:displayWidth(context)/4.2,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20),
@@ -2892,7 +2892,7 @@ Utils.showSnackBar(context,
             .logWithFile(Level.info, "fuel y data is: ${yValue} -> $page");
 
         return Container(
-          width: displayWidth(context) * 0.4,
+          width:orientation==Orientation.portrait? displayWidth(context) * 0.4:displayWidth(context)/4.2,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20),
@@ -3045,7 +3045,7 @@ Utils.showSnackBar(context,
             .logWithFile(Level.info, "power y data is: ${yValue} -> $page");
 
         return Container(
-          width:displayWidth(context) * 0.4,
+          width:orientation==Orientation.portrait? displayWidth(context) * 0.4:displayWidth(context)/4.2,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20),
@@ -3085,7 +3085,7 @@ Utils.showSnackBar(context,
                   Utils.customPrint("tapped on go to report button");
                   CustomLogger().logWithFile(Level.info,
                       "Navigating user into Trip Analytics Screen -> $page");
-
+print('the selected index was---'+selectedIndex.toString());
  bool isTripExists= await _databaseService.checkIfTripExist(selectedIndex);
  if(isTripExists){
                       Navigator.push(
@@ -3763,7 +3763,7 @@ Utils.showSnackBar(context,
   }
 
   void scorllToParticularPostion(int index,dynamic persondata,Orientation orientation){
-
+selectedIndex= persondata['tripDetails'];
 tooltipactivationMode=ActivationMode.singleTap;
                       reportsDataTableKey.currentState!.setState(() {
 

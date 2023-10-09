@@ -115,13 +115,18 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
 
 @override
   void dispose() {
-    //     SystemChrome.setPreferredOrientations([
-    //   DeviceOrientation.landscapeLeft,
-    //   DeviceOrientation.landscapeRight,
-    //   DeviceOrientation.portraitDown,
-    //   DeviceOrientation.portraitUp
+    if(widget.calledFrom=='Report'){
+        SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp
 
-    // ]);
+    ]);
+
+    }else{
+      
+    }
 
     // TODO: implement dispose
     super.dispose();
