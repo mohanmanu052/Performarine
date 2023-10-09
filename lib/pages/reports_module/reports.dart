@@ -1222,6 +1222,8 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                           children: [
                             isVesselDataLoading!
                                 ? Container(
+                                  alignment: Alignment.center,
+                                  height: orientation==Orientation.landscape?60:60,
                                     width: displayWidth(context) * 0.8,
                               child: IgnorePointer(
                                 ignoring: isBtnClick??false,
@@ -1236,6 +1238,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                                       //errorText: _showDropdownError1 ? 'Select Vessel' : null,
                                                                 
                                         prefixIcon: Container(
+                                          
                                                                 width: 50,
                                           height:displayHeight(context) * 0.02 ,
                                        child: Transform.scale(
@@ -1244,7 +1247,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                            height: displayHeight(context) * 0.02,),
                                         )),
                                         contentPadding:
-                                        EdgeInsets.symmetric(horizontal: 0,vertical: orientation==Orientation.portrait?10:15),
+                                        EdgeInsets.symmetric(horizontal: 0,vertical: orientation==Orientation.portrait?10:13),
                                                                 
                                         focusedBorder: OutlineInputBorder(
                                             borderSide: BorderSide(
@@ -1297,7 +1300,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                       ),
                                       hint:                                          Container(
                                         alignment: Alignment.centerLeft,
-                                        margin:EdgeInsets.only(left: 15),
+                                        margin:EdgeInsets.only(left: 15,),
                                   
                                                                                                                        
                                                                 
@@ -1305,13 +1308,16 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                           'Select Vessel *',
                                           style: TextStyle(
                                             color: Colors.black,
+                                            
+                                            
                                               fontSize:
-                                      
+                                                                            
                                               orientation==Orientation.portrait?
                                               displayWidth(context) *
                                                   0.032:displayWidth(context) *
                                                   0.022
                                               ,
+                                              
                                               fontFamily: outfit,
                                               fontWeight: FontWeight.w400),
                                           overflow: TextOverflow.ellipsis,
@@ -1323,7 +1329,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                             DropdownItem>(
                                           value: item,
                                           child: Container(
-                                        margin:EdgeInsets.only(left: 15),
+                                        margin:EdgeInsets.only(left: 15,),
                                             child: Text(
                                               item.name!,
                                               style: TextStyle(
@@ -1413,7 +1419,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                         getTripListData(item.id!);
                                       },
                                       buttonStyleData:  ButtonStyleData(
-                                        padding: EdgeInsets.only(right: 0),
+                                        padding: EdgeInsets.only(right:orientation==Orientation.portrait? 0:10),
                                       ),
                                       iconStyleData:  IconStyleData(
                                         icon: Icon(
@@ -1633,7 +1639,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                       }
                                     },
                                     buttonStyleData:  ButtonStyleData(
-                                      padding: EdgeInsets.only(right: 0),
+                                      padding: EdgeInsets.only(right:orientation==Orientation.portrait? 0:10),
                                     ),
                                     iconStyleData:  IconStyleData(
                                       icon: Icon(
@@ -1827,14 +1833,14 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                     }
                                   },
 
-                               orientation==Orientation.portrait?   displayWidth(context) * 0.8:displayWidth(context) * 0.4,
-                                 orientation==Orientation.portrait? displayHeight(context) * 0.065:displayHeight(context) * 0.12,
+                               orientation==Orientation.portrait?   displayWidth(context) * 0.8:displayWidth(context) * 0.5,
+                                 orientation==Orientation.portrait? displayHeight(context) * 0.06:displayHeight(context) * 0.15,
                                   Colors.grey.shade400,
                                   Theme.of(context).brightness ==
                                           Brightness.dark
                                       ? Colors.white
                                       : Colors.white,
-                                orientation==Orientation.portrait?  displayHeight(context) * 0.021:displayHeight(context) * 0.037,
+                                orientation==Orientation.portrait?  displayHeight(context) * 0.021:displayWidth(context) * 0.026,
                                   blueColor,
                                   '',
                                 ),
