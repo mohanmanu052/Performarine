@@ -613,7 +613,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 textColor: Colors.black54,
                                 fontWeight: FontWeight.w400),
 
-                            Row(
+                          /*  Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 commonText(
@@ -643,7 +643,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                           fontWeight: FontWeight.w500)),
                                 )
                               ],
-                            ),
+                            ),*/
 
                           ],
                         ),
@@ -1133,7 +1133,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           textColor: Colors.black54,
                           fontWeight: FontWeight.w400),
 
-                      Row(
+                    /*  Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           commonText(
@@ -1160,7 +1160,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                     fontWeight: FontWeight.w500)),
                           )
                         ],
-                      ),
+                      ),*/
 
                     ],
                   ),

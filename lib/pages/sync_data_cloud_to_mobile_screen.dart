@@ -558,7 +558,8 @@ class _SyncDataCloudToMobileScreenState
                 updatedAt: value.vessels![i].updatedAt.toString(),
                 isSync: 1,
                 updatedBy: value.vessels![i].updatedBy.toString(),
-                isCloud: 1);
+                isCloud: 1,
+                displacement: value.vessels![i].displacement);
 
             var vesselExist = await _databaseService
                 .vesselsExistInCloud(value.vessels![i].id!);

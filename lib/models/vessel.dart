@@ -11,8 +11,8 @@ class CreateVessel {
   String? regNumber;
   String? mMSI;
   String? engineType;
-  String? fuelCapacity;
-  String? batteryCapacity;
+  dynamic fuelCapacity;
+  dynamic batteryCapacity;
   String? weight;
   String? imageURLs;
   double? freeBoard;
@@ -34,7 +34,7 @@ class CreateVessel {
   String? avgSpeed;*/
   int? isCloud;
   List<File?>? selectedImages;
-  String? displacement;
+  dynamic displacement;
 
   CreateVessel(
       {this.id,

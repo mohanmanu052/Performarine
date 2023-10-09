@@ -52,8 +52,23 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
     return Scaffold(
+      backgroundColor: backgroundColor,
       key: scaffoldKey,
       resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        backgroundColor: backgroundColor,
+        elevation: 0,
+        centerTitle: true,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: const Icon(Icons.arrow_back),
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Colors.white
+              : Colors.black,
+        ),
+      ),
       body: Center(
         child: Form(
           key: formKey,
@@ -223,7 +238,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   ),
 
                   SizedBox(
-                    height: displayHeight(context) * 0.18,
+                    height: displayHeight(context) * 0.12,
                   ),
 
                   Center(
