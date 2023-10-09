@@ -75,7 +75,7 @@ class AddVesselApiProvider with ChangeNotifier {
       request.fields['regNumber'] = addVesselRequestModel.regNumber!;
       request.fields['MMSI'] = addVesselRequestModel.mMSI!;
       request.fields['engineType'] = addVesselRequestModel.engineType!;
-      request.fields['fuelCapacity'] = addVesselRequestModel.fuelCapacity!;
+      request.fields['fuelCapacity'] = addVesselRequestModel.fuelCapacity!.toString();
       request.fields['weight'] = addVesselRequestModel.weight!;
       request.fields['freeBoard'] = addVesselRequestModel.freeBoard!.toString();
       request.fields['lengthOverall'] =
@@ -84,14 +84,14 @@ class AddVesselApiProvider with ChangeNotifier {
       request.fields['depth'] = addVesselRequestModel.draft!.toString();
       request.fields['vesselSize'] =
           addVesselRequestModel.vesselSize!.toString();
+      request.fields['batteryCapacity'] = addVesselRequestModel.batteryCapacity!.toString();
       request.fields['capacity'] = addVesselRequestModel.capacity!.toString();
       request.fields['builtYear'] = addVesselRequestModel.builtYear!.toString();
       request.fields['userID'] = userId;
       request.fields['vesselStatus'] = addVesselRequestModel.vesselStatus == 0
           ? '2'
           : addVesselRequestModel.vesselStatus!.toString();
-      request.fields['batteryCapacity'] = addVesselRequestModel.batteryCapacity!;
-     // request.fields['displacement'] = addVesselRequestModel.displacement!;
+      request.fields['displacement'] = addVesselRequestModel.displacement!.toString();
       Utils.customPrint('Add VESSEL RESP : ' + jsonEncode(request.fields));
 
       http.StreamedResponse response = await request.send();
