@@ -640,8 +640,8 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                 selectedEngineType;
                             commonProvider.addVesselRequestModel!.fuelCapacity =
                                 fuelCapacityController.text.isEmpty
-                                    ? '0'
-                                    : fuelCapacityController.text;
+                                    ? 0.0
+                                    : double.parse(fuelCapacityController.text);
                             commonProvider.addVesselRequestModel!.weight =
                                 weightController.text;
                             commonProvider.addVesselRequestModel!.selectedImages =
@@ -650,8 +650,8 @@ class _AddVesselStepOneState extends State<AddVesselStepOne>
                                     : finalSelectedFiles;
                             commonProvider.addVesselRequestModel!.batteryCapacity =
                                 batteryCapacityController.text.isEmpty
-                                    ? '0'
-                                    : batteryCapacityController.text;
+                                    ? 0.0
+                                    : double.parse(batteryCapacityController.text);
                             commonProvider.addVesselRequestModel!.imageURLs =
                                 widget.addVesselData == null
                                     ? ''

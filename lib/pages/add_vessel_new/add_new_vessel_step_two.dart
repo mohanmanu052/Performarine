@@ -509,7 +509,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                                   double.parse(moldedBeamController.text);
                               commonProvider.addVesselRequestModel!.draft =
                                   double.parse(moldedDepthController.text);
-                              commonProvider.addVesselRequestModel!.displacement = displacementController.text;
+                              commonProvider.addVesselRequestModel!.displacement = double.parse(displacementController.text);
                               commonProvider.addVesselRequestModel!.vesselSize =
                                   double.parse(sizeController.text);
                               commonProvider.addVesselRequestModel!.capacity = 0;
