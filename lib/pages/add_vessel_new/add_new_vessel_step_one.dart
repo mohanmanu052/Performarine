@@ -443,7 +443,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                         textInputAction: selectedEngineType == 'Hybrid'
                             ? TextInputAction.next
                             : TextInputAction.done,
-                        textInputType: TextInputType.numberWithOptions(decimal: true),
+                        textInputType: TextInputType.number,
                         textCapitalization: TextCapitalization.words,
                         maxLength: 6,
                         prefixIcon: null,
@@ -485,7 +485,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.done,
-                        textInputType: TextInputType.numberWithOptions(decimal: true),
+                        textInputType: TextInputType.number,
                         textCapitalization: TextCapitalization.words,
                         maxLength: 6,
                         prefixIcon: null,
@@ -561,8 +561,8 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                                 selectedEngineType;
                             commonProvider.addVesselRequestModel!.fuelCapacity =
                             fuelCapacityController.text.isEmpty
-                                ? 0.0
-                                : double.parse(fuelCapacityController.text);
+                                ? '0'
+                                : fuelCapacityController.text;
                             commonProvider.addVesselRequestModel!.weight =
                                 weightController.text;
                             commonProvider.selectedImageFiles = finalSelectedFiles.isEmpty
@@ -574,8 +574,8 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                             //     : finalSelectedFiles;
                             commonProvider.addVesselRequestModel!.batteryCapacity =
                             batteryCapacityController.text.isEmpty
-                                ? 0.0
-                                : double.parse(batteryCapacityController.text);
+                                ? '0'
+                                : batteryCapacityController.text;
                             commonProvider.addVesselRequestModel!.imageURLs =
                             widget.addVesselData == null
                                 ? ''

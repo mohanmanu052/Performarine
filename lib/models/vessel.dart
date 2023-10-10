@@ -11,15 +11,15 @@ class CreateVessel {
   String? regNumber;
   String? mMSI;
   String? engineType;
-  double? fuelCapacity;
-  double? batteryCapacity;
+  String? fuelCapacity;
+  String? batteryCapacity;
   String? weight;
   String? imageURLs;
   double? freeBoard;
   double? lengthOverall;
   double? beam;
   double? draft;
-  double? vesselSize;
+  dynamic vesselSize;
   int? capacity;
   dynamic builtYear;
   int? isSync;

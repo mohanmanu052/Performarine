@@ -124,7 +124,6 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
         sizeController.text = widget.addVesselData!.vesselSize!.toString();
       //  capacityController.text = widget.addVesselData!.capacity!.toString();
         builtYearController.text = widget.addVesselData!.builtYear!.toString();
-
       }
     }
 
@@ -210,6 +209,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         prefixIcon: null,
                         requestFocusNode: lengthOverallFocusNode,
                         obscureText: false,
+                        isForDecimal: true,
                         onTap: () {},
                         onChanged: (String value) {
                         },
@@ -223,7 +223,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         onSaved: (String value) {
                           Utils.customPrint(value);
                           CustomLogger().logWithFile(Level.info, "Vessel Freeboard $value -> $page");
-                        }),
+                        },),
                   ),
                   SizedBox(height: displayHeight(context) * 0.015),
                   Form(
@@ -242,6 +242,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         prefixIcon: null,
                         requestFocusNode: moldedBeamFocusNode,
                         obscureText: false,
+                        isForDecimal: true,
                         onTap: () {},
                         onChanged: (String value) {
                         },
@@ -273,6 +274,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         prefixIcon: null,
                         requestFocusNode: moldedDepthFocusNode,
                         obscureText: false,
+                        isForDecimal: true,
                         onTap: () {},
                         onChanged: (String value) {
                         },
@@ -298,6 +300,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         labelText: 'Draft ($feet)',
                         hintText: '',
                         suffixText: null,
+                        isForDecimal: true,
                         textInputAction: TextInputAction.next,
                         textInputType: TextInputType.numberWithOptions(decimal: true),
                         textCapitalization: TextCapitalization.words,
@@ -337,6 +340,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         prefixIcon: null,
                         requestFocusNode: sizeFocusNode,
                         obscureText: false,
+                        isForDecimal: true,
                         onTap: () {},
                         onChanged: (String value) {
                         },
@@ -373,7 +377,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
-                        textInputType: TextInputType.numberWithOptions(decimal: true),
+                        textInputType: TextInputType.number,
                         textCapitalization: TextCapitalization.words,
                         maxLength: 6,
                         prefixIcon: null,
@@ -493,25 +497,31 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                                 isBtnClicked = true;
                               });
 
+
                               FocusScope.of(context)
                                   .requestFocus(new FocusNode());
                               if(isDeleted!){
                                 commonProvider
                                     .addVesselRequestModel!.imageURLs = '';
                               }
-
                               commonProvider.addVesselRequestModel!.freeBoard =
-                                  double.parse(freeBoardController.text);
+                                  freeBoardController.text.length >= 6 ? num.parse(double.parse(freeBoardController.text).toStringAsFixed(4)).toDouble()
+                                  : double.parse(freeBoardController.text);
                               commonProvider
-                                  .addVesselRequestModel!.lengthOverall =
-                                  double.parse(lengthOverallController.text);
-                              commonProvider.addVesselRequestModel!.beam =
-                                  double.parse(moldedBeamController.text);
-                              commonProvider.addVesselRequestModel!.draft =
-                                  double.parse(moldedDepthController.text);
-                              commonProvider.addVesselRequestModel!.displacement = double.parse(displacementController.text);
+                                  .addVesselRequestModel!.lengthOverall = lengthOverallController.text.length >=6
+                                  ? num.parse(double.parse(lengthOverallController.text).toStringAsFixed(4)).toDouble()
+                                  : double.parse(lengthOverallController.text);
+                              commonProvider.addVesselRequestModel!.beam = moldedBeamController.text.length >= 6
+                                  ? num.parse(double.parse(moldedBeamController.text).toStringAsFixed(4)).toDouble()
+                                  : double.parse(moldedBeamController.text);
+                              commonProvider.addVesselRequestModel!.draft = moldedDepthController.text.length >= 6
+                                ? num.parse(double.parse(moldedDepthController.text).toStringAsFixed(4)).toDouble()
+                                : double.parse(moldedDepthController.text);
+                              commonProvider.addVesselRequestModel!.displacement = displacementController.text.length >= 7
+                                  ? num.parse(double.parse(displacementController.text).toStringAsFixed(5)).toDouble()
+                                  : double.parse(displacementController.text);
                               commonProvider.addVesselRequestModel!.vesselSize =
-                                  double.parse(sizeController.text);
+                                  sizeController.text;
                               commonProvider.addVesselRequestModel!.capacity = 0;
                                 //  int.parse(capacityController.text);
                               commonProvider.addVesselRequestModel!.builtYear =
