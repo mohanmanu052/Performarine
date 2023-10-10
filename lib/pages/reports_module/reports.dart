@@ -35,7 +35,7 @@ class ReportsModule extends StatefulWidget {
   State<ReportsModule> createState() => _ReportsModuleState();
 }
 
-class _ReportsModuleState extends State<ReportsModule> {
+class _ReportsModuleState extends State<ReportsModule> with WidgetsBindingObserver{
   String page = "Reports_module";
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
       GlobalKey<SfCartesianChartState> dration_barchart_key= GlobalKey();
@@ -1120,6 +1120,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance?.addObserver(this);
 
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
@@ -1153,11 +1154,30 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
 
   @override
   void dispose() {
+        WidgetsBinding.instance?.removeObserver(this);
+
     // TODO: implement dispose
     super.dispose();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
+    // SystemChrome.setPreferredOrientations([
+    //   DeviceOrientation.portraitUp,
+    // ]);
+  }
+
+
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Handle app lifecycle changes here
+    if (state == AppLifecycleState.resumed) {
+      // App has resumed from the background
+      print("App resumed from background");
+    } else if (state == AppLifecycleState.paused) {
+      // App is going into the background
+      print("App going into the background");
+    }else if(state==AppLifecycleState.inactive){
+            print("App is in active");
+
+    }
   }
 
   @override

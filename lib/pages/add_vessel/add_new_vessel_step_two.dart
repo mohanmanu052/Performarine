@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:objectid/objectid.dart';
 import 'package:path_provider/path_provider.dart';
@@ -71,6 +72,9 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
   @override
   void initState() {
     super.initState();
+        SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
 
     setState(() {
       scaffoldKey = widget.scaffoldKey!;
@@ -91,6 +95,17 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
       }
     }
   }
+  @override
+  void dispose() {
+                                      SystemChrome.setPreferredOrientations([
+                          DeviceOrientation.portraitDown,
+                          DeviceOrientation.portraitUp,
+                        ]);
+
+    // TODO: implement dispose
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -476,6 +491,10 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
 
                                         CustomLogger().logWithFile(Level.info, "User Navigating to SuccessfullyAddedScreen -> $page");
 
+SystemChrome.setPreferredOrientations([
+                          DeviceOrientation.portraitDown,
+                          DeviceOrientation.portraitUp,
+                        ]);
                                         Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
@@ -502,6 +521,11 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                                       Utils.showSnackBar(context,
                                           scaffoldKey: scaffoldKey,
                                           message: "Vessel created successfully");
+                                          SystemChrome.setPreferredOrientations([
+                          DeviceOrientation.portraitDown,
+                          DeviceOrientation.portraitUp,
+                        ]);
+
                                       Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(

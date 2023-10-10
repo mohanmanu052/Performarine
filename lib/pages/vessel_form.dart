@@ -39,6 +39,10 @@ class _VesselFormPageState extends State<VesselFormPage> {
   @override
   void initState() {
     super.initState();
+            SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
     if (widget.vessel != null) {
       _nameController.text = widget.vessel!.name.toString();
       _modelController.text = widget.vessel!.model.toString();

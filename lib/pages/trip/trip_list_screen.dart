@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -115,6 +116,9 @@ class _TripListScreenState extends State<TripListScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
 
     future = _databaseService.getAllTripsByVesselId(widget.vesselId.toString());
   }

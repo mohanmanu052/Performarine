@@ -1,6 +1,7 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -119,6 +120,10 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
   void initState() {
     // TODO: implement initState
     super.initState();
+                SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
     setState(() {
       scaffoldKey = widget.scaffoldKey!;
     });

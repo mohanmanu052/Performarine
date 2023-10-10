@@ -56,11 +56,15 @@ class BottomNavigation extends StatefulWidget {
   State<BottomNavigation> createState() => _BottomNavigationState();
 }
 
+
 class _BottomNavigationState extends State<BottomNavigation>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   final DatabaseService _databaseService = DatabaseService();
   ScreenshotController screen_shot_controller = ScreenshotController();
+
+
+
 
   var _bottomNavIndex = 0;
   bool isFloatBtnSelect = false,
@@ -205,6 +209,9 @@ class _BottomNavigationState extends State<BottomNavigation>
     //   DeviceOrientation.portraitUp
     // ]);
   }
+
+
+
 
   void captureScreenShot() async {
     final image = await screen_shot_controller.capture();
@@ -383,6 +390,7 @@ class _BottomNavigationState extends State<BottomNavigation>
                   key: scaffoldKey,
                   resizeToAvoidBottomInset: false,
                   drawer: CustomDrawer(
+                    bottomNavIndex:_bottomNavIndex ,
                     scaffoldKey: scaffoldKey,
                     orientation: orientation,
                   ),
@@ -421,7 +429,9 @@ class _BottomNavigationState extends State<BottomNavigation>
                           ? Container(
                               margin: EdgeInsets.only(right: 8),
                               child: IconButton(
-                                onPressed: () {
+                                onPressed: () async{
+                                                   await   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
                                   Navigator.pushAndRemoveUntil(
                                       context,
                                       MaterialPageRoute(
@@ -505,6 +515,7 @@ class _BottomNavigationState extends State<BottomNavigation>
                                                     MaterialPageRoute(
                                                         builder: (context) =>
                                                             StartTripRecordingScreen(
+                                                              bottomNavIndex: _bottomNavIndex,
                                                               // isLocationPermitted: isLocationPermitted,
                                                               // isBluetoothConnected: isBluetoothConnected,
                                                               calledFrom:
@@ -518,6 +529,7 @@ class _BottomNavigationState extends State<BottomNavigation>
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         StartTripRecordingScreen(
+                                                          bottomNavIndex: _bottomNavIndex,
                                                           // isLocationPermitted: isLocationPermitted,
                                                           // isBluetoothConnected: isBluetoothConnected,
                                                           calledFrom:
@@ -611,151 +623,156 @@ class _BottomNavigationState extends State<BottomNavigation>
         barrierDismissible: false,
         context: context,
         builder: (BuildContext dialogContext) {
-          return Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: StatefulBuilder(
-              builder: (ctx, setDialogState) {
-                return Container(
-                  height:orientation==Orientation.portrait? displayHeight(context) * 0.45:displayHeight(context) * 0.60,
-                  width:orientation==Orientation.portrait? MediaQuery.of(context).size.width:MediaQuery.of(context).size.width/2,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 8.0, right: 8.0, top: 15, bottom: 15),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: displayHeight(context) * 0.02,
-                        ),
-                        ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Container(
-                              //color: Color(0xfff2fffb),
-                              child: Image.asset(
-                                'assets/images/boat.gif',
-                                height: displayHeight(context) * 0.1,
-                                width: displayWidth(context),
-                                fit: BoxFit.contain,
+          return OrientationBuilder(
+            builder: (context,orientation) {
+              return Dialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: StatefulBuilder(
+                  builder: (ctx, setDialogState) {
+                    return Container(
+                      height:orientation==Orientation.portrait? displayHeight(context) * 0.45:displayHeight(context) * 0.60,
+                      width:orientation==Orientation.portrait? MediaQuery.of(context).size.width:MediaQuery.of(context).size.width/2,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 8.0, right: 8.0, top: 15, bottom: 15),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: displayHeight(context) * 0.02,
+                            ),
+                            ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Container(
+                                  //color: Color(0xfff2fffb),
+                                  child: Image.asset(
+                                    'assets/images/boat.gif',
+                                    height: displayHeight(context) * 0.1,
+                                    width: displayWidth(context),
+                                    fit: BoxFit.contain,
+                                  ),
+                                )),
+                            SizedBox(
+                              height: displayHeight(context) * 0.02,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0, right: 8),
+                              child: Column(
+                                children: [
+                                  commonText(
+                                      context: context,
+                                      text:
+                                          'There is a trip in progress. Please end the trip and come back here',
+                                      fontWeight: FontWeight.w500,
+                                      textColor: Colors.black87,
+                                      textSize:orientation==Orientation.portrait? displayWidth(context) * 0.038:displayWidth(context) * 0.020,
+                                      textAlign: TextAlign.center),
+                                ],
                               ),
-                            )),
-                        SizedBox(
-                          height: displayHeight(context) * 0.02,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0, right: 8),
-                          child: Column(
-                            children: [
-                              commonText(
-                                  context: context,
-                                  text:
-                                      'There is a trip in progress. Please end the trip and come back here',
-                                  fontWeight: FontWeight.w500,
-                                  textColor: Colors.black87,
-                                  textSize:orientation==Orientation.portrait? displayWidth(context) * 0.038:displayWidth(context) * 0.020,
-                                  textAlign: TextAlign.center),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: displayHeight(context) * 0.012,
-                        ),
-                        Center(
-                          child: Column(
-                            children: [
-                              Container(
-                                margin: EdgeInsets.only(
-                                  top: 8.0,
-                                ),
-                                child: Center(
-                                  child: CommonButtons.getAcceptButton(
-                                      'Go to trip', context, blueColor,
+                            ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.012,
+                            ),
+                            Center(
+                              child: Column(
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.only(
+                                      top: 8.0,
+                                    ),
+                                    child: Center(
+                                      child: CommonButtons.getAcceptButton(
+                                          'Go to trip', context, blueColor,
 
-                                      
-                                      () async {
-                                    Utils.customPrint("Click on GO TO TRIP 1");
+                                          
+                                          () async {
+                                        Utils.customPrint("Click on GO TO TRIP 1");
 
-                                    List<String>? tripData = sharedPreferences!
-                                        .getStringList('trip_data');
-                                    bool? runningTrip = sharedPreferences!
-                                        .getBool("trip_started");
+                                        List<String>? tripData = sharedPreferences!
+                                            .getStringList('trip_data');
+                                        bool? runningTrip = sharedPreferences!
+                                            .getBool("trip_started");
 
-                                    String tripId = '', vesselName = '';
-                                    if (tripData != null) {
-                                      tripId = tripData[0];
-                                      vesselName = tripData[1];
-                                    }
+                                        String tripId = '', vesselName = '';
+                                        if (tripData != null) {
+                                          tripId = tripData[0];
+                                          vesselName = tripData[1];
+                                        }
 
-                                    Utils.customPrint("Click on GO TO TRIP 2");
-                                    if (mounted) {
-                                      Navigator.of(dialogContext).pop();
+                                        Utils.customPrint("Click on GO TO TRIP 2");
+                                        if (mounted) {
+                                          Navigator.of(dialogContext).pop();
 
-                                      Navigator.push(
-                                        dialogContext,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                TripRecordingScreen(
-                                                    tripId: tripId,
-                                                    vesselId: tripData![1],
-                                                    vesselName: tripData[2],
-                                                    tripIsRunningOrNot:
-                                                        runningTrip)),
-                                      );
-                                    }
+                                          Navigator.push(
+                                            dialogContext,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    TripRecordingScreen(
+                                                      bottomNavIndex: _bottomNavIndex,
+                                                        tripId: tripId,
+                                                        vesselId: tripData![1],
+                                                        vesselName: tripData[2],
+                                                        tripIsRunningOrNot:
+                                                            runningTrip)),
+                                          );
+                                        }
 
-                                    Utils.customPrint("Click on GO TO TRIP 3");
-                                  },
-                                   orientation==Orientation.portrait?   displayWidth(context) * 0.65:displayWidth(context) * 0.25,
-                                    orientation==Orientation.portrait?  displayHeight(context) * 0.054:displayHeight(context) * 0.090,
-                                      primaryColor,
-                                      Colors.white,
-                               orientation==    Orientation.portrait?    displayHeight(context) * 0.02:displayHeight(context) * 0.03,
-                                      blueColor,
-                                      '',
-                                      fontFamily: outfit,
-                                      fontWeight: FontWeight.w500),
-                                ),
+                                        Utils.customPrint("Click on GO TO TRIP 3");
+                                      },
+                                       orientation==Orientation.portrait?   displayWidth(context) * 0.65:displayWidth(context) * 0.25,
+                                        orientation==Orientation.portrait?  displayHeight(context) * 0.054:displayHeight(context) * 0.090,
+                                          primaryColor,
+                                          Colors.white,
+                                   orientation==    Orientation.portrait?    displayHeight(context) * 0.02:displayHeight(context) * 0.03,
+                                          blueColor,
+                                          '',
+                                          fontFamily: outfit,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 8.0,
+                                  ),
+                                  Center(
+                                    child: CommonButtons.getAcceptButton(
+                                        'Ok go back', context, Colors.transparent,
+                                        () {
+                                      if (mounted) {
+                                        //  Navigator.of(context).pop();
+                                        Navigator.of(dialogContext,
+                                                rootNavigator: true)
+                                            .pop();
+                                      }
+                                    },
+                                      orientation==    Orientation.portrait?     displayWidth(context) * 0.65:displayWidth(context) * 0.80,
+                                      orientation==    Orientation.portrait?  displayHeight(context) * 0.054:displayHeight(context) * 0.070,
+                                        primaryColor,
+                                        Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.white
+                                            : blueColor,
+                                   orientation==    Orientation.portrait?       displayHeight(context) * 0.018:displayHeight(context) * 0.025,
+                                        Colors.white,
+                                        '',
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ],
                               ),
-                              SizedBox(
-                                height: 8.0,
-                              ),
-                              Center(
-                                child: CommonButtons.getAcceptButton(
-                                    'Ok go back', context, Colors.transparent,
-                                    () {
-                                  if (mounted) {
-                                    //  Navigator.of(context).pop();
-                                    Navigator.of(dialogContext,
-                                            rootNavigator: true)
-                                        .pop();
-                                  }
-                                },
-                                  orientation==    Orientation.portrait?     displayWidth(context) * 0.65:displayWidth(context) * 0.80,
-                                  orientation==    Orientation.portrait?  displayHeight(context) * 0.054:displayHeight(context) * 0.070,
-                                    primaryColor,
-                                    Theme.of(context).brightness ==
-                                            Brightness.dark
-                                        ? Colors.white
-                                        : blueColor,
-                               orientation==    Orientation.portrait?       displayHeight(context) * 0.018:displayHeight(context) * 0.025,
-                                    Colors.white,
-                                    '',
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ],
-                          ),
+                            ),
+                            SizedBox(
+                              height:orientation==    Orientation.portrait?    displayHeight(context) * 0.01:0,
+                            ),
+                          ],
                         ),
-                        SizedBox(
-                          height:orientation==    Orientation.portrait?    displayHeight(context) * 0.01:0,
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
+                      ),
+                    );
+                  },
+                ),
+              );
+            }
           );
         });
   }
@@ -1255,6 +1272,8 @@ class _BottomNavigationState extends State<BottomNavigation>
                                               builder: (dialogContext) =>
                                                   AddNewVesselPage(
                                                     calledFrom: 'bottomNav',
+                                                    bottomNavIndex:_bottomNavIndex ,
+
                                                   )));
                                     }
                                   },

@@ -6,6 +6,7 @@ import 'package:background_locator_2/settings/android_settings.dart';
 import 'package:background_locator_2/settings/ios_settings.dart';
 import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:performarine/analytics/end_trip.dart';
@@ -65,6 +66,9 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
 
     commonProvider = context.read<CommonProvider>();
 
@@ -92,6 +96,10 @@ class _MapScreenState extends State<MapScreen> {
       }
     }
   }
+
+
+
+
 
 
   getRealTimeTripDetails() async {
@@ -130,6 +138,9 @@ class _MapScreenState extends State<MapScreen> {
       }
     });
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -364,6 +375,14 @@ class _MapScreenState extends State<MapScreen> {
                                         onTap: () async
                                         {
 
+print('the stop Trip is clickedd-------------111');
+
+                                                                               await       SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
+
+
                                           Utils.customPrint(
                                               "END TRIP CURRENT TIME ${DateTime.now()}");
 
@@ -397,7 +416,9 @@ class _MapScreenState extends State<MapScreen> {
                                                         Navigator.pushAndRemoveUntil(
                                                             context,
                                                             MaterialPageRoute(builder: (context) => BottomNavigation()),
-                                                            ModalRoute.withName(""));
+                                                            ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,])
+      );;
                                                       }
                                                       else if(widget.calledFrom == 'VesselSingleView')
                                                       {
@@ -410,14 +431,18 @@ class _MapScreenState extends State<MapScreen> {
                                                             MaterialPageRoute(builder: (context) => BottomNavigation(
                                                               tabIndex: commonProvider.bottomNavIndex,
                                                             )),
-                                                            ModalRoute.withName(""));
+                                                            ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,])
+      );;
                                                       }
                                                       else
                                                         {
                                                           Navigator.pushAndRemoveUntil(
                                                               context,
                                                               MaterialPageRoute(builder: (context) => BottomNavigation()),
-                                                              ModalRoute.withName(""));
+                                                              ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,])
+      );;
                                                         }
                                                     }
                                                   });
@@ -431,6 +456,7 @@ class _MapScreenState extends State<MapScreen> {
                                           {
                                             Utils().showEndTripDialog(
                                                 context, () async {
+
 
                                               endTrip();
 
@@ -575,6 +601,10 @@ class _MapScreenState extends State<MapScreen> {
         IOStripDistance:
         tripDistance,
         onEnded: () async {
+                                     await       SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
 
           if(mounted)
           {
@@ -611,7 +641,9 @@ class _MapScreenState extends State<MapScreen> {
               Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => BottomNavigation()),
-                  ModalRoute.withName(""));
+                  ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,])
+      );;
             }
             else if(widget.calledFrom == 'VesselSingleView')
             {
@@ -624,14 +656,18 @@ class _MapScreenState extends State<MapScreen> {
                   MaterialPageRoute(builder: (context) => BottomNavigation(
                     tabIndex: commonProvider.bottomNavIndex,
                   )),
-                  ModalRoute.withName(""));
+                  ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,])
+      );;
             }
             else
             {
               Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => BottomNavigation()),
-                  ModalRoute.withName(""));
+                  ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,])
+      );;
             }
           }
         });
@@ -656,6 +692,10 @@ class _MapScreenState extends State<MapScreen> {
     if (durationTimer != null) {
       durationTimer!.cancel();
     }
+        SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
   }
 
   showEndTripDialogBox(BuildContext context) {
@@ -742,6 +782,10 @@ class _MapScreenState extends State<MapScreen> {
                                       : CommonButtons.getAcceptButton(
                                       'End Trip', context, Colors.transparent,
                                           () async {
+                                     await       SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
 
 
                                         setState(() {
@@ -823,7 +867,9 @@ class _MapScreenState extends State<MapScreen> {
                                                             Navigator.pushAndRemoveUntil(
                                                                 context,
                                                                 MaterialPageRoute(builder: (context) => BottomNavigation()),
-                                                                ModalRoute.withName(""));
+                                                                ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,])
+      );;
                                                           }
                                                           else if(widget.calledFrom == 'VesselSingleView')
                                                           {
@@ -836,14 +882,18 @@ class _MapScreenState extends State<MapScreen> {
                                                                 MaterialPageRoute(builder: (context) => BottomNavigation(
                                                                   tabIndex: commonProvider.bottomNavIndex,
                                                                 )),
-                                                                ModalRoute.withName(""));
+                                                                ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,])
+      );;
                                                           }
                                                           else
                                                           {
                                                             Navigator.pushAndRemoveUntil(
                                                                 context,
                                                                 MaterialPageRoute(builder: (context) => BottomNavigation()),
-                                                                ModalRoute.withName(""));
+                                                                ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,])
+      );;
                                                           }
                                                         }
                                                       });
@@ -886,6 +936,11 @@ class _MapScreenState extends State<MapScreen> {
                                               IOStripDistance:
                                               tripDistance,
                                               onEnded: () async {
+                                                                                     await       SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
+
                                                 setState(() {
                                                   tripIsRunning =
                                                   false;
@@ -922,7 +977,9 @@ class _MapScreenState extends State<MapScreen> {
                                                   Navigator.pushAndRemoveUntil(
                                                       context,
                                                       MaterialPageRoute(builder: (context) => BottomNavigation()),
-                                                      ModalRoute.withName(""));
+                                                      ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,])
+      );;
                                                 }
                                                 else if(widget.calledFrom == 'VesselSingleView')
                                                 {
@@ -935,14 +992,18 @@ class _MapScreenState extends State<MapScreen> {
                                                       MaterialPageRoute(builder: (context) => BottomNavigation(
                                                         tabIndex: commonProvider.bottomNavIndex,
                                                       )),
-                                                      ModalRoute.withName(""));
+                                                      ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,])
+      );
                                                 }
                                                 else
                                                 {
                                                   Navigator.pushAndRemoveUntil(
                                                       context,
                                                       MaterialPageRoute(builder: (context) => BottomNavigation()),
-                                                      ModalRoute.withName(""));
+                                                      ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,])
+      );
                                                 }
 
 

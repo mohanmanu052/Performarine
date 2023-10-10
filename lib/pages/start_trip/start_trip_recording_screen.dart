@@ -59,8 +59,10 @@ class StartTripRecordingScreen extends StatefulWidget {
   //final bool? isLocationPermitted;
   //final bool? isBluetoothConnected;
   final String calledFrom;
+  final int? bottomNavIndex;
   const StartTripRecordingScreen(
       {super.key,
+      this.bottomNavIndex,
         /*this.isLocationPermitted = false, this.isBluetoothConnected = false,*/ this.calledFrom =
       ''});
 
@@ -156,6 +158,9 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
   void dispose() {
     // TODO: implement dispose
     super.dispose();
+    if(widget.bottomNavIndex==1){
+
+    }
     popupAnimationController.dispose();
     WidgetsBinding.instance.removeObserver(this);
 
@@ -180,501 +185,475 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
     return Screenshot(
       controller: controller,
-      child: SafeArea(
-        child: Scaffold(
-          backgroundColor: backgroundColor,
-          key: scaffoldKey,
-          appBar: AppBar(
+      child: WillPopScope(
+        onWillPop: ()async{
+          if(commonProvider.bottomNavIndex==1){
+          SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+            DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+
+    ]);
+
+          }
+
+
+          return true;
+
+        },
+        child: SafeArea(
+          child: Scaffold(
             backgroundColor: backgroundColor,
-            elevation: 0,
-            leading: IconButton(
-              onPressed: () async {
-                Navigator.of(context).pop(true);
-              },
-              icon: const Icon(Icons.arrow_back),
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white
-                  : Colors.black,
-            ),
-            title: commonText(
-              context: context,
-              text: 'Start Trip Recording',
-              fontWeight: FontWeight.w600,
-              textColor: Colors.black87,
-              textSize: displayWidth(context) * 0.045,
-            ),
-            actions: [
-              Container(
-                margin: EdgeInsets.only(right: 8),
-                child: IconButton(
-                  onPressed: () {
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => BottomNavigation()),
-                        ModalRoute.withName(""));
-                  },
-                  icon:
-                  Image.asset('assets/icons/performarine_appbar_icon.png'),
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white
-                      : Colors.black,
-                ),
+            key: scaffoldKey,
+            appBar: AppBar(
+              backgroundColor: backgroundColor,
+              elevation: 0,
+              leading: IconButton(
+                onPressed: () async {
+          if(commonProvider.bottomNavIndex==1){
+          SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+            DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+
+    ]);
+
+          }
+
+                  Navigator.of(context).pop(true);
+                },
+                icon: const Icon(Icons.arrow_back),
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
               ),
-            ],
-          ),
-          body: SingleChildScrollView(
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 17, vertical: 17),
-              child: Column(
-                children: [
-                  Container(
-                    height: displayHeight(context) * 0.4,
-                    width: displayWidth(context),
-                    child: Card(
-                      elevation: 3.0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(30),
-                        child: FlutterMap(
-                          options: MapOptions(
-                            center: LatLng(56.704173, 11.543808),
-                            minZoom: 12,
-                            maxZoom: 14,
-                            bounds: LatLngBounds(
-                              LatLng(56.7378, 11.6644),
-                              LatLng(56.6877, 11.5089),
-                            ),
-                          ),
-                          children: [
-                            TileLayer(
-                              tileProvider: AssetTileProvider(),
+              title: commonText(
+                context: context,
+                text: 'Start Trip Recording',
+                fontWeight: FontWeight.w600,
+                textColor: Colors.black87,
+                textSize: displayWidth(context) * 0.045,
+              ),
+              actions: [
+                Container(
+                  margin: EdgeInsets.only(right: 8),
+                  child: IconButton(
+                    onPressed: ()async {
+                            await    SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,]);
+      
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BottomNavigation()),
+                          ModalRoute.withName("")).then((value) =>        SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+          ]));
+                },
+                    icon:
+                    Image.asset('assets/icons/performarine_appbar_icon.png'),
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black,
+                  ),
+                ),
+              ],
+            ),
+            body: SingleChildScrollView(
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 17, vertical: 17),
+                child: Column(
+                  children: [
+                    Container(
+                      height: displayHeight(context) * 0.4,
+                      width: displayWidth(context),
+                      child: Card(
+                        elevation: 3.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(30),
+                          child: FlutterMap(
+                            options: MapOptions(
+                              center: LatLng(56.704173, 11.543808),
+                              minZoom: 12,
                               maxZoom: 14,
-                              urlTemplate:
-                              'assets/map/anholt_osmbright/{z}/{x}/{y}.png',
+                              bounds: LatLngBounds(
+                                LatLng(56.7378, 11.6644),
+                                LatLng(56.6877, 11.5089),
+                              ),
                             ),
-                          ],
+                            children: [
+                              TileLayer(
+                                tileProvider: AssetTileProvider(),
+                                maxZoom: 14,
+                                urlTemplate:
+                                'assets/map/anholt_osmbright/{z}/{x}/{y}.png',
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  isVesselDataLoading
-                      ? Container(
-                    height: displayHeight(context) * 0.1,
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                            blueColor),
+                    isVesselDataLoading
+                        ? Container(
+                      height: displayHeight(context) * 0.1,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              blueColor),
+                        ),
                       ),
-                    ),
-                  )
-                      : Container(
-                    margin: EdgeInsets.only(top: 20),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: Color(0xffECF3F9)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              commonText(
-                                context: context,
-                                text: 'Pre Departure Checklist',
-                                fontWeight: FontWeight.w600,
-                                textColor: Colors.black,
-                                textSize: displayWidth(context) * 0.038,
-                              ),
-                              SizedBox(
-                                height: displayHeight(context) * 0.008,
-                              ),
-                              InkWell(
-                                onTap: (){
-                                  if(vesselData.isEmpty)
-                                    {
-                                      addNewVesselDialogBox(context);
-                                    }
-                                },
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButton2<VesselDropdownItem>(
-                                    isExpanded: true,
-                                    hint: Text(
-                                      'Select Vessel',
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .brightness ==
-                                              Brightness.dark
-                                              ? "Select Vessel" ==
-                                              'User SubRole'
-                                              ? Colors.black54
-                                              : Colors.white
-                                              : Colors.black54,
-                                          fontSize:
-                                          displayWidth(context) * 0.032,
-                                          fontFamily: outfit,
-                                          fontWeight: FontWeight.w400),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    value: selectedValue,
-                                    items: vesselData.map((item) {
-                                      return DropdownMenuItem<
-                                          VesselDropdownItem>(
-                                        value: item,
-                                        child: Text(
-                                          item.name!,
-                                          style: TextStyle(
-                                              fontSize:
-                                              displayWidth(context) *
-                                                  0.032,
-                                              color: Theme.of(context)
-                                                  .brightness ==
-                                                  Brightness.dark
-                                                  ? "Select Vessel" ==
-                                                  'User SubRole'
-                                                  ? Colors.black
-                                                  : Colors.white
-                                                  : Colors.black,
-                                              fontWeight: FontWeight.w500),
-                                          overflow: TextOverflow.ellipsis,
+                    )
+                        : Container(
+                      margin: EdgeInsets.only(top: 20),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: Color(0xffECF3F9)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                commonText(
+                                  context: context,
+                                  text: 'Pre Departure Checklist',
+                                  fontWeight: FontWeight.w600,
+                                  textColor: Colors.black,
+                                  textSize: displayWidth(context) * 0.038,
+                                ),
+                                SizedBox(
+                                  height: displayHeight(context) * 0.008,
+                                ),
+                                InkWell(
+                                  onTap: (){
+                                    if(vesselData.isEmpty)
+                                      {
+                                        addNewVesselDialogBox(context);
+                                      }
+                                  },
+                                  child: DropdownButtonHideUnderline(
+                                    child: DropdownButton2<VesselDropdownItem>(
+                                      isExpanded: true,
+                                      hint: Text(
+                                        'Select Vessel',
+                                        style: TextStyle(
+                                            color: Theme.of(context)
+                                                .brightness ==
+                                                Brightness.dark
+                                                ? "Select Vessel" ==
+                                                'User SubRole'
+                                                ? Colors.black54
+                                                : Colors.white
+                                                : Colors.black54,
+                                            fontSize:
+                                            displayWidth(context) * 0.032,
+                                            fontFamily: outfit,
+                                            fontWeight: FontWeight.w400),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      value: selectedValue,
+                                      items: vesselData.map((item) {
+                                        return DropdownMenuItem<
+                                            VesselDropdownItem>(
+                                          value: item,
+                                          child: Text(
+                                            item.name!,
+                                            style: TextStyle(
+                                                fontSize:
+                                                displayWidth(context) *
+                                                    0.032,
+                                                color: Theme.of(context)
+                                                    .brightness ==
+                                                    Brightness.dark
+                                                    ? "Select Vessel" ==
+                                                    'User SubRole'
+                                                    ? Colors.black
+                                                    : Colors.white
+                                                    : Colors.black,
+                                                fontWeight: FontWeight.w500),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        );
+                                      }).toList(),
+                                      onChanged: (item) {
+                                        Utils.customPrint(
+                                            "id is: ${item?.id} ");
+                                        CustomLogger().logWithFile(Level.info,
+                                            "id is: ${item?.id}-> $page");
+                                        setState(() {
+                                          selectedValue = item;
+                                          vesselId = item!.id;
+                                          selectedVesselName = item.name;
+                                        });
+                                      },
+                                      buttonStyleData: ButtonStyleData(
+                                        height: displayHeight(context) * 0.06,
+                                        width: displayWidth(context) * 0.9,
+                                        padding: EdgeInsets.only(
+                                            left: 14, right: 14),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                          BorderRadius.circular(14),
+                                          border: Border.all(
+                                            color: Colors.transparent,
+                                          ),
+                                          color: Color(0xffE6E9F0),
                                         ),
-                                      );
-                                    }).toList(),
-                                    onChanged: (item) {
-                                      Utils.customPrint(
-                                          "id is: ${item?.id} ");
-                                      CustomLogger().logWithFile(Level.info,
-                                          "id is: ${item?.id}-> $page");
-                                      setState(() {
-                                        selectedValue = item;
-                                        vesselId = item!.id;
-                                        selectedVesselName = item.name;
-                                      });
-                                    },
-                                    buttonStyleData: ButtonStyleData(
-                                      height: displayHeight(context) * 0.06,
-                                      width: displayWidth(context) * 0.9,
-                                      padding: EdgeInsets.only(
-                                          left: 14, right: 14),
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                        BorderRadius.circular(14),
-                                        border: Border.all(
-                                          color: Colors.transparent,
+                                      ),
+                                      iconStyleData: IconStyleData(
+                                        icon: Icon(
+                                          Icons.keyboard_arrow_down,
                                         ),
-                                        color: Color(0xffE6E9F0),
+                                        iconSize:
+                                        displayHeight(context) * 0.03,
+                                        iconEnabledColor: Colors.black,
+                                        iconDisabledColor: Colors.grey,
                                       ),
-                                    ),
-                                    iconStyleData: IconStyleData(
-                                      icon: Icon(
-                                        Icons.keyboard_arrow_down,
+                                      dropdownStyleData: DropdownStyleData(
+                                        maxHeight:
+                                        displayHeight(context) * 0.25,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                          BorderRadius.circular(14),
+                                          // color: backgroundColor,
+                                        ),
+                                        offset: const Offset(0, 0),
+                                        scrollbarTheme: ScrollbarThemeData(
+                                          radius: const Radius.circular(20),
+                                          thickness: MaterialStateProperty
+                                              .all<double>(6),
+                                          thumbVisibility:
+                                          MaterialStateProperty.all<bool>(
+                                              true),
+                                        ),
                                       ),
-                                      iconSize:
-                                      displayHeight(context) * 0.03,
-                                      iconEnabledColor: Colors.black,
-                                      iconDisabledColor: Colors.grey,
-                                    ),
-                                    dropdownStyleData: DropdownStyleData(
-                                      maxHeight:
-                                      displayHeight(context) * 0.25,
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                        BorderRadius.circular(14),
-                                        // color: backgroundColor,
+                                      menuItemStyleData:
+                                      const MenuItemStyleData(
+                                        padding: EdgeInsets.only(
+                                            left: 18, right: 18, top: 8, bottom: 8),
                                       ),
-                                      offset: const Offset(0, 0),
-                                      scrollbarTheme: ScrollbarThemeData(
-                                        radius: const Radius.circular(20),
-                                        thickness: MaterialStateProperty
-                                            .all<double>(6),
-                                        thumbVisibility:
-                                        MaterialStateProperty.all<bool>(
-                                            true),
-                                      ),
-                                    ),
-                                    menuItemStyleData:
-                                    const MenuItemStyleData(
-                                      padding: EdgeInsets.only(
-                                          left: 18, right: 18, top: 8, bottom: 8),
                                     ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(
-                                height: displayHeight(context) * 0.02,
-                              ),
-                              commonText(
-                                context: context,
-                                text: 'Number of Passengers',
-                                fontWeight: FontWeight.w500,
-                                textColor: Colors.black,
-                                textSize: displayWidth(context) * 0.034,
-                              ),
-                              SizedBox(
-                                height: displayHeight(context) * 0.008,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Stack(
-                                    children: [
-                                      Container(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: 12),
-                                        child: Container(
-                                          height: displayHeight(context) *
-                                              0.06,
-                                          width: !isSliderDisable
-                                              ? displayWidth(context) *
-                                              0.78
-                                              : displayWidth(context) *
-                                              0.5,
-                                          child: FlutterSlider(
-                                            values: [
-                                             // 10
-                                              numberOfPassengers
-                                                  .toDouble()
-                                            ],
-                                            max: sliderMinVal,
-                                            min: 1,
-                                            trackBar: FlutterSliderTrackBar(
-                                                activeTrackBarHeight: 4.5,
-                                                inactiveTrackBarHeight:
-                                                4.5,
-                                                activeTrackBar:
-                                                BoxDecoration(
-                                                    color: Color(
-                                                        0xff2663DB))),
-                                            tooltip: FlutterSliderTooltip(
-                                                custom: (value) {
-                                                  debugPrint("NUMBER OF PASS 1 $value");
-                                                  String data = value.toInt().toString();
-                                                  numberOfPassengers = value.toInt();
-                                          return Container(
-                                                    padding: EdgeInsets.symmetric(
-                                                        horizontal: 6,
-                                                        vertical:
-                                                        displayHeight(
-                                                            context) *
-                                                            0.02),
-                                                    child: commonText(
-                                                      context: context,
-                                                      text:
-                                                      '$data',
-                                                      fontWeight:
-                                                      FontWeight.w500,
-                                                      textColor:
-                                                      Colors.black,
-                                                      textSize:
-                                                      displayWidth(
-                                                          context) *
-                                                          0.028,
-                                                    ),
-                                                  );
-                                                },
-                                                alwaysShowTooltip: true,
-                                                positionOffset:
-                                                FlutterSliderTooltipPositionOffset(
-                                                    top: -15)),
-                                            handlerWidth: 15,
-                                            handlerHeight: 15,
-                                            // onDragStarted: (int value,dynamic val,dynamic val1){
-                                            //   FocusScope.of(context).requestFocus(FocusNode());
-                                            // },
-                                            onDragging: (int value,dynamic val,dynamic val1){
-                                              // setState(() {
-                                              //   isSliderDisable = false;
-                                              // });
-                                             //val != 11 ? passengerValue = val.toInt() : val;
-                                              passengerValue = val == 11 ? (val.toInt() - 1) : val.toInt();
-                                              print("On dragging: value: $value, val: $val, val1: $val1");
-                                              numberOfPassengers = passengerValue;
-                                              textEditingController.text = (passengerValue).toString();
-
-                                              if(val == sliderMinVal){
-                                                if(mounted){
-
-                                                  setState(() {
-                                                    isCheck = true;
-                                                    isSliderDisable =
-                                                    true;
-                                                    popupAnimationController
-                                                        .forward()
-                                                        .then((value) {
-                                                      _focusNode
-                                                          .requestFocus();
-
-                                                    }
-
-                                                    );
-                                                  });
-                                                }
-                                              }
-                                              textEditingController.selection = TextSelection(baseOffset: 0, extentOffset: textEditingController.value.text.length);
-                                            },
-                                            handler: FlutterSliderHandler(
-                                                child: Container(
-                                                  height: 15,
-                                                  width: 15,
-                                                  decoration: BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                      color:
-                                                      Color(0xff2663DB)),
-                                                )),
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        width: isSliderDisable
-                                            ? displayWidth(context) * 0.5
-                                            : displayWidth(context) * 0.82,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment
-                                              .spaceBetween,
-                                          children: [
-                                            Container(
-                                              padding:
-                                              EdgeInsets.symmetric(
-                                                  horizontal: 4,
-                                                  vertical: 5),
-                                              child: commonText(
-                                                context: context,
-                                                text: '01',
-                                                fontWeight:
-                                                FontWeight.w500,
-                                                textColor: Colors.black,
-                                                textSize: displayWidth(
-                                                    context) *
-                                                    0.028,
-                                              ),
-                                            ),
-                                            Container(
-                                              padding:
-                                              EdgeInsets.symmetric(
-                                                  horizontal: 4,
-                                                  vertical: 0),
-                                              child: commonText(
-                                                context: context,
-                                                text: sliderCount,
-                                                fontWeight:
-                                                FontWeight.w500,
-                                                textColor: Colors.black,
-                                                textSize: displayWidth(
-                                                    context) *
-                                                    0.028,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  isSliderDisable
-                                      ? textFieldPopUp()
-                                      : Container(
-                                    width: 0,
-                                    height: 0,
-                                  )
-                                ],
-                              ),
-                              SizedBox(
-                                height: displayHeight(context) * 0.02,
-                              ),
-                              Container(
-                                margin:
-                                EdgeInsets.symmetric(horizontal: 20),
-                                child: Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.start,
+                                SizedBox(
+                                  height: displayHeight(context) * 0.02,
+                                ),
+                                commonText(
+                                  context: context,
+                                  text: 'Number of Passengers',
+                                  fontWeight: FontWeight.w500,
+                                  textColor: Colors.black,
+                                  textSize: displayWidth(context) * 0.034,
+                                ),
+                                SizedBox(
+                                  height: displayHeight(context) * 0.008,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
                                   children: [
-                                    commonText(
-                                      context: context,
-                                      text: 'Sensor Information',
-                                      fontWeight: FontWeight.w500,
-                                      textColor: Colors.black,
-                                      textSize:
-                                      displayWidth(context) * 0.034,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 8.0, right: 8.0, top: 10),
-                                      child: Column(
-                                        children: [
-                                          Row(
+                                    Stack(
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 12),
+                                          child: Container(
+                                            height: displayHeight(context) *
+                                                0.06,
+                                            width: !isSliderDisable
+                                                ? displayWidth(context) *
+                                                0.78
+                                                : displayWidth(context) *
+                                                0.5,
+                                            child: FlutterSlider(
+                                              values: [
+                                               // 10
+                                                numberOfPassengers
+                                                    .toDouble()
+                                              ],
+                                              max: sliderMinVal,
+                                              min: 1,
+                                              trackBar: FlutterSliderTrackBar(
+                                                  activeTrackBarHeight: 4.5,
+                                                  inactiveTrackBarHeight:
+                                                  4.5,
+                                                  activeTrackBar:
+                                                  BoxDecoration(
+                                                      color: Color(
+                                                          0xff2663DB))),
+                                              tooltip: FlutterSliderTooltip(
+                                                  custom: (value) {
+                                                    debugPrint("NUMBER OF PASS 1 $value");
+                                                    String data = value.toInt().toString();
+                                                    numberOfPassengers = value.toInt();
+                                            return Container(
+                                                      padding: EdgeInsets.symmetric(
+                                                          horizontal: 6,
+                                                          vertical:
+                                                          displayHeight(
+                                                              context) *
+                                                              0.02),
+                                                      child: commonText(
+                                                        context: context,
+                                                        text:
+                                                        '$data',
+                                                        fontWeight:
+                                                        FontWeight.w500,
+                                                        textColor:
+                                                        Colors.black,
+                                                        textSize:
+                                                        displayWidth(
+                                                            context) *
+                                                            0.028,
+                                                      ),
+                                                    );
+                                                  },
+                                                  alwaysShowTooltip: true,
+                                                  positionOffset:
+                                                  FlutterSliderTooltipPositionOffset(
+                                                      top: -15)),
+                                              handlerWidth: 15,
+                                              handlerHeight: 15,
+                                              // onDragStarted: (int value,dynamic val,dynamic val1){
+                                              //   FocusScope.of(context).requestFocus(FocusNode());
+                                              // },
+                                              onDragging: (int value,dynamic val,dynamic val1){
+                                                // setState(() {
+                                                //   isSliderDisable = false;
+                                                // });
+                                               //val != 11 ? passengerValue = val.toInt() : val;
+                                                passengerValue = val == 11 ? (val.toInt() - 1) : val.toInt();
+                                                print("On dragging: value: $value, val: $val, val1: $val1");
+                                                numberOfPassengers = passengerValue;
+                                                textEditingController.text = (passengerValue).toString();
+      
+                                                if(val == sliderMinVal){
+                                                  if(mounted){
+      
+                                                    setState(() {
+                                                      isCheck = true;
+                                                      isSliderDisable =
+                                                      true;
+                                                      popupAnimationController
+                                                          .forward()
+                                                          .then((value) {
+                                                        _focusNode
+                                                            .requestFocus();
+      
+                                                      }
+      
+                                                      );
+                                                    });
+                                                  }
+                                                }
+                                                textEditingController.selection = TextSelection(baseOffset: 0, extentOffset: textEditingController.value.text.length);
+                                              },
+                                              handler: FlutterSliderHandler(
+                                                  child: Container(
+                                                    height: 15,
+                                                    width: 15,
+                                                    decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        color:
+                                                        Color(0xff2663DB)),
+                                                  )),
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          width: isSliderDisable
+                                              ? displayWidth(context) * 0.5
+                                              : displayWidth(context) * 0.82,
+                                          child: Row(
                                             mainAxisAlignment:
                                             MainAxisAlignment
                                                 .spaceBetween,
                                             children: [
-                                              Row(
-                                                children: [
-                                                  Image.asset(
-                                                    'assets/icons/location.png',
-                                                    height: displayHeight(
-                                                        context) *
-                                                        0.04,
-                                                    width: displayWidth(
-                                                        context) *
-                                                        0.07,
-                                                  ),
-                                                  SizedBox(
-                                                    width: displayWidth(
-                                                        context) *
-                                                        0.04,
-                                                  ),
-                                                  commonText(
-                                                    context: context,
-                                                    text: 'GPS Signal',
-                                                    fontWeight:
-                                                    FontWeight.w400,
-                                                    textColor:
-                                                    Colors.black45,
-                                                    textSize:
-                                                    displayWidth(
-                                                        context) *
-                                                        0.034,
-                                                  ),
-                                                ],
+                                              Container(
+                                                padding:
+                                                EdgeInsets.symmetric(
+                                                    horizontal: 4,
+                                                    vertical: 5),
+                                                child: commonText(
+                                                  context: context,
+                                                  text: '01',
+                                                  fontWeight:
+                                                  FontWeight.w500,
+                                                  textColor: Colors.black,
+                                                  textSize: displayWidth(
+                                                      context) *
+                                                      0.028,
+                                                ),
                                               ),
-                                              commonText(
-                                                context: context,
-                                                text: isLocationPermitted
-                                                    ? 'OK'
-                                                    : 'No Connected',
-                                                fontWeight:
-                                                FontWeight.w500,
-                                                textColor:
-                                                isLocationPermitted
-                                                    ? Colors.green
-                                                    : Colors.grey,
-                                                textSize: displayWidth(
-                                                    context) *
-                                                    0.03,
+                                              Container(
+                                                padding:
+                                                EdgeInsets.symmetric(
+                                                    horizontal: 4,
+                                                    vertical: 0),
+                                                child: commonText(
+                                                  context: context,
+                                                  text: sliderCount,
+                                                  fontWeight:
+                                                  FontWeight.w500,
+                                                  textColor: Colors.black,
+                                                  textSize: displayWidth(
+                                                      context) *
+                                                      0.028,
+                                                ),
                                               ),
                                             ],
                                           ),
-                                          SizedBox(
-                                            height:
-                                            displayHeight(context) *
-                                                0.007,
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment
-                                                .spaceBetween,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Expanded(
-                                                child: Row(
+                                        ),
+                                      ],
+                                    ),
+                                    isSliderDisable
+                                        ? textFieldPopUp()
+                                        : Container(
+                                      width: 0,
+                                      height: 0,
+                                    )
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: displayHeight(context) * 0.02,
+                                ),
+                                Container(
+                                  margin:
+                                  EdgeInsets.symmetric(horizontal: 20),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      commonText(
+                                        context: context,
+                                        text: 'Sensor Information',
+                                        fontWeight: FontWeight.w500,
+                                        textColor: Colors.black,
+                                        textSize:
+                                        displayWidth(context) * 0.034,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 8.0, right: 8.0, top: 10),
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment
+                                                  .spaceBetween,
+                                              children: [
+                                                Row(
                                                   children: [
                                                     Image.asset(
-                                                      'assets/icons/lpr.png',
+                                                      'assets/icons/location.png',
                                                       height: displayHeight(
                                                           context) *
                                                           0.04,
@@ -687,95 +666,102 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                           context) *
                                                           0.04,
                                                     ),
-                                                    Expanded(
-                                                      child: InkWell(
-                                                        onTap: () async {
-
-                                                          bool
-                                                          isNDPermDenied =
-                                                          await Permission
-                                                              .bluetoothConnect
-                                                              .isPermanentlyDenied;
-
-                                                          if (isNDPermDenied) {
-                                                            showDialog(
-                                                                context:
-                                                                context,
-                                                                builder:
-                                                                    (BuildContext
-                                                                context) {
-                                                                  return LocationPermissionCustomDialog(
-                                                                    isLocationDialogBox:
-                                                                    false,
-                                                                    text:
-                                                                    'Allow nearby devices',
-                                                                    subText:
-                                                                    'Allow nearby devices to connect to the app',
-                                                                    buttonText:
-                                                                    'OK',
-                                                                    buttonOnTap:
-                                                                        () async {
-                                                                      Get.back();
-                                                                    },
-                                                                  );
-                                                                });
-                                                            return;
-                                                          } else {
-                                                            if (Platform
-                                                                .isIOS) {
-                                                              dynamic isBluetoothEnable = Platform
-                                                                  .isAndroid
-                                                                  ? await blueIsOn()
-                                                                  : await commonProvider.checkIfBluetoothIsEnabled(
-                                                                  scaffoldKey,
-                                                                      () {
-                                                                    showBluetoothDialog(context);
+                                                    commonText(
+                                                      context: context,
+                                                      text: 'GPS Signal',
+                                                      fontWeight:
+                                                      FontWeight.w400,
+                                                      textColor:
+                                                      Colors.black45,
+                                                      textSize:
+                                                      displayWidth(
+                                                          context) *
+                                                          0.034,
+                                                    ),
+                                                  ],
+                                                ),
+                                                commonText(
+                                                  context: context,
+                                                  text: isLocationPermitted
+                                                      ? 'OK'
+                                                      : 'No Connected',
+                                                  fontWeight:
+                                                  FontWeight.w500,
+                                                  textColor:
+                                                  isLocationPermitted
+                                                      ? Colors.green
+                                                      : Colors.grey,
+                                                  textSize: displayWidth(
+                                                      context) *
+                                                      0.03,
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height:
+                                              displayHeight(context) *
+                                                  0.007,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment
+                                                  .spaceBetween,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Expanded(
+                                                  child: Row(
+                                                    children: [
+                                                      Image.asset(
+                                                        'assets/icons/lpr.png',
+                                                        height: displayHeight(
+                                                            context) *
+                                                            0.04,
+                                                        width: displayWidth(
+                                                            context) *
+                                                            0.07,
+                                                      ),
+                                                      SizedBox(
+                                                        width: displayWidth(
+                                                            context) *
+                                                            0.04,
+                                                      ),
+                                                      Expanded(
+                                                        child: InkWell(
+                                                          onTap: () async {
+      
+                                                            bool
+                                                            isNDPermDenied =
+                                                            await Permission
+                                                                .bluetoothConnect
+                                                                .isPermanentlyDenied;
+      
+                                                            if (isNDPermDenied) {
+                                                              showDialog(
+                                                                  context:
+                                                                  context,
+                                                                  builder:
+                                                                      (BuildContext
+                                                                  context) {
+                                                                    return LocationPermissionCustomDialog(
+                                                                      isLocationDialogBox:
+                                                                      false,
+                                                                      text:
+                                                                      'Allow nearby devices',
+                                                                      subText:
+                                                                      'Allow nearby devices to connect to the app',
+                                                                      buttonText:
+                                                                      'OK',
+                                                                      buttonOnTap:
+                                                                          () async {
+                                                                        Get.back();
+                                                                      },
+                                                                    );
                                                                   });
-
-                                                              if (isBluetoothEnable !=
-                                                                  null) {
-                                                                if (isBluetoothEnable) {
-                                                                  if(Platform.isIOS){
-                                                                    showBluetoothListDialog(context);
-                                                                  }
-                                                                  else{
-                                                                    if (await Permission
-                                                                        .location
-                                                                        .isPermanentlyDenied) {
-                                                                      Utils.showSnackBar(
-                                                                          context,
-                                                                          scaffoldKey: scaffoldKey,
-                                                                          message: 'Location permissions are denied without permissions we are unable to start the trip');
-                                                                      Future.delayed(
-                                                                          Duration(seconds: 2),
-                                                                              () async {
-                                                                            await openAppSettings();
-                                                                          });
-                                                                    } else {
-                                                                      if (await Permission
-                                                                          .location
-                                                                          .isGranted) {
-                                                                        showBluetoothListDialog(context);
-                                                                      } else {
-                                                                        await Permission.location.request();
-                                                                      }
-                                                                    }
-                                                                  }
-
-                                                                } else {
-                                                                  showBluetoothDialog(
-                                                                      context);
-                                                                }
-                                                              }
+                                                              return;
                                                             } else {
-                                                              bool
-                                                              isNDPermittedOne =
-                                                              await Permission
-                                                                  .bluetoothConnect
-                                                                  .isGranted;
-
-                                                              if (isNDPermittedOne) {
-                                                                bool isBluetoothEnable = Platform
+                                                              if (Platform
+                                                                  .isIOS) {
+                                                                dynamic isBluetoothEnable = Platform
                                                                     .isAndroid
                                                                     ? await blueIsOn()
                                                                     : await commonProvider.checkIfBluetoothIsEnabled(
@@ -783,82 +769,9 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                                         () {
                                                                       showBluetoothDialog(context);
                                                                     });
-
-                                                                if (isBluetoothEnable) {
-                                                                  if(Platform.isIOS){
-                                                                    showBluetoothListDialog(context);
-                                                                  }
-                                                                  else{
-
-                                                                    if (await Permission
-                                                                        .location
-                                                                        .isPermanentlyDenied) {
-                                                                      Utils.showSnackBar(
-                                                                          context,
-                                                                          scaffoldKey: scaffoldKey,
-                                                                          message: 'Location permissions are denied without permissions we are unable to start the trip');
-                                                                      Future.delayed(
-                                                                          Duration(seconds: 2),
-                                                                              () async {
-                                                                            await openAppSettings();
-                                                                          });
-                                                                    } else {
-                                                                      print('kkkkkkk: ${await Permission
-                                                                          .location
-                                                                          .isGranted}');
-                                                                      print('kkkkkkk: ${await Permission
-                                                                          .location
-                                                                          .isDenied}');
-                                                                      print('kkkkkkk: ${await Permission
-                                                                          .location
-                                                                          .shouldShowRequestRationale}');
-                                                                      if (await Permission
-                                                                          .location
-                                                                          .isGranted) {
-                                                                        showBluetoothListDialog(context);
-                                                                      } else {
-                                                                        if(!(await Permission
-                                                                            .location
-                                                                            .shouldShowRequestRationale))
-                                                                          {
-                                                                            Utils.showSnackBar(
-                                                                                context,
-                                                                                scaffoldKey: scaffoldKey,
-                                                                                message: 'Location permissions are denied without permissions we are unable to start the trip');
-                                                                            Future.delayed(
-                                                                                Duration(seconds: 2),
-                                                                                    () async {
-                                                                                  await openAppSettings();
-                                                                                });
-                                                                          }
-                                                                        else
-                                                                          {
-                                                                            await Permission.location.request();
-                                                                          }
-
-                                                                      }
-                                                                    }
-                                                                  }
-                                                                } else {
-                                                                  showBluetoothDialog(
-                                                                      context);
-                                                                }
-                                                              } else {
-                                                                await Permission
-                                                                    .bluetoothConnect
-                                                                    .request();
-                                                                bool isNDPermitted = await Permission
-                                                                    .bluetoothConnect
-                                                                    .isGranted;
-                                                                if (isNDPermitted) {
-                                                                  bool isBluetoothEnable = Platform
-                                                                      .isAndroid
-                                                                      ? await blueIsOn()
-                                                                      : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey,
-                                                                          () {
-                                                                        showBluetoothDialog(context);
-                                                                      });
-
+      
+                                                                if (isBluetoothEnable !=
+                                                                    null) {
                                                                   if (isBluetoothEnable) {
                                                                     if(Platform.isIOS){
                                                                       showBluetoothListDialog(context);
@@ -886,191 +799,299 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                                         }
                                                                       }
                                                                     }
+      
+                                                                  } else {
+                                                                    showBluetoothDialog(
+                                                                        context);
+                                                                  }
+                                                                }
+                                                              } else {
+                                                                bool
+                                                                isNDPermittedOne =
+                                                                await Permission
+                                                                    .bluetoothConnect
+                                                                    .isGranted;
+      
+                                                                if (isNDPermittedOne) {
+                                                                  bool isBluetoothEnable = Platform
+                                                                      .isAndroid
+                                                                      ? await blueIsOn()
+                                                                      : await commonProvider.checkIfBluetoothIsEnabled(
+                                                                      scaffoldKey,
+                                                                          () {
+                                                                        showBluetoothDialog(context);
+                                                                      });
+      
+                                                                  if (isBluetoothEnable) {
+                                                                    if(Platform.isIOS){
+                                                                      showBluetoothListDialog(context);
+                                                                    }
+                                                                    else{
+      
+                                                                      if (await Permission
+                                                                          .location
+                                                                          .isPermanentlyDenied) {
+                                                                        Utils.showSnackBar(
+                                                                            context,
+                                                                            scaffoldKey: scaffoldKey,
+                                                                            message: 'Location permissions are denied without permissions we are unable to start the trip');
+                                                                        Future.delayed(
+                                                                            Duration(seconds: 2),
+                                                                                () async {
+                                                                              await openAppSettings();
+                                                                            });
+                                                                      } else {
+                                                                        print('kkkkkkk: ${await Permission
+                                                                            .location
+                                                                            .isGranted}');
+                                                                        print('kkkkkkk: ${await Permission
+                                                                            .location
+                                                                            .isDenied}');
+                                                                        print('kkkkkkk: ${await Permission
+                                                                            .location
+                                                                            .shouldShowRequestRationale}');
+                                                                        if (await Permission
+                                                                            .location
+                                                                            .isGranted) {
+                                                                          showBluetoothListDialog(context);
+                                                                        } else {
+                                                                          if(!(await Permission
+                                                                              .location
+                                                                              .shouldShowRequestRationale))
+                                                                            {
+                                                                              Utils.showSnackBar(
+                                                                                  context,
+                                                                                  scaffoldKey: scaffoldKey,
+                                                                                  message: 'Location permissions are denied without permissions we are unable to start the trip');
+                                                                              Future.delayed(
+                                                                                  Duration(seconds: 2),
+                                                                                      () async {
+                                                                                    await openAppSettings();
+                                                                                  });
+                                                                            }
+                                                                          else
+                                                                            {
+                                                                              await Permission.location.request();
+                                                                            }
+      
+                                                                        }
+                                                                      }
+                                                                    }
                                                                   } else {
                                                                     showBluetoothDialog(
                                                                         context);
                                                                   }
                                                                 } else {
-                                                                  if (await Permission.bluetoothConnect.isDenied ||
-                                                                      await Permission.bluetoothConnect.isPermanentlyDenied) {
-                                                                    showDialog(
-                                                                        context: context,
-                                                                        builder: (BuildContext context) {
-                                                                          return LocationPermissionCustomDialog(
-                                                                            isLocationDialogBox: false,
-                                                                            text: 'Allow nearby devices',
-                                                                            subText: 'Allow nearby devices to connect to the app',
-                                                                            buttonText: 'OK',
-                                                                            buttonOnTap: () async {
-                                                                              Get.back();
-
-                                                                              await openAppSettings();
-                                                                            },
-                                                                          );
+                                                                  await Permission
+                                                                      .bluetoothConnect
+                                                                      .request();
+                                                                  bool isNDPermitted = await Permission
+                                                                      .bluetoothConnect
+                                                                      .isGranted;
+                                                                  if (isNDPermitted) {
+                                                                    bool isBluetoothEnable = Platform
+                                                                        .isAndroid
+                                                                        ? await blueIsOn()
+                                                                        : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey,
+                                                                            () {
+                                                                          showBluetoothDialog(context);
                                                                         });
+      
+                                                                    if (isBluetoothEnable) {
+                                                                      if(Platform.isIOS){
+                                                                        showBluetoothListDialog(context);
+                                                                      }
+                                                                      else{
+                                                                        if (await Permission
+                                                                            .location
+                                                                            .isPermanentlyDenied) {
+                                                                          Utils.showSnackBar(
+                                                                              context,
+                                                                              scaffoldKey: scaffoldKey,
+                                                                              message: 'Location permissions are denied without permissions we are unable to start the trip');
+                                                                          Future.delayed(
+                                                                              Duration(seconds: 2),
+                                                                                  () async {
+                                                                                await openAppSettings();
+                                                                              });
+                                                                        } else {
+                                                                          if (await Permission
+                                                                              .location
+                                                                              .isGranted) {
+                                                                            showBluetoothListDialog(context);
+                                                                          } else {
+                                                                            await Permission.location.request();
+                                                                          }
+                                                                        }
+                                                                      }
+                                                                    } else {
+                                                                      showBluetoothDialog(
+                                                                          context);
+                                                                    }
+                                                                  } else {
+                                                                    if (await Permission.bluetoothConnect.isDenied ||
+                                                                        await Permission.bluetoothConnect.isPermanentlyDenied) {
+                                                                      showDialog(
+                                                                          context: context,
+                                                                          builder: (BuildContext context) {
+                                                                            return LocationPermissionCustomDialog(
+                                                                              isLocationDialogBox: false,
+                                                                              text: 'Allow nearby devices',
+                                                                              subText: 'Allow nearby devices to connect to the app',
+                                                                              buttonText: 'OK',
+                                                                              buttonOnTap: () async {
+                                                                                Get.back();
+      
+                                                                                await openAppSettings();
+                                                                              },
+                                                                            );
+                                                                          });
+                                                                    }
                                                                   }
                                                                 }
                                                               }
                                                             }
-                                                          }
-                                                        },
-                                                        child: Text(
-                                                          'LPR',
-                                                          textAlign: TextAlign.start,
-                                                          textScaleFactor: 1,
-                                                          style: TextStyle(
-                                                              fontSize: displayWidth(
-                                                                  context) *
-                                                                  0.034,
-                                                              color: Colors.black45,
-                                                              fontFamily: outfit,
-                                                              fontWeight: FontWeight.w400),
-                                                          overflow: TextOverflow.ellipsis,
-                                                          softWrap: false,
-                                                        )
+                                                          },
+                                                          child: Text(
+                                                            'LPR',
+                                                            textAlign: TextAlign.start,
+                                                            textScaleFactor: 1,
+                                                            style: TextStyle(
+                                                                fontSize: displayWidth(
+                                                                    context) *
+                                                                    0.034,
+                                                                color: Colors.black45,
+                                                                fontFamily: outfit,
+                                                                fontWeight: FontWeight.w400),
+                                                            overflow: TextOverflow.ellipsis,
+                                                            softWrap: false,
+                                                          )
+                                                        ),
                                                       ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                commonText(
+                                                  context: context,
+                                                  text: isBluetoothPermitted
+                                                      ? 'Connected'
+                                                      : 'Disconnected',
+                                                  fontWeight:
+                                                  FontWeight.w500,
+                                                  textColor:
+                                                  isBluetoothPermitted
+                                                      ? Colors.green
+                                                      : Colors.red,
+                                                  textSize: displayWidth(
+                                                      context) *
+                                                      0.03,
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height:
+                                              displayHeight(context) *
+                                                  0.007,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment
+                                                  .spaceBetween,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Image.asset(
+                                                      'assets/icons/ble.png',
+                                                      height: displayHeight(
+                                                          context) *
+                                                          0.04,
+                                                      width: displayWidth(
+                                                          context) *
+                                                          0.06,
+                                                    ),
+                                                    SizedBox(
+                                                      width: displayWidth(
+                                                          context) *
+                                                          0.04,
+                                                    ),
+                                                    commonText(
+                                                      context: context,
+                                                      text: 'Wireless NMEA',
+                                                      fontWeight:
+                                                      FontWeight.w400,
+                                                      textColor:
+                                                      Colors.black45,
+                                                      textSize:
+                                                      displayWidth(
+                                                          context) *
+                                                          0.034,
                                                     ),
                                                   ],
                                                 ),
-                                              ),
-                                              commonText(
-                                                context: context,
-                                                text: isBluetoothPermitted
-                                                    ? 'Connected'
-                                                    : 'Disconnected',
-                                                fontWeight:
-                                                FontWeight.w500,
-                                                textColor:
-                                                isBluetoothPermitted
-                                                    ? Colors.green
-                                                    : Colors.red,
-                                                textSize: displayWidth(
-                                                    context) *
-                                                    0.03,
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(
-                                            height:
-                                            displayHeight(context) *
-                                                0.007,
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment
-                                                .spaceBetween,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Image.asset(
-                                                    'assets/icons/ble.png',
-                                                    height: displayHeight(
-                                                        context) *
-                                                        0.04,
-                                                    width: displayWidth(
-                                                        context) *
-                                                        0.06,
-                                                  ),
-                                                  SizedBox(
-                                                    width: displayWidth(
-                                                        context) *
-                                                        0.04,
-                                                  ),
-                                                  commonText(
-                                                    context: context,
-                                                    text: 'Wireless NMEA',
-                                                    fontWeight:
-                                                    FontWeight.w400,
-                                                    textColor:
-                                                    Colors.black45,
-                                                    textSize:
-                                                    displayWidth(
-                                                        context) *
-                                                        0.034,
-                                                  ),
-                                                ],
-                                              ),
-                                              commonText(
-                                                context: context,
-                                                text: 'Not Configured',
-                                                fontWeight:
-                                                FontWeight.w500,
-                                                textColor: Colors.amber,
-                                                textSize: displayWidth(
-                                                    context) *
-                                                    0.03,
-                                              ),
-                                            ],
-                                          ),
-                                        ],
+                                                commonText(
+                                                  context: context,
+                                                  text: 'Not Configured',
+                                                  fontWeight:
+                                                  FontWeight.w500,
+                                                  textColor: Colors.amber,
+                                                  textSize: displayWidth(
+                                                      context) *
+                                                      0.03,
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                height: displayHeight(context) * 0.03,
-                              ),
-                              addingDataToDB
-                                  ? Center(
-                                  child: CircularProgressIndicator(
-                                      valueColor:
-                                      AlwaysStoppedAnimation<
-                                          Color>(
-                                          blueColor)))
-                                  : Container(
-                                child: CommonButtons
-                                    .getRichTextActionButton(
-                                  icon: Image.asset(
-                                    'assets/icons/start_btn.png',
-                                    height: displayHeight(context) *
-                                        0.055,
-                                    width: displayWidth(context) *
-                                        0.12,
+                                    ],
                                   ),
-                                  title: 'Start Trip',
-                                  context: context,
-                                  fontSize:
-                                  displayWidth(context) * 0.042,
-                                  textColor: Colors.white,
-                                  buttonPrimaryColor: blueColor,
-                                  borderColor: blueColor,
-                                  width: displayWidth(context),
-                                  onTap: () async {
-
-
-                                  if(vesselData.isEmpty)
-                                    {
-                                      addNewVesselDialogBox(context);
-                                    }
-else{
-
-                                    if (selectedValue == null) {
-                                      Utils.customPrint(
-                                          'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                        behavior: SnackBarBehavior
-                                            .floating,
-                                        content: Text(
-                                            "Please select vessel"),
-                                        duration:
-                                        Duration(seconds: 1),
-                                        backgroundColor:
-                                        Colors.blue,
-                                      ));
-                                      return;
-                                    }
-                                    if (isCheck) {
-                                      if (textEditingController
-                                          .text.isEmpty || !isOKClick) {
-                                        ScaffoldMessenger.of(
-                                            context)
+                                ),
+                                SizedBox(
+                                  height: displayHeight(context) * 0.03,
+                                ),
+                                addingDataToDB
+                                    ? Center(
+                                    child: CircularProgressIndicator(
+                                        valueColor:
+                                        AlwaysStoppedAnimation<
+                                            Color>(
+                                            blueColor)))
+                                    : Container(
+                                  child: CommonButtons
+                                      .getRichTextActionButton(
+                                    icon: Image.asset(
+                                      'assets/icons/start_btn.png',
+                                      height: displayHeight(context) *
+                                          0.055,
+                                      width: displayWidth(context) *
+                                          0.12,
+                                    ),
+                                    title: 'Start Trip',
+                                    context: context,
+                                    fontSize:
+                                    displayWidth(context) * 0.042,
+                                    textColor: Colors.white,
+                                    buttonPrimaryColor: blueColor,
+                                    borderColor: blueColor,
+                                    width: displayWidth(context),
+                                    onTap: () async {
+      
+      
+                                    if(vesselData.isEmpty)
+                                      {
+                                        addNewVesselDialogBox(context);
+                                      }
+      else{
+      
+                                      if (selectedValue == null) {
+                                        Utils.customPrint(
+                                            'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
+                                        ScaffoldMessenger.of(context)
                                             .showSnackBar(SnackBar(
                                           behavior: SnackBarBehavior
                                               .floating,
                                           content: Text(
-                                              isOKClick ? "Please Enter Number of Passengers and Submit" : "Please Submit Number of Passengers"),
+                                              "Please select vessel"),
                                           duration:
                                           Duration(seconds: 1),
                                           backgroundColor:
@@ -1078,186 +1099,70 @@ else{
                                         ));
                                         return;
                                       }
-
-                                      if (int.parse(
-                                          textEditingController
-                                              .text) >
-                                          11) {
-                                        sliderMinVal = numberOfPassengers.toDouble();
-                                        sliderCount = '$numberOfPassengers+';
-                                        isSliderDisable = false;
-                                      } else {
-                                        sliderMinVal = 11;
-                                        sliderCount = '10+';
-                                        isSliderDisable = false;
-                                      }
-                                    }
-
-                                    Utils.customPrint(
-                                        'SELECTED VESSEL WEIGHT $selectedVesselWeight');
-                                    /*  if (selectedVesselWeight ==
-                                          'Select Current Load') {
-                                        Utils.customPrint(
-                                            'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(SnackBar(
-                                          behavior:
-                                          SnackBarBehavior.floating,
-                                          content: Text(
-                                              "Please select current load"),
-                                          duration: Duration(seconds: 1),
-                                          backgroundColor: Colors.blue,
-                                        ));
-                                        return;
-                                      } */
-
-                                    checkAllPermission(true);
-
-                                    /*bool isLocationPermitted =
-                                      await Permission
-                                          .location.isGranted;
-
-                                      if (isLocationPermitted) {
-
-                                        if (Platform.isAndroid) {
-                                          final androidInfo =
-                                          await DeviceInfoPlugin()
-                                              .androidInfo;
-
-                                          if (androidInfo.version.sdkInt <
-                                              29) {
-                                            var isStoragePermitted =
-                                            await Permission
-                                                .storage.status;
-                                            if (isStoragePermitted
-                                                .isGranted) {
-                                              bool
-                                              isNotificationPermitted =
-                                              await Permission
-                                                  .notification
-                                                  .isGranted;
-
-                                              if (isNotificationPermitted) {
-                                                startWritingDataToDB(
-                                                    context);
-                                              } else {
-                                                await Utils
-                                                    .getNotificationPermission(
-                                                    context);
-                                                bool
-                                                isNotificationPermitted =
-                                                await Permission
-                                                    .notification
-                                                    .isGranted;
-                                                if (isNotificationPermitted) {
-                                                  startWritingDataToDB(
-                                                      context);
-                                                }
-                                              }
-                                            } else {
-                                              await Utils
-                                                  .getStoragePermission(
-                                                  context);
-                                              final androidInfo =
-                                              await DeviceInfoPlugin()
-                                                  .androidInfo;
-
-                                              var isStoragePermitted =
-                                              await Permission
-                                                  .storage.status;
-
-                                              if (isStoragePermitted
-                                                  .isGranted) {
-                                                bool
-                                                isNotificationPermitted =
-                                                await Permission
-                                                    .notification
-                                                    .isGranted;
-
-                                                if (isNotificationPermitted) {
-                                                  startWritingDataToDB(
-                                                      context);
-                                                } else {
-                                                  await Utils
-                                                      .getNotificationPermission(
-                                                      context);
-                                                  bool
-                                                  isNotificationPermitted =
-                                                  await Permission
-                                                      .notification
-                                                      .isGranted;
-                                                  if (isNotificationPermitted) {
-                                                    startWritingDataToDB(
-                                                        context);
-                                                  }
-                                                }
-                                              }
-                                            }
-                                          } else {
-                                            bool isNotificationPermitted =
-                                            await Permission
-                                                .notification
-                                                .isGranted;
-
-                                            if (isNotificationPermitted) {
-                                              startWritingDataToDB(
-                                                  context);
-                                            } else {
-                                              await Utils
-                                                  .getNotificationPermission(
-                                                  context);
-                                              bool
-                                              isNotificationPermitted =
-                                              await Permission
-                                                  .notification
-                                                  .isGranted;
-                                              if (isNotificationPermitted) {
-                                                startWritingDataToDB(
-                                                    context);
-                                              }
-                                            }
-                                          }
+                                      if (isCheck) {
+                                        if (textEditingController
+                                            .text.isEmpty || !isOKClick) {
+                                          ScaffoldMessenger.of(
+                                              context)
+                                              .showSnackBar(SnackBar(
+                                            behavior: SnackBarBehavior
+                                                .floating,
+                                            content: Text(
+                                                isOKClick ? "Please Enter Number of Passengers and Submit" : "Please Submit Number of Passengers"),
+                                            duration:
+                                            Duration(seconds: 1),
+                                            backgroundColor:
+                                            Colors.blue,
+                                          ));
+                                          return;
                                         }
-                                        else {
-                                          bool isNotificationPermitted =
-                                          await Permission
-                                              .notification.isGranted;
-
-                                          if (isNotificationPermitted) {
-                                            startWritingDataToDB(
-                                                context);
-                                          } else {
-                                            await Utils
-                                                .getNotificationPermission(
-                                                context);
-                                            bool isNotificationPermitted =
-                                            await Permission
-                                                .notification
-                                                .isGranted;
-                                            if (isNotificationPermitted) {
-                                              startWritingDataToDB(
-                                                  context);
-                                            }
-                                          }
+      
+                                        if (int.parse(
+                                            textEditingController
+                                                .text) >
+                                            11) {
+                                          sliderMinVal = numberOfPassengers.toDouble();
+                                          sliderCount = '$numberOfPassengers+';
+                                          isSliderDisable = false;
+                                        } else {
+                                          sliderMinVal = 11;
+                                          sliderCount = '10+';
+                                          isSliderDisable = false;
                                         }
                                       }
-                                      else {
-                                        await Utils.getLocationPermission(
-                                            context, scaffoldKey);
-                                        bool isLocationPermitted =
+      
+                                      Utils.customPrint(
+                                          'SELECTED VESSEL WEIGHT $selectedVesselWeight');
+                                      /*  if (selectedVesselWeight ==
+                                            'Select Current Load') {
+                                          Utils.customPrint(
+                                              'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                            behavior:
+                                            SnackBarBehavior.floating,
+                                            content: Text(
+                                                "Please select current load"),
+                                            duration: Duration(seconds: 1),
+                                            backgroundColor: Colors.blue,
+                                          ));
+                                          return;
+                                        } */
+      
+                                      checkAllPermission(true);
+      
+                                      /*bool isLocationPermitted =
                                         await Permission
                                             .location.isGranted;
-
+      
                                         if (isLocationPermitted) {
-                                          // service.startService();
-
+      
                                           if (Platform.isAndroid) {
                                             final androidInfo =
                                             await DeviceInfoPlugin()
                                                 .androidInfo;
-
-                                            if (androidInfo
-                                                .version.sdkInt <
+      
+                                            if (androidInfo.version.sdkInt <
                                                 29) {
                                               var isStoragePermitted =
                                               await Permission
@@ -1269,7 +1174,7 @@ else{
                                                 await Permission
                                                     .notification
                                                     .isGranted;
-
+      
                                                 if (isNotificationPermitted) {
                                                   startWritingDataToDB(
                                                       context);
@@ -1294,11 +1199,11 @@ else{
                                                 final androidInfo =
                                                 await DeviceInfoPlugin()
                                                     .androidInfo;
-
+      
                                                 var isStoragePermitted =
                                                 await Permission
                                                     .storage.status;
-
+      
                                                 if (isStoragePermitted
                                                     .isGranted) {
                                                   bool
@@ -1306,7 +1211,7 @@ else{
                                                   await Permission
                                                       .notification
                                                       .isGranted;
-
+      
                                                   if (isNotificationPermitted) {
                                                     startWritingDataToDB(
                                                         context);
@@ -1327,12 +1232,11 @@ else{
                                                 }
                                               }
                                             } else {
-                                              bool
-                                              isNotificationPermitted =
+                                              bool isNotificationPermitted =
                                               await Permission
                                                   .notification
                                                   .isGranted;
-
+      
                                               if (isNotificationPermitted) {
                                                 startWritingDataToDB(
                                                     context);
@@ -1351,12 +1255,12 @@ else{
                                                 }
                                               }
                                             }
-                                          } else {
+                                          }
+                                          else {
                                             bool isNotificationPermitted =
                                             await Permission
-                                                .notification
-                                                .isGranted;
-
+                                                .notification.isGranted;
+      
                                             if (isNotificationPermitted) {
                                               startWritingDataToDB(
                                                   context);
@@ -1364,137 +1268,7 @@ else{
                                               await Utils
                                                   .getNotificationPermission(
                                                   context);
-                                              bool
-                                              isNotificationPermitted =
-                                              await Permission
-                                                  .notification
-                                                  .isGranted;
-                                              if (isNotificationPermitted) {
-                                                startWritingDataToDB(
-                                                  context,);
-                                              }
-                                            }
-                                          }
-                                        }
-                                      }*/
-}
-                                  },
-                                ),
-                              ),
-                              /* addingDataToDB
-                                  ? Center(
-                                  child: CircularProgressIndicator(
-                                      valueColor:
-                                      AlwaysStoppedAnimation<Color>(
-                                          circularProgressColor)))
-                                  : InkWell(
-                                onTap: ()async
-                                {
-
-                                  if (selectedValue ==
-                                      null) {
-                                    Utils.customPrint(
-                                        'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
-                                      behavior:
-                                      SnackBarBehavior.floating,
-                                      content: Text(
-                                          "Please select vessel"),
-                                      duration: Duration(seconds: 1),
-                                      backgroundColor: Colors.blue,
-                                    ));
-                                    return;
-                                  }
-
-                                  Utils.customPrint(
-                                      'SELECTED VESSEL WEIGHT $selectedVesselWeight');
-                                  if (selectedVesselWeight ==
-                                      'Select Current Load') {
-                                    Utils.customPrint(
-                                        'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
-                                      behavior:
-                                      SnackBarBehavior.floating,
-                                      content: Text(
-                                          "Please select current load"),
-                                      duration: Duration(seconds: 1),
-                                      backgroundColor: Colors.blue,
-                                    ));
-                                    return;
-                                  }
-
-                                  bool isLocationPermitted =
-                                  await Permission
-                                      .location.isGranted;
-
-                                  if (isLocationPermitted) {
-
-                                    if (Platform.isAndroid) {
-                                      final androidInfo =
-                                      await DeviceInfoPlugin()
-                                          .androidInfo;
-
-                                      if (androidInfo.version.sdkInt <
-                                          29) {
-                                        var isStoragePermitted =
-                                        await Permission
-                                            .storage.status;
-                                        if (isStoragePermitted
-                                            .isGranted) {
-                                          bool
-                                          isNotificationPermitted =
-                                          await Permission
-                                              .notification
-                                              .isGranted;
-
-                                          if (isNotificationPermitted) {
-                                            startWritingDataToDB(
-                                                context);
-                                          } else {
-                                            await Utils
-                                                .getNotificationPermission(
-                                                context);
-                                            bool
-                                            isNotificationPermitted =
-                                            await Permission
-                                                .notification
-                                                .isGranted;
-                                            if (isNotificationPermitted) {
-                                              startWritingDataToDB(
-                                                  context);
-                                            }
-                                          }
-                                        } else {
-                                          await Utils
-                                              .getStoragePermission(
-                                              context);
-                                          final androidInfo =
-                                          await DeviceInfoPlugin()
-                                              .androidInfo;
-
-                                          var isStoragePermitted =
-                                          await Permission
-                                              .storage.status;
-
-                                          if (isStoragePermitted
-                                              .isGranted) {
-                                            bool
-                                            isNotificationPermitted =
-                                            await Permission
-                                                .notification
-                                                .isGranted;
-
-                                            if (isNotificationPermitted) {
-                                              startWritingDataToDB(
-                                                  context);
-                                            } else {
-                                              await Utils
-                                                  .getNotificationPermission(
-                                                  context);
-                                              bool
-                                              isNotificationPermitted =
+                                              bool isNotificationPermitted =
                                               await Permission
                                                   .notification
                                                   .isGranted;
@@ -1505,71 +1279,202 @@ else{
                                             }
                                           }
                                         }
-                                      } else {
-                                        bool isNotificationPermitted =
-                                        await Permission
-                                            .notification
-                                            .isGranted;
-
-                                        if (isNotificationPermitted) {
-                                          startWritingDataToDB(
-                                              context);
-                                        } else {
-                                          await Utils
-                                              .getNotificationPermission(
-                                              context);
-                                          bool
-                                          isNotificationPermitted =
+                                        else {
+                                          await Utils.getLocationPermission(
+                                              context, scaffoldKey);
+                                          bool isLocationPermitted =
                                           await Permission
-                                              .notification
-                                              .isGranted;
-                                          if (isNotificationPermitted) {
-                                            startWritingDataToDB(
-                                                context);
+                                              .location.isGranted;
+      
+                                          if (isLocationPermitted) {
+                                            // service.startService();
+      
+                                            if (Platform.isAndroid) {
+                                              final androidInfo =
+                                              await DeviceInfoPlugin()
+                                                  .androidInfo;
+      
+                                              if (androidInfo
+                                                  .version.sdkInt <
+                                                  29) {
+                                                var isStoragePermitted =
+                                                await Permission
+                                                    .storage.status;
+                                                if (isStoragePermitted
+                                                    .isGranted) {
+                                                  bool
+                                                  isNotificationPermitted =
+                                                  await Permission
+                                                      .notification
+                                                      .isGranted;
+      
+                                                  if (isNotificationPermitted) {
+                                                    startWritingDataToDB(
+                                                        context);
+                                                  } else {
+                                                    await Utils
+                                                        .getNotificationPermission(
+                                                        context);
+                                                    bool
+                                                    isNotificationPermitted =
+                                                    await Permission
+                                                        .notification
+                                                        .isGranted;
+                                                    if (isNotificationPermitted) {
+                                                      startWritingDataToDB(
+                                                          context);
+                                                    }
+                                                  }
+                                                } else {
+                                                  await Utils
+                                                      .getStoragePermission(
+                                                      context);
+                                                  final androidInfo =
+                                                  await DeviceInfoPlugin()
+                                                      .androidInfo;
+      
+                                                  var isStoragePermitted =
+                                                  await Permission
+                                                      .storage.status;
+      
+                                                  if (isStoragePermitted
+                                                      .isGranted) {
+                                                    bool
+                                                    isNotificationPermitted =
+                                                    await Permission
+                                                        .notification
+                                                        .isGranted;
+      
+                                                    if (isNotificationPermitted) {
+                                                      startWritingDataToDB(
+                                                          context);
+                                                    } else {
+                                                      await Utils
+                                                          .getNotificationPermission(
+                                                          context);
+                                                      bool
+                                                      isNotificationPermitted =
+                                                      await Permission
+                                                          .notification
+                                                          .isGranted;
+                                                      if (isNotificationPermitted) {
+                                                        startWritingDataToDB(
+                                                            context);
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              } else {
+                                                bool
+                                                isNotificationPermitted =
+                                                await Permission
+                                                    .notification
+                                                    .isGranted;
+      
+                                                if (isNotificationPermitted) {
+                                                  startWritingDataToDB(
+                                                      context);
+                                                } else {
+                                                  await Utils
+                                                      .getNotificationPermission(
+                                                      context);
+                                                  bool
+                                                  isNotificationPermitted =
+                                                  await Permission
+                                                      .notification
+                                                      .isGranted;
+                                                  if (isNotificationPermitted) {
+                                                    startWritingDataToDB(
+                                                        context);
+                                                  }
+                                                }
+                                              }
+                                            } else {
+                                              bool isNotificationPermitted =
+                                              await Permission
+                                                  .notification
+                                                  .isGranted;
+      
+                                              if (isNotificationPermitted) {
+                                                startWritingDataToDB(
+                                                    context);
+                                              } else {
+                                                await Utils
+                                                    .getNotificationPermission(
+                                                    context);
+                                                bool
+                                                isNotificationPermitted =
+                                                await Permission
+                                                    .notification
+                                                    .isGranted;
+                                                if (isNotificationPermitted) {
+                                                  startWritingDataToDB(
+                                                    context,);
+                                                }
+                                              }
+                                            }
                                           }
-                                        }
-                                      }
+                                        }*/
+      }
+                                    },
+                                  ),
+                                ),
+                                /* addingDataToDB
+                                    ? Center(
+                                    child: CircularProgressIndicator(
+                                        valueColor:
+                                        AlwaysStoppedAnimation<Color>(
+                                            circularProgressColor)))
+                                    : InkWell(
+                                  onTap: ()async
+                                  {
+      
+                                    if (selectedValue ==
+                                        null) {
+                                      Utils.customPrint(
+                                          'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        behavior:
+                                        SnackBarBehavior.floating,
+                                        content: Text(
+                                            "Please select vessel"),
+                                        duration: Duration(seconds: 1),
+                                        backgroundColor: Colors.blue,
+                                      ));
+                                      return;
                                     }
-                                    else {
-                                      bool isNotificationPermitted =
-                                      await Permission
-                                          .notification.isGranted;
-
-                                      if (isNotificationPermitted) {
-                                        startWritingDataToDB(
-                                            context);
-                                      } else {
-                                        await Utils
-                                            .getNotificationPermission(
-                                            context);
-                                        bool isNotificationPermitted =
-                                        await Permission
-                                            .notification
-                                            .isGranted;
-                                        if (isNotificationPermitted) {
-                                          startWritingDataToDB(
-                                              context);
-                                        }
-                                      }
+      
+                                    Utils.customPrint(
+                                        'SELECTED VESSEL WEIGHT $selectedVesselWeight');
+                                    if (selectedVesselWeight ==
+                                        'Select Current Load') {
+                                      Utils.customPrint(
+                                          'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        behavior:
+                                        SnackBarBehavior.floating,
+                                        content: Text(
+                                            "Please select current load"),
+                                        duration: Duration(seconds: 1),
+                                        backgroundColor: Colors.blue,
+                                      ));
+                                      return;
                                     }
-                                  }
-                                  else {
-                                    await Utils.getLocationPermission(
-                                        context, scaffoldKey);
+      
                                     bool isLocationPermitted =
                                     await Permission
                                         .location.isGranted;
-
+      
                                     if (isLocationPermitted) {
-                                      // service.startService();
-
+      
                                       if (Platform.isAndroid) {
                                         final androidInfo =
                                         await DeviceInfoPlugin()
                                             .androidInfo;
-
-                                        if (androidInfo
-                                            .version.sdkInt <
+      
+                                        if (androidInfo.version.sdkInt <
                                             29) {
                                           var isStoragePermitted =
                                           await Permission
@@ -1581,7 +1486,7 @@ else{
                                             await Permission
                                                 .notification
                                                 .isGranted;
-
+      
                                             if (isNotificationPermitted) {
                                               startWritingDataToDB(
                                                   context);
@@ -1606,11 +1511,11 @@ else{
                                             final androidInfo =
                                             await DeviceInfoPlugin()
                                                 .androidInfo;
-
+      
                                             var isStoragePermitted =
                                             await Permission
                                                 .storage.status;
-
+      
                                             if (isStoragePermitted
                                                 .isGranted) {
                                               bool
@@ -1618,7 +1523,7 @@ else{
                                               await Permission
                                                   .notification
                                                   .isGranted;
-
+      
                                               if (isNotificationPermitted) {
                                                 startWritingDataToDB(
                                                     context);
@@ -1639,12 +1544,11 @@ else{
                                             }
                                           }
                                         } else {
-                                          bool
-                                          isNotificationPermitted =
+                                          bool isNotificationPermitted =
                                           await Permission
                                               .notification
                                               .isGranted;
-
+      
                                           if (isNotificationPermitted) {
                                             startWritingDataToDB(
                                                 context);
@@ -1663,12 +1567,12 @@ else{
                                             }
                                           }
                                         }
-                                      } else {
+                                      }
+                                      else {
                                         bool isNotificationPermitted =
                                         await Permission
-                                            .notification
-                                            .isGranted;
-
+                                            .notification.isGranted;
+      
                                         if (isNotificationPermitted) {
                                           startWritingDataToDB(
                                               context);
@@ -1676,76 +1580,214 @@ else{
                                           await Utils
                                               .getNotificationPermission(
                                               context);
-                                          bool
-                                          isNotificationPermitted =
+                                          bool isNotificationPermitted =
                                           await Permission
                                               .notification
                                               .isGranted;
                                           if (isNotificationPermitted) {
                                             startWritingDataToDB(
-                                              context,);
+                                                context);
                                           }
                                         }
                                       }
                                     }
-                                  }
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Color(0xff2663DB)
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset('assets/icons/start_btn.png',
-                                          height: displayHeight(context) * 0.055,
-                                          width: displayWidth(context) * 0.12,
-                                        ),
-                                        SizedBox(width: displayWidth(context) * 0.01,),
-                                        commonText(
-                                          context: context,
-                                          text: 'Start Trip',
-                                          fontWeight: FontWeight.w600,
-                                          textColor: Colors.white,
-                                          textSize: displayWidth(context) * 0.042,
-                                        ),
-                                      ],
+                                    else {
+                                      await Utils.getLocationPermission(
+                                          context, scaffoldKey);
+                                      bool isLocationPermitted =
+                                      await Permission
+                                          .location.isGranted;
+      
+                                      if (isLocationPermitted) {
+                                        // service.startService();
+      
+                                        if (Platform.isAndroid) {
+                                          final androidInfo =
+                                          await DeviceInfoPlugin()
+                                              .androidInfo;
+      
+                                          if (androidInfo
+                                              .version.sdkInt <
+                                              29) {
+                                            var isStoragePermitted =
+                                            await Permission
+                                                .storage.status;
+                                            if (isStoragePermitted
+                                                .isGranted) {
+                                              bool
+                                              isNotificationPermitted =
+                                              await Permission
+                                                  .notification
+                                                  .isGranted;
+      
+                                              if (isNotificationPermitted) {
+                                                startWritingDataToDB(
+                                                    context);
+                                              } else {
+                                                await Utils
+                                                    .getNotificationPermission(
+                                                    context);
+                                                bool
+                                                isNotificationPermitted =
+                                                await Permission
+                                                    .notification
+                                                    .isGranted;
+                                                if (isNotificationPermitted) {
+                                                  startWritingDataToDB(
+                                                      context);
+                                                }
+                                              }
+                                            } else {
+                                              await Utils
+                                                  .getStoragePermission(
+                                                  context);
+                                              final androidInfo =
+                                              await DeviceInfoPlugin()
+                                                  .androidInfo;
+      
+                                              var isStoragePermitted =
+                                              await Permission
+                                                  .storage.status;
+      
+                                              if (isStoragePermitted
+                                                  .isGranted) {
+                                                bool
+                                                isNotificationPermitted =
+                                                await Permission
+                                                    .notification
+                                                    .isGranted;
+      
+                                                if (isNotificationPermitted) {
+                                                  startWritingDataToDB(
+                                                      context);
+                                                } else {
+                                                  await Utils
+                                                      .getNotificationPermission(
+                                                      context);
+                                                  bool
+                                                  isNotificationPermitted =
+                                                  await Permission
+                                                      .notification
+                                                      .isGranted;
+                                                  if (isNotificationPermitted) {
+                                                    startWritingDataToDB(
+                                                        context);
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          } else {
+                                            bool
+                                            isNotificationPermitted =
+                                            await Permission
+                                                .notification
+                                                .isGranted;
+      
+                                            if (isNotificationPermitted) {
+                                              startWritingDataToDB(
+                                                  context);
+                                            } else {
+                                              await Utils
+                                                  .getNotificationPermission(
+                                                  context);
+                                              bool
+                                              isNotificationPermitted =
+                                              await Permission
+                                                  .notification
+                                                  .isGranted;
+                                              if (isNotificationPermitted) {
+                                                startWritingDataToDB(
+                                                    context);
+                                              }
+                                            }
+                                          }
+                                        } else {
+                                          bool isNotificationPermitted =
+                                          await Permission
+                                              .notification
+                                              .isGranted;
+      
+                                          if (isNotificationPermitted) {
+                                            startWritingDataToDB(
+                                                context);
+                                          } else {
+                                            await Utils
+                                                .getNotificationPermission(
+                                                context);
+                                            bool
+                                            isNotificationPermitted =
+                                            await Permission
+                                                .notification
+                                                .isGranted;
+                                            if (isNotificationPermitted) {
+                                              startWritingDataToDB(
+                                                context,);
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Color(0xff2663DB)
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Image.asset('assets/icons/start_btn.png',
+                                            height: displayHeight(context) * 0.055,
+                                            width: displayWidth(context) * 0.12,
+                                          ),
+                                          SizedBox(width: displayWidth(context) * 0.01,),
+                                          commonText(
+                                            context: context,
+                                            text: 'Start Trip',
+                                            fontWeight: FontWeight.w600,
+                                            textColor: Colors.white,
+                                            textSize: displayWidth(context) * 0.042,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ),*/
-                            ],
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                              top: displayWidth(context) * 0.01,
-                              bottom: displayWidth(context) * 0.01,
+                                ),*/
+                              ],
                             ),
-                            child: GestureDetector(
-                                onTap: () async {
-                                  final image =
-                                  await controller.capture();
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              FeedbackReport(
-                                                imagePath:
-                                                image.toString(),
-                                                uIntList: image,
-                                              )));
-                                },
-                                child: UserFeedback()
-                                    .getUserFeedback(context)),
-                          ),
-                        ],
+                            Padding(
+                              padding: EdgeInsets.only(
+                                top: displayWidth(context) * 0.01,
+                                bottom: displayWidth(context) * 0.01,
+                              ),
+                              child: GestureDetector(
+                                  onTap: () async {
+                                    final image =
+                                    await controller.capture();
+                                          await    SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,]);
+      
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                FeedbackReport(
+                                                  imagePath:
+                                                  image.toString(),
+                                                  uIntList: image,
+                                                )));
+                                  },
+                                  child: UserFeedback()
+                                      .getUserFeedback(context)),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -2559,6 +2601,8 @@ else{
       final tripDetails = await _databaseService.getTrip(tripData![0]);
 
       print('CALLED FROM: ${widget.calledFrom}');
+      await    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,]);
 
       var result = Navigator.pushReplacement(
         scaffoldKey.currentContext!,
@@ -2718,6 +2762,7 @@ else{
                                         Utils.customPrint("Click on GO TO TRIP 2");
 
                                         Navigator.of(dialogContext).pop();
+          
 
                                         Navigator.push(
                                           context,
@@ -2729,6 +2774,10 @@ else{
                                                       vesselName: tripData[2],
                                                       tripIsRunningOrNot:
                                                       runningTrip)),
+                                        ).then((value) => 
+                                        
+                                        SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,])
                                         );
 
                                         Utils.customPrint("Click on GO TO TRIP 3");
@@ -4121,6 +4170,8 @@ else{
                                       'Add Vessel', context, blueColor,
                                           () async {
                                             Navigator.of(context).pop();
+      await    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,]);
 
                                             Navigator.push(
                                                 context,
