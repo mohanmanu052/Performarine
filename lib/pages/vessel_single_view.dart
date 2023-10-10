@@ -286,7 +286,9 @@ SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
               Container(
                 margin: EdgeInsets.only(right: 8),
                 child: IconButton(
-                  onPressed: () {
+                  onPressed: () async{
+                                     await   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
                     Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (context) => BottomNavigation()),

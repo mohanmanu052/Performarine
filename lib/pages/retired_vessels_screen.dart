@@ -14,7 +14,8 @@ import 'bottom_navigation.dart';
 import 'feedback_report.dart';
 
 class RetiredVesselsScreen extends StatefulWidget {
-  const RetiredVesselsScreen({Key? key}) : super(key: key);
+  int? bottomNavIndex;
+   RetiredVesselsScreen({Key? key,this.bottomNavIndex}) : super(key: key);
 
   @override
   State<RetiredVesselsScreen> createState() => _RetiredVesselsScreenState();
@@ -43,13 +44,15 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
+if(widget.bottomNavIndex==1){
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp
+    ]);
+}
 
-    // SystemChrome.setPreferredOrientations([
-    //   DeviceOrientation.landscapeLeft,
-    //   DeviceOrientation.landscapeRight,
-    //   DeviceOrientation.portraitDown,
-    //   DeviceOrientation.portraitUp
-    // ]);
   }
 
   @override
@@ -82,7 +85,8 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
             Container(
               margin: EdgeInsets.only(right: 8),
               child: IconButton(
-                onPressed: () {
+                onPressed: () async{
+                await  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(builder: (context) => BottomNavigation()),
@@ -106,6 +110,8 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
               child: GestureDetector(
                   onTap: ()async{
                     final image = await controller.capture();
+                                      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
                     Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
                       imagePath: image.toString(),
                       uIntList: image,)));

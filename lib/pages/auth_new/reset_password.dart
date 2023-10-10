@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -50,6 +51,9 @@ class _ResetPasswordState extends State<ResetPassword> {
   @override
   void initState() {
     super.initState();
+        SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
 
     commonProvider = context.read<CommonProvider>();
     newPasswordController = TextEditingController();

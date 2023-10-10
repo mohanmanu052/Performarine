@@ -1,6 +1,7 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:objectid/objectid.dart';
 import 'package:path_provider/path_provider.dart';
@@ -104,9 +105,15 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
     }
   }
 
+
+
   @override
   void initState() {
     super.initState();
+            SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
     setState(() {
       scaffoldKey = widget.scaffoldKey!;
     });
@@ -133,6 +140,18 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
       isDeleted = true;
     }
   }
+
+@override
+  void dispose() {
+                                      SystemChrome.setPreferredOrientations([
+                          DeviceOrientation.portraitDown,
+                          DeviceOrientation.portraitUp,
+                        ]);
+
+    // TODO: implement dispose
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -635,6 +654,10 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                                     commonProvider.selectedImageFiles = [];
 
                                     CustomLogger().logWithFile(Level.info, "User Navigating to SuccessfullyAddedScreen -> $page");
+ SystemChrome.setPreferredOrientations([
+                          DeviceOrientation.portraitDown,
+                          DeviceOrientation.portraitUp,
+                        ]);
 
                                     Navigator.pushReplacement(
                                       context,
@@ -655,7 +678,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                                 await _databaseService
                                     .insertVessel(
                                     commonProvider.addVesselRequestModel!)
-                                    .then((value) {
+                                    .then((value) async{
                                   setState(() {
                                     isBtnClicked = false;
                                   });
@@ -663,6 +686,11 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                                       scaffoldKey: scaffoldKey,
                                       message: "Vessel Created Successfully");
                                   commonProvider.selectedImageFiles = [];
+                                await  SystemChrome.setPreferredOrientations([
+                          DeviceOrientation.portraitDown,
+                          DeviceOrientation.portraitUp,
+                        ]);
+
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(

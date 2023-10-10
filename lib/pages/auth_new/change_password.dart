@@ -18,8 +18,8 @@ import '../../services/database_service.dart';
 
 class ChangePassword extends StatefulWidget {
   bool? isChange;
-
-  ChangePassword({this.isChange = false, Key? key}) : super(key: key);
+int? bottomNavIndex;
+  ChangePassword({this.isChange = false, Key? key,this.bottomNavIndex}) : super(key: key);
 
   @override
   State<ChangePassword> createState() => _ChangePasswordState();
@@ -62,13 +62,15 @@ class _ChangePasswordState extends State<ChangePassword> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
+if(widget.bottomNavIndex==1){
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp
+    ]);
 
-    // SystemChrome.setPreferredOrientations([
-    //   DeviceOrientation.landscapeLeft,
-    //   DeviceOrientation.landscapeRight,
-    //   DeviceOrientation.portraitDown,
-    //   DeviceOrientation.portraitUp
-    // ]);
+}
   }
 
   @override
@@ -95,7 +97,14 @@ class _ChangePasswordState extends State<ChangePassword> {
 Container(
 margin: EdgeInsets.only(right: 8),
 child: IconButton(
-onPressed: () {
+onPressed: ()async {
+
+await  SystemChrome.setPreferredOrientations([
+      
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp
+    ]);
+
 Navigator.pushAndRemoveUntil(
 context,
 MaterialPageRoute(builder: (context) => BottomNavigation()),

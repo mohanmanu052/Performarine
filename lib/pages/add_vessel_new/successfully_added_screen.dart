@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 
@@ -34,8 +35,31 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
       isVesselDimensionsExpanded = true,
       isDataUpdated = false;
 
+
+      @override
+  void initState() {
+                     SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+            DeviceOrientation.portraitDown,
+
+      
+      ]);
+
+    // TODO: implement initState
+    super.initState();
+  }
+@override
+  void dispose() {
+    // TODO: implement dispose
+     SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      ]);
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
+
     return WillPopScope(
       onWillPop: () async {
 
@@ -139,7 +163,9 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
             Container(
               margin: EdgeInsets.only(right: 8),
               child: IconButton(
-                onPressed: () {
+                onPressed: ()async {
+                                   await   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(builder: (context) => BottomNavigation()),

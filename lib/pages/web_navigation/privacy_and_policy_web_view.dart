@@ -8,7 +8,8 @@ import 'package:webview_flutter/webview_flutter.dart';
 class CustomWebView extends StatefulWidget {
   String? url;
   bool? isPaccore;
-  CustomWebView({this.url, this.isPaccore = false});
+  int? bottomNavIndex;
+  CustomWebView({this.url, this.isPaccore = false,this.bottomNavIndex});
   @override
   _CustomWebViewState createState() => _CustomWebViewState();
 }
@@ -17,17 +18,34 @@ class _CustomWebViewState extends State<CustomWebView> {
 
   bool isLoading = true;
 
+
+
+@override
+  void initState() {
+        SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp
+    ]);
+
+    // TODO: implement initState
+    super.initState();
+  }
+
+
+
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
+    if(widget.bottomNavIndex==1){
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp
+    ]);
 
-    // SystemChrome.setPreferredOrientations([
-    //   DeviceOrientation.landscapeLeft,
-    //   DeviceOrientation.landscapeRight,
-    //   DeviceOrientation.portraitDown,
-    //   DeviceOrientation.portraitUp
-    // ]);
+    }
+
   }
 
   @override

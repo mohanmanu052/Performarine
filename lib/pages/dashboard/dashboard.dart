@@ -92,6 +92,11 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
 
   @override
   Widget build(BuildContext context) {
+        SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
+
     commonProvider = context.watch<CommonProvider>();
     return WillPopScope(
       onWillPop: () async {

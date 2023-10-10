@@ -39,7 +39,8 @@ class TripRecordingScreen extends StatefulWidget {
   final bool? tripIsRunningOrNot;
   final bool isAppKilled;
   final String? calledFrom;
-  const TripRecordingScreen({super.key, this.tripId, this.vesselId, this.tripIsRunningOrNot, this.isAppKilled = false, this.calledFrom = '',this.vesselName});
+  final int? bottomNavIndex;
+  const TripRecordingScreen({super.key, this.tripId, this.vesselId, this.tripIsRunningOrNot, this.isAppKilled = false, this.calledFrom = '',this.vesselName,this.bottomNavIndex});
 
   @override
   State<TripRecordingScreen> createState() => _TripRecordingScreenState();
@@ -64,11 +65,10 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
-
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
+    super.initState();
 
     commonProvider = context.read<CommonProvider>();
     Wakelock.enable();
@@ -87,20 +87,38 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
 @override
   void dispose() {
     
+if(commonProvider.bottomNavIndex==1){
 
-    //     SystemChrome.setPreferredOrientations([
+        SystemChrome.setPreferredOrientations([
 
-    //   DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeLeft,
 
-    //   DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeRight,
 
-    //   DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitDown,
 
-    //   DeviceOrientation.portraitUp
+      DeviceOrientation.portraitUp]);
+
+
+
+}
+ 
+
+//     ]);
+
+// }else{
+//           SystemChrome.setPreferredOrientations([
+
+
+//       DeviceOrientation.portraitDown,
+
+//       DeviceOrientation.portraitUp
 
  
 
-    // ]);
+//     ]);
+
+// }
 
  
     // TODO: implement dispose
@@ -123,12 +141,21 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
               {
                 if(widget.calledFrom == 'bottom_nav' || widget.calledFrom == 'notification')
                 {
+    //               await      SystemChrome.setPreferredOrientations([
+
+    //   DeviceOrientation.portraitUp
+
+ 
+
+    // ]);
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(builder: (context) => BottomNavigation(
                         tabIndex: widget.calledFrom == 'notification' ? 0 : commonProvider.bottomNavIndex,
                       )),
-                      ModalRoute.withName(""));
+                      ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,])
+      );;;
                 }
                 else
                   {
@@ -189,15 +216,19 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
             elevation: 0,
             leading: IconButton(
               onPressed: () async {
-
                 debugPrint('CALLED FROM ${widget.calledFrom}');
                 Wakelock.disable().then((value) async{
                   if(widget.calledFrom != null)
                   {
                     if(widget.calledFrom!.isNotEmpty)
                     {
+
+
                       if(widget.calledFrom == 'bottom_nav'|| widget.calledFrom == 'notification')
                       {
+
+
+
                         Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(builder: (context) => BottomNavigation(
@@ -207,6 +238,7 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
                       }
                       else
                         {
+
                           Navigator.of(context).pop();
                         }
                       /*else if(widget.calledFrom == 'VesselSingleView')
@@ -233,6 +265,7 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
                       //       ModalRoute.withName(""));
                       // }
 
+                      
                       Navigator.of(context).pop();
                     }
                   }
@@ -337,11 +370,20 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
               Container(
                 margin: EdgeInsets.only(right: 8),
                 child: IconButton(
-                  onPressed: () {
+                  onPressed: ()async {
+                    await      SystemChrome.setPreferredOrientations([
+
+      DeviceOrientation.portraitUp
+
+ 
+
+    ]);
                     Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (context) => BottomNavigation()),
-                        ModalRoute.withName(""));
+                        ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,])
+      );;;
                   },
                   icon: Image.asset('assets/icons/performarine_appbar_icon.png'),
                   color: Theme.of(context).brightness == Brightness.dark
@@ -381,6 +423,14 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
                   child: GestureDetector(
                       onTap: ()async{
                         final image = await controller.capture();
+                          await      SystemChrome.setPreferredOrientations([
+
+      DeviceOrientation.portraitUp
+
+ 
+
+    ]);
+
                         Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
                           imagePath: image.toString(),
                           uIntList: image,)));

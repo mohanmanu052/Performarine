@@ -5,6 +5,7 @@ import 'package:background_locator_2/settings/ios_settings.dart';
 import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -116,6 +117,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
   @override
   void initState() {
     super.initState();
+        SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
 
     WidgetsBinding.instance.addObserver(this);
 

@@ -34,7 +34,8 @@ import 'bottom_navigation.dart';
 class CustomDrawer extends StatefulWidget {
   final GlobalKey<ScaffoldState>? scaffoldKey;
   final Orientation? orientation;
-  const CustomDrawer({Key? key, this.scaffoldKey,this.orientation}) : super(key: key);
+  int? bottomNavIndex;
+   CustomDrawer({Key? key, this.scaffoldKey,this.orientation,this.bottomNavIndex}) : super(key: key);
 
   @override
   State<CustomDrawer> createState() => _CustomDrawerState();
@@ -245,7 +246,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                             AddNewVesselPage()),
+                                             AddNewVesselPage(bottomNavIndex: widget.bottomNavIndex,)),
                                   );
                                 },
                                 child: commonText(
@@ -270,7 +271,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const RetiredVesselsScreen()),
+                                             RetiredVesselsScreen(bottomNavIndex: widget.bottomNavIndex,)),
                                   );
                                 },
                                 child: commonText(
@@ -351,7 +352,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                const SyncDataCloudToMobileScreen()),
+                                                 SyncDataCloudToMobileScreen(bottomNavIndex: widget.bottomNavIndex,)),
                                       );
                                     }
                                   } else {
@@ -365,7 +366,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                const SyncDataCloudToMobileScreen()),
+                                                 SyncDataCloudToMobileScreen(bottomNavIndex: widget.bottomNavIndex,)),
                                       );
                                     }
                                   }
@@ -474,7 +475,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => ChangePassword()),
+                                            builder: (context) => ChangePassword(bottomNavIndex: widget.bottomNavIndex,)),
                                       );
                                     }
                                   }
@@ -487,7 +488,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => ChangePassword()),
+                                          builder: (context) => ChangePassword(bottomNavIndex: widget.bottomNavIndex,)),
                                     );
                                   }
                                 }
@@ -514,7 +515,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => CustomWebView(url:'https://${Urls.terms}', isPaccore: false)),
+                                      builder: (context) => CustomWebView(url:'https://${Urls.terms}', isPaccore: false,bottomNavIndex: widget.bottomNavIndex,)),
                                 );
                               },
                               child: commonText(
@@ -538,7 +539,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => CustomWebView(url: 'https://${Urls.privacy}',isPaccore: false)),
+                                      builder: (context) => CustomWebView(url: 'https://${Urls.privacy}',isPaccore: false,bottomNavIndex: widget.bottomNavIndex,)),
                                 );
                               },
                               child: commonText(
@@ -794,7 +795,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        AddNewVesselPage()),
+                                       
+                                        AddNewVesselPage(bottomNavIndex: widget.bottomNavIndex,)),
                               );
                             },
                             child: commonText(
@@ -818,7 +820,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                    const RetiredVesselsScreen()),
+                                     RetiredVesselsScreen(bottomNavIndex: widget.bottomNavIndex,)),
                               );
                             },
                             child: commonText(
@@ -882,7 +884,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                        const SyncDataCloudToMobileScreen()),
+                                         SyncDataCloudToMobileScreen(bottomNavIndex: widget.bottomNavIndex,)),
                                   );
                                 }
                               } else {
@@ -896,7 +898,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                        const SyncDataCloudToMobileScreen()),
+                                         SyncDataCloudToMobileScreen(bottomNavIndex: widget.bottomNavIndex)),
                                   );
                                 }
                               }
@@ -1002,7 +1004,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => ChangePassword()),
+                                      builder: (context) => ChangePassword(bottomNavIndex:widget.bottomNavIndex ,)),
                                 );
                               }
                             }
@@ -1015,7 +1017,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => ChangePassword()),
+                                    builder: (context) => ChangePassword(bottomNavIndex:widget.bottomNavIndex )),
                               );
                             }
                           }
@@ -1039,7 +1041,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => CustomWebView(url:'https://${Urls.terms}', isPaccore: false)),
+                                builder: (context) => CustomWebView(url:'https://${Urls.terms}', isPaccore: false,bottomNavIndex: widget.bottomNavIndex,)),
                           );
                         },
                         child: commonText(
@@ -1060,7 +1062,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => CustomWebView(url: 'https://${Urls.privacy}',isPaccore: false)),
+                                builder: (context) => CustomWebView(url: 'https://${Urls.privacy}',isPaccore: false,bottomNavIndex: widget.bottomNavIndex,)),
                           );
                         },
                         child: commonText(
@@ -1566,7 +1568,7 @@ if(!isSyncSignoutClicked){
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                      builder: (context) => ChangePassword(isChange: true,)),
+                                                      builder: (context) => ChangePassword(isChange: true,bottomNavIndex: widget.bottomNavIndex,)),
                                                 );
 
                                               }else{
@@ -1581,7 +1583,7 @@ if(!isSyncSignoutClicked){
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (context) =>
-                                                      const SyncDataCloudToMobileScreen()),
+                                                       SyncDataCloudToMobileScreen(bottomNavIndex: widget.bottomNavIndex,)),
                                                 );
 
                                                 }
@@ -1849,7 +1851,7 @@ if(!isSyncSignoutClicked){
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => ChangePassword(isChange: true,)),
+                  builder: (context) => ChangePassword(isChange: true,bottomNavIndex: widget.bottomNavIndex,)),
             );
           }
         else
@@ -1857,7 +1859,7 @@ if(!isSyncSignoutClicked){
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => const SyncDataCloudToMobileScreen()),
+                  builder: (context) =>  SyncDataCloudToMobileScreen(bottomNavIndex: widget.bottomNavIndex,)),
             );
           }
 
