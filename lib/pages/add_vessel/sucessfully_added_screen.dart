@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 
 import 'package:lottie/lottie.dart';
@@ -30,6 +31,20 @@ class SuccessfullyAddedScreen extends StatefulWidget {
 class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   String page = "Successfully_added_screen";
+
+
+        @override
+  void initState() {
+                     SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      
+      ]);
+
+    // TODO: implement initState
+    super.initState();
+  }
+
+
 
   @override
   Widget build(BuildContext context) {

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_sensors/flutter_sensors.dart';
 import 'package:get/get.dart';
@@ -88,6 +89,9 @@ class _TripWidgetState extends State<TripWidget> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
 
     debugPrint("SCREEN CALLED FROM ${widget.calledFrom}");
 
