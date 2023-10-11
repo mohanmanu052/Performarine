@@ -2763,7 +2763,8 @@ class _ReportsModuleState extends State<ReportsModule> {
               ? SizedBox()
               : Container(
                   width: orientation == Orientation.portrait
-                      ? displayWidth(context) * 0.16
+                    ? displayWidth(context) * 0.16
+                      //? tempDurationColumnSeriesData.length > 10 ? displayWidth(context) * 0.16 : displayWidth(context) * 0.18
                       : displayWidth(context) * 0.1128,
                   height: graph_height,
                   color: Colors.white,
@@ -2786,7 +2787,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                           fontFamily: poppins,
                         )),
                     primaryYAxis: NumericAxis(
-                        axisLine: AxisLine(width: 0, color: Colors.transparent),
+                        axisLine: AxisLine(width: 1, color: Colors.transparent),
                         title: AxisTitle(
                             text: 'Time ($minutes)',
                             textStyle: TextStyle(
