@@ -55,7 +55,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
   String page = "Custom_drawer";
   String? chosenValue = "Info";
   bool uploadandSyncClicked=false;
-  bool isSyncSignoutClicked=false;
+  bool isSyncSignoutClicked=false, isSigningOut = false;
 
 
   @override
@@ -1208,7 +1208,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
   }
 
   showDialogBox(BuildContext context, GlobalKey<ScaffoldState> scaffoldKey,Orientation orientation) {
-    bool isSigningOut = false;
+    isSigningOut = false;
     return showDialog(
         barrierDismissible: false,
         context: context,
@@ -1308,7 +1308,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                               isSigningOut = true;
                                             });
 
-                                            syncAndSignOut(false, context);
+                                            syncAndSignOut(false, context, setDialogState);
                                           }
                                         },
                                          orientation==Orientation.portrait?   displayWidth(context) / 1.6:displayWidth(context) / 3,
@@ -1505,9 +1505,7 @@ if(!isSyncSignoutClicked){
                                         child: isUploadStarted
                                             ? 
                                             Center(
-                                          child: 
-                                          
-                                          SizedBox(
+                                          child: SizedBox(
                                               height:orientation==Orientation.portrait? displayHeight(context) * 0.055:displayHeight(context) * 0.085,
                                               child: Center(
                                                   child:
@@ -1534,7 +1532,7 @@ if(!isSyncSignoutClicked){
                                                 isUploadStarted = true;
                                               });
                                             }
-                                            syncAndSignOut(isChangePassword, context);
+                                            syncAndSignOut(isChangePassword, context, setDialogState);
                                           }
                                         },
                                           orientation==    Orientation.portrait?   displayWidth(context) / 1.6:displayWidth(context) / 3,
@@ -1660,14 +1658,19 @@ if(!isSyncSignoutClicked){
   }
 
   /// If user have trip which is not uploaded then to sync data and sign out
-  syncAndSignOut(bool isChangePassword, BuildContext context) async {
+  syncAndSignOut(bool isChangePassword, BuildContext context, StateSetter setDialogState) async {
     bool vesselErrorOccurred = false;
     bool tripErrorOccurred = false;
 
     var vesselsSyncDetails = await _databaseService.vesselsSyncDetails();
     var tripSyncDetails = await _databaseService.tripSyncDetails();
 
-    getVesselFuture = await _databaseService.syncAndSignOutVesselList();
+    getVesselFuture = await _databaseService.syncAndSignOutVesselList().catchError((onError) {
+      setDialogState(() {
+        isSigningOut = false;
+        isUploadStarted = false;
+     });
+    });
     getTrip = await _databaseService.trips();
 
     Utils.customPrint("VESSEL SYNC TRIP ${getTrip.length}");

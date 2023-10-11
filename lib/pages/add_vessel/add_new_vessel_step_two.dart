@@ -382,7 +382,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo>
                                   commonProvider.addVesselRequestModel!.draft =
                                       double.parse(moldedDepthController.text);
                                   commonProvider.addVesselRequestModel!.vesselSize =
-                                      double.parse(sizeController.text);
+                                      sizeController.text;
                                   commonProvider.addVesselRequestModel!.capacity =
                                       int.parse(capacityController.text);
                                   commonProvider.addVesselRequestModel!.builtYear =

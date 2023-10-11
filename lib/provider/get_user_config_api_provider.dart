@@ -89,7 +89,8 @@ class GetUserConfigApiProvider with ChangeNotifier {
         }
 
         return getUserConfigModel!;
-      } else if (response.statusCode == HttpStatus.gatewayTimeout) {
+      }
+      else if (response.statusCode == HttpStatus.gatewayTimeout) {
         Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         Utils.customPrint('EXE RESP: $response');
 

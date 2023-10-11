@@ -44,7 +44,7 @@ class AddVesselData {
   dynamic depth;
   String? vesselSize;
   String? capacity;
-  dynamic? builtYear;
+  dynamic builtYear;
   dynamic vesselStatus;
   String? createdBy;
   String? createdAt;

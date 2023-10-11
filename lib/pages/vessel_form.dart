@@ -33,6 +33,7 @@ class _VesselFormPageState extends State<VesselFormPage> {
   final TextEditingController _sizeController = TextEditingController();
   final TextEditingController _capacityController = TextEditingController();
   final TextEditingController _builtyearController = TextEditingController();
+  final TextEditingController _displacementController = TextEditingController();
 
   final DatabaseService _databaseService = DatabaseService();
 
@@ -61,6 +62,7 @@ class _VesselFormPageState extends State<VesselFormPage> {
       _sizeController.text = widget.vessel!.vesselSize.toString();
       _capacityController.text = widget.vessel!.capacity.toString();
       _builtyearController.text = widget.vessel!.builtYear.toString();
+      _displacementController.text = widget.vessel!.displacement.toString();
     }
   }
 
@@ -82,6 +84,7 @@ class _VesselFormPageState extends State<VesselFormPage> {
     final size = _sizeController.text;
     final capacity = _capacityController.text;
     final builtYear = _builtyearController.text;
+    final displacement = _displacementController.text;
     var uuid = Uuid();
 
     widget.vessel == null
@@ -100,7 +103,7 @@ class _VesselFormPageState extends State<VesselFormPage> {
             lengthOverall: double.parse(lengthOverall),
             beam: double.parse(beam),
             draft: double.parse(draft),
-            vesselSize: double.parse(size),
+            vesselSize: size,
             capacity: int.parse(capacity),
             builtYear: int.parse(builtYear),
             isSync: 0,
@@ -109,7 +112,8 @@ class _VesselFormPageState extends State<VesselFormPage> {
             createdAt: DateTime.now().toUtc().toString(),
             createdBy: "",
             updatedAt: DateTime.now().toUtc().toString(),
-            updatedBy: ""))
+            updatedBy: "",
+            displacement: double.parse(displacement)))
         : await _databaseService.updateVessel(CreateVessel(
             id: widget.vessel!.id,
             name: vesselName,
@@ -126,11 +130,12 @@ class _VesselFormPageState extends State<VesselFormPage> {
                 lengthOverall != "null" ? double.parse(lengthOverall) : 0.0,
             beam: double.parse(beam),
             draft: double.parse(draft),
-            vesselSize: double.parse(size),
+            vesselSize: size,
             capacity: int.parse(capacity),
             builtYear: int.parse(builtYear),
             updatedBy: "",
-            updatedAt: DateTime.now().toUtc().toString()));
+            updatedAt: DateTime.now().toUtc().toString(),
+            displacement: double.parse(displacement)));
 
     Navigator.pop(context);
   }

@@ -11,8 +11,8 @@ class CreateVessel {
   String? regNumber;
   String? mMSI;
   String? engineType;
-  dynamic fuelCapacity;
-  dynamic batteryCapacity;
+  String? fuelCapacity;
+  String? batteryCapacity;
   String? weight;
   String? imageURLs;
   double? freeBoard;
@@ -34,7 +34,7 @@ class CreateVessel {
   String? avgSpeed;*/
   int? isCloud;
   List<File?>? selectedImages;
-  dynamic displacement;
+  double? displacement;
 
   CreateVessel(
       {this.id,
@@ -157,8 +157,8 @@ class CreateVessel {
       lengthOverall: map['lengthOverall'],
       beam: map['beam'],
       draft: map['draft'],
-      displacement: map['displacement'] ?? "",
-      vesselSize: map['vesselSize'] ?? 0.0,
+      displacement: map['displacement'] ?? 0.0,
+      vesselSize: double.parse(map['vesselSize'] == null ? '0.0' : map['vesselSize'].toString()),
       capacity: map['capacity'],
       builtYear: map['builtYear'],
       isSync: map['isSync'],

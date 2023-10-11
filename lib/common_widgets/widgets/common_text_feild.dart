@@ -29,6 +29,7 @@ class CommonTextField extends StatefulWidget {
   Function(String)? onSaved;
   Function()? onTap;
   FilteringTextInputFormatter? inputFormatter;
+  bool? isForDecimal = false;
   // GlobalKey<FormFieldState>? formFieldKey;
 
   CommonTextField(
@@ -54,7 +55,8 @@ class CommonTextField extends StatefulWidget {
       this.onSaved,
       this.onTap,
       this.inputFormatter,
-        this.maxLines = 1
+      this.maxLines = 1,
+      this.isForDecimal = false
       })
       : super(key: key);
 
@@ -96,7 +98,10 @@ class _CommonTextFieldState extends State<CommonTextField> {
             if (widget.textInputType == TextInputType.number)
               FilteringTextInputFormatter.allow(RegExp("[0-9]")),
             if (widget.textInputType == TextInputType.number)
-              FilteringTextInputFormatter.digitsOnly
+              FilteringTextInputFormatter.digitsOnly,
+            if(widget.isForDecimal!)
+              FilteringTextInputFormatter.allow(RegExp(r"^\d*\.?\d*")),
+
           ],
           //maxLength: widget.maxLength,
           obscureText: obscureText!,

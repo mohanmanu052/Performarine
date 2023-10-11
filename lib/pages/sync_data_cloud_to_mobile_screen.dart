@@ -550,13 +550,13 @@ if(widget.bottomNavIndex==1){
                 mMSI: value.vessels![i].mMSI,
                 engineType: value.vessels![i].engineType,
                 fuelCapacity: value.vessels![i].fuelCapacity.toString(),
-                batteryCapacity: value.vessels![i].batteryCapacity.toString(),
+                batteryCapacity:value.vessels![i].batteryCapacity.toString(),
                 weight: value.vessels![i].weight,
                 freeBoard: value.vessels![i].freeBoard!,
                 lengthOverall: value.vessels![i].lengthOverall!,
                 beam: value.vessels![i].beam!,
                 draft: value.vessels![i].depth!,
-                vesselSize: value.vessels![i].vesselSize!,
+                vesselSize: value.vessels![i].vesselSize.toString(),
                 capacity: int.parse(value.vessels![i].capacity ?? '0'),
                 builtYear: int.parse(value.vessels![i].builtYear.toString()),
                 vesselStatus: value.vessels![i].vesselStatus == 2
@@ -569,7 +569,7 @@ if(widget.bottomNavIndex==1){
                 isSync: 1,
                 updatedBy: value.vessels![i].updatedBy.toString(),
                 isCloud: 1,
-                displacement: value.vessels![i].displacement);
+                displacement: double.parse(value.vessels![i].displacement.toString()));
 
             var vesselExist = await _databaseService
                 .vesselsExistInCloud(value.vessels![i].id!);
