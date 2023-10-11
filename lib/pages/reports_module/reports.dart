@@ -37,7 +37,7 @@ class ReportsModule extends StatefulWidget {
   State<ReportsModule> createState() => _ReportsModuleState();
 }
 
-class _ReportsModuleState extends State<ReportsModule> with WidgetsBindingObserver{
+class _ReportsModuleState extends State<ReportsModule> {
   String page = "Reports_module";
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   GlobalKey<SfCartesianChartState> dration_barchart_key = GlobalKey();
@@ -109,6 +109,8 @@ class _ReportsModuleState extends State<ReportsModule> with WidgetsBindingObserv
   double chartWidth = 0.0;
   String? imageUrl;
   int? pointIndex;
+  int globalPointIndex = 0;
+  int? globalSeriesIndex;
   bool? isExpansionCollapse = false;
   bool isExpandedTile = false;
   bool? isStartDate = false;
@@ -166,6 +168,9 @@ class _ReportsModuleState extends State<ReportsModule> with WidgetsBindingObserv
   TooltipBehavior? avgSpeedToolTip;
   TooltipBehavior? fuelUsageToolTip;
 
+  late SelectionBehavior _selectionBehaviorDurationGraph;
+  late ZoomPanBehavior zoomPanBehavior;
+
   bool bargraphtooltipBool = false;
 
   //Convertion of date time into month/day/year format
@@ -179,22 +184,30 @@ class _ReportsModuleState extends State<ReportsModule> with WidgetsBindingObserv
     return dateString;
   }
 
-  void getVesselDetails(String id) async {
-    if (vesselList != null && vesselList!.isNotEmpty) {
-      Vessels? vessel = vesselList!
-          .firstWhere((vessel) => vessel.id == id, orElse: () => Vessels());
 
-      CreateVessel? vesselData =
-          await _databaseService.getVesselFromVesselID(id);
 
-      imageUrl = vesselData!.imageURLs ?? '';
 
-      setState(() {
-        builtYear = vessel.builtYear.toString() ?? '-';
-        capacity = vessel.capacity ?? '-';
-        registerNumber = vessel.regNumber ?? '-';
-      });
-    } else {}
+  void getVesselDetails(String id)async {
+    if(vesselList!=null&&vesselList!.isNotEmpty){
+    Vessels? vessel = vesselList!.firstWhere((vessel) => vessel.id == id, orElse: () => Vessels());
+   
+      CreateVessel? vesselData = await _databaseService
+        .getVesselFromVesselID(id);
+
+    imageUrl = vesselData!.imageURLs ?? '';
+
+
+  setState(() {
+       builtYear=vessel.builtYear.toString()??'-';
+  capacity=vessel.capacity??'-';
+  registerNumber=vessel.regNumber??'-';
+
+  });
+
+    }else{
+
+    }
+
   }
 
   //Convertion of date time into year-month-day format
@@ -699,6 +712,7 @@ class _ReportsModuleState extends State<ReportsModule> with WidgetsBindingObserv
                         EmptyPointSettings(mode: EmptyPointMode.drop),
                     dataLabelSettings: DataLabelSettings(isVisible: false),
                     spacing: 0.1,
+                    selectionBehavior: _selectionBehaviorDurationGraph
                   ));
 
                   tempDurationColumnSeriesData
@@ -734,108 +748,103 @@ class _ReportsModuleState extends State<ReportsModule> with WidgetsBindingObserv
                     spacing: 0.1,
                   ));
                 }
-                ;
-                //  if (triSpeedList[i].tripsByDate![j].avgSpeed! > 0) {
-                avgSpeedColumnSeriesData.add(ColumnSeries<TripModel, String>(
-                  pointColorMapper: (TripModel tripData, int index) {
-                    return triSpeedList[i].tripsByDate![j].dataLineColor != null
-                        ? triSpeedList[i].tripsByDate![j].dataLineColor
-                        : blueColor;
-                  },
-                  dataSource: triSpeedList,
-                  width: 0.4,
-                  enableTooltip: true,
-                  emptyPointSettings:
-                      EmptyPointSettings(mode: EmptyPointMode.drop),
-                  dataLabelSettings: DataLabelSettings(isVisible: false),
-                  spacing: 0.1,
+                if (triSpeedList[i].tripsByDate![j].avgSpeed! > 0) {
+                  avgSpeedColumnSeriesData.add(ColumnSeries<TripModel, String>(
+                    pointColorMapper: (TripModel tripData, int index) {
+                      return triSpeedList[i].tripsByDate![j].dataLineColor !=
+                              null
+                          ? triSpeedList[i].tripsByDate![j].dataLineColor
+                          : blueColor;
+                    },
+                    dataSource: triSpeedList,
+                    width: 0.4,
+                    enableTooltip: true,
+                    xValueMapper: (TripModel tripData, _) =>
+                        dateWithZeros(triSpeedList[i].date ?? ""),
+                    yValueMapper: (TripModel tripData, _) =>
+                        triSpeedList[i].tripsByDate![j].avgSpeed! > 0
+                            ? triSpeedList[i].tripsByDate![j].avgSpeed!
+                            : null,
+                    onPointTap: (ChartPointDetails args) {
+                      print('the series index was----------------------' +
+                          args.seriesIndex.toString());
+                      reportsDataTableKey.currentState!
+                          .setSelectedRowIndex!(args.seriesIndex!);
+                      tooltipactivationMode = ActivationMode.singleTap;
 
-                  xValueMapper: (TripModel tripData, _) =>
-                      dateWithZeros(triSpeedList[i].date ?? ""),
-                  yValueMapper: (TripModel tripData, _) =>
-                      triSpeedList[i].tripsByDate![j].avgSpeed! > 0
-                          ? triSpeedList[i].tripsByDate![j].avgSpeed!
-                          : null,
-                  onPointTap: (ChartPointDetails args) {
-                    //  print('the avg column data series length was---')
-                    print(
-                        'avg column series args point index was---- ${args.pointIndex}     ${args.seriesIndex}');
+                      reportsDataTableKey.currentState!.setState(() {
+                        reportsDataTableKey.currentState!.selectedRowIndex =
+                            args.seriesIndex!;
+                      });
 
-                    reportsDataTableKey
-                        .currentState!.setSelectedRowIndex!(args.seriesIndex!);
-                    tooltipactivationMode = ActivationMode.singleTap;
+                      //     reportsDataTableKey.currentState?.selectedRowIndex=args.pointIndex??0;
 
-                    reportsDataTableKey.currentState!.setState(() {
-                      reportsDataTableKey.currentState!.selectedRowIndex =
-                          args.seriesIndex!;
-                    });
-
-                    for (int i = 0; i < durationGraphData.length; i++) {
-                      for (int j = 0;
-                          j < durationGraphData[i].tripsByDate!.length;
-                          j++) {
-                        durationGraphData[i].tripsByDate![j].dataLineColor =
-                            null;
+                      for (int i = 0; i < durationGraphData.length; i++) {
+                        for (int j = 0;
+                            j < durationGraphData[i].tripsByDate!.length;
+                            j++) {
+                          durationGraphData[i].tripsByDate![j].dataLineColor =
+                              null;
+                        }
                       }
-                    }
 
-                    triSpeedList[i].tripsByDate![j].dataLineColor =
-                        Colors.green;
-                    setState(() {
-                      reportsDataTableKey.currentState!.isToolTipShown = true;
-                      bargraphtooltipBool = true;
-                      tooltipactivationMode = ActivationMode.none;
-                    });
+                      triSpeedList[i].tripsByDate![j].dataLineColor =
+                          Colors.green;
+                      setState(() {
+                        reportsDataTableKey.currentState!.isToolTipShown = true;
+                        bargraphtooltipBool = true;
+                        tooltipactivationMode = ActivationMode.none;
+                      });
 
-                    Future.delayed(Duration(milliseconds: 100), () {
-                      avgSpeedToolTip!
-                          .showByIndex(args.seriesIndex!, args.pointIndex!);
-                      // reportsDataTableKey.currentState!.setState(() {
+                      Future.delayed(Duration(milliseconds: 100), () {
+                        avgSpeedToolTip!
+                            .showByIndex(args.seriesIndex!, args.pointIndex!);
+                        // reportsDataTableKey.currentState!.setState(() {
 
-                      //                                    reportsDataTableKey.currentState!.isToolTipShown=false;
-                      //                                    });
-                    });
+                        //                                    reportsDataTableKey.currentState!.isToolTipShown=false;
+                        //                                    });
+                      });
 
-                    if (mounted) {
-                      selectedIndex = triSpeedList[i].tripsByDate![j].id!;
-                      Utils.customPrint("selected index: $selectedIndex");
-                      CustomLogger().logWithFile(Level.info,
-                          "selected index: $selectedIndex -> $page");
-                    }
-                  },
-                  name: 'Avg Speed',
-                  // dataLabelSettings: DataLabelSettings(isVisible: false),
-                  // spacing: 0.1,
-                ));
+                      if (mounted) {
+                        selectedIndex = triSpeedList[i].tripsByDate![j].id!;
+                        Utils.customPrint("selected index: $selectedIndex");
+                        CustomLogger().logWithFile(Level.info,
+                            "selected index: $selectedIndex -> $page");
+                      }
+                    },
+                    name: 'Avg Speed',
+                    dataLabelSettings: DataLabelSettings(isVisible: false),
+                    spacing: 0.1,
+                  ));
 
-                tempAvgSpeedColumnSeriesData
-                    .add(ColumnSeries<TripModel, String>(
-                  pointColorMapper: (TripModel tripData, int index) {
-                    return Colors.transparent;
-                    //return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].tripsByDate![j].dataLineColor : blueColor;
-                  },
-                  dataSource: triSpeedList,
-                  width: 0.4,
-                  color: Colors.transparent,
-                  enableTooltip: true,
-                  xValueMapper: (TripModel tripData, _) => '',
-                  yValueMapper: (TripModel tripData, _) =>
-                      triSpeedList[i].tripsByDate![j].avgSpeed! > 0
-                          ? triSpeedList[i].tripsByDate![j].avgSpeed!
-                          : null,
-                  onPointTap: (ChartPointDetails args) {
-                    if (mounted) {
-                      selectedIndex = triSpeedList[i].tripsByDate![j].id!;
-                      Utils.customPrint("selected index: $selectedIndex");
-                      CustomLogger().logWithFile(Level.info,
-                          "selected index: $selectedIndex -> $page");
-                    }
-                  },
-                  name: 'Avg Speed',
-                  dataLabelSettings: DataLabelSettings(isVisible: false),
-                  spacing: 0.1,
-                ));
-                //   }
+                  tempAvgSpeedColumnSeriesData
+                      .add(ColumnSeries<TripModel, String>(
+                    pointColorMapper: (TripModel tripData, int index) {
+                      return Colors.transparent;
+                      //return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].tripsByDate![j].dataLineColor : blueColor;
+                    },
+                    dataSource: triSpeedList,
+                    width: 0.4,
+                    color: Colors.transparent,
+                    enableTooltip: true,
+                    xValueMapper: (TripModel tripData, _) => '',
+                    yValueMapper: (TripModel tripData, _) =>
+                        triSpeedList[i].tripsByDate![j].avgSpeed! > 0
+                            ? triSpeedList[i].tripsByDate![j].avgSpeed!
+                            : null,
+                    onPointTap: (ChartPointDetails args) {
+                      if (mounted) {
+                        selectedIndex = triSpeedList[i].tripsByDate![j].id!;
+                        Utils.customPrint("selected index: $selectedIndex");
+                        CustomLogger().logWithFile(Level.info,
+                            "selected index: $selectedIndex -> $page");
+                      }
+                    },
+                    name: 'Avg Speed',
+                    dataLabelSettings: DataLabelSettings(isVisible: false),
+                    spacing: 0.1,
+                  ));
+                }
 
                 if (triSpeedList[i].tripsByDate![j].fuelConsumption! > 0) {
                   fuelUsageColumnSeriesData.add(ColumnSeries<TripModel, String>(
@@ -1021,10 +1030,12 @@ class _ReportsModuleState extends State<ReportsModule> with WidgetsBindingObserv
     return formattedDate;
   }
 
+
+
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addObserver(this);
 
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
@@ -1050,34 +1061,20 @@ class _ReportsModuleState extends State<ReportsModule> with WidgetsBindingObserv
     tripDurationButtonColor = true;
 
     addListenerToControllers();
+
+    _selectionBehaviorDurationGraph = SelectionBehavior(enable: true);
+    zoomPanBehavior = ZoomPanBehavior(enablePanning: true);
   }
+
+  
 
   @override
   void dispose() {
-        WidgetsBinding.instance?.removeObserver(this);
-
     // TODO: implement dispose
     super.dispose();
-    // SystemChrome.setPreferredOrientations([
-    //   DeviceOrientation.portraitUp,
-    // ]);
-  }
-
-
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    // Handle app lifecycle changes here
-    if (state == AppLifecycleState.resumed) {
-      // App has resumed from the background
-      print("App resumed from background");
-    } else if (state == AppLifecycleState.paused) {
-      // App is going into the background
-      print("App going into the background");
-    }else if(state==AppLifecycleState.inactive){
-            print("App is in active");
-
-    }
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
   }
 
   @override
@@ -1112,491 +1109,647 @@ class _ReportsModuleState extends State<ReportsModule> with WidgetsBindingObserv
                             CustomLogger().logWithFile(Level.info,
                                 "isExpansionCollapse : $isExpanded -> $page");
 
-                        isExpansionCollapse = !isExpansionCollapse!;
-                        isExpandedTile = !isExpandedTile;
-                      });
-                    },
-                    collapsedBackgroundColor: reportDropdownColor,
-                    title: Text(
-                      "Search & Filters",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w400,
-                          fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.043:displayWidth(context) * 0.022,
-                          fontFamily: outfit),
-                    ),
-                    trailing: isExpandedTile
-                        ? Icon(
-                            Icons.keyboard_arrow_down,
-                            color: Colors.black,
-                          )
-                        : Icon(
-                            Icons.keyboard_arrow_up,
-                            color: Colors.black,
-                          ),
-                    children: [
-                      Form(
-                        key: _formKey,
-                        child: Column(
-                          children: [
-                            isVesselDataLoading!
-                                ? Container(
-                                 // color: Colors.black,
-                                  alignment: Alignment.center,
-                                // height: orientation==Orientation.landscape?60:200,
-                                    width: displayWidth(context) * 0.8,
-                              child: IgnorePointer(
-                                ignoring: isBtnClick??false,
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButtonFormField2<DropdownItem>(
-                                   
-                                   isExpanded: true,
-                                   decoration: InputDecoration(
-                                                   //errorText: _showDropdownError1 ? 'Select Vessel' : null,
-                                                             
-                                     prefixIcon: Container(
-                                       
-                                                             width: 50,
-                                      // height:displayHeight(context) * 0.02 ,
-                                    child: Transform.scale(
-                                       scale: 0.5,
-                                       child: Image.asset('assets/icons/vessels.png',
-                                        height: displayHeight(context) * 0.02,
-                                        
-                                        ),
-                                     )),
-                                     contentPadding:
-                                     EdgeInsets.symmetric(horizontal: 0,vertical: orientation==Orientation.portrait?10:10),
-                                                             
-                                     focusedBorder: OutlineInputBorder(
-                                         borderSide: BorderSide(
-                                             width: 1.5,
-                                             color: Colors.transparent),
-                                         borderRadius: BorderRadius.all(
-                                             Radius.circular(15))),
-                                     enabledBorder: OutlineInputBorder(
-                                         borderSide: BorderSide(
-                                             width: 1.5,
-                                             color: Colors.transparent),
-                                         borderRadius: BorderRadius.all(
-                                             Radius.circular(15))),
-                                     errorBorder: OutlineInputBorder(
-                                         borderSide: BorderSide(
-                                             width: 1.5,
-                                             color: Colors.red.shade300
-                                                 .withOpacity(0.7)),
-                                         borderRadius: BorderRadius.all(
-                                             Radius.circular(15))),
-                                     errorStyle: TextStyle(
-                                         fontFamily: inter,
-                                         fontSize:orientation==Orientation.portrait?
-                                         displayWidth(context) * 0.025:displayWidth(context) * 0.015
-                                         
-                                         
-                                         ),
-                                     focusedErrorBorder: OutlineInputBorder(
-                                         borderSide: BorderSide(
-                                             width: 1.5,
-                                             color: Colors.red.shade300
-                                                 .withOpacity(0.7)),
-                                         borderRadius: BorderRadius.all(
-                                             Radius.circular(15))
-                                             ),
-                                     fillColor: reportDropdownColor,
-                                     filled: true,
-                                     hintText: "Filter By",
-                                     
-                                     hintStyle: TextStyle(
-                                         color: Theme.of(context).brightness ==
-                                             Brightness.dark
-                                             ? "Filter By" == 'User SubRole'
-                                             ? Colors.black54
-                                             : Colors.white
-                                             : Colors.black,
-                                         fontSize:
-                                         displayWidth(context) * 0.034,
-                                         fontFamily: outfit,
-                                         fontWeight: FontWeight.w300),
-                                   ),
-                                   hint:                                          Container(
-                                     margin:EdgeInsets.only(left: 15,),
-                                  
-                                                                                                                    
-                                                             
-                                     child: Text(
-                                       'Select Vessel *',
-                                       style: TextStyle(
-                                         color: Colors.black,
-                                         
-                                         
-                                           fontSize:
-                                                                         
-                                           orientation==Orientation.portrait?
-                                           displayWidth(context) *
-                                               0.032:displayWidth(context) *
-                                               0.022
-                                           ,
-                                           
-                                           fontFamily: outfit,
-                                           fontWeight: FontWeight.w400),
-                                       overflow: TextOverflow.ellipsis,
-                                     ),
-                                   ),
-                                   value: selectedValue,
-                                   items: vesselData.map((item) {
-                                     return DropdownMenuItem<
-                                         DropdownItem>(
-                                       value: item,
-                                       child: Container(
-                                     margin:EdgeInsets.only(left: 15, ),
-                                         child: Text(
-                                           item.name!,
-                                           style: TextStyle(
-                                                             
-                                          fontSize:   orientation==Orientation.portrait?
-                                         displayWidth(context) *
-                                             0.032:displayWidth(context) *
-                                             0.022,
-                                                
-                                               color: Theme.of(context)
-                                                   .brightness ==
-                                                   Brightness.dark
-                                                   ? "Select Vessel" ==
-                                                   'User SubRole'
-                                                   ? Colors.black
-                                                   : Colors.white
-                                                   : Colors.black,
-                                               fontWeight:
-                                               FontWeight.w500),
-                                           overflow:
-                                           TextOverflow.ellipsis,
-                                         ),
-                                       ),
-                                     );
-                                   }).toList(),
-                                   validator: (value) {
-                                     if (value == null) {
-                                       return 'Select Vessel';
-                                     }
-                                     return null;
-                                   },
-                                   onChanged: (item) {
-                                                             
-                                     if(item!=null){
-                                       if (item != null) {
-                                             // Remove error for the first dropdown
-                                             _formKey.currentState?.validate();
-                                           }
-                                     }
-                                     getVesselDetails(item?.id??"");
-                                     Utils.customPrint(
-                                         "id is: ${item?.id} ");
-                                     CustomLogger().logWithFile(
-                                         Level.info,
-                                         "id is: ${item?.id}-> $page");
-                                                             
-                                     parentValue = false;
-                                     selectedVessel = item!.id;
-                                     selectedVesselName = item.name;
-                                                             
-                                     if (mounted) {
-                                       setState(() {
-                                         isTripIdListLoading = false;
-                                         isSHowGraph = false;
-                                         avgSpeed = null;
-                                         avgDuration = null;
-                                         avgFuelConsumption = null;
-                                         avgPower = null;
-                                         triSpeedList.clear();
-                                         tripList.clear();
-                                         duration1 = null;
-                                         avgSpeed1 = null;
-                                         fuelUsage = null;
-                                         powerUsage = null;
-                                         finalData.clear();
-                                         durationGraphData.clear();
-                                                             
-                                         durationColumnSeriesData
-                                             .clear();
-                                         tempDurationColumnSeriesData.clear();
-                                         avgSpeedColumnSeriesData
-                                             .clear();
-                                         tempAvgSpeedColumnSeriesData.clear();
-                                         fuelUsageColumnSeriesData
-                                             .clear();
-                                         tempFuelUsageColumnSeriesData.clear();
-                                         powerUsageColumnSeriesData
-                                             .clear();
-                                         tempPowerUsageColumnSeriesData.clear();
-                                         selectedTripIdList!.clear();
-                                         selectedTripLabelList!.clear();
-                                       });
-                                     }
-                                                             
-                                     dateTimeList!.clear();
-                                     children!.clear();
-                                     getTripListData(item.id!);
-                                   },
-                                   buttonStyleData:  ButtonStyleData(
-                                     padding: EdgeInsets.only(right:orientation==Orientation.portrait? 0:10,top: 0,bottom: 0),
-                                   ),
-                                   iconStyleData:  IconStyleData(
-                                     icon: Icon(
-                                       Icons.keyboard_arrow_down_rounded,
-                                       color: Colors.black,
-                                     ),
-                                     iconSize: displayHeight(context) * 0.035,
-                                   ),
-                                   dropdownStyleData: DropdownStyleData(
-                                     maxHeight:orientation==Orientation.portrait? displayHeight(context) * 0.25:displayHeight(context) * 0.70,
-                                     decoration: BoxDecoration(
-                                       borderRadius: BorderRadius.circular(14),
-                                       // color: backgroundColor,
-                                     ),
-                                     offset: const Offset(0, 0),
-                                     scrollbarTheme: ScrollbarThemeData(
-                                       radius: const Radius.circular(20),
-                                       thickness: MaterialStateProperty.all<double>(6),
-                                       thumbVisibility: MaterialStateProperty.all<bool>(true),
-                                     ),
-                                   ),
-                                   menuItemStyleData: MenuItemStyleData(
-                                    padding: EdgeInsets.symmetric(horizontal: 0,vertical: 10),
-                                   ),
-                                    
-                                    ),
-                                ),
-                              ),
-                                  )
-                                : Container(
-                                    height: displayHeight(context) * 0.1,
-                                    child: Center(
-                                      child: CircularProgressIndicator(
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                                blueColor),
-                                      ),
-                                    ),
-                                  ),
-                            SizedBox(
-                              height:orientation==Orientation.portrait?
-                              
-                               displayHeight(context) * 0.018:displayHeight(context) * 0.050,
-                            ),
-                            Container(
-                              width: displayWidth(context) * 0.8,
-                              child: IgnorePointer(
-                                ignoring: isBtnClick??false,
-                                child: DropdownButtonHideUnderline(
-                                  
-                                  child: DropdownButtonFormField2<String>(
-                              
-                                    isExpanded: true,
-                                    decoration: InputDecoration(
-                                                   // errorText: _showDropdownError2 ? 'Select Filters' : null,
-                              
-                                      prefixIcon: Container(
-                                        height:displayHeight(context) * 0.02 ,
-                                         width:50 ,
-                              
-                                    child:  Transform.scale(
-                                        scale: 0.5,
-                                        child: Image.asset('assets/icons/filter_icon.png', height: displayHeight(context) * 0.02,),
-                                      )),
-                                      contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 0,vertical: orientation==Orientation.portrait?10:15),
-                                      focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1.5,
-                                              color: Colors.transparent),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(15))),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1.5,
-                                              color: Colors.transparent),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(15))),
-                                      errorBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1.5,
-                                              color: Colors.red.shade300
-                                                  .withOpacity(0.7)),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(15))),
-                                      errorStyle: TextStyle(
-                                          fontFamily: inter,
-                                            fontSize:orientation==Orientation.portrait?
-                                            displayWidth(context) * 0.025:displayWidth(context) * 0.015
-                                          
-                                          
-                                          ),
-                                      focusedErrorBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1.5,
-                                              color: Colors.red.shade300
-                                                  .withOpacity(0.7)),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(15))),
-                                      fillColor: reportDropdownColor,
-                                      filled: true,
-                                      //hintText: "Filter By",
-                                      hintStyle: TextStyle(
-                                        color: Colors.black,
-                                          // color: Theme.of(context).brightness ==
-                                          //     Brightness.dark
-                                          //     ? "Filter By" == 'User SubRole'
-                                          //     ? Colors.black54
-                                          //     : Colors.white
-                                          //     : Colors.black,
-                                          fontSize:orientation==
-                                      Orientation.portrait?    displayWidth(context) * 0.034:displayWidth(context) * 0.034,
-                                          fontFamily: outfit,
-                                          fontWeight: FontWeight.w300),
-                                    ),
-                                    hint: Container(
-                                      alignment: Alignment.centerLeft,
-                                      margin:EdgeInsets.only(left: 15),
-                              
-                                      child: Text(
-                                        
-                                        'Filter By *',
-                                      
-                                        style: TextStyle(
+                            isExpansionCollapse = !isExpansionCollapse!;
+                            isExpandedTile = !isExpandedTile;
+                          });
+                        },
+                        collapsedBackgroundColor: reportDropdownColor,
+                        title: Text(
+                          "Search & Filters",
+                          style: TextStyle(
                               color: Colors.black,
-                                            // color: Theme.of(context)
-                                            //     .brightness ==
-                                            //     Brightness.dark
-                                            //     ? "Filter By" ==
-                                            //     'User SubRole'
-                                            //     ? Colors.black54
-                                            //     : Colors.white
-                                            //     : Colors.black54,
-                                            fontSize:
-                                    
-                                            orientation==Orientation.portrait?
-                                            displayWidth(context) *
-                                                0.032:displayWidth(context) *
-                                                0.022
-                                            ,
-                                    
-                                            fontFamily: outfit,
-                                            fontWeight: FontWeight.w400),
-                                        overflow: TextOverflow.ellipsis,
+                              fontWeight: FontWeight.w400,
+                              fontSize: orientation == Orientation.portrait
+                                  ? displayWidth(context) * 0.043
+                                  : displayWidth(context) * 0.022,
+                              fontFamily: outfit),
+                        ),
+                        trailing: isExpandedTile
+                            ? Icon(
+                                Icons.keyboard_arrow_down,
+                                color: Colors.black,
+                              )
+                            : Icon(
+                                Icons.keyboard_arrow_up,
+                                color: Colors.black,
+                              ),
+                        children: [
+                          Form(
+                            key: _formKey,
+                            child: Column(
+                              children: [
+                                isVesselDataLoading!
+                                    ? Container(
+                                        width: displayWidth(context) * 0.8,
+                                        child: IgnorePointer(
+                                          ignoring: isBtnClick ?? false,
+                                          child: DropdownButtonHideUnderline(
+                                            child: FormField(
+                                              builder: (state) {
+                                                return DropdownButtonFormField2<
+                                                    DropdownItem>(
+                                                  isExpanded: true,
+                                                  decoration: InputDecoration(
+                                                    //errorText: _showDropdownError1 ? 'Select Vessel' : null,
+
+                                                    prefixIcon: Container(
+                                                        width: 50,
+                                                        height: displayHeight(
+                                                                context) *
+                                                            0.02,
+                                                        child: Transform.scale(
+                                                          scale: 0.5,
+                                                          child: Image.asset(
+                                                            'assets/icons/vessels.png',
+                                                            height: displayHeight(
+                                                                    context) *
+                                                                0.02,
+                                                          ),
+                                                        )),
+                                                    contentPadding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 0,
+                                                            vertical: orientation ==
+                                                                    Orientation
+                                                                        .portrait
+                                                                ? 10
+                                                                : 15),
+
+                                                    focusedBorder: OutlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                            width: 1.5,
+                                                            color: Colors
+                                                                .transparent),
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    15))),
+                                                    enabledBorder: OutlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                            width: 1.5,
+                                                            color: Colors
+                                                                .transparent),
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    15))),
+                                                    errorBorder: OutlineInputBorder(
+                                                        borderSide: BorderSide(
+                                                            width: 1.5,
+                                                            color: Colors
+                                                                .red.shade300
+                                                                .withOpacity(
+                                                                    0.7)),
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    15))),
+                                                    errorStyle: TextStyle(
+                                                        fontFamily: inter,
+                                                        fontSize: orientation ==
+                                                                Orientation
+                                                                    .portrait
+                                                            ? displayWidth(
+                                                                    context) *
+                                                                0.025
+                                                            : displayWidth(
+                                                                    context) *
+                                                                0.015),
+                                                    focusedErrorBorder:
+                                                        OutlineInputBorder(
+                                                            borderSide: BorderSide(
+                                                                width: 1.5,
+                                                                color: Colors
+                                                                    .red
+                                                                    .shade300
+                                                                    .withOpacity(
+                                                                        0.7)),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            15))),
+                                                    fillColor:
+                                                        reportDropdownColor,
+                                                    filled: true,
+                                                    hintText: "Filter By",
+
+                                                    hintStyle: TextStyle(
+                                                        color: Theme.of(context)
+                                                                    .brightness ==
+                                                                Brightness.dark
+                                                            ? "Filter By" ==
+                                                                    'User SubRole'
+                                                                ? Colors.black54
+                                                                : Colors.white
+                                                            : Colors.black,
+                                                        fontSize: displayWidth(
+                                                                context) *
+                                                            0.034,
+                                                        fontFamily: outfit,
+                                                        fontWeight:
+                                                            FontWeight.w300),
+                                                  ),
+                                                  hint: Container(
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    margin: EdgeInsets.only(
+                                                        left: 15),
+                                                    child: Text(
+                                                      'Select Vessel *',
+                                                      style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontSize: orientation ==
+                                                                  Orientation
+                                                                      .portrait
+                                                              ? displayWidth(
+                                                                      context) *
+                                                                  0.032
+                                                              : displayWidth(
+                                                                      context) *
+                                                                  0.022,
+                                                          fontFamily: outfit,
+                                                          fontWeight:
+                                                              FontWeight.w400),
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                  ),
+                                                  value: selectedValue,
+                                                  items: vesselData.map((item) {
+                                                    return DropdownMenuItem<
+                                                        DropdownItem>(
+                                                      value: item,
+                                                      child: Container(
+                                                        margin: EdgeInsets.only(
+                                                            left: 15),
+                                                        child: Text(
+                                                          item.name!,
+                                                          style: TextStyle(
+                                                              fontSize: orientation ==
+                                                                      Orientation
+                                                                          .portrait
+                                                                  ? displayWidth(context) *
+                                                                      0.032
+                                                                  : displayWidth(context) *
+                                                                      0.022,
+                                                              color: Theme.of(context)
+                                                                          .brightness ==
+                                                                      Brightness
+                                                                          .dark
+                                                                  ? "Select Vessel" ==
+                                                                          'User SubRole'
+                                                                      ? Colors
+                                                                          .black
+                                                                      : Colors
+                                                                          .white
+                                                                  : Colors
+                                                                      .black,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }).toList(),
+                                                  validator: (value) {
+                                                    if (value == null) {
+                                                      return 'Select Vessel';
+                                                    }
+                                                    return null;
+                                                  },
+                                                  onChanged: (item) {
+                                                    if (item != null) {
+                                                      if (item != null) {
+                                                        // Remove error for the first dropdown
+                                                        _formKey.currentState
+                                                            ?.validate();
+                                                      }
+                                                    }
+                                                    getVesselDetails(
+                                                        item?.id ?? "");
+                                                    Utils.customPrint(
+                                                        "id is: ${item?.id} ");
+                                                    CustomLogger().logWithFile(
+                                                        Level.info,
+                                                        "id is: ${item?.id}-> $page");
+
+                                                    parentValue = false;
+                                                    selectedVessel = item!.id;
+                                                    selectedVesselName =
+                                                        item.name;
+
+                                                    if (mounted) {
+                                                      setState(() {
+                                                        isTripIdListLoading =
+                                                            false;
+                                                        isSHowGraph = false;
+                                                        avgSpeed = null;
+                                                        avgDuration = null;
+                                                        avgFuelConsumption =
+                                                            null;
+                                                        avgPower = null;
+                                                        triSpeedList.clear();
+                                                        tripList.clear();
+                                                        duration1 = null;
+                                                        avgSpeed1 = null;
+                                                        fuelUsage = null;
+                                                        powerUsage = null;
+                                                        finalData.clear();
+                                                        durationGraphData
+                                                            .clear();
+
+                                                        durationColumnSeriesData
+                                                            .clear();
+                                                        tempDurationColumnSeriesData
+                                                            .clear();
+                                                        avgSpeedColumnSeriesData
+                                                            .clear();
+                                                        tempAvgSpeedColumnSeriesData
+                                                            .clear();
+                                                        fuelUsageColumnSeriesData
+                                                            .clear();
+                                                        tempFuelUsageColumnSeriesData
+                                                            .clear();
+                                                        powerUsageColumnSeriesData
+                                                            .clear();
+                                                        tempPowerUsageColumnSeriesData
+                                                            .clear();
+                                                        selectedTripIdList!
+                                                            .clear();
+                                                        selectedTripLabelList!
+                                                            .clear();
+                                                      });
+                                                    }
+
+                                                    dateTimeList!.clear();
+                                                    children!.clear();
+                                                    getTripListData(item.id!);
+                                                  },
+                                                  buttonStyleData:
+                                                      ButtonStyleData(
+                                                    padding: EdgeInsets.only(
+                                                        right: 0),
+                                                  ),
+                                                  iconStyleData: IconStyleData(
+                                                    icon: Icon(
+                                                      Icons
+                                                          .keyboard_arrow_down_rounded,
+                                                      color: Colors.black,
+                                                    ),
+                                                    iconSize:
+                                                        displayHeight(context) *
+                                                            0.035,
+                                                  ),
+                                                  dropdownStyleData:
+                                                      DropdownStyleData(
+                                                    maxHeight:
+                                                        displayHeight(context) *
+                                                            0.25,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              14),
+                                                      // color: backgroundColor,
+                                                    ),
+                                                    offset: const Offset(0, 0),
+                                                    scrollbarTheme:
+                                                        ScrollbarThemeData(
+                                                      radius:
+                                                          const Radius.circular(
+                                                              20),
+                                                      thickness:
+                                                          MaterialStateProperty
+                                                              .all<double>(6),
+                                                      thumbVisibility:
+                                                          MaterialStateProperty
+                                                              .all<bool>(true),
+                                                    ),
+                                                  ),
+                                                  menuItemStyleData:
+                                                      MenuItemStyleData(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 0),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : Container(
+                                        height: displayHeight(context) * 0.1,
+                                        child: Center(
+                                          child: CircularProgressIndicator(
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                    blueColor),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                    value: selectedFilter,
-                                  
-                                    items: filters.map((item) {
-                                      return DropdownMenuItem<String>(
-                                        value: item,
-                              
-                                        child: Container(
-                                      margin:EdgeInsets.only(left: 15),
+                                SizedBox(
+                                  height: orientation == Orientation.portrait
+                                      ? displayHeight(context) * 0.018
+                                      : displayHeight(context) * 0.050,
+                                ),
+                                Container(
+                                  width: displayWidth(context) * 0.8,
+                                  child: IgnorePointer(
+                                    ignoring: isBtnClick ?? false,
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButtonFormField2<String>(
+                                        isExpanded: true,
+                                        decoration: InputDecoration(
+                                          // errorText: _showDropdownError2 ? 'Select Filters' : null,
+
+                                          prefixIcon: Container(
+                                              height:
+                                                  displayHeight(context) * 0.02,
+                                              width: 50,
+                                              child: Transform.scale(
+                                                scale: 0.5,
+                                                child: Image.asset(
+                                                  'assets/icons/filter_icon.png',
+                                                  height:
+                                                      displayHeight(context) *
+                                                          0.02,
+                                                ),
+                                              )),
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 0,
+                                              vertical: orientation ==
+                                                      Orientation.portrait
+                                                  ? 10
+                                                  : 15),
+                                          focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  width: 1.5,
+                                                  color: Colors.transparent),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(15))),
+                                          enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  width: 1.5,
+                                                  color: Colors.transparent),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(15))),
+                                          errorBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  width: 1.5,
+                                                  color: Colors.red.shade300
+                                                      .withOpacity(0.7)),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(15))),
+                                          errorStyle: TextStyle(
+                                              fontFamily: inter,
+                                              fontSize: orientation ==
+                                                      Orientation.portrait
+                                                  ? displayWidth(context) *
+                                                      0.025
+                                                  : displayWidth(context) *
+                                                      0.015),
+                                          focusedErrorBorder:
+                                              OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      width: 1.5,
+                                                      color: Colors.red.shade300
+                                                          .withOpacity(0.7)),
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(15))),
+                                          fillColor: reportDropdownColor,
+                                          filled: true,
+                                          //hintText: "Filter By",
+                                          hintStyle: TextStyle(
+                                              color: Colors.black,
+                                              // color: Theme.of(context).brightness ==
+                                              //     Brightness.dark
+                                              //     ? "Filter By" == 'User SubRole'
+                                              //     ? Colors.black54
+                                              //     : Colors.white
+                                              //     : Colors.black,
+                                              fontSize: orientation ==
+                                                      Orientation.portrait
+                                                  ? displayWidth(context) *
+                                                      0.034
+                                                  : displayWidth(context) *
+                                                      0.034,
+                                              fontFamily: outfit,
+                                              fontWeight: FontWeight.w300),
+                                        ),
+                                        hint: Container(
+                                          alignment: Alignment.centerLeft,
+                                          margin: EdgeInsets.only(left: 15),
                                           child: Text(
-                                            item,
+                                            'Filter By *',
                                             style: TextStyle(
-                                                                                         fontSize:   orientation==Orientation.portrait?
-                                          displayWidth(context) *
-                                              0.032:displayWidth(context) *
-                                              0.022,
-                              
-                                                // fontSize: displayWidth(context) *
-                                                //     0.0346,
-                                                color: Theme.of(context)
-                                                    .brightness ==
-                                                    Brightness.dark
-                                                    ? "Filter by" ==
-                                                    'User SubRole'
-                                                    ? Colors.black
-                                                    : Colors.white
-                                                    : Colors.black,
-                                                fontWeight: FontWeight.w500),
+                                                color: Colors.black,
+                                                // color: Theme.of(context)
+                                                //     .brightness ==
+                                                //     Brightness.dark
+                                                //     ? "Filter By" ==
+                                                //     'User SubRole'
+                                                //     ? Colors.black54
+                                                //     : Colors.white
+                                                //     : Colors.black54,
+                                                fontSize: orientation ==
+                                                        Orientation.portrait
+                                                    ? displayWidth(context) *
+                                                        0.032
+                                                    : displayWidth(context) *
+                                                        0.022,
+                                                fontFamily: outfit,
+                                                fontWeight: FontWeight.w400),
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                         ),
-                                      );
-                                    }).toList(),
-                                    validator: (value) {
-                                      if (value == null) {
-                                        return 'Select Filters';
-                                      }
-                                      return null;
-                                    },
-                                    onChanged: (item) {
-                              
-                                                                                  if (item != null) {
-                                              // Remove error for the second dropdown
-                                              _formKey.currentState?.validate();
-                                            }
+                                        value: selectedFilter,
+                                        items: filters.map((item) {
+                                          return DropdownMenuItem<String>(
+                                            value: item,
+                                            child: Container(
+                                              margin: EdgeInsets.only(left: 15),
+                                              child: Text(
+                                                item,
+                                                style: TextStyle(
+                                                    fontSize: orientation ==
+                                                            Orientation.portrait
+                                                        ? displayWidth(
+                                                                context) *
+                                                            0.032
+                                                        : displayWidth(
+                                                                context) *
+                                                            0.022,
 
-                                      if (item == "Filter by Date") {
-                                        setState(() {
-                                          selectedCaseType = 1;
-                                          isSHowGraph = false;
-                                          Utils.customPrint(
-                                              "selectedCaseType: $selectedCaseType ");
-                                          CustomLogger().logWithFile(Level.info,
-                                              "selectedCaseType: $selectedCaseType-> $page");
-                                          selectedTripsAndDateString =
-                                          "Date Range";
-                                        });
-                                      } else if (item == "Filter by Trips") {
-                                        setState(() {
-                                          selectedCaseType = 2;
-                                          selectedTripsAndDateDetails = "";
-                                          isSHowGraph = false;
-                                          Utils.customPrint(
-                                              "selectedCaseType: $selectedCaseType ");
-                                          CustomLogger().logWithFile(Level.info,
-                                              "selectedCaseType: $selectedCaseType-> $page");
-                                          selectedTripsAndDateString =
-                                          "Selected Trips";
-                                        });
-                                      }
-                                    },
-                                    buttonStyleData:  ButtonStyleData(
-                                      padding: EdgeInsets.only(right:orientation==Orientation.portrait? 0:10),
-                                    ),
-                                    iconStyleData:  IconStyleData(
-                                      icon: Icon(
-                                        Icons.keyboard_arrow_down_rounded,
-                                        color: Colors.black,
+                                                    // fontSize: displayWidth(context) *
+                                                    //     0.0346,
+                                                    color: Theme.of(context)
+                                                                .brightness ==
+                                                            Brightness.dark
+                                                        ? "Filter by" ==
+                                                                'User SubRole'
+                                                            ? Colors.black
+                                                            : Colors.white
+                                                        : Colors.black,
+                                                    fontWeight:
+                                                        FontWeight.w500),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          );
+                                        }).toList(),
+                                        validator: (value) {
+                                          if (value == null) {
+                                            return 'Select Filters';
+                                          }
+                                          return null;
+                                        },
+                                        onChanged: (item) {
+                                          if (item != null) {
+                                            // Remove error for the second dropdown
+                                            _formKey.currentState?.validate();
+                                          }
+
+                                          if (item == "Filter by Date") {
+                                            setState(() {
+                                              selectedCaseType = 1;
+                                              isSHowGraph = false;
+                                              Utils.customPrint(
+                                                  "selectedCaseType: $selectedCaseType ");
+                                              CustomLogger().logWithFile(
+                                                  Level.info,
+                                                  "selectedCaseType: $selectedCaseType-> $page");
+                                              selectedTripsAndDateString =
+                                                  "Date Range";
+                                            });
+                                          } else if (item ==
+                                              "Filter by Trips") {
+                                            setState(() {
+                                              selectedCaseType = 2;
+                                              selectedTripsAndDateDetails = "";
+                                              isSHowGraph = false;
+                                              Utils.customPrint(
+                                                  "selectedCaseType: $selectedCaseType ");
+                                              CustomLogger().logWithFile(
+                                                  Level.info,
+                                                  "selectedCaseType: $selectedCaseType-> $page");
+                                              selectedTripsAndDateString =
+                                                  "Selected Trips";
+                                            });
+                                          }
+                                        },
+                                        buttonStyleData: ButtonStyleData(
+                                          padding: EdgeInsets.only(right: 0),
+                                        ),
+                                        iconStyleData: IconStyleData(
+                                          icon: Icon(
+                                            Icons.keyboard_arrow_down_rounded,
+                                            color: Colors.black,
+                                          ),
+                                          iconSize:
+                                              displayHeight(context) * 0.035,
+                                        ),
+                                        dropdownStyleData: DropdownStyleData(
+                                          maxHeight:
+                                              displayHeight(context) * 0.25,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(14),
+                                            // color: backgroundColor,
+                                          ),
+                                          offset: const Offset(0, 0),
+                                          scrollbarTheme: ScrollbarThemeData(
+                                            radius: const Radius.circular(20),
+                                            thickness: MaterialStateProperty
+                                                .all<double>(6),
+                                            thumbVisibility:
+                                                MaterialStateProperty.all<bool>(
+                                                    true),
+                                          ),
+                                        ),
+                                        menuItemStyleData: MenuItemStyleData(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 0),
+                                        ),
                                       ),
-                                      iconSize: displayHeight(context) * 0.035,
-                                    ),
-                                    dropdownStyleData: DropdownStyleData(
-                                      maxHeight:orientation==Orientation.portrait? displayHeight(context) * 0.25:displayHeight(context) * 0.40,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(14),
-                                        // color: backgroundColor,
-                                      ),
-                                      offset: const Offset(0, 0),
-                                      scrollbarTheme: ScrollbarThemeData(
-                                        radius: const Radius.circular(20),
-                                        thickness: MaterialStateProperty.all<double>(6),
-                                        thumbVisibility: MaterialStateProperty.all<bool>(true),
-                                      ),
-                                    ),
-                                    menuItemStyleData: MenuItemStyleData(
-                                      padding: EdgeInsets.symmetric(horizontal: 0),
                                     ),
                                   ),
                                 ),
-                              ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: displayWidth(context) * 0.04,
-                      ),
-                      selectedCaseType == 0
-                          ? Container()
-                          : selectedCaseType == 1
-                              ?
-                              
-                               filterByDate(context,orientation)!
+                          ),
+                          SizedBox(
+                            height: displayWidth(context) * 0.04,
+                          ),
+                          selectedCaseType == 0
+                              ? Container()
+                              : selectedCaseType == 1
+                                  ? filterByDate(context, orientation)!
+                                  : filterByTrip(context, orientation)!,
+                          SizedBox(
+                            height: displayWidth(context) * 0.04,
+                          ),
+                          isBtnClick ?? false
+                              ? Container(
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      color: blueColor,
+                                    ),
+                                  ),
+                                )
+                              : Column(
+                                  children: [
+                                    CommonButtons.getAcceptButton(
+                                      "Generate Report",
+                                      context,
+                                      blueColor,
+                                      () {
+                                        if (_formKey.currentState!.validate()) {
+                                          setState(() {
+                                            isSHowGraph = false;
+                                            isBtnClick = true;
+                                            isExpansionCollapse = false;
+                                            isExpandedTile = true;
+                                            avgSpeed = null;
+                                            avgDuration = null;
+                                            // isSelectStartDate=false;
+                                            avgFuelConsumption = null;
+                                            avgPower = null;
+                                            triSpeedList.clear();
+                                            tripList.clear();
+                                            duration1 = null;
+                                            avgSpeed1 = null;
+                                            fuelUsage = null;
+                                            powerUsage = null;
+                                            finalData.clear();
+                                            durationGraphData.clear();
+
+                                            durationColumnSeriesData.clear();
+                                            tempDurationColumnSeriesData
+                                                .clear();
+                                            avgSpeedColumnSeriesData.clear();
+                                            tempAvgSpeedColumnSeriesData
+                                                .clear();
+                                            fuelUsageColumnSeriesData.clear();
+                                            tempFuelUsageColumnSeriesData
+                                                .clear();
+                                            powerUsageColumnSeriesData.clear();
+                                            tempPowerUsageColumnSeriesData
+                                                .clear();
+                                          });
+
+                                          // _collapseExpansionTile();
+                                          String? startDate = "";
+                                          String? endDate = "";
+                                          String? startDateToDispaly = "";
+                                          String? endDateToDispaly = "";
+                                          totalDuration = 0;
+                                          totalSpeed = 0;
+                                          totalFuelConsumption = 0;
+                                          totalAvgPower = 0;
 
                                           if (selectedCaseType == 1) {
                                             if (focusedDayString!.isNotEmpty ||
@@ -1690,10 +1843,10 @@ class _ReportsModuleState extends State<ReportsModule> with WidgetsBindingObserv
                                       },
                                       orientation == Orientation.portrait
                                           ? displayWidth(context) * 0.8
-                                          : displayWidth(context) * 0.5,
+                                          : displayWidth(context) * 0.4,
                                       orientation == Orientation.portrait
-                                          ? displayHeight(context) * 0.06
-                                          : displayHeight(context) * 0.15,
+                                          ? displayHeight(context) * 0.065
+                                          : displayHeight(context) * 0.12,
                                       Colors.grey.shade400,
                                       Theme.of(context).brightness ==
                                               Brightness.dark
@@ -1701,7 +1854,7 @@ class _ReportsModuleState extends State<ReportsModule> with WidgetsBindingObserv
                                           : Colors.white,
                                       orientation == Orientation.portrait
                                           ? displayHeight(context) * 0.021
-                                          : displayWidth(context) * 0.026,
+                                          : displayHeight(context) * 0.037,
                                       blueColor,
                                       '',
                                     ),
@@ -2452,9 +2605,7 @@ class _ReportsModuleState extends State<ReportsModule> with WidgetsBindingObserv
         CartesianChartPoint currentPoint = point;
         final String yValue = currentPoint.y.toString();
         return Container(
-          width: orientation == Orientation.portrait
-              ? displayWidth(context) * 0.4
-              : displayWidth(context) / 4.2,
+          width: displayWidth(context) * 0.4,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20),
@@ -2535,9 +2686,9 @@ class _ReportsModuleState extends State<ReportsModule> with WidgetsBindingObserv
     return Stack(
       children: [
         SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            controller: _tripDurationSrollController,
-            child: SizedBox(
+          scrollDirection: Axis.horizontal,
+          controller: _tripDurationSrollController,
+          child: SizedBox(
               width: durationColumnSeriesData.length > 3
                   ? (1.5 * 100 * durationColumnSeriesData.length)
                   : displayWidth(context),
@@ -2545,7 +2696,7 @@ class _ReportsModuleState extends State<ReportsModule> with WidgetsBindingObserv
               child: SfCartesianChart(
                 tooltipBehavior: tooltipBehaviorDurationGraph,
                 enableSideBySideSeriesPlacement: true,
-                //zoomPanBehavior: zoomPanBehavior,
+                zoomPanBehavior: zoomPanBehavior,
                 primaryXAxis: CategoryAxis(
                     isVisible: true,
                     // autoScrollingDelta: 10,
@@ -2568,13 +2719,20 @@ class _ReportsModuleState extends State<ReportsModule> with WidgetsBindingObserv
                       width: 0,
                     ),
                     title: AxisTitle(
-                      text: 'Time ($minutes)',
-                      textStyle: TextStyle(
-                        color: Colors.black,
-                        fontSize: displayWidth(context) * 0.028,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: poppins,
-                      ),
+                        text: 'Time ($minutes)',
+                        textStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: displayWidth(context) * 0.028,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: poppins,
+                        )),
+                    majorTickLines: MajorTickLines(width: 0),
+                    minorTickLines: MinorTickLines(width: 0),
+                    labelStyle: TextStyle(
+                      color: Colors.black,
+                      fontSize: displayWidth(context) * 0.034,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: poppins,
                     ),
                     plotBands: [
                       PlotBand(
@@ -2594,10 +2752,9 @@ class _ReportsModuleState extends State<ReportsModule> with WidgetsBindingObserv
                           dashArray: <double>[4, 8],
                           horizontalTextAlignment: TextAnchor.start),
                     ]),
-
                 series: durationColumnSeriesData,
-              ),
-            )),
+              )),
+        ),
         Positioned(
           top: 0,
           bottom: 0,
@@ -2674,9 +2831,7 @@ class _ReportsModuleState extends State<ReportsModule> with WidgetsBindingObserv
         final double? yValue = currentPoint.y;
 
         return Container(
-          width: orientation == Orientation.portrait
-              ? displayWidth(context) * 0.4
-              : displayWidth(context) / 4.2,
+          width: displayWidth(context) * 0.4,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20),
@@ -2889,9 +3044,7 @@ class _ReportsModuleState extends State<ReportsModule> with WidgetsBindingObserv
             .logWithFile(Level.info, "fuel y data is: ${yValue} -> $page");
 
         return Container(
-          width: orientation == Orientation.portrait
-              ? displayWidth(context) * 0.4
-              : displayWidth(context) / 4.2,
+          width: displayWidth(context) * 0.4,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20),
@@ -3048,9 +3201,7 @@ class _ReportsModuleState extends State<ReportsModule> with WidgetsBindingObserv
             .logWithFile(Level.info, "power y data is: ${yValue} -> $page");
 
         return Container(
-          width: orientation == Orientation.portrait
-              ? displayWidth(context) * 0.4
-              : displayWidth(context) / 4.2,
+          width: displayWidth(context) * 0.4,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20),
@@ -3090,7 +3241,7 @@ class _ReportsModuleState extends State<ReportsModule> with WidgetsBindingObserv
                   Utils.customPrint("tapped on go to report button");
                   CustomLogger().logWithFile(Level.info,
                       "Navigating user into Trip Analytics Screen -> $page");
-                  print('the selected index was---' + selectedIndex.toString());
+
                   bool isTripExists =
                       await _databaseService.checkIfTripExist(selectedIndex);
                   if (isTripExists) {
@@ -3338,8 +3489,9 @@ class _ReportsModuleState extends State<ReportsModule> with WidgetsBindingObserv
                         child: Padding(
                           padding: EdgeInsets.only(
                               left: displayWidth(context) * 0.03,
-                             top:orientation==Orientation.portrait? displayWidth(context) * 0.05:displayWidth(context) * 0.02
-                              ),
+                              top: orientation == Orientation.portrait
+                                  ? displayWidth(context) * 0.05
+                                  : displayWidth(context) * 0.02),
                           child: Text(
                             "Select Start Date",
                             style: TextStyle(
@@ -3496,9 +3648,9 @@ class _ReportsModuleState extends State<ReportsModule> with WidgetsBindingObserv
                             child: Padding(
                               padding: EdgeInsets.only(
                                   left: displayWidth(context) * 0.03,
-                             top:orientation==Orientation.portrait? displayWidth(context) * 0.05:displayWidth(context) * 0.02
-                                  
-                                  ),
+                                  top: orientation == Orientation.portrait
+                                      ? displayWidth(context) * 0.05
+                                      : displayWidth(context) * 0.02),
                               child: Text(
                                 "Select End Date",
                                 style: TextStyle(
@@ -3757,24 +3909,41 @@ class _ReportsModuleState extends State<ReportsModule> with WidgetsBindingObserv
 
   void scorllToParticularPostion(
       int index, dynamic persondata, Orientation orientation) {
-    selectedIndex = persondata['tripDetails'];
     tooltipactivationMode = ActivationMode.singleTap;
     reportsDataTableKey.currentState!.setState(() {
       reportsDataTableKey.currentState!.isToolTipShown = true;
     });
 
+    int pointIndex = -1;
+    int seriesIndex = -1;
+    List<String> barIdList = [];
+    List<String> barDateList = [];
+
+
     for (int i = 0; i < durationGraphData.length; i++) {
       for (int j = 0; j < durationGraphData[i].tripsByDate!.length; j++) {
         durationGraphData[i].tripsByDate![j].dataLineColor = blueColor;
+        barIdList.add(durationGraphData[i].tripsByDate![j].id!);
+        if(!barDateList.contains(durationGraphData[i].date!)){
+          barDateList.add(durationGraphData[i].date!);
+        }
         if (durationGraphData[i].tripsByDate![j].id ==
             persondata['tripDetails']) {
           durationGraphData[i].tripsByDate![j].dataLineColor = Colors.green;
         }
+
+        if (dateWithZeros(persondata['date']) ==
+            dateWithZeros(durationGraphData[i].date!)) {
+          index = i;
+        }
       }
     }
 
-    final scrollPosition = index * 150.0;
-    selectedRowIndex = index;
+    seriesIndex = barIdList.indexOf(persondata['tripDetails']);
+    pointIndex = barDateList.indexOf(persondata['date']);
+
+    final scrollPosition = pointIndex * 150.0;
+    selectedRowIndex = pointIndex;
     setState(() {});
     if (orientation == Orientation.portrait) {
       _mainScrollController.animateTo(
@@ -3792,6 +3961,38 @@ class _ReportsModuleState extends State<ReportsModule> with WidgetsBindingObserv
 
     // Calculate the scroll position based on your data
     if (selectedButton == "trip duration") {
+
+
+
+      // Future.delayed(Duration(seconds: 1), (){
+      //   if(pointIndex < globalPointIndex){
+      //     for(int i =0; i < pointIndex; i++){
+      //       zoomPanBehavior.panToDirection('right');
+      //     }globalPointIndex = pointIndex;
+      //     Future.delayed(Duration(seconds: 1), (){
+      //       tooltipBehaviorDurationGraph?.showByIndex(
+      //           seriesIndex, (barDateList.length - 1));
+      //
+      //       _selectionBehaviorDurationGraph.selectDataPoints(pointIndex, seriesIndex);
+      //     });
+      //   }
+      //   else{
+      //     for(int i =0; i < pointIndex; i++){
+      //       zoomPanBehavior.panToDirection('left');
+      //     }globalPointIndex = pointIndex;
+      //     Future.delayed(Duration(seconds: 1), (){
+      //       tooltipBehaviorDurationGraph?.showByIndex(
+      //           seriesIndex, (barDateList.length - 1));
+      //
+      //       _selectionBehaviorDurationGraph.selectDataPoints(pointIndex, seriesIndex);
+      //     });
+      //   }
+      //
+      //
+      //
+      //
+      // });
+
       _tripDurationSrollController
           .animateTo(
         scrollPosition,
@@ -3801,7 +4002,8 @@ class _ReportsModuleState extends State<ReportsModule> with WidgetsBindingObserv
           .then((value) {
         Future.delayed(Duration(seconds: 1), () {
           tooltipBehaviorDurationGraph?.showByIndex(
-              selectedRowIndex!, pointIndex ?? 0);
+              seriesIndex, (barDateList.length - 1));
+          // _selectionBehaviorDurationGraph.selectDataPoints(pointIndex, seriesIndex);
         });
       });
     } else if (selectedButton == 'avg speed') {
@@ -3813,7 +4015,7 @@ class _ReportsModuleState extends State<ReportsModule> with WidgetsBindingObserv
       )
           .then((value) {
         Future.delayed(Duration(seconds: 1), () {
-          avgSpeedToolTip?.showByIndex(selectedRowIndex!, pointIndex ?? 0);
+          avgSpeedToolTip?.showByIndex(seriesIndex, (barDateList.length - 1));
         });
       });
     } else if (selectedButton == 'fuel usage') {
