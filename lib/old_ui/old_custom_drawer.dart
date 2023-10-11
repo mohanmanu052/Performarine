@@ -8,7 +8,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
-import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
@@ -36,7 +35,7 @@ import '../common_widgets/widgets/log_level.dart';
 
 class OldCustomDrawer extends StatefulWidget {
   final GlobalKey<ScaffoldState>? scaffoldKey;
-  const OldCustomDrawer({Key? key, this.scaffoldKey}) : super(key: key);
+   OldCustomDrawer({Key? key, this.scaffoldKey}) : super(key: key);
 
   @override
   State<OldCustomDrawer> createState() => _OldCustomDrawerState();
@@ -73,7 +72,7 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
     return Drawer(
       backgroundColor: commonBackgroundColor,
       child: Container(
-        margin: const EdgeInsets.only(left: 30, right: 10.0, top: 10.0),
+        margin:  EdgeInsets.only(left: 30, right: 10.0, top: 10.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -177,7 +176,7 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                const RetiredVesselsScreen()),
+                                 RetiredVesselsScreen()),
                           );
                         },
                         child: commonText(
@@ -240,7 +239,7 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                    const SyncDataCloudToMobileScreen()),
+                                     SyncDataCloudToMobileScreen()),
                               );
                             }
                           } else {
@@ -254,7 +253,7 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                    const SyncDataCloudToMobileScreen()),
+                                     SyncDataCloudToMobileScreen()),
                               );
                             }
                           }
@@ -555,7 +554,7 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
 
     Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => const SignInScreen(calledFrom: 'sideMenu',)),
+        MaterialPageRoute(builder: (context) =>  SignInScreen(calledFrom: 'sideMenu',)),
         ModalRoute.withName(""));
   }
 
@@ -575,7 +574,7 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
                   height: displayHeight(context) * 0.34,
                   width: MediaQuery.of(context).size.width,
                   child: Padding(
-                    padding: const EdgeInsets.only(
+                    padding:  EdgeInsets.only(
                         left: 8.0, right: 8.0, top: 0, bottom: 0),
                     child: Stack(
                       children: [
@@ -587,7 +586,7 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
                               height: displayHeight(context) * 0.02,
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(left: 8.0, right: 8),
+                              padding:  EdgeInsets.only(left: 8.0, right: 8),
                               child: Column(
                                 children: [
                                   commonText(
@@ -743,7 +742,7 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
                     height: displayHeight(context) * 0.32,
                     width: MediaQuery.of(context).size.width,
                     child: Padding(
-                      padding: const EdgeInsets.only(
+                      padding:  EdgeInsets.only(
                           left: 8.0, right: 8.0, top: 15, bottom: 15),
                       child: Stack(
                         children: [
@@ -755,7 +754,7 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
                                 height: displayHeight(context) * 0.025,
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(left: 8.0, right: 8),
+                                padding:  EdgeInsets.only(left: 8.0, right: 8),
                                 child: Column(
                                   children: [
                                     commonText(
@@ -829,7 +828,7 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (context) =>
-                                                      const SyncDataCloudToMobileScreen()),
+                                                       SyncDataCloudToMobileScreen()),
                                                 );
                                               }
 
@@ -1131,7 +1130,7 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => const SyncDataCloudToMobileScreen()),
+                builder: (context) =>  SyncDataCloudToMobileScreen()),
           );
         }
 
@@ -1165,7 +1164,7 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
                   height: displayHeight(context) * 0.45,
                   width: MediaQuery.of(context).size.width,
                   child: Padding(
-                    padding: const EdgeInsets.only(
+                    padding:  EdgeInsets.only(
                         left: 8.0, right: 8.0, top: 15, bottom: 15),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1192,7 +1191,7 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
                         ),
 
                         Padding(
-                          padding: const EdgeInsets.only(left: 8.0, right: 8),
+                          padding:  EdgeInsets.only(left: 8.0, right: 8),
                           child: Column(
                             children: [
                               commonText(
