@@ -707,6 +707,10 @@ print('the stop Trip is clickedd-------------111');
         barrierDismissible: false,
         context: context,
         builder: (BuildContext dialogContext) {
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
           return WillPopScope(
             onWillPop: ()async{
               return false;
