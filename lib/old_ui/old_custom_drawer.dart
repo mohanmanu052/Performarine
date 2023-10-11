@@ -177,7 +177,7 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                const RetiredVesselsScreen()),
+                                 RetiredVesselsScreen()),
                           );
                         },
                         child: commonText(
@@ -240,7 +240,7 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                    const SyncDataCloudToMobileScreen()),
+                                     SyncDataCloudToMobileScreen()),
                               );
                             }
                           } else {
@@ -254,7 +254,7 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                    const SyncDataCloudToMobileScreen()),
+                                     SyncDataCloudToMobileScreen()),
                               );
                             }
                           }
@@ -829,7 +829,7 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (context) =>
-                                                      const SyncDataCloudToMobileScreen()),
+                                                       SyncDataCloudToMobileScreen()),
                                                 );
                                               }
 
@@ -1131,7 +1131,7 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => const SyncDataCloudToMobileScreen()),
+                builder: (context) =>  SyncDataCloudToMobileScreen()),
           );
         }
 
