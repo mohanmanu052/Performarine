@@ -703,14 +703,14 @@ print('the stop Trip is clickedd-------------111');
       sharedPreferences!.setBool('reset_dialog_opened', true);
       sharedPreferences!.setBool('key_lat_time_dialog_open', true);
     }
+            SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
     return showDialog(
         barrierDismissible: false,
         context: context,
         builder: (BuildContext dialogContext) {
-
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
           return WillPopScope(
             onWillPop: ()async{
               return false;
