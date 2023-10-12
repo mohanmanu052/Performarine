@@ -765,6 +765,7 @@ Future.delayed(Duration(milliseconds: 100),(){
                         EmptyPointSettings(mode: EmptyPointMode.drop),
                     dataLabelSettings: DataLabelSettings(isVisible: false),
                     spacing: 0.1,
+
                   ));
 
                   tempDurationColumnSeriesData.add
@@ -2587,7 +2588,7 @@ Utils.showSnackBar(context,
               child: SfCartesianChart(
                 tooltipBehavior: tooltipBehaviorDurationGraph,
                 enableSideBySideSeriesPlacement: true,
-                //zoomPanBehavior: zoomPanBehavior,
+                // zoomPanBehavior: zoomPanBehavior,
                 primaryXAxis: CategoryAxis(
                     isVisible: true,
                     // autoScrollingDelta: 10,
@@ -2616,36 +2617,125 @@ Utils.showSnackBar(context,
                           fontSize: displayWidth(context) * 0.028,
                           fontWeight: FontWeight.w500,
                           fontFamily: poppins,
+                        )),
+                    majorTickLines: MajorTickLines(width: 0),
+                    minorTickLines: MinorTickLines(width: 0),
+                    labelStyle: TextStyle(
+                      color: Colors.black,
+                      fontSize: displayWidth(context) * 0.034,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: poppins,
+                    ),
+                    axisLabelFormatter: (axisLabelRenderArgs) {
+                      String value = axisLabelRenderArgs.text.length == 1
+                          ? '00${axisLabelRenderArgs.text}'
+                          : axisLabelRenderArgs.text.length == 2
+                          ? '0${axisLabelRenderArgs.text}'
+                          : axisLabelRenderArgs.text;
+                      return ChartAxisLabel(value, TextStyle(
+                        color: Colors.black,
+                        fontSize: displayWidth(context) * 0.034,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: poppins,
+                      ));
+                    },
+                    plotBands: [
+                      PlotBand(
+                          text: 'avg ${avgDuration} min',
+                          isVisible: true,
+                          start: avgDuration,
+                          end: avgDuration,
+                          borderWidth: 2,
+                          borderColor: Colors.grey.shade400,
+                          shouldRenderAboveSeries: true,
+                          textStyle: TextStyle(
+                            color: Colors.black,
+                            fontSize: displayWidth(context) * 0.028,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: poppins,
+                          ),
+                          dashArray: <double>[4, 8],
+                          horizontalTextAlignment: TextAnchor.start),
+                    ]),
+                series: durationColumnSeriesData,
+              )),
+        ),
+
+        Positioned(
+          top: 0,
+          bottom: 0,
+          left: 0,
+          child: !isStickyYAxisVisible
+              ? SizedBox()
+              : Container(
+                  width: orientation == Orientation.portrait
+                    // ? displayWidth(context) * 0.16
+                      ? tempDurationColumnSeriesData.length > 10 ? displayWidth(context) * 0.16 : displayWidth(context) * 0.20
+                      : tempDurationColumnSeriesData.length > 10 ? displayWidth(context) * 0.1128 : displayWidth(context) * 0.1450,
+                  height: graph_height,
+                  color: Colors.white,
+                  child: SfCartesianChart(
+                    plotAreaBorderWidth: 0,
+                    tooltipBehavior: tooltipBehaviorDurationGraph,
+                    enableSideBySideSeriesPlacement: true,
+                    primaryXAxis: CategoryAxis(
+                        isVisible: true,
+                        labelPlacement: LabelPlacement.betweenTicks,
+                        // Or LabelPlacement.onTicks
+                        autoScrollingMode: AutoScrollingMode.end,
+                        labelAlignment: LabelAlignment.start,
+                        labelStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: orientation == Orientation.portrait
+                              ? displayWidth(context) * 0.034
+                              : displayWidth(context) * 0.022,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: poppins,
+                        )),
+                    primaryYAxis: NumericAxis(
+                        axisLine: AxisLine(width: 1),
+                        axisLabelFormatter: (axisLabelRenderArgs) {
+                          String value = axisLabelRenderArgs.text.length == 1
+                          ? '00${axisLabelRenderArgs.text}'
+                              : axisLabelRenderArgs.text.length == 2
+                          ? '0${axisLabelRenderArgs.text}'
+                              : axisLabelRenderArgs.text;
+                          return ChartAxisLabel(value, TextStyle(
+                            color: Colors.black,
+                            fontSize: displayWidth(context) * 0.034,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: poppins,
+                          ));
+                        },
+                        title: AxisTitle(
+                            text: 'Time ($minutes)',
+                            textStyle: TextStyle(
+                              color: Colors.black,
+                              fontSize: displayWidth(context) * 0.028,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: poppins,
+                            )),
+                        majorTickLines: MajorTickLines(width: 0),
+                        minorTickLines: MinorTickLines(width: 0),
+                        labelStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: displayWidth(context) * 0.034,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: poppins,
                         ),
                         
                         ),
 
 
-plotBands: [
-  PlotBand(
-      text: 'avg ${avgDuration} min',
-      isVisible: true,
-      start: avgDuration,
-      end: avgDuration,
-      borderWidth: 2,
-      borderColor: Colors.grey.shade400,
-      shouldRenderAboveSeries: true,
-      textStyle: TextStyle(
-        color: Colors.black,
-        fontSize: displayWidth(context) * 0.028,
-        fontWeight: FontWeight.w500,
-        fontFamily: poppins,
-      ),
-      dashArray: <double>[4, 8],
-      horizontalTextAlignment: TextAnchor.start),
-]),    
-
-
 series: durationColumnSeriesData,
+
+),    
+
+
               ),
 
               
-             )
+             
           
     ),
          Positioned(
