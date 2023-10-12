@@ -2679,6 +2679,7 @@ Utils.showSnackBar(context,
                     tooltipBehavior: tooltipBehaviorDurationGraph,
                     enableSideBySideSeriesPlacement: true,
                     primaryXAxis: CategoryAxis(
+                      axisLine: AxisLine(width: 0),
                         isVisible: true,
                         labelPlacement: LabelPlacement.betweenTicks,
                         // Or LabelPlacement.onTicks
@@ -2717,6 +2718,8 @@ Utils.showSnackBar(context,
                             )),
                         majorTickLines: MajorTickLines(width: 0),
                         minorTickLines: MinorTickLines(width: 0),
+                      majorGridLines: MajorGridLines(width: 0),
+                      minorGridLines: MinorGridLines(width: 0),
                         labelStyle: TextStyle(
                           color: Colors.black,
                           fontSize: displayWidth(context) * 0.034,
@@ -2725,9 +2728,7 @@ Utils.showSnackBar(context,
                         ),
                         
                         ),
-
-
-series: durationColumnSeriesData,
+                    series: tempDurationColumnSeriesData,
 
 ),    
 
@@ -2738,7 +2739,7 @@ series: durationColumnSeriesData,
              
           
     ),
-         Positioned(
+         /*Positioned(
            top: 0,
            bottom: 0,
            left: 0,
@@ -2787,7 +2788,7 @@ series: durationColumnSeriesData,
                  series: tempDurationColumnSeriesData,
                )
            ),
-         ),
+         ),*/
        ],
      );
   }
