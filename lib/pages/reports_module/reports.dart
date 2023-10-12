@@ -746,6 +746,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                         EmptyPointSettings(mode: EmptyPointMode.drop),
                     dataLabelSettings: DataLabelSettings(isVisible: false),
                     spacing: 0.1,
+
                   ));
                 }
                 if (triSpeedList[i].tripsByDate![j].avgSpeed! > 0) {
@@ -2696,7 +2697,7 @@ class _ReportsModuleState extends State<ReportsModule> {
               child: SfCartesianChart(
                 tooltipBehavior: tooltipBehaviorDurationGraph,
                 enableSideBySideSeriesPlacement: true,
-                zoomPanBehavior: zoomPanBehavior,
+                // zoomPanBehavior: zoomPanBehavior,
                 primaryXAxis: CategoryAxis(
                     isVisible: true,
                     // autoScrollingDelta: 10,
@@ -2734,6 +2735,19 @@ class _ReportsModuleState extends State<ReportsModule> {
                       fontWeight: FontWeight.w500,
                       fontFamily: poppins,
                     ),
+                    axisLabelFormatter: (axisLabelRenderArgs) {
+                      String value = axisLabelRenderArgs.text.length == 1
+                          ? '00${axisLabelRenderArgs.text}'
+                          : axisLabelRenderArgs.text.length == 2
+                          ? '0${axisLabelRenderArgs.text}'
+                          : axisLabelRenderArgs.text;
+                      return ChartAxisLabel(value, TextStyle(
+                        color: Colors.black,
+                        fontSize: displayWidth(context) * 0.034,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: poppins,
+                      ));
+                    },
                     plotBands: [
                       PlotBand(
                           text: 'avg ${avgDuration} min',
@@ -2755,6 +2769,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                 series: durationColumnSeriesData,
               )),
         ),
+
         Positioned(
           top: 0,
           bottom: 0,
@@ -2763,9 +2778,9 @@ class _ReportsModuleState extends State<ReportsModule> {
               ? SizedBox()
               : Container(
                   width: orientation == Orientation.portrait
-                    ? displayWidth(context) * 0.16
-                      //? tempDurationColumnSeriesData.length > 10 ? displayWidth(context) * 0.16 : displayWidth(context) * 0.18
-                      : displayWidth(context) * 0.1128,
+                    // ? displayWidth(context) * 0.16
+                      ? tempDurationColumnSeriesData.length > 10 ? displayWidth(context) * 0.16 : displayWidth(context) * 0.20
+                      : tempDurationColumnSeriesData.length > 10 ? displayWidth(context) * 0.1128 : displayWidth(context) * 0.1450,
                   height: graph_height,
                   color: Colors.white,
                   child: SfCartesianChart(
@@ -2787,7 +2802,20 @@ class _ReportsModuleState extends State<ReportsModule> {
                           fontFamily: poppins,
                         )),
                     primaryYAxis: NumericAxis(
-                        axisLine: AxisLine(width: 1, color: Colors.transparent),
+                        axisLine: AxisLine(width: 1),
+                        axisLabelFormatter: (axisLabelRenderArgs) {
+                          String value = axisLabelRenderArgs.text.length == 1
+                          ? '00${axisLabelRenderArgs.text}'
+                              : axisLabelRenderArgs.text.length == 2
+                          ? '0${axisLabelRenderArgs.text}'
+                              : axisLabelRenderArgs.text;
+                          return ChartAxisLabel(value, TextStyle(
+                            color: Colors.black,
+                            fontSize: displayWidth(context) * 0.034,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: poppins,
+                          ));
+                        },
                         title: AxisTitle(
                             text: 'Time ($minutes)',
                             textStyle: TextStyle(
