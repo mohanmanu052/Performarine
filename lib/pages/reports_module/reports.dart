@@ -2925,6 +2925,19 @@ Utils.showSnackBar(context,
                     fontWeight: FontWeight.w500,
                     fontFamily: poppins,
                   ),
+                  axisLabelFormatter: (axisLabelRenderArgs) {
+                    String value = axisLabelRenderArgs.text.length == 1
+                        ? '00${axisLabelRenderArgs.text}'
+                        : axisLabelRenderArgs.text.length == 2
+                        ? '0${axisLabelRenderArgs.text}'
+                        : axisLabelRenderArgs.text;
+                    return ChartAxisLabel(value, TextStyle(
+                      color: Colors.black,
+                      fontSize: displayWidth(context) * 0.034,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: poppins,
+                    ));
+                  },
                   plotBands: <PlotBand>[
                     PlotBand(
                       text: 'avg ${avgSpeed}$speedKnot',
@@ -2953,46 +2966,62 @@ Utils.showSnackBar(context,
           left: 0,
           child: !isStickyYAxisVisible ? SizedBox()
               : Container(
-                width: orientation==Orientation.portrait? displayWidth(context) * 0.168: displayWidth(context) * 0.121,
-                color: Colors.white,
-                height: graph_height,
-                child: SfCartesianChart(
-                  // palette: barsColor,
-                  tooltipBehavior: avgSpeedToolTip,
-                  primaryXAxis: CategoryAxis(
-                      isVisible: true,
-                      autoScrollingMode: AutoScrollingMode.end,
-                      labelAlignment: LabelAlignment.center,
-                      labelStyle: TextStyle(
-                        color: Colors.black,
-                    fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.034: displayWidth(context) * 0.022,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: poppins,
-                      )),
-                  primaryYAxis: NumericAxis(
-                    // interval: 5,
-                      axisLine: AxisLine(width: 2,
-                        color: Colors.transparent
-                      ),
-                      title: AxisTitle(
-                          text: 'Speed ($knotReport)',
-                          textStyle: TextStyle(
+                  width: orientation == Orientation.portrait
+                      ? displayWidth(context) * 0.198
+                      : displayWidth(context) * 0.121,
+                  color: Colors.white,
+                  height: graph_height,
+                  child: SfCartesianChart(
+                    // palette: barsColor,
+                    tooltipBehavior: avgSpeedToolTip,
+                    primaryXAxis: CategoryAxis(
+                        isVisible: true,
+                        autoScrollingMode: AutoScrollingMode.end,
+                        labelAlignment: LabelAlignment.center,
+                        labelStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: orientation == Orientation.portrait
+                              ? displayWidth(context) * 0.034
+                              : displayWidth(context) * 0.022,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: poppins,
+                        )),
+                    primaryYAxis: NumericAxis(
+                        // interval: 5,
+                        axisLine: AxisLine(width: 2),
+                        title: AxisTitle(
+                            text: 'Speed ($knotReport)',
+                            textStyle: TextStyle(
+                              color: Colors.black,
+                              fontSize: displayWidth(context) * 0.028,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: poppins,
+                            )),
+                        labelStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: displayWidth(context) * 0.034,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: poppins,
+                        ),
+                        axisLabelFormatter: (axisLabelRenderArgs) {
+                          String value = axisLabelRenderArgs.text.length == 1
+                              ? '00${axisLabelRenderArgs.text}'
+                              : axisLabelRenderArgs.text.length == 2
+                              ? '0${axisLabelRenderArgs.text}'
+                              : axisLabelRenderArgs.text;
+                          return ChartAxisLabel(value, TextStyle(
                             color: Colors.black,
-                            fontSize: displayWidth(context) * 0.028,
+                            fontSize: displayWidth(context) * 0.034,
                             fontWeight: FontWeight.w500,
                             fontFamily: poppins,
-                          )),
-                      labelStyle: TextStyle(
-                        color: Colors.black,
-                        fontSize: displayWidth(context) * 0.034,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: poppins,
-                      ),
-                      plotBands: <PlotBand>[]),
-                  series: tempAvgSpeedColumnSeriesData,
+                          ));
+                        },
+                        plotBands: <PlotBand>[]),
+                    series: tempAvgSpeedColumnSeriesData,
+                  ),
                 ),
               ),
-        ),
+
       ],
     );
   }
