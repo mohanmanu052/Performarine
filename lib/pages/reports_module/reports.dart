@@ -2977,6 +2977,19 @@ class _ReportsModuleState extends State<ReportsModule> {
                     fontWeight: FontWeight.w500,
                     fontFamily: poppins,
                   ),
+                  axisLabelFormatter: (axisLabelRenderArgs) {
+                    String value = axisLabelRenderArgs.text.length == 1
+                        ? '00${axisLabelRenderArgs.text}'
+                        : axisLabelRenderArgs.text.length == 2
+                        ? '0${axisLabelRenderArgs.text}'
+                        : axisLabelRenderArgs.text;
+                    return ChartAxisLabel(value, TextStyle(
+                      color: Colors.black,
+                      fontSize: displayWidth(context) * 0.034,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: poppins,
+                    ));
+                  },
                   plotBands: <PlotBand>[
                     PlotBand(
                       text: 'avg ${avgSpeed}$speedKnot',
@@ -3007,7 +3020,7 @@ class _ReportsModuleState extends State<ReportsModule> {
               ? SizedBox()
               : Container(
                   width: orientation == Orientation.portrait
-                      ? displayWidth(context) * 0.168
+                      ? displayWidth(context) * 0.198
                       : displayWidth(context) * 0.121,
                   color: Colors.white,
                   height: graph_height,
@@ -3028,7 +3041,7 @@ class _ReportsModuleState extends State<ReportsModule> {
                         )),
                     primaryYAxis: NumericAxis(
                         // interval: 5,
-                        axisLine: AxisLine(width: 2, color: Colors.transparent),
+                        axisLine: AxisLine(width: 2),
                         title: AxisTitle(
                             text: 'Speed ($knotReport)',
                             textStyle: TextStyle(
@@ -3043,6 +3056,19 @@ class _ReportsModuleState extends State<ReportsModule> {
                           fontWeight: FontWeight.w500,
                           fontFamily: poppins,
                         ),
+                        axisLabelFormatter: (axisLabelRenderArgs) {
+                          String value = axisLabelRenderArgs.text.length == 1
+                              ? '00${axisLabelRenderArgs.text}'
+                              : axisLabelRenderArgs.text.length == 2
+                              ? '0${axisLabelRenderArgs.text}'
+                              : axisLabelRenderArgs.text;
+                          return ChartAxisLabel(value, TextStyle(
+                            color: Colors.black,
+                            fontSize: displayWidth(context) * 0.034,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: poppins,
+                          ));
+                        },
                         plotBands: <PlotBand>[]),
                     series: tempAvgSpeedColumnSeriesData,
                   ),
