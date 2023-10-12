@@ -1450,7 +1450,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                         iconSize: displayHeight(context) * 0.035,
                                       ),
                                       dropdownStyleData: DropdownStyleData(
-                                        maxHeight: displayHeight(context) * 0.25,
+                                        maxHeight:orientation==Orientation.portrait? displayHeight(context) * 0.25:displayHeight(context) * 0.42,
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(14),
                                           // color: backgroundColor,
@@ -1670,7 +1670,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                       iconSize: displayHeight(context) * 0.035,
                                     ),
                                     dropdownStyleData: DropdownStyleData(
-                                      maxHeight: displayHeight(context) * 0.25,
+                                      maxHeight:orientation==Orientation.portrait? displayHeight(context) * 0.25:displayHeight(context) * 0.42,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(14),
                                         // color: backgroundColor,
@@ -2339,7 +2339,7 @@ ReportsDataTable(tripList: tripList, finalData: finalData,onTapCallBack: scorllT
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                margin: EdgeInsets.only( left:orentation==Orientation.portrait? 10:0),
+                margin: EdgeInsets.only( left:orentation==Orientation.portrait? 10:27),
                 width: displayWidth(context)/2,
                 child: Text(
                   "$selectedVesselName",

@@ -696,6 +696,8 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
     if(sharedPreferences != null){
       sharedPreferences!.setBool('reset_dialog_opened', true);
     }
+        print('dailog coming to 55555555555555555');
+
             SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);

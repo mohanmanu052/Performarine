@@ -152,8 +152,6 @@ class ReportsDataTableState extends State<ReportsDataTable> {
                                     color: Colors.black, fontFamily: dmsans),
                                 textAlign: TextAlign.center),
                           ), onTap: () {
-                        print('the reportTable data was------------' +
-                            widget.tripList.toString());
                         widget.onTapCallBack!(widget.tripList.indexOf(person),
                             person, widget.orientation ?? Orientation.portrait);
                         setState(() {
