@@ -704,13 +704,15 @@ print('the stop Trip is clickedd-------------111');
       sharedPreferences!.setBool('key_lat_time_dialog_open', true);
     }
 
-        print('dailog coming to 444444444444');
 
         await    SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
 
-    return showDialog(
+    return 
+    
+    
+    showDialog(
         barrierDismissible: false,
         context: context,
         builder: (BuildContext dialogContext) {
@@ -719,7 +721,7 @@ print('the stop Trip is clickedd-------------111');
               return false;
             },
             child: OrientationBuilder(
-              builder: (context,orientation) {
+              builder: (ctx2,orientation) {
                 return Dialog(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
@@ -866,6 +868,7 @@ print('the stop Trip is clickedd-------------111');
                                                           Future.delayed(Duration(seconds: 1), (){
                                                             if(!isSmallTrip)
                                                             {
+                                                              print('the widget is called from-----'+widget.calledFrom.toString());
                                                               Utils.customPrint("SMALL TRIPP IDDD ${tripData!
                                                                   .id!}");
                                                               DatabaseService().deleteTripFromDB(tripData!

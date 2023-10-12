@@ -543,7 +543,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
     if(sharedPreferences != null){
       sharedPreferences!.setBool('reset_dialog_opened', true);
     }
-        print('dailog coming to 222222222222222222');
 
             SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
