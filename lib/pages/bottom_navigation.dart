@@ -908,6 +908,10 @@ class _BottomNavigationState extends State<BottomNavigation>
     if (sharedPreferences != null) {
       sharedPreferences!.setBool('reset_dialog_opened', true);
     }
+            SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
     return showDialog(
         barrierDismissible: false,
         context: context,

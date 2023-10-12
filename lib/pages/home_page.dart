@@ -543,6 +543,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
     if(sharedPreferences != null){
       sharedPreferences!.setBool('reset_dialog_opened', true);
     }
+
+            SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
     return showDialog(
         barrierDismissible: false,
         context: context,
