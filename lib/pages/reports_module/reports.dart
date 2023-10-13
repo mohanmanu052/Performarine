@@ -2634,7 +2634,7 @@ Utils.showSnackBar(context,
                           : axisLabelRenderArgs.text;
                       return ChartAxisLabel(value, TextStyle(
                         color: Colors.black,
-                        fontSize: displayWidth(context) * 0.034,
+                        fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.034:displayWidth(context) * 0.025,
                         fontWeight: FontWeight.w500,
                         fontFamily: poppins,
                       ));
@@ -2697,6 +2697,20 @@ Utils.showSnackBar(context,
                         )),
                     primaryYAxis: NumericAxis(
                         axisLine: AxisLine(width: 1),
+                        axisLabelFormatter: (axisLabelRenderArgs) {
+                          String value = axisLabelRenderArgs.text.length == 1
+                          ? '00${axisLabelRenderArgs.text}'
+                              : axisLabelRenderArgs.text.length == 2
+                          ? '0${axisLabelRenderArgs.text}'
+                              : axisLabelRenderArgs.text;
+                          return ChartAxisLabel(value, TextStyle(
+                            color: Colors.black,
+                        fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.034:displayWidth(context) * 0.025,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: poppins,
+                          ));
+                        },
+
                         title: AxisTitle(
                             text: 'Time ($minutes)',
                             textStyle: TextStyle(
@@ -2935,7 +2949,7 @@ Utils.showSnackBar(context,
                         : axisLabelRenderArgs.text;
                     return ChartAxisLabel(value, TextStyle(
                       color: Colors.black,
-                      fontSize: displayWidth(context) * 0.034,
+                        fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.034:displayWidth(context) * 0.025,
                       fontWeight: FontWeight.w500,
                       fontFamily: poppins,
                     ));
@@ -3013,7 +3027,7 @@ Utils.showSnackBar(context,
                               : axisLabelRenderArgs.text;
                           return ChartAxisLabel(value, TextStyle(
                             color: Colors.black,
-                            fontSize: displayWidth(context) * 0.034,
+                        fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.034:displayWidth(context) * 0.025,
                             fontWeight: FontWeight.w500,
                             fontFamily: poppins,
                           ));
