@@ -2669,22 +2669,24 @@ Utils.showSnackBar(context,
               ? SizedBox()
               : Container(
                   width: orientation == Orientation.portrait
+                      ? displayWidth(context) * 0.198
+                      : displayWidth(context) * 0.152,
                     // ? displayWidth(context) * 0.16
-                      ? tempDurationColumnSeriesData.length > 10 ? displayWidth(context) * 0.16 : displayWidth(context) * 0.20
-                      : tempDurationColumnSeriesData.length > 10 ? displayWidth(context) * 0.1128 : displayWidth(context) * 0.1450,
+                     // ? tempDurationColumnSeriesData.length > 10 ? displayWidth(context) * 0.168 : displayWidth(context) * 0.20
+                      //: tempDurationColumnSeriesData.length > 10 ? displayWidth(context) * 0.14 : displayWidth(context) * 0.1450,
                   height: graph_height,
                   color: Colors.white,
                   child: SfCartesianChart(
-                    plotAreaBorderWidth: 0,
+                    //plotAreaBorderWidth: 0,
                     tooltipBehavior: tooltipBehaviorDurationGraph,
-                    enableSideBySideSeriesPlacement: true,
+                   // enableSideBySideSeriesPlacement: true,
                     primaryXAxis: CategoryAxis(
-                      axisLine: AxisLine(width: 0),
+                      //axisLine: AxisLine(width: 0),
                         isVisible: true,
-                        labelPlacement: LabelPlacement.betweenTicks,
+                        //labelPlacement: LabelPlacement.betweenTicks,
                         // Or LabelPlacement.onTicks
                         autoScrollingMode: AutoScrollingMode.end,
-                        labelAlignment: LabelAlignment.start,
+                        labelAlignment: LabelAlignment.center,
                         labelStyle: TextStyle(
                           color: Colors.black,
                           fontSize: orientation == Orientation.portrait
@@ -2708,6 +2710,7 @@ Utils.showSnackBar(context,
                             fontFamily: poppins,
                           ));
                         },
+
                         title: AxisTitle(
                             text: 'Time ($minutes)',
                             textStyle: TextStyle(
@@ -2716,18 +2719,30 @@ Utils.showSnackBar(context,
                               fontWeight: FontWeight.w500,
                               fontFamily: poppins,
                             )),
-                        majorTickLines: MajorTickLines(width: 0),
-                        minorTickLines: MinorTickLines(width: 0),
-                      majorGridLines: MajorGridLines(width: 0),
-                      minorGridLines: MinorGridLines(width: 0),
+                        //majorTickLines: MajorTickLines(width: 0),
+                        //minorTickLines: MinorTickLines(width: 0),
+                      //majorGridLines: MajorGridLines(width: 0),
+                      //minorGridLines: MinorGridLines(width: 0),
                         labelStyle: TextStyle(
                           color: Colors.black,
                           fontSize: displayWidth(context) * 0.034,
                           fontWeight: FontWeight.w500,
                           fontFamily: poppins,
                         ),
-                        
-                        ),
+                      axisLabelFormatter: (axisLabelRenderArgs) {
+                        String value = axisLabelRenderArgs.text.length == 1
+                            ? '00${axisLabelRenderArgs.text}'
+                            : axisLabelRenderArgs.text.length == 2
+                            ? '0${axisLabelRenderArgs.text}'
+                            : axisLabelRenderArgs.text;
+                        return ChartAxisLabel(value, TextStyle(
+                          color: Colors.black,
+                          fontSize: displayWidth(context) * 0.034,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: poppins,
+                        ));
+                      },
+                        plotBands: <PlotBand>[]),
                     series: tempDurationColumnSeriesData,
 
 ),    
@@ -2969,7 +2984,7 @@ Utils.showSnackBar(context,
               : Container(
                   width: orientation == Orientation.portrait
                       ? displayWidth(context) * 0.198
-                      : displayWidth(context) * 0.121,
+                      : displayWidth(context) * 0.152,
                   color: Colors.white,
                   height: graph_height,
                   child: SfCartesianChart(
@@ -2989,7 +3004,7 @@ Utils.showSnackBar(context,
                         )),
                     primaryYAxis: NumericAxis(
                         // interval: 5,
-                        axisLine: AxisLine(width: 2),
+                        axisLine: AxisLine(width:1),
                         title: AxisTitle(
                             text: 'Speed ($knotReport)',
                             textStyle: TextStyle(
