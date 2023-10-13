@@ -947,13 +947,20 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                       'Vessel Retired Successfully.');
 
                                   Navigator.of(dialogContext).pop();
+                                            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => BottomNavigation(),
+              ),
+              ModalRoute.withName(""));
 
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (_) => BottomNavigation(),
-                                      fullscreenDialog: true,
-                                    ),
-                                  );
+
+                                  // Navigator.of(context).push(
+                                  //   MaterialPageRoute(
+                                  //     builder: (_) => BottomNavigation(),
+                                  //     fullscreenDialog: true,
+                                  //   ),
+                                  // );
                                 },
                                     displayWidth(context) ,
                                     displayHeight(context) * 0.05,
