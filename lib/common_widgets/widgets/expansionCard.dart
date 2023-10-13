@@ -950,7 +950,11 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) => BottomNavigation(),
+                builder: (context) => BottomNavigation(
+
+                ),
+                                                                         fullscreenDialog: true,
+
               ),
               ModalRoute.withName(""));
 
