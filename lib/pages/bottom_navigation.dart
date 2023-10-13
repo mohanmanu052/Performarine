@@ -200,14 +200,16 @@ class _BottomNavigationState extends State<BottomNavigation>
     // TODO: implement dispose
     super.dispose();
 
-    WidgetsBinding.instance.removeObserver(this);
+    //WidgetsBinding.instance.removeObserver(this);
+// if(_bottomNavIndex==1){
+//     SystemChrome.setPreferredOrientations([
+//       DeviceOrientation.landscapeLeft,
+//       DeviceOrientation.landscapeRight,
+//       DeviceOrientation.portraitDown,
+//       DeviceOrientation.portraitUp
+//     ]);
 
-    // SystemChrome.setPreferredOrientations([
-    //   DeviceOrientation.landscapeLeft,
-    //   DeviceOrientation.landscapeRight,
-    //   DeviceOrientation.portraitDown,
-    //   DeviceOrientation.portraitUp
-    // ]);
+//}
   }
 
 
@@ -456,7 +458,7 @@ class _BottomNavigationState extends State<BottomNavigation>
                   bottomNavigationBar: Container(
                     height: orientation == Orientation.portrait
                         ? displayHeight(context) * 0.1
-                        : displayHeight(context) * 0.18,
+                        : displayHeight(context) * 0.17,
                     child: ClipRRect(
                       child: Container(
                         color: bottomNavColor,
@@ -610,7 +612,7 @@ class _BottomNavigationState extends State<BottomNavigation>
                   text: label,
                   fontWeight: FontWeight.w500,
                   textColor: isSelected ? backgroundColor : Colors.black,
-                  textSize: displayWidth(context) * 0.022,
+                  textSize:orientation==Orientation.portrait? displayWidth(context) * 0.022:displayWidth(context) * 0.018,
                   textAlign: TextAlign.center,
                   fontFamily: outfit),
             ],
@@ -1206,128 +1208,132 @@ class _BottomNavigationState extends State<BottomNavigation>
         barrierDismissible: false,
         context: context,
         builder: (BuildContext dialogContext) {
-          return Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: StatefulBuilder(
-              builder: (ctx, setDialogState) {
-                return Container(
-                  height:orientation==Orientation.portrait? displayHeight(context) * 0.45:displayHeight(context) * 0.60,
-                  width:orientation==Orientation.portrait? MediaQuery.of(context).size.width:MediaQuery.of(context).size.width/2,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 8.0, right: 8.0, top: 15, bottom: 15),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          height: displayHeight(context) * 0.02,
-                        ),
-                        ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Container(
-                              //color: Color(0xfff2fffb),
-                              child: Image.asset(
-                                'assets/images/boat.gif',
-                                height: displayHeight(context) * 0.1,
-                                width: displayWidth(context),
-                                fit: BoxFit.contain,
-                              ),
-                            )),
-                        SizedBox(
-                          height: displayHeight(context) * 0.02,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0, right: 8),
-                          child: commonText(
-                              context: context,
-                              text:
-                                  'No vessel available, Please add vessel to continue',
-                              fontWeight: FontWeight.w500,
-                              textColor: Colors.black87,
-                                  textSize:orientation==Orientation.portrait? displayWidth(context) * 0.038:displayWidth(context) * 0.020,
-                              textAlign: TextAlign.center),
-                        ),
-                        SizedBox(
-                          height: displayHeight(context) * 0.012,
-                        ),
-                        Center(
-                          child: Column(
-                            children: [
-                              Container(
-                                margin: EdgeInsets.only(
-                                  top: 8.0,
-                                ),
-                                child: Center(
-                                  child: CommonButtons.getAcceptButton(
-                                      'Add Vessel', context, blueColor,
-                                      () async {
-                                    if (mounted) {
-                                      //Navigator.of(context).pop();
-                                      Navigator.of(dialogContext,
-                                              rootNavigator: true)
-                                          .pop();
+          return OrientationBuilder(
+            builder: (context,orientation) {
+              return Dialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: StatefulBuilder(
+                  builder: (ctx, setDialogState) {
+                    return Container(
+                      height:orientation==Orientation.portrait? displayHeight(context) * 0.45:displayHeight(context) * 0.60,
+                      width:orientation==Orientation.portrait? MediaQuery.of(context).size.width:MediaQuery.of(context).size.width/2,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 8.0, right: 8.0, top: 15, bottom: 15),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              height: displayHeight(context) * 0.02,
+                            ),
+                            ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Container(
+                                  //color: Color(0xfff2fffb),
+                                  child: Image.asset(
+                                    'assets/images/boat.gif',
+                                    height: displayHeight(context) * 0.1,
+                                    width: displayWidth(context),
+                                    fit: BoxFit.contain,
+                                  ),
+                                )),
+                            SizedBox(
+                              height: displayHeight(context) * 0.02,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0, right: 8),
+                              child: commonText(
+                                  context: context,
+                                  text:
+                                      'No vessel available, Please add vessel to continue',
+                                  fontWeight: FontWeight.w500,
+                                  textColor: Colors.black87,
+                                      textSize:orientation==Orientation.portrait? displayWidth(context) * 0.038:displayWidth(context) * 0.020,
+                                  textAlign: TextAlign.center),
+                            ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.012,
+                            ),
+                            Center(
+                              child: Column(
+                                children: [
+                                  Container(
+                                    margin: EdgeInsets.only(
+                                      top: 8.0,
+                                    ),
+                                    child: Center(
+                                      child: CommonButtons.getAcceptButton(
+                                          'Add Vessel', context, blueColor,
+                                          () async {
+                                        if (mounted) {
+                                          //Navigator.of(context).pop();
+                                          Navigator.of(dialogContext,
+                                                  rootNavigator: true)
+                                              .pop();
 
-                                      Navigator.push(
-                                          dialogContext,
-                                          MaterialPageRoute(
-                                              builder: (dialogContext) =>
-                                                  AddNewVesselPage(
-                                                    calledFrom: 'bottomNav',
-                                                    bottomNavIndex:_bottomNavIndex ,
+                                          Navigator.push(
+                                              dialogContext,
+                                              MaterialPageRoute(
+                                                  builder: (dialogContext) =>
+                                                      AddNewVesselPage(
+                                                        calledFrom: 'bottomNav',
+                                                        bottomNavIndex:_bottomNavIndex ,
 
-                                                  )));
-                                    }
-                                  },
-                                  orientation==    Orientation.portrait?     displayWidth(context) * 0.65:displayWidth(context) * 0.30,
-                                  orientation==    Orientation.portrait?  displayHeight(context) * 0.054:displayHeight(context) * 0.080,
-                                      primaryColor,
-                                      Colors.white,
-                                     orientation==    Orientation.portrait?  displayHeight(context) * 0.02:displayHeight(context) * 0.04,
-                                      blueColor,
-                                      '',
-                                      fontWeight: FontWeight.w500),
-                                ),
+                                                      )));
+                                        }
+                                      },
+                                      orientation==    Orientation.portrait?     displayWidth(context) * 0.65:displayWidth(context) * 0.30,
+                                      orientation==    Orientation.portrait?  displayHeight(context) * 0.054:displayHeight(context) * 0.080,
+                                          primaryColor,
+                                          Colors.white,
+                                         orientation==    Orientation.portrait?  displayHeight(context) * 0.02:displayHeight(context) * 0.04,
+                                          blueColor,
+                                          '',
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 8.0,
+                                  ),
+                                  Center(
+                                    child: CommonButtons.getAcceptButton(
+                                        'Cancel', context, Colors.transparent, () {
+                                      if (mounted) {
+                                        // Navigator.of(context).pop();
+                                        Navigator.of(dialogContext,
+                                                rootNavigator: true)
+                                            .pop();
+                                      }
+                                    },
+                                      orientation==    Orientation.portrait?     displayWidth(context) * 0.65:displayWidth(context) * 0.80,
+                                      orientation==    Orientation.portrait?  displayHeight(context) * 0.054:displayHeight(context) * 0.070,
+                                        primaryColor,
+                                        Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.white
+                                            : blueColor,
+                                      orientation==    Orientation.portrait?   displayHeight(context) * 0.018:displayHeight(context) * 0.030,
+                                        Colors.white,
+                                        '',
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ],
                               ),
-                              SizedBox(
-                                height: 8.0,
-                              ),
-                              Center(
-                                child: CommonButtons.getAcceptButton(
-                                    'Cancel', context, Colors.transparent, () {
-                                  if (mounted) {
-                                    // Navigator.of(context).pop();
-                                    Navigator.of(dialogContext,
-                                            rootNavigator: true)
-                                        .pop();
-                                  }
-                                },
-                                  orientation==    Orientation.portrait?     displayWidth(context) * 0.65:displayWidth(context) * 0.80,
-                                  orientation==    Orientation.portrait?  displayHeight(context) * 0.054:displayHeight(context) * 0.070,
-                                    primaryColor,
-                                    Theme.of(context).brightness ==
-                                            Brightness.dark
-                                        ? Colors.white
-                                        : blueColor,
-                                  orientation==    Orientation.portrait?   displayHeight(context) * 0.018:displayHeight(context) * 0.030,
-                                    Colors.white,
-                                    '',
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ],
-                          ),
+                            ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.01,
+                            ),
+                          ],
                         ),
-                        SizedBox(
-                          height: displayHeight(context) * 0.01,
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
+                      ),
+                    );
+                  },
+                ),
+              );
+            }
           );
         });
   }

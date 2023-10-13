@@ -70,7 +70,7 @@ class CustomLabeledCheckbox extends StatelessWidget {
             Text(
               label,
               style: TextStyle(
-                fontSize: orientation!=null&&orientation==Orientation.landscape?displayWidth(context) * 0.03:
+                fontSize: orientation!=null&&orientation==Orientation.landscape?displayWidth(context) * 0.026:
                 
                 
                 displayWidth(context) * 0.04,

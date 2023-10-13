@@ -2634,7 +2634,7 @@ Utils.showSnackBar(context,
                           : axisLabelRenderArgs.text;
                       return ChartAxisLabel(value, TextStyle(
                         color: Colors.black,
-                        fontSize: displayWidth(context) * 0.034,
+                        fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.034:displayWidth(context) * 0.025,
                         fontWeight: FontWeight.w500,
                         fontFamily: poppins,
                       ));
@@ -2703,7 +2703,7 @@ Utils.showSnackBar(context,
                               : axisLabelRenderArgs.text;
                           return ChartAxisLabel(value, TextStyle(
                             color: Colors.black,
-                            fontSize: displayWidth(context) * 0.034,
+                        fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.034:displayWidth(context) * 0.025,
                             fontWeight: FontWeight.w500,
                             fontFamily: poppins,
                           ));
@@ -2934,7 +2934,7 @@ Utils.showSnackBar(context,
                         : axisLabelRenderArgs.text;
                     return ChartAxisLabel(value, TextStyle(
                       color: Colors.black,
-                      fontSize: displayWidth(context) * 0.034,
+                        fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.034:displayWidth(context) * 0.025,
                       fontWeight: FontWeight.w500,
                       fontFamily: poppins,
                     ));
@@ -3012,7 +3012,7 @@ Utils.showSnackBar(context,
                               : axisLabelRenderArgs.text;
                           return ChartAxisLabel(value, TextStyle(
                             color: Colors.black,
-                            fontSize: displayWidth(context) * 0.034,
+                        fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.034:displayWidth(context) * 0.025,
                             fontWeight: FontWeight.w500,
                             fontFamily: poppins,
                           ));
