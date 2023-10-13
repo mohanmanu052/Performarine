@@ -136,7 +136,7 @@ if(widget.bottomNavIndex==1){
                     width: displayWidth(context) * 0.36,
                     height: displayHeight(context) * 0.12,
                     child: Image.asset(
-                      'assets/images/performarine_logo.png',
+                      'assets/icons/performarine_appbar_icon.png',
                     ),
                   ),
                   SizedBox(
