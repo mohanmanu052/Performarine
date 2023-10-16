@@ -150,7 +150,7 @@ SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
     commonProvider = context.read<CommonProvider>();
 
-    Utils.customPrint('VESSEL Image ${widget.vessel!.displacement!}');
+   // Utils.customPrint('VESSEL Image ${widget.vessel!.displacement!}');
 
     checkSensorAvailabelOrNot();
 
@@ -738,7 +738,7 @@ SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                                                         children: [
                                                           commonText(
                                                               context: context,
-                                                              text: widget.vessel!.displacement == null ? '0 $pound': '${widget.vessel!.displacement} $pound',
+                                                              text: '0 $pound',
                                                               fontWeight: FontWeight.w700,
                                                               textColor: Colors.black,
                                                               textSize:

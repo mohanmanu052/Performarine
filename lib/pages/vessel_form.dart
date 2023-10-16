@@ -62,7 +62,7 @@ class _VesselFormPageState extends State<VesselFormPage> {
       _sizeController.text = widget.vessel!.vesselSize.toString();
       _capacityController.text = widget.vessel!.capacity.toString();
       _builtyearController.text = widget.vessel!.builtYear.toString();
-      _displacementController.text = widget.vessel!.displacement.toString();
+      //_displacementController.text = widget.vessel!.displacement.toString();
     }
   }
 
@@ -113,7 +113,7 @@ class _VesselFormPageState extends State<VesselFormPage> {
             createdBy: "",
             updatedAt: DateTime.now().toUtc().toString(),
             updatedBy: "",
-            displacement: double.parse(displacement)))
+           ))
         : await _databaseService.updateVessel(CreateVessel(
             id: widget.vessel!.id,
             name: vesselName,
@@ -134,8 +134,7 @@ class _VesselFormPageState extends State<VesselFormPage> {
             capacity: int.parse(capacity),
             builtYear: int.parse(builtYear),
             updatedBy: "",
-            updatedAt: DateTime.now().toUtc().toString(),
-            displacement: double.parse(displacement)));
+            updatedAt: DateTime.now().toUtc().toString(),));
 
     Navigator.pop(context);
   }

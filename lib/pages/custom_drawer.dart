@@ -1685,7 +1685,7 @@ if(!isSyncSignoutClicked){
     if (vesselsSyncDetails) {
       for (int i = 0; i < getVesselFuture.length; i++) {
         var vesselSyncOrNot = getVesselFuture[i].isSync;
-        CustomLogger().logWithFile(Level.info, "VESSEL SYNC TRIP DISPLACEMENT  ${getVesselFuture[i].displacement}");
+        //CustomLogger().logWithFile(Level.info, "VESSEL SYNC TRIP DISPLACEMENT  ${getVesselFuture[i].displacement}");
         Utils.customPrint(
             "VESSEL SUCCESS MESSAGE ${getVesselFuture[i].imageURLs}");
         CustomLogger().logWithFile(Level.info, "VESSEL SUCCESS MESSAGE ${getVesselFuture[i].imageURLs}' -> $page");

@@ -48,7 +48,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
   GlobalKey<FormState> lengthFormKey = GlobalKey<FormState>();
   GlobalKey<FormState> beamFormKey = GlobalKey<FormState>();
   GlobalKey<FormState> draftFormKey = GlobalKey<FormState>();
-  GlobalKey<FormState> displacementKey = GlobalKey<FormState>();
+  //GlobalKey<FormState> displacementKey = GlobalKey<FormState>();
   GlobalKey<FormState> sizeFormKey = GlobalKey<FormState>();
   GlobalKey<FormState> capacityFormKey = GlobalKey<FormState>();
   GlobalKey<FormState> builtYearFormKey = GlobalKey<FormState>();
@@ -60,7 +60,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
   TextEditingController lengthOverallController = TextEditingController();
   TextEditingController moldedBeamController = TextEditingController();
   TextEditingController moldedDepthController = TextEditingController();
-  TextEditingController displacementController = TextEditingController();
+  //TextEditingController displacementController = TextEditingController();
   TextEditingController sizeController = TextEditingController();
   TextEditingController capacityController = TextEditingController();
   TextEditingController builtYearController = TextEditingController();
@@ -127,7 +127,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
         lengthOverallController.text = widget.addVesselData!.lengthOverall!.toString();
         moldedBeamController.text = widget.addVesselData!.beam!.toString();
         moldedDepthController.text = widget.addVesselData!.draft!.toString();
-        displacementController.text = widget.addVesselData!.displacement.toString();
+        //displacementController.text = widget.addVesselData!.displacement.toString();
         sizeController.text = widget.addVesselData!.vesselSize!.toString();
       //  capacityController.text = widget.addVesselData!.capacity!.toString();
         builtYearController.text = widget.addVesselData!.builtYear!.toString();
@@ -342,39 +342,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                           CustomLogger().logWithFile(Level.info, "Vessel Draft $value -> $page");
                         }),
                   ),
-                  SizedBox(height: displayHeight(context) * 0.015),
-                  Form(
-                    key: displacementKey,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    child: CommonTextField(
-                        controller: displacementController,
-                        focusNode: displcementFocusNode,
-                        labelText: 'Displacement ($pound)',
-                        hintText: '',
-                        suffixText: null,
-                        textInputAction: TextInputAction.next,
-                        textInputType: TextInputType.numberWithOptions(decimal: true),
-                        textCapitalization: TextCapitalization.words,
-                        maxLength: 7,
-                        prefixIcon: null,
-                        requestFocusNode: sizeFocusNode,
-                        obscureText: false,
-                        isForDecimal: true,
-                        onTap: () {},
-                        onChanged: (String value) {
-                        },
-                        validator: (value) {
-                          if (value!.trim().isEmpty) {
-                            return 'Enter Displacement';
-                          }
 
-                          return null;
-                        },
-                        onSaved: (String value) {
-                          Utils.customPrint(value);
-                          CustomLogger().logWithFile(Level.info, "Displacement $value -> $page");
-                        }),
-                  ),
                   SizedBox(height: displayHeight(context) * 0.02),
                   commonText(
                       context: context,
@@ -511,7 +479,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                           width: displayWidth(context),
                           onTap: () async {
                             if (freeBoardFormKey.currentState!.validate() && lengthFormKey.currentState!.validate() && beamFormKey.currentState!.validate()
-                                && draftFormKey.currentState!.validate() && displacementKey.currentState!.validate() && sizeFormKey.currentState!.validate() && builtYearFormKey.currentState!.validate()) {
+                                && draftFormKey.currentState!.validate() && sizeFormKey.currentState!.validate() && builtYearFormKey.currentState!.validate()) {
                               setState(() {
                                 isBtnClicked = true;
                               });
@@ -536,9 +504,9 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                               commonProvider.addVesselRequestModel!.draft = moldedDepthController.text.length >= 6
                                 ? num.parse(double.parse(moldedDepthController.text).toStringAsFixed(4)).toDouble()
                                 : double.parse(moldedDepthController.text);
-                              commonProvider.addVesselRequestModel!.displacement = displacementController.text.length >= 7
+                              /*commonProvider.addVesselRequestModel!.displacement = displacementController.text.length >= 7
                                   ? num.parse(double.parse(displacementController.text).toStringAsFixed(5)).toDouble()
-                                  : double.parse(displacementController.text);
+                                  : double.parse(displacementController.text);*/
                               commonProvider.addVesselRequestModel!.vesselSize =
                                   sizeController.text;
                               commonProvider.addVesselRequestModel!.capacity = 0;
