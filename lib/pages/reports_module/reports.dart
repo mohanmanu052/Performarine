@@ -2582,7 +2582,7 @@ Utils.showSnackBar(context,
           controller: _tripDurationSrollController,
           child: SizedBox(
               width: durationColumnSeriesData.length > 3
-                  ? (1.5 * 100 * durationColumnSeriesData.length)
+                  ?orientation==Orientation.portrait? (1.5 * 100 * durationColumnSeriesData.length):displayWidth(context)
                   : displayWidth(context),
               height: graph_height,
               child: SfCartesianChart(
@@ -2723,7 +2723,7 @@ Utils.showSnackBar(context,
                             : axisLabelRenderArgs.text;
                         return ChartAxisLabel(value, TextStyle(
                           color: Colors.black,
-                          fontSize: displayWidth(context) * 0.034,
+                        fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.034:displayWidth(context) * 0.025,
                           fontWeight: FontWeight.w500,
                           fontFamily: poppins,
                         ));
@@ -2894,7 +2894,7 @@ Utils.showSnackBar(context,
           scrollDirection: Axis.horizontal,
           child: SizedBox(
             width: avgSpeedColumnSeriesData.length > 3
-                ? (1.5 * 100 * avgSpeedColumnSeriesData.length)
+                ?orientation==Orientation.portrait? (1.5 * 100 * avgSpeedColumnSeriesData.length):displayWidth(context)
                 : displayWidth(context),
             height: graph_height,
             child: SfCartesianChart(
@@ -3129,7 +3129,7 @@ Utils.showSnackBar(context,
         width: fuelUsageColumnSeriesData.length > 3
             ? (1.5 * 100 * fuelUsageColumnSeriesData.length)
             : displayWidth(context),
-        height: displayHeight(context) * 0.4,
+        height: graph_height,
         child: SfCartesianChart(
           tooltipBehavior: fuelUsageToolTip,
           primaryXAxis: CategoryAxis(
@@ -3143,6 +3143,7 @@ Utils.showSnackBar(context,
               )),
           primaryYAxis: NumericAxis(
               labelFormat: '{value}',
+              
               axisLine: AxisLine(width: 2),
               title: AxisTitle(
                   text: 'Volume ($literReport)',
