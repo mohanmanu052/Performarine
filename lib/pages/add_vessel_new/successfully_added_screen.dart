@@ -1051,7 +1051,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                         children: [
                                           commonText(
                                               context: context,
-                                              text: '0 $pound',
+                                              text: '${widget.data!.weight} $pound',
                                               fontWeight: FontWeight.w700,
                                               textColor: Colors.black,
                                               textSize:

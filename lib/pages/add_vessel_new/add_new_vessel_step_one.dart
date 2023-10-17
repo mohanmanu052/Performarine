@@ -90,7 +90,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
   String? selectedEngineType;
   late CommonProvider commonProvider;
   String page = "Add_new_vessel_step_one";
-  bool? isBatteryCapacityEnable = false;
+  bool? isBatteryCapacityEnable = false, isOtherInformation = false;
   List<File?> pickFilePath = [];
   List<File?> finalSelectedFiles = [];
   bool isDeleted = false;
@@ -262,87 +262,127 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                       CustomLogger().logWithFile(Level.info, "vessel model $value -> $page");
                     }),
               ),
-              SizedBox(height: displayHeight(context) * 0.015),
-              Form(
-                key: builderNameFormKey,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                child: CommonTextField(
-                    controller: builderNameController,
-                    focusNode: builderNameFocusNode,
-                    labelText: 'Builder Name',
-                    hintText: '',
-                    suffixText: null,
-                    textInputAction: TextInputAction.next,
-                    textInputType: TextInputType.text,
-                    textCapitalization: TextCapitalization.words,
-                    maxLength: 32,
-                    prefixIcon: null,
-                    requestFocusNode: registrationNumberFocusNode,
-                    obscureText: false,
-                    onTap: () {},
-                    onChanged: (String value) {
-                    },
-                    validator: (value) {
-                      if (value!.trim().isEmpty) {
-                        return 'Enter Vessel Builder Name';
-                      }
+              //SizedBox(height: displayHeight(context) * 0.015),
+              Theme(
+                data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                child: ExpansionTile(
+                  tilePadding: EdgeInsets.zero,
+                  childrenPadding: EdgeInsets.zero,
+                  title: commonText(
+                    context: context,
+                    text: 'Other Information',
+                    fontWeight: FontWeight.w500,
+                    textColor: Colors.black45,
+                    textSize: displayWidth(context) * 0.036,
+                    textAlign: TextAlign.start
+                  ),
+                  trailing: !isOtherInformation! ? Icon(
+                    Icons.add,
+                    color: Colors.black45,
+                    size: displayWidth(context) * 0.05,
+                  ) : Icon(
+                    Icons.remove,
+                    color: Colors.black45,
+                    size: displayWidth(context) * 0.05,
+                  ),
+                  onExpansionChanged: ((newState) {
+                    setState(() {
+                      isOtherInformation = newState;
+                    });
 
-                      return null;
-                    },
-                    onSaved: (String value) {
-                      Utils.customPrint(value);
-                      CustomLogger().logWithFile(Level.info, "Vessel Builder Name $value -> $page");
-                    }),
+                    Utils.customPrint(
+                        'EXPANSION CHANGE $isOtherInformation');
+                    CustomLogger().logWithFile(Level.info, "EXPANSION CHANGE $isOtherInformation -> $page");
+                  }),
+                  //maintainState: true,
+                  expandedCrossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    SizedBox(height: displayHeight(context) * 0.0045),
+                    Form(
+                      key: builderNameFormKey,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      child: CommonTextField(
+                          controller: builderNameController,
+                          focusNode: builderNameFocusNode,
+                          labelText: 'Builder Name',
+                          hintText: '',
+                          suffixText: null,
+                          textInputAction: TextInputAction.next,
+                          textInputType: TextInputType.text,
+                          textCapitalization: TextCapitalization.words,
+                          maxLength: 32,
+                          prefixIcon: null,
+                          requestFocusNode: registrationNumberFocusNode,
+                          obscureText: false,
+                          onTap: () {},
+                          onChanged: (String value) {
+                          },
+                          validator: (value) {
+                            /*if (value!.trim().isEmpty) {
+                              return 'Enter Vessel Builder Name';
+                            }
+
+                            return null;*/
+                          },
+                          onSaved: (String value) {
+                            Utils.customPrint(value);
+                            CustomLogger().logWithFile(Level.info, "Vessel Builder Name $value -> $page");
+                          }),
+                    ),
+                    SizedBox(height: displayHeight(context) * 0.015),
+                    Form(
+                      key: regNumberFormKey,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      child: CommonTextField(
+                          controller: registrationNumberController,
+                          focusNode: registrationNumberFocusNode,
+                          labelText: 'Registration Number',
+                          hintText: '',
+                          suffixText: null,
+                          textInputAction: TextInputAction.next,
+                          textInputType: TextInputType.text,
+                          textCapitalization: TextCapitalization.words,
+                          maxLength: 10,
+                          prefixIcon: null,
+                          requestFocusNode: mmsiFocusNode,
+                          obscureText: false,
+                          onTap: () {},
+                          onChanged: (String value) {},
+                          onSaved: (String value) {
+                            Utils.customPrint(value);
+                            CustomLogger().logWithFile(Level.info, "Registration Number $value -> $page");
+                          }),
+                    ),
+                    SizedBox(height: displayHeight(context) * 0.015),
+                    Form(
+                      key: mmsiFormKey,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      child: CommonTextField(
+                          controller: mmsiController,
+                          focusNode: mmsiFocusNode,
+                          labelText: 'MMSI',
+                          hintText: '',
+                          suffixText: null,
+                          textInputAction: TextInputAction.next,
+                          textInputType: TextInputType.text,
+                          textCapitalization: TextCapitalization.words,
+                          maxLength: 10,
+                          prefixIcon: null,
+                          requestFocusNode: weightFocusNode,
+                          obscureText: false,
+                          onTap: () {},
+                          onChanged: (String value) {},
+                          onSaved: (String value) {
+                            Utils.customPrint(value);
+                            CustomLogger().logWithFile(Level.info, "MMSI $value -> $page");
+                          }),
+                    ),
+                    SizedBox(height: displayHeight(context) * 0.015),
+                  ],
+                ),
               ),
-              SizedBox(height: displayHeight(context) * 0.015),
-              Form(
-                key: regNumberFormKey,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                child: CommonTextField(
-                    controller: registrationNumberController,
-                    focusNode: registrationNumberFocusNode,
-                    labelText: 'Registration Number',
-                    hintText: '',
-                    suffixText: null,
-                    textInputAction: TextInputAction.next,
-                    textInputType: TextInputType.text,
-                    textCapitalization: TextCapitalization.words,
-                    maxLength: 10,
-                    prefixIcon: null,
-                    requestFocusNode: mmsiFocusNode,
-                    obscureText: false,
-                    onTap: () {},
-                    onChanged: (String value) {},
-                    onSaved: (String value) {
-                      Utils.customPrint(value);
-                      CustomLogger().logWithFile(Level.info, "Registration Number $value -> $page");
-                    }),
-              ),
-              SizedBox(height: displayHeight(context) * 0.015),
-              Form(
-                key: mmsiFormKey,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                child: CommonTextField(
-                    controller: mmsiController,
-                    focusNode: mmsiFocusNode,
-                    labelText: 'MMSI',
-                    hintText: '',
-                    suffixText: null,
-                    textInputAction: TextInputAction.next,
-                    textInputType: TextInputType.text,
-                    textCapitalization: TextCapitalization.words,
-                    maxLength: 10,
-                    prefixIcon: null,
-                    requestFocusNode: weightFocusNode,
-                    obscureText: false,
-                    onTap: () {},
-                    onChanged: (String value) {},
-                    onSaved: (String value) {
-                      Utils.customPrint(value);
-                      CustomLogger().logWithFile(Level.info, "MMSI $value -> $page");
-                    }),
-              ),
-              SizedBox(height: displayHeight(context) * 0.015),
+
+              //SizedBox(height: displayHeight(context) * 0.015),
               Form(
                 key: weightFormKey,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -532,8 +572,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                         onTap: () {
                           FocusScope.of(context).requestFocus(new FocusNode());
 
-                          if (nameFormKey.currentState!.validate() && modelFormKey.currentState!.validate() && builderNameFormKey.currentState!.validate() && regNumberFormKey.currentState!.validate()
-                              && mmsiFormKey.currentState!.validate() && weightFormKey.currentState!.validate() && selectedEngineFormKey.currentState!.validate()
+                          if (nameFormKey.currentState!.validate() && modelFormKey.currentState!.validate() && weightFormKey.currentState!.validate() && selectedEngineFormKey.currentState!.validate()
                               && selectedEngineType!.toLowerCase() == 'hybrid' ? fuelCapacityFormKey.currentState!.validate() && batteryCapacityFormKey.currentState!.validate()
                               : selectedEngineType!.toLowerCase() == 'combustion' ? fuelCapacityFormKey.currentState!.validate() : batteryCapacityFormKey.currentState!.validate()
                           ) {

@@ -180,9 +180,6 @@ bool bargraphtooltipBool=false;
     return dateString;
   }
 
-
-
-
   void getVesselDetails(String id)async {
     if(vesselList!=null&&vesselList!.isNotEmpty){
     Vessels? vessel = vesselList!.firstWhere((vessel) => vessel.id == id, orElse: () => Vessels());
