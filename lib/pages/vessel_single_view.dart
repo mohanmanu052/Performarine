@@ -150,32 +150,16 @@ SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
     commonProvider = context.read<CommonProvider>();
 
-   // Utils.customPrint('VESSEL Image ${widget.vessel!.displacement!}');
-
     checkSensorAvailabelOrNot();
 
     getVesselAnalytics(widget.vessel!.id!);
   }
 
-
-  
-
 @override
   void dispose() {
-    //     SystemChrome.setPreferredOrientations([
-    //   DeviceOrientation.landscapeLeft,
-    //   DeviceOrientation.landscapeRight,
-    //   DeviceOrientation.portraitDown,
-    //   DeviceOrientation.portraitUp
-
-    // ]);
-
     // TODO: implement dispose
     super.dispose();
   }
-
-
-  
 
   /// To get running trip details
   getRunningTripDetails() async {
@@ -738,7 +722,7 @@ SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                                                         children: [
                                                           commonText(
                                                               context: context,
-                                                              text: '0 $pound',
+                                                              text: '${widget.vessel!.weight} $pound',
                                                               fontWeight: FontWeight.w700,
                                                               textColor: Colors.black,
                                                               textSize:
