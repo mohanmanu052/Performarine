@@ -276,15 +276,25 @@ bool bargraphtooltipBool=false;
   //returns duration with milli seconds
   dynamic durationWithMilli3(String timeString) {
     String time = timeString;
-    Duration duration = Duration(
-      hours: int.parse(time.split(':')[0]),
-      minutes: int.parse(timeString.split(':')[1]),
-      seconds: int.parse(timeString.split(':')[2].split('.')[0]),
-      milliseconds: int.parse(timeString.split(':')[2].split('.')[1]),
-    );
-    int durationInMinutes = duration.inMinutes;
-    return double.parse(
-        "${durationInMinutes}.${int.parse(timeString.split(':')[2].split('.')[0])}");
+
+    List<String> timeComponents = time.split(":");
+int hours = int.parse(timeComponents[0]);
+int minutes = int.parse(timeComponents[1]);
+double seconds = double.parse(timeComponents[2]);
+
+// Calculate the total minutes
+int totalMinutes = (hours * 60) + minutes + (seconds / 60).toInt();
+
+return totalMinutes;
+    // Duration duration = Duration(
+    //   hours: int.parse(time.split(':')[0]),
+    //   minutes: int.parse(timeString.split(':')[1]),
+    //   seconds: int.parse(timeString.split(':')[2].split('.')[0]),
+    //   milliseconds: int.parse(timeString.split(':')[2].split('.')[1]),
+    // );
+    // int durationInMinutes = duration.inMinutes;
+    // return double.parse(
+    //     "${durationInMinutes}.${int.parse(timeString.split(':')[2].split('.')[0])}");
   }
 
   //Returns duration with seconds
@@ -578,6 +588,7 @@ setState(() {
             isSHowGraph = true;
             avgSpeed = double.parse(
                 value.data?.avgInfo?.avgSpeed?.toStringAsFixed(2) ?? '0');
+
             var myAvgDuration =
                 (value.data?.avgInfo?.avgDuration ?? '').contains(".")
                     ? durationWithMilli3(
@@ -591,9 +602,11 @@ setState(() {
                 "NEW AVG DATA ${value.data?.avgInfo?.avgDuration} -> $page");
 
             avgDuration = myAvgDuration ?? 0;
+            print('my avg duration was-------------'+myAvgDuration.toString());
 
             avgFuelConsumption = value.data?.avgInfo?.avgFuelConsumption;
             avgPower = value.data?.avgInfo?.avgPower ?? 0.0;
+
             Utils.customPrint(
                 "duration: $avgDuration, avgPower : $avgPower, avgFuelConsumption: $avgFuelConsumption, avgSpeed: $avgSpeed");
             CustomLogger().logWithFile(Level.info,
@@ -643,7 +656,8 @@ setState(() {
                    ColumnSeries<TripModel, String>(
                   
                   //  color: durationGraphData[j]==selectedRowIndex?Colors.red:circularProgressColor,
-                    width: 0.4,
+                    width: 0.9,
+                    
                     enableTooltip: true,
                     dataSource: triSpeedList,
                     xValueMapper: (TripModel tripData, data) {
@@ -761,13 +775,13 @@ Future.delayed(Duration(milliseconds: 100),(){
                     emptyPointSettings:
                         EmptyPointSettings(mode: EmptyPointMode.drop),
                     dataLabelSettings: DataLabelSettings(isVisible: false),
-                    spacing: 0.1,
+                    spacing: 0.2,
 
                   ));
 
                   tempDurationColumnSeriesData.add
                   (ColumnSeries<TripModel, String>(
-                          width: 0.4,
+                          width: 0.9,
 
                           color: Colors.transparent,
                           enableTooltip: true,
@@ -798,7 +812,7 @@ Future.delayed(Duration(milliseconds: 100),(){
                           emptyPointSettings:
                           EmptyPointSettings(mode: EmptyPointMode.drop),
                           dataLabelSettings: DataLabelSettings(isVisible: false),
-                          spacing: 0.1,
+                          spacing: 0.2,
                         ));
                 };
               //  if (triSpeedList[i].tripsByDate![j].avgSpeed! > 0) {
@@ -807,12 +821,12 @@ Future.delayed(Duration(milliseconds: 100),(){
                                                           return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].tripsByDate![j].dataLineColor : blueColor;
  },
                     dataSource: triSpeedList,
-                    width: 0.4,
+                    width: 0.9,
                     enableTooltip: true,
                                         emptyPointSettings:
                         EmptyPointSettings(mode: EmptyPointMode.drop),
                     dataLabelSettings: DataLabelSettings(isVisible: false),
-                    spacing: 0.1,
+                    spacing: 0.2,
                   
 
                     xValueMapper: (TripModel tripData, _) =>
@@ -902,7 +916,7 @@ Future.delayed(Duration(milliseconds: 100),(){
 
                     },
                     dataSource: triSpeedList,
-                    width: 0.4,
+                    width: 0.9,
                     color: Colors.transparent,
                     enableTooltip: true,
                     xValueMapper: (TripModel tripData, _) =>'',
@@ -920,7 +934,7 @@ Future.delayed(Duration(milliseconds: 100),(){
                     },
                     name: 'Avg Speed',
                     dataLabelSettings: DataLabelSettings(isVisible: false),
-                    spacing: 0.1,
+                    spacing: 0.2,
                   ));
              //   }
 
@@ -934,7 +948,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
  },
 
 
-                    width: 0.4,
+                    width: 0.9,
                     enableTooltip: true,
                     dataSource: triSpeedList,
                     xValueMapper: (TripModel tripData, _) =>
@@ -956,7 +970,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                     },
                     name: 'Fuel Usage',
                     dataLabelSettings: DataLabelSettings(isVisible: false),
-                    spacing: 0.1,
+                    spacing: 0.2,
                   ));
                 }
 
@@ -971,7 +985,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
  },
 
 
-                    width: 0.4,
+                    width: 0.9,
                     enableTooltip: true,
                     dataSource: triSpeedList,
                     xValueMapper: (TripModel tripData, _) =>
@@ -993,7 +1007,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                     },
                     name: 'Power Usage',
                     dataLabelSettings: DataLabelSettings(isVisible: false),
-                    spacing: 0.1,
+                    spacing: 0.2,
                   ));
                 }
               }
@@ -2579,10 +2593,11 @@ Utils.showSnackBar(context,
           controller: _tripDurationSrollController,
           child: SizedBox(
               width: durationColumnSeriesData.length > 3
-                  ?orientation==Orientation.portrait? (1.5 * 100 * durationColumnSeriesData.length):displayWidth(context)
+                  ?orientation==Orientation.portrait? (1.5 * 100 * durationColumnSeriesData.length):(1.5 * 110 * durationColumnSeriesData.length)
                   : displayWidth(context),
               height: graph_height,
               child: SfCartesianChart(
+              
                 tooltipBehavior: tooltipBehaviorDurationGraph,
                 enableSideBySideSeriesPlacement: true,
                 // zoomPanBehavior: zoomPanBehavior,
@@ -2643,7 +2658,7 @@ Utils.showSnackBar(context,
                           start: avgDuration,
                           end: avgDuration,
                           borderWidth: 2,
-                          borderColor: Colors.grey.shade400,
+                          borderColor: Colors.grey,
                           shouldRenderAboveSeries: true,
                           textStyle: TextStyle(
                             color: Colors.black,
@@ -2653,7 +2668,10 @@ Utils.showSnackBar(context,
                           ),
                           dashArray: <double>[4, 8],
                           horizontalTextAlignment: TextAnchor.start),
-                    ]),
+                    ]
+                    
+                    ),
+                    
                 series: durationColumnSeriesData,
               )),
         ),
@@ -2667,7 +2685,7 @@ Utils.showSnackBar(context,
               : Container(
                   width: orientation == Orientation.portrait
                       ? displayWidth(context) * 0.198
-                      : displayWidth(context) * 0.152,
+                      : displayWidth(context) * 0.135,
                     // ? displayWidth(context) * 0.16
                      // ? tempDurationColumnSeriesData.length > 10 ? displayWidth(context) * 0.168 : displayWidth(context) * 0.20
                       //: tempDurationColumnSeriesData.length > 10 ? displayWidth(context) * 0.14 : displayWidth(context) * 0.1450,
@@ -2891,7 +2909,7 @@ Utils.showSnackBar(context,
           scrollDirection: Axis.horizontal,
           child: SizedBox(
             width: avgSpeedColumnSeriesData.length > 3
-                ?orientation==Orientation.portrait? (1.5 * 100 * avgSpeedColumnSeriesData.length):displayWidth(context)
+                  ?orientation==Orientation.portrait? (1.5 * 100 * durationColumnSeriesData.length):(1.5 * 110 * durationColumnSeriesData.length)
                 : displayWidth(context),
             height: graph_height,
             child: SfCartesianChart(
@@ -2954,7 +2972,8 @@ Utils.showSnackBar(context,
                       dashArray: <double>[4, 8],
                       horizontalTextAlignment: TextAnchor.start,
                     ),
-                  ]),
+                  ]
+                  ),
               series: avgSpeedColumnSeriesData,
             ),
           ),
@@ -2967,7 +2986,7 @@ Utils.showSnackBar(context,
               : Container(
                   width: orientation == Orientation.portrait
                       ? displayWidth(context) * 0.198
-                      : displayWidth(context) * 0.152,
+                      : displayWidth(context) * 0.135,
                   color: Colors.white,
                   height: graph_height,
                   child: SfCartesianChart(
@@ -3124,7 +3143,7 @@ Utils.showSnackBar(context,
       scrollDirection: Axis.horizontal,
       child: SizedBox(
         width: fuelUsageColumnSeriesData.length > 3
-            ? (1.5 * 100 * fuelUsageColumnSeriesData.length)
+                  ?orientation==Orientation.portrait? (1.5 * 100 * durationColumnSeriesData.length):(1.5 * 110 * durationColumnSeriesData.length)
             : displayWidth(context),
         height: graph_height,
         child: SfCartesianChart(
@@ -3279,7 +3298,7 @@ Utils.showSnackBar(context,
       controller: _powerUsageSrollController,
       child: SizedBox(
         width: powerUsageColumnSeriesData.length > 3
-            ? (1.5 * 100 * powerUsageColumnSeriesData.length)
+                  ?orientation==Orientation.portrait? (1.5 * 100 * durationColumnSeriesData.length):(1.5 * 110 * durationColumnSeriesData.length)
             : displayWidth(context),
         height: graph_height,
         child: SfCartesianChart(
