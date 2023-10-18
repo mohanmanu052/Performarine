@@ -277,7 +277,6 @@ Future<void> initializeService() async {
       DarwinInitializationSettings(
           requestAlertPermission: false,
           requestBadgePermission: false,
-          requestSoundPermission: false,
           onDidReceiveLocalNotification: onDidReceiveLocalNotification);
   final InitializationSettings initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,

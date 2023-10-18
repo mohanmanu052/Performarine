@@ -207,80 +207,89 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               SizedBox(
                                 height: displayHeight(context) * 0.02,
                               ),*/
-                              InkWell(
-                                onTap: ()async {
-                                //  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-                                  await Future.delayed(Duration(milliseconds: 500), (){});
+                              Container(
+                                width: displayWidth(context),
+                                child: InkWell(
+                                  onTap: ()async {
+                                  //  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                    await Future.delayed(Duration(milliseconds: 500), (){});
 
-                                  CustomLogger().logWithFile(Level.info, "User Navigating to Home page -> $page");
-                                  Navigator.of(context).pop();
-                                  Navigator.pushAndRemoveUntil(
+                                    CustomLogger().logWithFile(Level.info, "User Navigating to Home page -> $page");
+                                    Navigator.of(context).pop();
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => BottomNavigation(),
+                                        ),
+                                        ModalRoute.withName(""));
+
+
+                                  },
+                                  child: commonText(
+                                      context: context,
+                                      text: 'My Vessels',
+                                      fontWeight: FontWeight.w400,
+                                      textColor: Colors.black54,
+                                      textSize: textSize,
+                                      textAlign: TextAlign.start),
+                                ),
+                              ),
+                              SizedBox(
+                                height: displayHeight(context) * 0.02,
+                              ),
+                              Container(
+                                width: displayWidth(context),
+                                child: InkWell(
+                                  onTap: ()async {
+                                   // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                    await Future.delayed(Duration(milliseconds: 500), (){});
+
+                                    CustomLogger().logWithFile(Level.info, "User Navigating to Add New Vessel Screen -> $page");
+                                    Navigator.of(context).pop();
+
+                                    Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => BottomNavigation(),
-                                      ),
-                                      ModalRoute.withName(""));
-
-
-                                },
-                                child: commonText(
-                                    context: context,
-                                    text: 'My Vessels',
-                                    fontWeight: FontWeight.w400,
-                                    textColor: Colors.black54,
-                                    textSize: textSize,
-                                    textAlign: TextAlign.start),
+                                          builder: (context) =>
+                                               AddNewVesselPage(bottomNavIndex: widget.bottomNavIndex,)),
+                                    );
+                                  },
+                                  child: commonText(
+                                      context: context,
+                                      text: 'Create Vessels',
+                                      fontWeight: FontWeight.w400,
+                                      textColor: Colors.black54,
+                                      textSize: textSize,
+                                      textAlign: TextAlign.start),
+                                ),
                               ),
                               SizedBox(
                                 height: displayHeight(context) * 0.02,
                               ),
-                              InkWell(
-                                onTap: ()async {
-                                 // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-                                  await Future.delayed(Duration(milliseconds: 500), (){});
+                              Container(
+                                width: displayWidth(context),
+                                child: InkWell(
+                                  onTap: ()async {
+                                   // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                    await Future.delayed(Duration(milliseconds: 500), (){});
+                                    CustomLogger().logWithFile(Level.info, "User Navigating to Retired Vessel Screen -> $page");
+                                    Navigator.of(context).pop();
 
-                                  CustomLogger().logWithFile(Level.info, "User Navigating to Add New Vessel Screen -> $page");
-                                  Navigator.of(context).pop();
-
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                             AddNewVesselPage(bottomNavIndex: widget.bottomNavIndex,)),
-                                  );
-                                },
-                                child: commonText(
-                                    context: context,
-                                    text: 'Create Vessels',
-                                    fontWeight: FontWeight.w400,
-                                    textColor: Colors.black54,
-                                    textSize: textSize,
-                                    textAlign: TextAlign.start),
-                              ),
-                              SizedBox(
-                                height: displayHeight(context) * 0.02,
-                              ),
-                              InkWell(
-                                onTap: ()async {
-                                 // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-                                  await Future.delayed(Duration(milliseconds: 500), (){});
-                                  CustomLogger().logWithFile(Level.info, "User Navigating to Retired Vessel Screen -> $page");
-                                  Navigator.of(context).pop();
-
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                             RetiredVesselsScreen(bottomNavIndex: widget.bottomNavIndex,)),
-                                  );
-                                },
-                                child: commonText(
-                                    context: context,
-                                    text: 'Retired Vessels',
-                                    fontWeight: FontWeight.w400,
-                                    textColor: Colors.black54,
-                                    textSize: textSize,
-                                    textAlign: TextAlign.start),
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                               RetiredVesselsScreen(bottomNavIndex: widget.bottomNavIndex,)),
+                                    );
+                                  },
+                                  child: commonText(
+                                      context: context,
+                                      text: 'Retired Vessels',
+                                      fontWeight: FontWeight.w400,
+                                      textColor: Colors.black54,
+                                      textSize: textSize,
+                                      textAlign: TextAlign.start),
+                                ),
                               ),
                               SizedBox(
                                 height: displayHeight(context) * 0.02,
@@ -307,77 +316,80 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               SizedBox(
                                 height: displayHeight(context) * 0.02,
                               ), */
-                              InkWell(
-                                onTap: () async {
+                              Container(
+                                width: displayWidth(context),
+                                child: InkWell(
+                                  onTap: () async {
 
-                                 // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-                                  await Future.delayed(Duration(milliseconds: 500), (){});
+                                   // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                    await Future.delayed(Duration(milliseconds: 500), (){});
 
-                                  bool? isTripStarted =
-                                      sharedPreferences!.getBool('trip_started');
+                                    bool? isTripStarted =
+                                        sharedPreferences!.getBool('trip_started');
 
-                                  var tripSyncDetails =
-                                      await _databaseService.tripSyncDetails();
-                                  var vesselsSyncDetails =
-                                      await _databaseService.vesselsSyncDetails();
+                                    var tripSyncDetails =
+                                        await _databaseService.tripSyncDetails();
+                                    var vesselsSyncDetails =
+                                        await _databaseService.vesselsSyncDetails();
 
-                                  Utils.customPrint(
-                                      "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
-                                  CustomLogger().logWithFile(Level.info, "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails-> $page");
+                                    Utils.customPrint(
+                                        "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
+                                    CustomLogger().logWithFile(Level.info, "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails-> $page");
 
-                                  if (isTripStarted != null) {
-                                    if (isTripStarted) {
+                                    if (isTripStarted != null) {
+                                      if (isTripStarted) {
 
-                                      if(commonProvider.bottomNavIndex != 1){
-                                        SystemChrome.setPreferredOrientations([
-                                          DeviceOrientation.portraitUp
-                                        ]);
-                                      }else{
-                                        SystemChrome.setPreferredOrientations([
-                                          DeviceOrientation.landscapeLeft,
-                                          DeviceOrientation.landscapeRight,
-                                          DeviceOrientation.portraitDown,
-                                          DeviceOrientation.portraitUp
-                                        ]);
+                                        if(commonProvider.bottomNavIndex != 1){
+                                          SystemChrome.setPreferredOrientations([
+                                            DeviceOrientation.portraitUp
+                                          ]);
+                                        }else{
+                                          SystemChrome.setPreferredOrientations([
+                                            DeviceOrientation.landscapeLeft,
+                                            DeviceOrientation.landscapeRight,
+                                            DeviceOrientation.portraitDown,
+                                            DeviceOrientation.portraitUp
+                                          ]);
+                                        }
+
+                                        Navigator.of(context).pop();
+                                        Utils.showSnackBar(context,
+                                            scaffoldKey: widget.scaffoldKey,
+                                            message:
+                                                'Please end the trip which is already running');
+                                      } else {
+                                        CustomLogger().logWithFile(Level.info, "User navigating to Sync Data Cloud to mobile screen-> $page");
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                   SyncDataCloudToMobileScreen(bottomNavIndex: widget.bottomNavIndex,)),
+                                        );
                                       }
-
-                                      Navigator.of(context).pop();
-                                      Utils.showSnackBar(context,
-                                          scaffoldKey: widget.scaffoldKey,
-                                          message:
-                                              'Please end the trip which is already running');
                                     } else {
-                                      CustomLogger().logWithFile(Level.info, "User navigating to Sync Data Cloud to mobile screen-> $page");
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                 SyncDataCloudToMobileScreen(bottomNavIndex: widget.bottomNavIndex,)),
-                                      );
+                                      if (vesselsSyncDetails || tripSyncDetails) {
+                                        showDialogBoxToUploadData(
+                                            context, widget.scaffoldKey!, false,widget.orientation??Orientation.portrait);
+                                      } else {
+                                        Navigator.of(context).pop();
+                                        CustomLogger().logWithFile(Level.info, "User navigating to Sync Data Cloud to mobile screen-> $page");
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                   SyncDataCloudToMobileScreen(bottomNavIndex: widget.bottomNavIndex,)),
+                                        );
+                                      }
                                     }
-                                  } else {
-                                    if (vesselsSyncDetails || tripSyncDetails) {
-                                      showDialogBoxToUploadData(
-                                          context, widget.scaffoldKey!, false,widget.orientation??Orientation.portrait);
-                                    } else {
-                                      Navigator.of(context).pop();
-                                      CustomLogger().logWithFile(Level.info, "User navigating to Sync Data Cloud to mobile screen-> $page");
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                 SyncDataCloudToMobileScreen(bottomNavIndex: widget.bottomNavIndex,)),
-                                      );
-                                    }
-                                  }
-                                },
-                                child: commonText(
-                                    context: context,
-                                    text: 'Sync from Cloud',
-                                    fontWeight: FontWeight.w400,
-                                    textColor: Colors.black54,
-                                    textSize: textSize,
-                                    textAlign: TextAlign.start),
+                                  },
+                                  child: commonText(
+                                      context: context,
+                                      text: 'Sync from Cloud',
+                                      fontWeight: FontWeight.w400,
+                                      textColor: Colors.black54,
+                                      textSize: textSize,
+                                      textAlign: TextAlign.start),
+                                ),
                               ),
                            /*   DropdownButton<String>(
                                 focusColor:Colors.transparent,
@@ -444,28 +456,43 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             SizedBox(
                               height: displayHeight(context) * 0.02,
                             ),
-                         commonProvider.loginModel!.loginType == "regular" ?   InkWell(
-                              onTap: ()async {
+                         commonProvider.loginModel!.loginType == "regular" ?   Container(
+                           width: displayWidth(context),
+                           child: InkWell(
+                                onTap: ()async {
 
-                              //  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-                                await Future.delayed(Duration(milliseconds: 500), (){});
+                                //  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                  await Future.delayed(Duration(milliseconds: 500), (){});
 
-                                bool? isTripStarted =
-                                sharedPreferences!.getBool('trip_started');
+                                  bool? isTripStarted =
+                                  sharedPreferences!.getBool('trip_started');
 
-                                var tripSyncDetails =
-                                    await _databaseService.tripSyncDetails();
-                                var vesselsSyncDetails =
-                                    await _databaseService.vesselsSyncDetails();
+                                  var tripSyncDetails =
+                                      await _databaseService.tripSyncDetails();
+                                  var vesselsSyncDetails =
+                                      await _databaseService.vesselsSyncDetails();
 
-                                Utils.customPrint(
-                                    "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
-                                CustomLogger().logWithFile(Level.info, "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails-> $page");
+                                  Utils.customPrint(
+                                      "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
+                                  CustomLogger().logWithFile(Level.info, "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails-> $page");
 
-                                if (isTripStarted != null) {
-                                  if (isTripStarted) {
-                                    Navigator.of(context).pop();
-                                    showEndTripDialogBox(context, );
+                                  if (isTripStarted != null) {
+                                    if (isTripStarted) {
+                                      Navigator.of(context).pop();
+                                      showEndTripDialogBox(context, );
+                                    } else {
+                                      if (vesselsSyncDetails || tripSyncDetails) {
+                                        CustomLogger().logWithFile(Level.warning, "showDialogBoxToUploadData pop up for user confirmation-> $page");
+                                        showDialogBoxToUploadData(context, widget.scaffoldKey!, true,widget.orientation??Orientation.portrait);
+                                      } else {
+                                        CustomLogger().logWithFile(Level.info, "User Navigating to change password screen-> $page");
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => ChangePassword(bottomNavIndex: widget.bottomNavIndex,)),
+                                        );
+                                      }
+                                    }
                                   } else {
                                     if (vesselsSyncDetails || tripSyncDetails) {
                                       CustomLogger().logWithFile(Level.warning, "showDialogBoxToUploadData pop up for user confirmation-> $page");
@@ -479,131 +506,128 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                       );
                                     }
                                   }
-                                } else {
-                                  if (vesselsSyncDetails || tripSyncDetails) {
-                                    CustomLogger().logWithFile(Level.warning, "showDialogBoxToUploadData pop up for user confirmation-> $page");
-                                    showDialogBoxToUploadData(context, widget.scaffoldKey!, true,widget.orientation??Orientation.portrait);
-                                  } else {
-                                    CustomLogger().logWithFile(Level.info, "User Navigating to change password screen-> $page");
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => ChangePassword(bottomNavIndex: widget.bottomNavIndex,)),
-                                    );
-                                  }
-                                }
-                              },
-                              child: commonText(
-                                  context: context,
-                                  text: 'Change Password',
-                                  fontWeight: FontWeight.w400,
-                                  textColor: Colors.black54,
-                                  textSize: textSize,
-                                  textAlign: TextAlign.start),
-                            ) : Container(),
+                                },
+                                child: commonText(
+                                    context: context,
+                                    text: 'Change Password',
+                                    fontWeight: FontWeight.w400,
+                                    textColor: Colors.black54,
+                                    textSize: textSize,
+                                    textAlign: TextAlign.start),
+                              ),
+                         ) : Container(),
                             SizedBox(
                               height: displayHeight(context) * 0.02,
                             ),
-                            InkWell(
-                              onTap: ()async {
-                               // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-                                await Future.delayed(Duration(milliseconds: 500), (){});
+                            Container(
+                              width: displayWidth(context),
+                              child: InkWell(
+                                onTap: ()async {
+                                 // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                  await Future.delayed(Duration(milliseconds: 500), (){});
 
-                                CustomLogger().logWithFile(Level.info, "User Navigating to Terms and Conditions screen-> $page");
-                                Navigator.of(context).pop();
+                                  CustomLogger().logWithFile(Level.info, "User Navigating to Terms and Conditions screen-> $page");
+                                  Navigator.of(context).pop();
 
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => CustomWebView(url:'https://${Urls.terms}', isPaccore: false,bottomNavIndex: widget.bottomNavIndex,)),
-                                );
-                              },
-                              child: commonText(
-                                  context: context,
-                                  text: 'Terms & Conditions',
-                                  fontWeight: FontWeight.w400,
-                                  textColor: Colors.black54,
-                                  textSize: textSize,
-                                  textAlign: TextAlign.start),
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => CustomWebView(url:'https://${Urls.terms}', isPaccore: false,bottomNavIndex: widget.bottomNavIndex,)),
+                                  );
+                                },
+                                child: commonText(
+                                    context: context,
+                                    text: 'Terms & Conditions',
+                                    fontWeight: FontWeight.w400,
+                                    textColor: Colors.black54,
+                                    textSize: textSize,
+                                    textAlign: TextAlign.start),
+                              ),
                             ),
                             SizedBox(
                               height: displayHeight(context) * 0.02,
                             ),
-                            InkWell(
-                              onTap: ()async {
-                               // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-                                await Future.delayed(Duration(milliseconds: 500), (){});
+                            Container(
+                              width: displayWidth(context),
+                              child: InkWell(
+                                onTap: ()async {
+                                 // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                  await Future.delayed(Duration(milliseconds: 500), (){});
 
-                                CustomLogger().logWithFile(Level.info, "User Navigating to Privacy and Policy screen-> $page");
-                                Navigator.of(context).pop();
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => CustomWebView(url: 'https://${Urls.privacy}',isPaccore: false,bottomNavIndex: widget.bottomNavIndex,)),
-                                );
-                              },
-                              child: commonText(
-                                  context: context,
-                                  text: 'Privacy Policy',
-                                  fontWeight: FontWeight.w400,
-                                  textColor: Colors.black54,
-                                  textSize: textSize,
-                                  textAlign: TextAlign.start),
+                                  CustomLogger().logWithFile(Level.info, "User Navigating to Privacy and Policy screen-> $page");
+                                  Navigator.of(context).pop();
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => CustomWebView(url: 'https://${Urls.privacy}',isPaccore: false,bottomNavIndex: widget.bottomNavIndex,)),
+                                  );
+                                },
+                                child: commonText(
+                                    context: context,
+                                    text: 'Privacy Policy',
+                                    fontWeight: FontWeight.w400,
+                                    textColor: Colors.black54,
+                                    textSize: textSize,
+                                    textAlign: TextAlign.start),
+                              ),
                             ),
                             SizedBox(
                               height: displayHeight(context) * 0.02,
                             ),
-                            InkWell(
-                              onTap: () async {
-                                //SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-                                await Future.delayed(Duration(milliseconds: 500), (){});
+                            Container(
+                              width: displayWidth(context),
+                              child: InkWell(
+                                onTap: () async {
+                                  //SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                  await Future.delayed(Duration(milliseconds: 500), (){});
 
-                                bool? isTripStarted =
-                                    sharedPreferences!.getBool('trip_started');
+                                  bool? isTripStarted =
+                                      sharedPreferences!.getBool('trip_started');
 
-                                var tripSyncDetails =
-                                    await _databaseService.tripSyncDetails();
-                                var vesselsSyncDetails =
-                                    await _databaseService.vesselsSyncDetails();
+                                  var tripSyncDetails =
+                                      await _databaseService.tripSyncDetails();
+                                  var vesselsSyncDetails =
+                                      await _databaseService.vesselsSyncDetails();
 
-                                Utils.customPrint(
-                                    "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
-                                CustomLogger().logWithFile(Level.info, "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails -> $page");
+                                  Utils.customPrint(
+                                      "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
+                                  CustomLogger().logWithFile(Level.info, "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails -> $page");
 
-                                if (isTripStarted != null) {
-                                  if (isTripStarted) {
-                                    Navigator.of(context).pop();
+                                  if (isTripStarted != null) {
+                                    if (isTripStarted) {
+                                      Navigator.of(context).pop();
 
-                                    CustomLogger().logWithFile(Level.warning, "show End trip dialog box for user confirmation -> $page");
+                                      CustomLogger().logWithFile(Level.warning, "show End trip dialog box for user confirmation -> $page");
 
-                                    showEndTripDialogBox(context);
+                                      showEndTripDialogBox(context);
+                                    } else {
+                                      if (vesselsSyncDetails || tripSyncDetails) {
+                                        showDialogBox(context, widget.scaffoldKey!,widget.orientation??Orientation.portrait);
+                                      } else {
+                                        signOut();
+                                      }
+                                    }
                                   } else {
                                     if (vesselsSyncDetails || tripSyncDetails) {
-                                      showDialogBox(context, widget.scaffoldKey!,widget.orientation??Orientation.portrait);
+                                      showDialogBox(context, scaffoldKey,widget.orientation??Orientation.portrait);
                                     } else {
                                       signOut();
                                     }
                                   }
-                                } else {
-                                  if (vesselsSyncDetails || tripSyncDetails) {
-                                    showDialogBox(context, scaffoldKey,widget.orientation??Orientation.portrait);
-                                  } else {
-                                    signOut();
-                                  }
-                                }
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  commonText(
-                                      context: context,
-                                      text: 'Sign Out',
-                                      fontWeight: FontWeight.w400,
-                                      textColor: Colors.black54,
-                                      textSize: signOutText,
-                                      textAlign: TextAlign.start),
-                                  //Icon(Icons.logout, color: Colors.black54),
-                                ],
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    commonText(
+                                        context: context,
+                                        text: 'Sign Out',
+                                        fontWeight: FontWeight.w400,
+                                        textColor: Colors.black54,
+                                        textSize: textSize,
+                                        textAlign: TextAlign.start),
+                                    //Icon(Icons.logout, color: Colors.black54),
+                                  ],
+                                ),
                               ),
                             ),
                             SizedBox(height: displayHeight(context) * 0.02,),
@@ -760,76 +784,85 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           SizedBox(
                             height: displayHeight(context) * 0.02,
                           ),*/
-                          InkWell(
-                            onTap: () {
-                              CustomLogger().logWithFile(Level.info, "User Navigating to Home page -> $page");
-                              Navigator.of(context).pop();
-                              Navigator.pushAndRemoveUntil(
+                          Container(
+                            width: displayWidth(context),
+                            child: InkWell(
+                              onTap: () {
+                                CustomLogger().logWithFile(Level.info, "User Navigating to Home page -> $page");
+                                Navigator.of(context).pop();
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => BottomNavigation(),
+                                    ),
+                                    ModalRoute.withName(""));
+
+
+                              },
+                              child: commonText(
+                                  context: context,
+                                  text: 'My Vessels',
+                                  fontWeight: FontWeight.w400,
+                                  textColor: Colors.black54,
+                                  textSize: textSize,
+                                  textAlign: TextAlign.start),
+                            ),
+                          ),
+                          SizedBox(
+                            height: displayHeight(context) * 0.02,
+                          ),
+                          Container(
+                            width: displayWidth(context),
+                            child: InkWell(
+                              onTap: ()async {
+                              //  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                await Future.delayed(Duration(milliseconds: 500), (){});
+                                CustomLogger().logWithFile(Level.info, "User Navigating to Add New Vessel Screen -> $page");
+                                Navigator.of(context).pop();
+
+                                Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => BottomNavigation(),
-                                  ),
-                                  ModalRoute.withName(""));
+                                      builder: (context) =>
 
-
-                            },
-                            child: commonText(
-                                context: context,
-                                text: 'My Vessels',
-                                fontWeight: FontWeight.w400,
-                                textColor: Colors.black54,
-                                textSize: textSize,
-                                textAlign: TextAlign.start),
+                                          AddNewVesselPage(bottomNavIndex: widget.bottomNavIndex,)),
+                                );
+                              },
+                              child: commonText(
+                                  context: context,
+                                  text: 'Create Vessels',
+                                  fontWeight: FontWeight.w400,
+                                  textColor: Colors.black54,
+                                  textSize: textSize,
+                                  textAlign: TextAlign.start),
+                            ),
                           ),
                           SizedBox(
                             height: displayHeight(context) * 0.02,
                           ),
-                          InkWell(
-                            onTap: ()async {
-                            //  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-                              await Future.delayed(Duration(milliseconds: 500), (){});
-                              CustomLogger().logWithFile(Level.info, "User Navigating to Add New Vessel Screen -> $page");
-                              Navigator.of(context).pop();
+                          Container(
+                            width: displayWidth(context),
+                            child: InkWell(
+                              onTap: () {
+                              //  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                CustomLogger().logWithFile(Level.info, "User Navigating to Retired Vessel Screen -> $page");
+                                Navigator.of(context).pop();
 
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                       
-                                        AddNewVesselPage(bottomNavIndex: widget.bottomNavIndex,)),
-                              );
-                            },
-                            child: commonText(
-                                context: context,
-                                text: 'Create Vessels',
-                                fontWeight: FontWeight.w400,
-                                textColor: Colors.black54,
-                                textSize: textSize,
-                                textAlign: TextAlign.start),
-                          ),
-                          SizedBox(
-                            height: displayHeight(context) * 0.02,
-                          ),
-                          InkWell(
-                            onTap: () {
-                            //  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-                              CustomLogger().logWithFile(Level.info, "User Navigating to Retired Vessel Screen -> $page");
-                              Navigator.of(context).pop();
-
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                     RetiredVesselsScreen(bottomNavIndex: widget.bottomNavIndex,)),
-                              );
-                            },
-                            child: commonText(
-                                context: context,
-                                text: 'Retired Vessels',
-                                fontWeight: FontWeight.w400,
-                                textColor: Colors.black54,
-                                textSize: textSize,
-                                textAlign: TextAlign.start),
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                       RetiredVesselsScreen(bottomNavIndex: widget.bottomNavIndex,)),
+                                );
+                              },
+                              child: commonText(
+                                  context: context,
+                                  text: 'Retired Vessels',
+                                  fontWeight: FontWeight.w400,
+                                  textColor: Colors.black54,
+                                  textSize: textSize,
+                                  textAlign: TextAlign.start),
+                            ),
                           ),
                           SizedBox(
                             height: displayHeight(context) * 0.02,
@@ -856,60 +889,63 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           SizedBox(
                             height: displayHeight(context) * 0.02,
                           ), */
-                          InkWell(
-                            onTap: () async {
-                             // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-                              bool? isTripStarted =
-                              sharedPreferences!.getBool('trip_started');
+                          Container(
+                            width: displayWidth(context),
+                            child: InkWell(
+                              onTap: () async {
+                               // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                bool? isTripStarted =
+                                sharedPreferences!.getBool('trip_started');
 
-                              var tripSyncDetails =
-                              await _databaseService.tripSyncDetails();
-                              var vesselsSyncDetails =
-                              await _databaseService.vesselsSyncDetails();
+                                var tripSyncDetails =
+                                await _databaseService.tripSyncDetails();
+                                var vesselsSyncDetails =
+                                await _databaseService.vesselsSyncDetails();
 
-                              Utils.customPrint(
-                                  "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
-                              CustomLogger().logWithFile(Level.info, "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails-> $page");
+                                Utils.customPrint(
+                                    "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
+                                CustomLogger().logWithFile(Level.info, "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails-> $page");
 
-                              if (isTripStarted != null) {
-                                if (isTripStarted) {
-                                  Navigator.of(context).pop();
-                                  Utils.showSnackBar(context,
-                                      scaffoldKey: widget.scaffoldKey,
-                                      message:
-                                      'Please end the trip which is already running');
+                                if (isTripStarted != null) {
+                                  if (isTripStarted) {
+                                    Navigator.of(context).pop();
+                                    Utils.showSnackBar(context,
+                                        scaffoldKey: widget.scaffoldKey,
+                                        message:
+                                        'Please end the trip which is already running');
+                                  } else {
+                                    CustomLogger().logWithFile(Level.info, "User navigating to Sync Data Cloud to mobile screen-> $page");
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                           SyncDataCloudToMobileScreen(bottomNavIndex: widget.bottomNavIndex,)),
+                                    );
+                                  }
                                 } else {
-                                  CustomLogger().logWithFile(Level.info, "User navigating to Sync Data Cloud to mobile screen-> $page");
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                         SyncDataCloudToMobileScreen(bottomNavIndex: widget.bottomNavIndex,)),
-                                  );
+                                  if (vesselsSyncDetails || tripSyncDetails) {
+                                    showDialogBoxToUploadData(
+                                        context, widget.scaffoldKey!, false,widget.orientation??Orientation.portrait);
+                                  } else {
+                                    Navigator.of(context).pop();
+                                    CustomLogger().logWithFile(Level.info, "User navigating to Sync Data Cloud to mobile screen-> $page");
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                           SyncDataCloudToMobileScreen(bottomNavIndex: widget.bottomNavIndex)),
+                                    );
+                                  }
                                 }
-                              } else {
-                                if (vesselsSyncDetails || tripSyncDetails) {
-                                  showDialogBoxToUploadData(
-                                      context, widget.scaffoldKey!, false,widget.orientation??Orientation.portrait);
-                                } else {
-                                  Navigator.of(context).pop();
-                                  CustomLogger().logWithFile(Level.info, "User navigating to Sync Data Cloud to mobile screen-> $page");
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                         SyncDataCloudToMobileScreen(bottomNavIndex: widget.bottomNavIndex)),
-                                  );
-                                }
-                              }
-                            },
-                            child: commonText(
-                                context: context,
-                                text: 'Sync from Cloud',
-                                fontWeight: FontWeight.w400,
-                                textColor: Colors.black54,
-                                textSize: textSize,
-                                textAlign: TextAlign.start),
+                              },
+                              child: commonText(
+                                  context: context,
+                                  text: 'Sync from Cloud',
+                                  fontWeight: FontWeight.w400,
+                                  textColor: Colors.black54,
+                                  textSize: textSize,
+                                  textAlign: TextAlign.start),
+                            ),
                           ),
                           /*   DropdownButton<String>(
                             focusColor:Colors.transparent,
@@ -976,25 +1012,40 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       SizedBox(
                         height: displayHeight(context) * 0.02,
                       ),
-                      commonProvider.loginModel!.loginType == "regular" ?   InkWell(
-                        onTap: ()async {
-                         // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-                          bool? isTripStarted =
-                          sharedPreferences!.getBool('trip_started');
+                      commonProvider.loginModel!.loginType == "regular" ?   Container(
+                        width: displayWidth(context),
+                        child: InkWell(
+                          onTap: ()async {
+                           // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                            bool? isTripStarted =
+                            sharedPreferences!.getBool('trip_started');
 
-                          var tripSyncDetails =
-                          await _databaseService.tripSyncDetails();
-                          var vesselsSyncDetails =
-                          await _databaseService.vesselsSyncDetails();
+                            var tripSyncDetails =
+                            await _databaseService.tripSyncDetails();
+                            var vesselsSyncDetails =
+                            await _databaseService.vesselsSyncDetails();
 
-                          Utils.customPrint(
-                              "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
-                          CustomLogger().logWithFile(Level.info, "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails-> $page");
+                            Utils.customPrint(
+                                "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
+                            CustomLogger().logWithFile(Level.info, "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails-> $page");
 
-                          if (isTripStarted != null) {
-                            if (isTripStarted) {
-                              Navigator.of(context).pop();
-                              showEndTripDialogBox(context, );
+                            if (isTripStarted != null) {
+                              if (isTripStarted) {
+                                Navigator.of(context).pop();
+                                showEndTripDialogBox(context, );
+                              } else {
+                                if (vesselsSyncDetails || tripSyncDetails) {
+                                  CustomLogger().logWithFile(Level.warning, "showDialogBoxToUploadData pop up for user confirmation-> $page");
+                                  showDialogBoxToUploadData(context, widget.scaffoldKey!, true,widget.orientation??Orientation.portrait);
+                                } else {
+                                  CustomLogger().logWithFile(Level.info, "User Navigating to change password screen-> $page");
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ChangePassword(bottomNavIndex:widget.bottomNavIndex ,)),
+                                  );
+                                }
+                              }
                             } else {
                               if (vesselsSyncDetails || tripSyncDetails) {
                                 CustomLogger().logWithFile(Level.warning, "showDialogBoxToUploadData pop up for user confirmation-> $page");
@@ -1004,127 +1055,125 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => ChangePassword(bottomNavIndex:widget.bottomNavIndex ,)),
+                                      builder: (context) => ChangePassword(bottomNavIndex:widget.bottomNavIndex )),
                                 );
                               }
                             }
-                          } else {
-                            if (vesselsSyncDetails || tripSyncDetails) {
-                              CustomLogger().logWithFile(Level.warning, "showDialogBoxToUploadData pop up for user confirmation-> $page");
-                              showDialogBoxToUploadData(context, widget.scaffoldKey!, true,widget.orientation??Orientation.portrait);
-                            } else {
-                              CustomLogger().logWithFile(Level.info, "User Navigating to change password screen-> $page");
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ChangePassword(bottomNavIndex:widget.bottomNavIndex )),
-                              );
-                            }
-                          }
-                        },
-                        child: commonText(
-                            context: context,
-                            text: 'Change Password',
-                            fontWeight: FontWeight.w400,
-                            textColor: Colors.black54,
-                            textSize: textSize,
-                            textAlign: TextAlign.start),
+                          },
+                          child: commonText(
+                              context: context,
+                              text: 'Change Password',
+                              fontWeight: FontWeight.w400,
+                              textColor: Colors.black54,
+                              textSize: textSize,
+                              textAlign: TextAlign.start),
+                        ),
                       ) : Container(),
                       SizedBox(
                         height: displayHeight(context) * 0.02,
                       ),
-                      InkWell(
-                        onTap: () {
-                          CustomLogger().logWithFile(Level.info, "User Navigating to Terms and Conditions screen-> $page");
-                          Navigator.of(context).pop();
+                      Container(
+                        width: displayWidth(context),
+                        child: InkWell(
+                          onTap: () {
+                            CustomLogger().logWithFile(Level.info, "User Navigating to Terms and Conditions screen-> $page");
+                            Navigator.of(context).pop();
 
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CustomWebView(url:'https://${Urls.terms}', isPaccore: false,bottomNavIndex: widget.bottomNavIndex,)),
-                          );
-                        },
-                        child: commonText(
-                            context: context,
-                            text: 'Terms & Conditions',
-                            fontWeight: FontWeight.w400,
-                            textColor: Colors.black54,
-                            textSize: textSize,
-                            textAlign: TextAlign.start),
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CustomWebView(url:'https://${Urls.terms}', isPaccore: false,bottomNavIndex: widget.bottomNavIndex,)),
+                            );
+                          },
+                          child: commonText(
+                              context: context,
+                              text: 'Terms & Conditions',
+                              fontWeight: FontWeight.w400,
+                              textColor: Colors.black54,
+                              textSize: textSize,
+                              textAlign: TextAlign.start),
+                        ),
                       ),
                       SizedBox(
                         height: displayHeight(context) * 0.02,
                       ),
-                      InkWell(
-                        onTap: () {
-                          CustomLogger().logWithFile(Level.info, "User Navigating to Privacy and Policy screen-> $page");
-                          Navigator.of(context).pop();
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CustomWebView(url: 'https://${Urls.privacy}',isPaccore: false,bottomNavIndex: widget.bottomNavIndex,)),
-                          );
-                        },
-                        child: commonText(
-                            context: context,
-                            text: 'Privacy Policy',
-                            fontWeight: FontWeight.w400,
-                            textColor: Colors.black54,
-                            textSize: textSize,
-                            textAlign: TextAlign.start),
+                      Container(
+                        width: displayWidth(context),
+                        child: InkWell(
+                          onTap: () {
+                            CustomLogger().logWithFile(Level.info, "User Navigating to Privacy and Policy screen-> $page");
+                            Navigator.of(context).pop();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CustomWebView(url: 'https://${Urls.privacy}',isPaccore: false,bottomNavIndex: widget.bottomNavIndex,)),
+                            );
+                          },
+                          child: commonText(
+                              context: context,
+                              text: 'Privacy Policy',
+                              fontWeight: FontWeight.w400,
+                              textColor: Colors.black54,
+                              textSize: textSize,
+                              textAlign: TextAlign.start),
+                        ),
                       ),
                       SizedBox(
                         height: displayHeight(context) * 0.02,
                       ),
-                      InkWell(
-                        onTap: () async {
-                         // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-                          bool? isTripStarted =
-                          sharedPreferences!.getBool('trip_started');
+                      Container(
+                        width: displayWidth(context),
+                        child: InkWell(
+                          onTap: () async {
+                           // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                            bool? isTripStarted =
+                            sharedPreferences!.getBool('trip_started');
 
-                          var tripSyncDetails =
-                          await _databaseService.tripSyncDetails();
-                          var vesselsSyncDetails =
-                          await _databaseService.vesselsSyncDetails();
+                            var tripSyncDetails =
+                            await _databaseService.tripSyncDetails();
+                            var vesselsSyncDetails =
+                            await _databaseService.vesselsSyncDetails();
 
-                          Utils.customPrint(
-                              "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
-                          CustomLogger().logWithFile(Level.info, "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails -> $page");
+                            Utils.customPrint(
+                                "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
+                            CustomLogger().logWithFile(Level.info, "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails -> $page");
 
-                          if (isTripStarted != null) {
-                            if (isTripStarted) {
-                              Navigator.of(context).pop();
+                            if (isTripStarted != null) {
+                              if (isTripStarted) {
+                                Navigator.of(context).pop();
 
-                              CustomLogger().logWithFile(Level.warning, "show End trip dialog box for user confirmation -> $page");
+                                CustomLogger().logWithFile(Level.warning, "show End trip dialog box for user confirmation -> $page");
 
-                              showEndTripDialogBox(context);
+                                showEndTripDialogBox(context);
+                              } else {
+                                if (vesselsSyncDetails || tripSyncDetails) {
+                                  showDialogBox(context, widget.scaffoldKey!,widget.orientation??Orientation.portrait);
+                                } else {
+                                  signOut();
+                                }
+                              }
                             } else {
                               if (vesselsSyncDetails || tripSyncDetails) {
-                                showDialogBox(context, widget.scaffoldKey!,widget.orientation??Orientation.portrait);
+                                showDialogBox(context, scaffoldKey,widget.orientation??Orientation.portrait);
                               } else {
                                 signOut();
                               }
                             }
-                          } else {
-                            if (vesselsSyncDetails || tripSyncDetails) {
-                              showDialogBox(context, scaffoldKey,widget.orientation??Orientation.portrait);
-                            } else {
-                              signOut();
-                            }
-                          }
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            commonText(
-                                context: context,
-                                text: 'Sign Out',
-                                fontWeight: FontWeight.w400,
-                                textColor: Colors.black54,
-                                textSize: displayWidth(context) * 0.04,
-                                textAlign: TextAlign.start),
-                            //Icon(Icons.logout, color: Colors.black54),
-                          ],
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              commonText(
+                                  context: context,
+                                  text: 'Sign Out',
+                                  fontWeight: FontWeight.w400,
+                                  textColor: Colors.black54,
+                                  textSize: textSize,
+                                 // textSize: displayWidth(context) * 0.04,
+                                  textAlign: TextAlign.start),
+                              //Icon(Icons.logout, color: Colors.black54),
+                            ],
+                          ),
                         ),
                       ),
                       SizedBox(height: displayHeight(context) * 0.02,),
