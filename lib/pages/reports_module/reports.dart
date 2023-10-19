@@ -652,7 +652,6 @@ setState(() {
                     "selected row index : ${selectedRowIndex.toString()}    ${durationGraphData[i].toString()} ");
 
                 if (duration(triSpeedList[i].tripsByDate![j].duration!) > 0) {
-                        final Color barColor = (selectedRowIndex == j) ? Colors.red : Colors.black;
 
 
 
@@ -661,7 +660,6 @@ setState(() {
 
                   durationColumnSeriesData.add(
                    ColumnSeries<TripModel, String>(
-                  
                   //  color: durationGraphData[j]==selectedRowIndex?Colors.red:circularProgressColor,
                     width: 0.9,
                     
@@ -783,6 +781,7 @@ Future.delayed(Duration(milliseconds: 100),(){
                         EmptyPointSettings(mode: EmptyPointMode.drop),
                     dataLabelSettings: DataLabelSettings(isVisible: false),
                     spacing: 0.2,
+                    
 
                   ));
 
@@ -1485,7 +1484,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                             Icons.keyboard_arrow_down_rounded,
                                             color: Colors.black,
                                           ),
-                                          iconSize: displayHeight(context) * 0.035,
+                                          iconSize:orientation==Orientation.portrait? displayHeight(context) * 0.035:displayHeight(context) * 0.080,
                                         ),
                                         dropdownStyleData: DropdownStyleData(
                                           maxHeight:orientation==Orientation.portrait? displayHeight(context) * 0.25:displayHeight(context) * 0.42,
@@ -1706,7 +1705,7 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                         Icons.keyboard_arrow_down_rounded,
                                         color: Colors.black,
                                       ),
-                                      iconSize: displayHeight(context) * 0.035,
+                                          iconSize:orientation==Orientation.portrait? displayHeight(context) * 0.035:displayHeight(context) * 0.080,
                                     ),
                                     dropdownStyleData: DropdownStyleData(
                                       maxHeight:orientation==Orientation.portrait? displayHeight(context) * 0.25:displayHeight(context) * 0.42,
@@ -2621,7 +2620,7 @@ Utils.showSnackBar(context,
           controller: _tripDurationSrollController,
           child: SizedBox(
               width: durationColumnSeriesData.length > 3
-                  ?orientation==Orientation.portrait? (1.5 * 100 * durationColumnSeriesData.length):(1.5 * 110 * durationColumnSeriesData.length)
+                  ?orientation==Orientation.portrait? (1.5 * 100 * durationColumnSeriesData.length):durationColumnSeriesData.length > 4?(1.5 * 80 * durationColumnSeriesData.length):displayWidth(context)
                   : displayWidth(context),
               height: graph_height,
               child: SfCartesianChart(
@@ -2720,6 +2719,7 @@ Utils.showSnackBar(context,
                   height: graph_height,
                   color: Colors.white,
                   child: SfCartesianChart(
+                    
                     //plotAreaBorderWidth: 0,
                     tooltipBehavior: tooltipBehaviorDurationGraph,
                    // enableSideBySideSeriesPlacement: true,
@@ -2936,9 +2936,9 @@ Utils.showSnackBar(context,
           controller: _avgSpeedSrollController,
           scrollDirection: Axis.horizontal,
           child: SizedBox(
-            width: avgSpeedColumnSeriesData.length > 3
-                  ?orientation==Orientation.portrait? (1.5 * 100 * durationColumnSeriesData.length):(1.5 * 110 * durationColumnSeriesData.length)
-                : displayWidth(context),
+              width: avgSpeedColumnSeriesData.length > 3
+                  ?orientation==Orientation.portrait? (1.5 * 100 * avgSpeedColumnSeriesData.length):avgSpeedColumnSeriesData.length > 4?(1.5 * 80 * avgSpeedColumnSeriesData.length):displayWidth(context)
+                  : displayWidth(context),
             height: graph_height,
             child: SfCartesianChart(
               // palette: barsColor,
@@ -3170,9 +3170,9 @@ Utils.showSnackBar(context,
       controller: _fuelUsageSrollController,
       scrollDirection: Axis.horizontal,
       child: SizedBox(
-        width: fuelUsageColumnSeriesData.length > 3
-                  ?orientation==Orientation.portrait? (1.5 * 100 * durationColumnSeriesData.length):(1.5 * 110 * durationColumnSeriesData.length)
-            : displayWidth(context),
+              width: fuelUsageColumnSeriesData.length > 3
+                  ?orientation==Orientation.portrait? (1.5 * 100 * fuelUsageColumnSeriesData.length):fuelUsageColumnSeriesData.length > 4?(1.5 * 80 * fuelUsageColumnSeriesData.length):displayWidth(context)
+                  : displayWidth(context),
         height: graph_height,
         child: SfCartesianChart(
           tooltipBehavior: fuelUsageToolTip,
@@ -3325,9 +3325,9 @@ Utils.showSnackBar(context,
       scrollDirection: Axis.horizontal,
       controller: _powerUsageSrollController,
       child: SizedBox(
-        width: powerUsageColumnSeriesData.length > 3
-                  ?orientation==Orientation.portrait? (1.5 * 100 * durationColumnSeriesData.length):(1.5 * 110 * durationColumnSeriesData.length)
-            : displayWidth(context),
+              width: powerUsageColumnSeriesData.length > 3
+                  ?orientation==Orientation.portrait? (1.5 * 100 * powerUsageColumnSeriesData.length):powerUsageColumnSeriesData.length > 4?(1.5 * 80 * powerUsageColumnSeriesData.length):displayWidth(context)
+                  : displayWidth(context),
         height: graph_height,
         child: SfCartesianChart(
           tooltipBehavior: powerUsageToolTip,
