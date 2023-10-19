@@ -575,8 +575,8 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                           FocusScope.of(context).requestFocus(new FocusNode());
 
                           if (nameFormKey.currentState!.validate() && modelFormKey.currentState!.validate() && weightFormKey.currentState!.validate() && selectedEngineFormKey.currentState!.validate()
-                              && selectedEngineType!.toLowerCase() == 'hybrid' ? fuelCapacityFormKey.currentState!.validate() && batteryCapacityFormKey.currentState!.validate()
-                              : selectedEngineType!.toLowerCase() == 'combustion' ? fuelCapacityFormKey.currentState!.validate() : batteryCapacityFormKey.currentState!.validate()
+                              && (selectedEngineType!.toLowerCase() == 'hybrid' ? fuelCapacityFormKey.currentState!.validate() && batteryCapacityFormKey.currentState!.validate()
+                                  : selectedEngineType!.toLowerCase() == 'combustion' ? fuelCapacityFormKey.currentState!.validate() : batteryCapacityFormKey.currentState!.validate())
                           ) {
                             if(isDeleted){
                               commonProvider.selectedImageFiles = [];
