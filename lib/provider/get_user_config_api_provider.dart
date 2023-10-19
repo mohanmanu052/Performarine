@@ -25,6 +25,11 @@ class GetUserConfigApiProvider with ChangeNotifier {
       String userId,
       String accessToken,
       GlobalKey<ScaffoldState> scaffoldKey) async {
+
+    BuildContext? ctx;
+
+    bool showErrorDialog = false;
+
     commonProvider = context.read<CommonProvider>();
 
     commonProvider!.updateExceptionOccurredValue(false);
@@ -69,9 +74,12 @@ class GetUserConfigApiProvider with ChangeNotifier {
         } else {
           commonProvider!.updateExceptionOccurredValue(true);
 
+          showErrorDialog = true;
+
           showDialog(
               context: scaffoldKey.currentContext!,
               builder: (BuildContext context) {
+                ctx = context;
                 return CustomDialog(
                   text: 'Failed to sync',
                   subText: 'We are unable to sync data.',
@@ -84,7 +92,7 @@ class GetUserConfigApiProvider with ChangeNotifier {
               });
 
           Future.delayed(Duration(seconds: 3), () {
-            Navigator.of(context).pop();
+            Navigator.of(ctx!).pop();
           });
         }
 
@@ -99,9 +107,12 @@ class GetUserConfigApiProvider with ChangeNotifier {
 
         commonProvider!.updateExceptionOccurredValue(true);
 
+        showErrorDialog = true;
+
         showDialog(
             context: scaffoldKey.currentContext!,
             builder: (BuildContext context) {
+              ctx = context;
               return CustomDialog(
                 text: 'Failed to sync',
                 subText: 'We are unable to sync data.',
@@ -114,7 +125,7 @@ class GetUserConfigApiProvider with ChangeNotifier {
             });
 
         Future.delayed(Duration(seconds: 3), () {
-          Navigator.of(context).pop();
+          Navigator.of(ctx!).pop();
         });
 
         if (scaffoldKey != null) {
@@ -126,9 +137,12 @@ class GetUserConfigApiProvider with ChangeNotifier {
       } else {
         commonProvider!.updateExceptionOccurredValue(true);
 
+        showErrorDialog = true;
+
         showDialog(
             context: scaffoldKey.currentContext!,
             builder: (BuildContext context) {
+              ctx = context;
               return CustomDialog(
                 text: 'Failed to sync',
                 subText: 'We are unable to sync data.',
@@ -141,7 +155,7 @@ class GetUserConfigApiProvider with ChangeNotifier {
             });
 
         Future.delayed(Duration(seconds: 3), () {
-          Navigator.of(context).pop();
+          Navigator.of(ctx!).pop();
         });
 
         if (scaffoldKey != null) {
@@ -169,9 +183,12 @@ class GetUserConfigApiProvider with ChangeNotifier {
 
       CustomLogger().logWithFile(Level.warning, "Failed to sync -> $page");
 
+      showErrorDialog = true;
+
       showDialog(
           context: scaffoldKey.currentContext!,
           builder: (BuildContext context) {
+            ctx = context;
             return CustomDialog(
               text: 'Failed to sync',
               subText: 'We are unable to sync data.',
@@ -184,7 +201,7 @@ class GetUserConfigApiProvider with ChangeNotifier {
           });
 
       Future.delayed(Duration(seconds: 3), () {
-        Navigator.of(context).pop();
+        Navigator.of(ctx!).pop();
       });
 
       commonProvider!.updateConnectionCloseStatus(false);
@@ -197,4 +214,5 @@ class GetUserConfigApiProvider with ChangeNotifier {
 
     return getUserConfigModel;
   }
+
 }
