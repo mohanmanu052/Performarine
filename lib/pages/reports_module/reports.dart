@@ -287,10 +287,10 @@ int minutes = int.parse(timeComponents[1]);
 double seconds = double.parse(timeComponents[2]);
 
 // Calculate the total minutes
-int totalMinutes = (hours * 60) + minutes + (seconds / 60).toInt();
 
-return totalMinutes;
-    // Duration duration = Duration(
+
+ int totalMinutes = (hours * 60) + minutes;
+return double.parse('$totalMinutes.${seconds.toInt()}');    // Duration duration = Duration(
     //   hours: int.parse(time.split(':')[0]),
     //   minutes: int.parse(timeString.split(':')[1]),
     //   seconds: int.parse(timeString.split(':')[2].split('.')[0]),
