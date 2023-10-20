@@ -2991,6 +2991,7 @@ Utils.showSnackBar(context,
                       end: avgSpeed,
                       borderWidth: 2,
                       borderColor: Colors.grey,
+                      shouldRenderAboveSeries: true,
                       textStyle: TextStyle(
                         color: Colors.black,
                         fontSize: displayWidth(context) * 0.028,
