@@ -156,6 +156,17 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
       }
     }
   }
+@override
+  void dispose() {
+                    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+
 
   @override
   Widget build(BuildContext context) {

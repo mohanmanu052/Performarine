@@ -600,7 +600,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                                 await _databaseService
                                     .updateVessel(
                                     commonProvider.addVesselRequestModel!)
-                                    .then((value) {
+                                    .then((value) async {
                                   setState(() {
                                     isBtnClicked = false;
                                   });
@@ -622,7 +622,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                                     commonProvider.selectedImageFiles = [];
 
                                     CustomLogger().logWithFile(Level.info, "User Navigating to SuccessfullyAddedScreen -> $page");
- SystemChrome.setPreferredOrientations([
+await SystemChrome.setPreferredOrientations([
                           DeviceOrientation.portraitDown,
                           DeviceOrientation.portraitUp,
                         ]);
