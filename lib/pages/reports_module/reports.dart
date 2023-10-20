@@ -2620,7 +2620,7 @@ Utils.showSnackBar(context,
           controller: _tripDurationSrollController,
           child: SizedBox(
               width: durationColumnSeriesData.length > 3
-                  ?orientation==Orientation.portrait? (1.5 * 100 * durationColumnSeriesData.length):durationColumnSeriesData.length > 4?(1.5 * 80 * durationColumnSeriesData.length):displayWidth(context)
+                  ?orientation==Orientation.portrait? (1.5 * 100 * durationColumnSeriesData.length):durationColumnSeriesData.length > 4?(1.5 * 100 * durationColumnSeriesData.length):displayWidth(context)
                   : displayWidth(context),
               height: graph_height,
               child: SfCartesianChart(
@@ -2937,7 +2937,7 @@ Utils.showSnackBar(context,
           scrollDirection: Axis.horizontal,
           child: SizedBox(
               width: avgSpeedColumnSeriesData.length > 3
-                  ?orientation==Orientation.portrait? (1.5 * 100 * avgSpeedColumnSeriesData.length):avgSpeedColumnSeriesData.length > 4?(1.5 * 80 * avgSpeedColumnSeriesData.length):displayWidth(context)
+                  ?orientation==Orientation.portrait? (1.5 * 100 * avgSpeedColumnSeriesData.length):avgSpeedColumnSeriesData.length > 4?(1.5 * 100 * avgSpeedColumnSeriesData.length):displayWidth(context)
                   : displayWidth(context),
             height: graph_height,
             child: SfCartesianChart(
@@ -3171,7 +3171,7 @@ Utils.showSnackBar(context,
       scrollDirection: Axis.horizontal,
       child: SizedBox(
               width: fuelUsageColumnSeriesData.length > 3
-                  ?orientation==Orientation.portrait? (1.5 * 100 * fuelUsageColumnSeriesData.length):fuelUsageColumnSeriesData.length > 4?(1.5 * 80 * fuelUsageColumnSeriesData.length):displayWidth(context)
+                  ?orientation==Orientation.portrait? (1.5 * 100 * fuelUsageColumnSeriesData.length):fuelUsageColumnSeriesData.length > 4?(1.5 * 100 * fuelUsageColumnSeriesData.length):displayWidth(context)
                   : displayWidth(context),
         height: graph_height,
         child: SfCartesianChart(
@@ -3326,7 +3326,7 @@ Utils.showSnackBar(context,
       controller: _powerUsageSrollController,
       child: SizedBox(
               width: powerUsageColumnSeriesData.length > 3
-                  ?orientation==Orientation.portrait? (1.5 * 100 * powerUsageColumnSeriesData.length):powerUsageColumnSeriesData.length > 4?(1.5 * 80 * powerUsageColumnSeriesData.length):displayWidth(context)
+                  ?orientation==Orientation.portrait? (1.5 * 100 * powerUsageColumnSeriesData.length):powerUsageColumnSeriesData.length > 4?(1.5 * 100 * powerUsageColumnSeriesData.length):displayWidth(context)
                   : displayWidth(context),
         height: graph_height,
         child: SfCartesianChart(

@@ -59,6 +59,11 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
   }
   @override
   Widget build(BuildContext context) {
+            SystemChrome.setPreferredOrientations([
+                          DeviceOrientation.portraitDown,
+                          DeviceOrientation.portraitUp,
+                        ]);
+
 
     return WillPopScope(
       onWillPop: () async {
