@@ -23,8 +23,8 @@ class CustomLabeledCheckbox extends StatelessWidget {
   })  : assert(label != null),
         assert(checkboxType != null),
         assert(
-        (checkboxType == CheckboxType.Child && value != null) ||
-            checkboxType == CheckboxType.Parent,
+          (checkboxType == CheckboxType.Child && value != null) ||
+              checkboxType == CheckboxType.Parent,
         ),
         tristate = checkboxType == CheckboxType.Parent ? true : false;
 
@@ -34,8 +34,7 @@ class CustomLabeledCheckbox extends StatelessWidget {
   ValueChanged<bool> onChanged;
   CheckboxType checkboxType;
   Color activeColor;
-  Orientation ?orientation;
-
+  Orientation? orientation;
 
   void _onChanged() {
     if (value != null) {
@@ -70,11 +69,13 @@ class CustomLabeledCheckbox extends StatelessWidget {
             Text(
               label,
               style: TextStyle(
-                fontSize: orientation!=null&&orientation==Orientation.landscape?displayWidth(context) * 0.026:
-                
-                
-                displayWidth(context) * 0.04,
-                  fontWeight: FontWeight.bold, color: Colors.black,fontFamily: outfit),
+                  fontSize: orientation != null &&
+                          orientation == Orientation.landscape
+                      ? displayWidth(context) * 0.022
+                      : displayWidth(context) * 0.04,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                  fontFamily: outfit),
             )
           ],
         ),
@@ -88,17 +89,17 @@ class CustomLabeledCheckbox extends StatelessWidget {
 class CustomLabeledCheckboxOne extends StatelessWidget {
   CustomLabeledCheckboxOne(
       {required this.label,
-        required this.value,
-        required this.onChanged,
-        this.checkboxType: CheckboxType.Child,
-        required this.activeColor,
-        this.dateTime,
-        this.tripId})
+      required this.value,
+      required this.onChanged,
+      this.checkboxType: CheckboxType.Child,
+      required this.activeColor,
+      this.dateTime,
+      this.tripId})
       : assert(label != null),
         assert(checkboxType != null),
         assert(
-        (checkboxType == CheckboxType.Child && value != null) ||
-            checkboxType == CheckboxType.Parent,
+          (checkboxType == CheckboxType.Child && value != null) ||
+              checkboxType == CheckboxType.Parent,
         ),
         tristate = checkboxType == CheckboxType.Parent ? true : false;
 
@@ -166,21 +167,20 @@ class CustomLabeledCheckboxOne extends StatelessWidget {
 class CustomLabeledCheckboxNew extends StatelessWidget {
   CustomLabeledCheckboxNew(
       {required this.label,
-        required this.value,
-        required this.onChanged,
-        this.checkboxType: CheckboxType.Child,
-        required this.activeColor,
-        this.dateTime,
-        this.distance,
-        this.orientation,
-        this.imageUrl,
-        this.time
-      })
+      required this.value,
+      required this.onChanged,
+      this.checkboxType: CheckboxType.Child,
+      required this.activeColor,
+      this.dateTime,
+      this.distance,
+      this.orientation,
+      this.imageUrl,
+      this.time})
       : assert(label != null),
         assert(checkboxType != null),
         assert(
-        (checkboxType == CheckboxType.Child && value != null) ||
-            checkboxType == CheckboxType.Parent,
+          (checkboxType == CheckboxType.Child && value != null) ||
+              checkboxType == CheckboxType.Parent,
         ),
         tristate = checkboxType == CheckboxType.Parent ? true : false;
 
@@ -211,48 +211,45 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
     return InkWell(
       onTap: _onChanged,
       child: Container(
-        width: displayWidth(context)/1.2,
-        height:orientation==Orientation.portrait? displayHeight(context) * 0.09:displayHeight(context) * 0.19,
+        width: displayWidth(context) / 1.2,
+        height: orientation == Orientation.portrait
+            ? displayHeight(context) * 0.09
+            : displayHeight(context) * 0.19,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(20)),
-          color: reportTripsListColor
-        ),
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            color: reportTripsListColor),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
-           //crossAxisAlignment: CrossAxisAlignment.center,
-           children: [
-             Checkbox(
-               tristate: tristate,
-               value: value,
-               onChanged: (_) {
-                 _onChanged();
-               },
-               activeColor: activeColor,
-             ),
+          //crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Checkbox(
+              tristate: tristate,
+              value: value,
+              onChanged: (_) {
+                _onChanged();
+              },
+              activeColor: activeColor,
+            ),
 
-Container(
-                 height:orientation==Orientation.portrait? displayHeight(context) * 0.06:displayHeight(context) * 0.11,
-               width:orientation==Orientation.portrait? displayWidth(context) * 0.11:displayWidth(context) * 0.12,
-  decoration: BoxDecoration(
-    borderRadius: BorderRadius.circular(15),
-                      image: imageUrl!=null&&imageUrl!.isNotEmpty?
-                      DecorationImage(  
-                        fit: BoxFit.cover,
-                      
-                          image:
-                          FileImage(
-                          File(imageUrl??''))):                     
-                            DecorationImage(
-                            fit: BoxFit.cover,
-                            image:AssetImage("assets/images/vessel_default_img.png",)
-
-
-                      
-                      
-                      
-                  ),
+            Container(
+                height: orientation == Orientation.portrait
+                    ? displayHeight(context) * 0.06
+                    : displayHeight(context) * 0.11,
+                width: orientation == Orientation.portrait
+                    ? displayWidth(context) * 0.11
+                    : displayWidth(context) * 0.12,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  image: imageUrl != null && imageUrl!.isNotEmpty
+                      ? DecorationImage(
+                          fit: BoxFit.cover,
+                          image: FileImage(File(imageUrl ?? '')))
+                      : DecorationImage(
+                          fit: BoxFit.cover,
+                          image: AssetImage(
+                            "assets/images/vessel_default_img.png",
+                          )),
                 )),
-
 
             //  Image.asset(
             //    "assets/images/reports-boat.png",
@@ -260,135 +257,138 @@ Container(
             //    width:orientation==Orientation.portrait? displayWidth(context) * 0.13:displayWidth(context) * 0.15,
             //  ),
 
-             SizedBox(
-               width: 10,
-             ),
+            SizedBox(
+              width: 10,
+            ),
 
-             SizedBox(
-              width: displayWidth(context)/5.4,
-               child: Column(
-                 mainAxisAlignment: MainAxisAlignment.center,
-                 crossAxisAlignment: CrossAxisAlignment.start,
-                 children: [
-                   Text(
-                     "$dateTime",
-                     style: TextStyle(
-                         fontWeight: FontWeight.bold,
-                         fontFamily: outfit,
-                         fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.030:displayWidth(context) * 0.022,
-                         color: blutoothDialogTxtColor),
-                   ),
-             
-                   SizedBox(
-                     height: displayHeight(context) * 0.005,
-                   ),
-             
-                   Text(
-                     "Date",
-                     style: TextStyle(
-                         fontWeight: FontWeight.w400,
-                         fontFamily: poppins,
-                         fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
-                         color: filterByTripTxtColor),
-                   ),
-                 ],
-               ),
-             ),
+            SizedBox(
+              width: displayWidth(context) / 5.4,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "$dateTime",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: outfit,
+                        fontSize: orientation == Orientation.portrait
+                            ? displayWidth(context) * 0.030
+                            : displayWidth(context) * 0.02,
+                        color: blutoothDialogTxtColor),
+                  ),
+                  SizedBox(
+                    height: displayHeight(context) * 0.005,
+                  ),
+                  Text(
+                    "Date",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontFamily: poppins,
+                        fontSize: orientation == Orientation.portrait
+                            ? displayWidth(context) * 0.026
+                            : displayWidth(context) * 0.016,
+                        color: filterByTripTxtColor),
+                  ),
+                ],
+              ),
+            ),
 
-             SizedBox(
-               width: 5,
-             ),
+            SizedBox(
+              width: 5,
+            ),
 
-             VerticalDivider(
-               indent: displayHeight(context) * 0.024,
-               endIndent: displayHeight(context) * 0.024,
-               width: 3,
-               thickness: 1.3,
-               color: Colors.black,
-             ),
-             SizedBox(
-               width: 8,
-             ),
+            VerticalDivider(
+              indent: displayHeight(context) * 0.024,
+              endIndent: displayHeight(context) * 0.024,
+              width: 3,
+              thickness: 1.3,
+              color: Colors.black,
+            ),
+            SizedBox(
+              width: 8,
+            ),
 
+            SizedBox(
+              width: displayWidth(context) / 7,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "$distance",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontFamily: outfit,
+                        fontSize: orientation == Orientation.portrait
+                            ? displayWidth(context) * 0.032
+                            : displayWidth(context) * 0.02,
+                        color: blutoothDialogTxtColor),
+                  ),
+                  SizedBox(
+                    height: displayHeight(context) * 0.005,
+                  ),
+                  Text(
+                    "Distance",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontFamily: poppins,
+                        fontSize: orientation == Orientation.portrait
+                            ? displayWidth(context) * 0.026
+                            : displayWidth(context) * 0.016,
+                        color: filterByTripTxtColor),
+                  ),
+                ],
+              ),
+            ),
 
-             SizedBox(
-              width: displayWidth(context) /7,
+            SizedBox(
+              width: 8,
+            ),
 
-               child: Column(
-                 mainAxisAlignment: MainAxisAlignment.center,
-                 crossAxisAlignment: CrossAxisAlignment.start,
-                 children: [
-                   Text(
-                     "$distance",
-                     maxLines: 1,
-                     overflow: TextOverflow.ellipsis,
-                     style: TextStyle(
-                         fontWeight: FontWeight.bold,
-                         fontFamily: outfit,
-                         fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.032:displayWidth(context) * 0.022,
-                         color: blutoothDialogTxtColor),
-                   ),
-             
-                   SizedBox(
-                     height: displayHeight(context) * 0.005,
-                   ),
-             
-                   Text(
-                     "Distance",
-                     style: TextStyle(
-                         fontWeight: FontWeight.w400,
-                         fontFamily: poppins,
-                         fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
-                         color: filterByTripTxtColor),
-                   ),
-                 ],
-               ),
-             ),
+            VerticalDivider(
+              indent: displayHeight(context) * 0.024,
+              endIndent: displayHeight(context) * 0.024,
+              width: 3,
+              thickness: 1.3,
+              color: Colors.black,
+            ),
+            SizedBox(
+              width: displayWidth(context) * 0.015,
+            ),
 
-             SizedBox(
-               width: 8,
-             ),
-
-             VerticalDivider(
-               indent: displayHeight(context) * 0.024,
-               endIndent: displayHeight(context) * 0.024,
-               width: 3,
-               thickness: 1.3,
-               color: Colors.black,
-             ),
-             SizedBox(
-               width: displayWidth(context) * 0.015,
-             ),
-
-             Column(
-               mainAxisAlignment: MainAxisAlignment.center,
-               crossAxisAlignment: CrossAxisAlignment.start,
-               children: [
-                 Text(
-                   "$time",
-                   style: TextStyle(
-                       fontWeight: FontWeight.bold,
-                       fontFamily: outfit,
-                       fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.032:displayWidth(context) * 0.022,
-                       color: blutoothDialogTxtColor),
-                 ),
-
-                 SizedBox(
-                   height: displayHeight(context) * 0.008,
-                 ),
-
-                 Text(
-                   "Time",
-                   style: TextStyle(
-                       fontWeight: FontWeight.w400,
-                       fontFamily: poppins,
-                       fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
-                       color: filterByTripTxtColor),
-                 ),
-               ],
-             ),
-
-           ],
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "$time",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontFamily: outfit,
+                      fontSize: orientation == Orientation.portrait
+                          ? displayWidth(context) * 0.032
+                          : displayWidth(context) * 0.02,
+                      color: blutoothDialogTxtColor),
+                ),
+                SizedBox(
+                  height: displayHeight(context) * 0.008,
+                ),
+                Text(
+                  "Time",
+                  style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontFamily: poppins,
+                      fontSize: orientation == Orientation.portrait
+                          ? displayWidth(context) * 0.026
+                          : displayWidth(context) * 0.016,
+                      color: filterByTripTxtColor),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

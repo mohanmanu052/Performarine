@@ -14,6 +14,7 @@ import 'package:performarine/pages/reports_module/widgets/reports_datatable.dart
 import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
+
 //import 'package:performarine/sync_chart/lib/charts.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -30,18 +31,20 @@ import '../../models/reports_model.dart';
 import '../../provider/common_provider.dart';
 
 class ReportsModule extends StatefulWidget {
-   ReportsModule({super.key,this.onScreenShotCaptureCallback});
+  ReportsModule({super.key, this.onScreenShotCaptureCallback});
+
   VoidCallback? onScreenShotCaptureCallback;
 
   @override
   State<ReportsModule> createState() => _ReportsModuleState();
 }
 
-class _ReportsModuleState extends State<ReportsModule> with WidgetsBindingObserver{
+class _ReportsModuleState extends State<ReportsModule>
+    with WidgetsBindingObserver {
   String page = "Reports_module";
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
-      GlobalKey<SfCartesianChartState> dration_barchart_key= GlobalKey();
-Function(dynamic args)? ponitTapCallBackArgs;
+  GlobalKey<SfCartesianChartState> dration_barchart_key = GlobalKey();
+  Function(dynamic args)? ponitTapCallBackArgs;
   final _formKey = GlobalKey<FormState>();
   final controller = ScreenshotController();
   late CommonProvider commonProvider;
@@ -87,7 +90,7 @@ Function(dynamic args)? ponitTapCallBackArgs;
   final List<ChartSeries> powerUsageColumnSeriesData = [];
   final List<ChartSeries> tempPowerUsageColumnSeriesData = [];
   GlobalKey<ReportsDataTableState> reportsDataTableKey = GlobalKey();
-  ActivationMode tooltipactivationMode=ActivationMode.none;
+  ActivationMode tooltipactivationMode = ActivationMode.none;
 
   double? avgSpeed = 0.0;
   dynamic avgDuration = 0;
@@ -107,8 +110,8 @@ Function(dynamic args)? ponitTapCallBackArgs;
   List<Map<String, dynamic>> totalData = [];
   List<TripModel> durationGraphData = [];
   double chartWidth = 0.0;
-String? imageUrl;
-int? pointIndex;
+  String? imageUrl;
+  int? pointIndex;
   bool? isExpansionCollapse = false;
   bool isExpandedTile = false;
   bool? isStartDate = false;
@@ -131,25 +134,24 @@ int? pointIndex;
   bool? isCheckInternalServer = false, isInterConnectionIsOn = false;
   bool? isTripsAreAvailable = false;
   String? capacity;
-  bool? isExportBtnClick=false;
-  bool? isStartDateSelected=false;
-  bool? isEndDateSected=false;
+  bool? isExportBtnClick = false;
+  bool? isStartDateSelected = false;
+  bool? isEndDateSected = false;
   String? builtYear;
   String? registerNumber;
-List<Vessels>? vesselList;
-int selectedBarIndex = -1;
-
+  List<Vessels>? vesselList;
+  int selectedBarIndex = -1;
 
   final DatabaseService _databaseService = DatabaseService();
 
   ScrollController _tripDurationSrollController = ScrollController();
-    ScrollController _avgSpeedSrollController = ScrollController();
+  ScrollController _avgSpeedSrollController = ScrollController();
   ScrollController _fuelUsageSrollController = ScrollController();
-    ScrollController _powerUsageSrollController = ScrollController();
+  ScrollController _powerUsageSrollController = ScrollController();
 
   bool isStickyYAxisVisible = false;
-ScrollController _mainScrollController=ScrollController();
-int? selectedRowIndex;
+  ScrollController _mainScrollController = ScrollController();
+  int? selectedRowIndex;
   Color defaultColor = Colors.green; // Default bar color
   Color highlightColor = Colors.blue; // Color to highlight the bar
 // List<Color> barColors = List.generate(
@@ -157,21 +159,19 @@ int? selectedRowIndex;
 //   (index) => Colors.black, // Initialize with a default color
 // );
 
-List<Color> barColors = []; 
+  List<Color> barColors = [];
 
   // Define a list of colors for each bar
   //Map<int, Color> barColors = {};
 
-
-TooltipBehavior? tooltipBehaviorDurationGraph;
-TooltipBehavior? powerUsageToolTip;
-TooltipBehavior? avgSpeedToolTip;
-TooltipBehavior? fuelUsageToolTip;
+  TooltipBehavior? tooltipBehaviorDurationGraph;
+  TooltipBehavior? powerUsageToolTip;
+  TooltipBehavior? avgSpeedToolTip;
+  TooltipBehavior? fuelUsageToolTip;
 
   late StreamSubscription<ConnectivityResult> subscription;
 
-
-bool bargraphtooltipBool=false;
+  bool bargraphtooltipBool = false;
 
   //Convertion of date time into month/day/year format
   String convertIntoMonthDayYear(DateTime date) {
@@ -184,29 +184,23 @@ bool bargraphtooltipBool=false;
     return dateString;
   }
 
-  void getVesselDetails(String id)async {
-    if(vesselList!=null&&vesselList!.isNotEmpty){
-    Vessels? vessel = vesselList!.firstWhere((vessel) => vessel.id == id, orElse: () => Vessels());
-   
-      CreateVessel? vesselData = await _databaseService
-        .getVesselFromVesselID(id);
+  void getVesselDetails(String id) async {
+    if (vesselList != null && vesselList!.isNotEmpty) {
+      Vessels? vessel = vesselList!
+          .firstWhere((vessel) => vessel.id == id, orElse: () => Vessels());
 
-    imageUrl = vesselData!.imageURLs ?? '';
+      CreateVessel? vesselData =
+          await _databaseService.getVesselFromVesselID(id);
 
+      imageUrl = vesselData!.imageURLs ?? '';
 
-  setState(() {
-       builtYear=vessel.builtYear.toString()??'-';
-  capacity=vessel.capacity??'-';
-  registerNumber=vessel.regNumber??'-';
-
-  });
-
-    }else{
-
-    }
-
+      setState(() {
+        builtYear = vessel.builtYear.toString() ?? '-';
+        capacity = vessel.capacity ?? '-';
+        registerNumber = vessel.regNumber ?? '-';
+      });
+    } else {}
   }
-
 
   //Convertion of date time into year-month-day format
   String convertIntoYearMonthDay(DateTime date) {
@@ -276,21 +270,20 @@ bool bargraphtooltipBool=false;
     return formattedDate;
   }
 
-
   //returns duration with milli seconds
   dynamic durationWithMilli3(String timeString) {
     String time = timeString;
 
     List<String> timeComponents = time.split(":");
-int hours = int.parse(timeComponents[0]);
-int minutes = int.parse(timeComponents[1]);
-double seconds = double.parse(timeComponents[2]);
+    int hours = int.parse(timeComponents[0]);
+    int minutes = int.parse(timeComponents[1]);
+    double seconds = double.parse(timeComponents[2]);
 
 // Calculate the total minutes
 
-
- int totalMinutes = (hours * 60) + minutes;
-return double.parse('$totalMinutes.${seconds.toInt()}');    // Duration duration = Duration(
+    int totalMinutes = (hours * 60) + minutes;
+    return double.parse(
+        '$totalMinutes.${seconds.toInt()}'); // Duration duration = Duration(
     //   hours: int.parse(time.split(':')[0]),
     //   minutes: int.parse(timeString.split(':')[1]),
     //   seconds: int.parse(timeString.split(':')[2].split('.')[0]),
@@ -379,7 +372,7 @@ return double.parse('$totalMinutes.${seconds.toInt()}');    // Duration duration
             Utils.customPrint("value 1 is: ${value.status}");
             setState(() {
               isVesselDataLoading = true;
-              vesselList=value.vessels??[];
+              vesselList = value.vessels ?? [];
             });
 
             Utils.customPrint(
@@ -392,8 +385,6 @@ return double.parse('$totalMinutes.${seconds.toInt()}');    // Duration duration
             }
             vesselData = List<DropdownItem>.from(value.vessels!.map(
                 (vessel) => DropdownItem(id: vessel.id, name: vessel.name)));
-
-                
 
             Utils.customPrint("vesselData: ${vesselData.length}");
             CustomLogger().logWithFile(
@@ -423,44 +414,33 @@ return double.parse('$totalMinutes.${seconds.toInt()}');    // Duration duration
           "Error while fetching data from getUserConfigById: $e -> $page");
     }
   }
+
 //To export the report data
-exportTripData()async{
-  isExportBtnClick=true;
-  setState(() {
-    
-  });
+  exportTripData() async {
+    isExportBtnClick = true;
+    setState(() {});
 
-Map<String,dynamic> body={};
-String token=commonProvider.loginModel?.token??'';
-if(selectedCaseType==1){
-  body={
-  		"case": 1,
-"vesselID": selectedVessel,
+    Map<String, dynamic> body = {};
+    String token = commonProvider.loginModel?.token ?? '';
+    if (selectedCaseType == 1) {
+      body = {
+        "case": 1,
+        "vesselID": selectedVessel,
+        "startDate": pickStartDate,
+        "isExport": true,
+        "endDate": pickEndDate,
+      };
+    } else {
+      body = {"case": 2, "isExport": true, "tripIds": selectedTripIdList};
+    }
 
-    "startDate": pickStartDate,
-            "isExport": true,
-            "endDate" : pickEndDate,
-  };
+    var data = await commonProvider.exportReportData(
+        body, token, context, scaffoldKey);
 
-}else{
-    body={
-  		"case": 2,
-            "isExport": true,
-            		"tripIds": selectedTripIdList
-  };
-
-}
-
-
-var data=await commonProvider.exportReportData(body, token, context, scaffoldKey);
-
-setState(() {
-  isExportBtnClick=false;
-
-});
-
-}
-
+    setState(() {
+      isExportBtnClick = false;
+    });
+  }
 
   //To get all trip details based on vessel Id
   getTripListData(String vesselID) async {
@@ -480,9 +460,9 @@ setState(() {
           tripIdList!.clear();
           dateTimeList!.clear();
           distanceList!.clear();
-timeList!.clear();
-children!.clear();
-childrenValue!.clear();
+          timeList!.clear();
+          children!.clear();
+          childrenValue!.clear();
           for (int i = 0; i < value.data!.length; i++) {
             isTripsAreAvailable = false;
             tripIdList!.add(value.data![i].id!);
@@ -490,8 +470,7 @@ childrenValue!.clear();
               dateTimeList!.add(tripDate(value.data![i].createdAt.toString()));
               //distanceList!.add(100.222.toStringAsFixed(1));
 
-
-            distanceList!.add(value.data![i].distance!.toStringAsFixed(1));
+              distanceList!.add(value.data![i].distance!.toStringAsFixed(1));
               timeList!.add(value.data![i].duration.toString());
             }
             children!.add("Trip ${i.toString()}");
@@ -536,10 +515,8 @@ childrenValue!.clear();
       String? vesselID,
       List<String>? selectedTripListID}) async {
     try {
-                                              isEndDateSected=true;
-setState(() {
-  
-});
+      isEndDateSected = true;
+      setState(() {});
       await commonProvider
           .getReportData(
               startDate ?? "",
@@ -609,7 +586,8 @@ setState(() {
                 "NEW AVG DATA ${value.data?.avgInfo?.avgDuration} -> $page");
 
             avgDuration = myAvgDuration ?? 0;
-            print('my avg duration was-------------'+myAvgDuration.toString());
+            print(
+                'my avg duration was-------------' + myAvgDuration.toString());
 
             avgFuelConsumption = value.data?.avgInfo?.avgFuelConsumption;
             avgPower = value.data?.avgInfo?.avgPower ?? 0.0;
@@ -648,132 +626,92 @@ setState(() {
                     "trip duration data is: ${durationGraphData[i].tripsByDate![j].id}");
                 CustomLogger().logWithFile(Level.info,
                     "trip duration data is: ${durationGraphData[i].tripsByDate![j].id} -> $page");
-                                    Utils.customPrint(
+                Utils.customPrint(
                     "selected row index : ${selectedRowIndex.toString()}    ${durationGraphData[i].toString()} ");
 
                 if (duration(triSpeedList[i].tripsByDate![j].duration!) > 0) {
-
-
-
-
-
-
-                  durationColumnSeriesData.add(
-                   ColumnSeries<TripModel, String>(
-                  //  color: durationGraphData[j]==selectedRowIndex?Colors.red:circularProgressColor,
+                  durationColumnSeriesData.add(ColumnSeries<TripModel, String>(
+                    //  color: durationGraphData[j]==selectedRowIndex?Colors.red:circularProgressColor,
                     width: 0.9,
-                    
+
                     enableTooltip: true,
                     dataSource: triSpeedList,
                     xValueMapper: (TripModel tripData, data) {
-                      
-                     return   durationWithSeconds(
-                                    triSpeedList[i].tripsByDate![j].duration!) >
-                                0
-                            ? 
-                            
-                          dateWithZeros(triSpeedList[i].date??"")  
-                            : null;
-
+                      return durationWithSeconds(
+                                  triSpeedList[i].tripsByDate![j].duration!) >
+                              0
+                          ? dateWithZeros(triSpeedList[i].date ?? "")
+                          : null;
                     },
                     yValueMapper: (TripModel tripData, data) {
-pointIndex=data;
+                      pointIndex = data;
 
-
-                     return   durationWithSeconds(
-                                    triSpeedList[i].tripsByDate![j].duration!) >
-                                0
-                            ? durationWithSeconds(
-                                triSpeedList[i].tripsByDate![j].duration!)
-                            : null;
+                      return durationWithSeconds(
+                                  triSpeedList[i].tripsByDate![j].duration!) >
+                              0
+                          ? durationWithSeconds(
+                              triSpeedList[i].tripsByDate![j].duration!)
+                          : null;
                     },
 
-//pointColorMapper: (_, __) => barColor, 
+//pointColorMapper: (_, __) => barColor,
 
+                    pointColorMapper: (TripModel tripData, int index) {
+                      return triSpeedList[i].tripsByDate![j].dataLineColor !=
+                              null
+                          ? triSpeedList[i].tripsByDate![j].dataLineColor
+                          : blueColor;
+                    },
 
-                                                        pointColorMapper: (TripModel tripData, int index) {
+                    onPointTap: (ChartPointDetails args) {
+                      reportsDataTableKey.currentState!
+                          .setSelectedRowIndex!(args.seriesIndex!);
+                      tooltipactivationMode = ActivationMode.singleTap;
 
-return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].tripsByDate![j].dataLineColor : blueColor;
+                      for (int i = 0; i < durationGraphData.length; i++) {
+                        for (int j = 0;
+                            j < durationGraphData[i].tripsByDate!.length;
+                            j++) {
+                          durationGraphData[i].tripsByDate![j].dataLineColor =
+                              null;
+                        }
+                      }
 
+                      triSpeedList[i].tripsByDate![j].dataLineColor =
+                          Colors.green;
+                      setState(() {
+                        reportsDataTableKey.currentState!.isToolTipShown = true;
+                        bargraphtooltipBool = true;
+                        tooltipactivationMode = ActivationMode.none;
 
- },
-
-
-
-                    
-
-
-                    onPointTap: 
-                    
-                    
-                    
-                    (ChartPointDetails args) {
-
-                      reportsDataTableKey.currentState!.setSelectedRowIndex!(args.seriesIndex!);
-tooltipactivationMode=ActivationMode.singleTap;
-
-            for (int i = 0; i < durationGraphData.length; i++) {
-              for (int j = 0;
-                  j < durationGraphData[i].tripsByDate!.length;
-                  j++) {
-
-                    durationGraphData[i].tripsByDate![j].dataLineColor=null;
-                  }}
-
-
-
-                                          triSpeedList[i].tripsByDate![j].dataLineColor=Colors.green;
-                                          setState(() {
-                                            reportsDataTableKey.currentState!.isToolTipShown=true;
-                                            bargraphtooltipBool=true;
-                                            tooltipactivationMode=ActivationMode.none;
-
-                                              // tooltipBehaviorDurationGraph!.enable=true;
-                                              // tooltipBehaviorDurationGraph!.activationMode=ActivationMode.singleTap;
-                 // tooltipBehaviorDurationGraph!.showByIndex(args.seriesIndex!, args.pointIndex!);
-
-
-                                          });
-
-
-
-
-
-
-Future.delayed(Duration(milliseconds: 100),(){
-
-
-                  tooltipBehaviorDurationGraph!.showByIndex(args.seriesIndex!, args.pointIndex!);
-                      reportsDataTableKey.currentState!.setState(() {
-
-                                                         reportsDataTableKey.currentState!.isToolTipShown=false;
-                                                         });
-
-
-}
-);
-
-
-
-                                  
-
-
-                      reportsDataTableKey.currentState!.setState(() {
-                        reportsDataTableKey.currentState!.selectedRowIndex=args.seriesIndex!;
-
+                        // tooltipBehaviorDurationGraph!.enable=true;
+                        // tooltipBehaviorDurationGraph!.activationMode=ActivationMode.singleTap;
+                        // tooltipBehaviorDurationGraph!.showByIndex(args.seriesIndex!, args.pointIndex!);
                       });
 
+                      Future.delayed(Duration(milliseconds: 100), () {
+                        tooltipBehaviorDurationGraph!
+                            .showByIndex(args.seriesIndex!, args.pointIndex!);
+                        reportsDataTableKey.currentState!.setState(() {
+                          reportsDataTableKey.currentState!.isToolTipShown =
+                              false;
+                        });
+                      });
 
+                      reportsDataTableKey.currentState!.setState(() {
+                        reportsDataTableKey.currentState!.selectedRowIndex =
+                            args.seriesIndex!;
+                      });
 
                       if (mounted) {
                         selectedIndex = triSpeedList[i].tripsByDate![j].id!;
 
-                        triSpeedList[i].tripsByDate![j].SelectedDataIndex=args.pointIndex;
+                        triSpeedList[i].tripsByDate![j].SelectedDataIndex =
+                            args.pointIndex;
                         Utils.customPrint("selected index: $selectedIndex");
                         CustomLogger().logWithFile(Level.info,
                             "selected index: $selectedIndex -> $page");
-                          selectedBarIndex = args.seriesIndex!;
-                        
+                        selectedBarIndex = args.seriesIndex!;
                       }
                     },
                     name: 'Trip Duration',
@@ -781,184 +719,157 @@ Future.delayed(Duration(milliseconds: 100),(){
                         EmptyPointSettings(mode: EmptyPointMode.drop),
                     dataLabelSettings: DataLabelSettings(isVisible: false),
                     spacing: 0.2,
-                    
-
                   ));
 
-                  tempDurationColumnSeriesData.add
-                  (ColumnSeries<TripModel, String>(
-                          width: 0.9,
-
-                          color: Colors.transparent,
-                          enableTooltip: true,
-                          dataSource: triSpeedList,
-                          xValueMapper: (TripModel tripData, _) =>'',
-                          yValueMapper: (TripModel tripData, _) =>
-                          durationWithSeconds(
-                              triSpeedList[i].tripsByDate![j].duration!) >
-                              0
-                              ? durationWithSeconds(
-                              triSpeedList[i].tripsByDate![j].duration!)
-                              : null,
-
-                          pointColorMapper: (TripModel tripData, int index) {
-                            return Colors.transparent;
-                            //return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].tripsByDate![j].dataLineColor : blueColor;
-                            },
-                          onPointTap: (ChartPointDetails args) {
-
-                            if (mounted) {
-                              selectedIndex = triSpeedList[i].tripsByDate![j].id!;
-                              Utils.customPrint("selected index: $selectedIndex");
-                              CustomLogger().logWithFile(Level.info,
-                                  "selected index: $selectedIndex -> $page");
-                            }
-                          },
-                          name: 'Trip Duration',
-                          emptyPointSettings:
-                          EmptyPointSettings(mode: EmptyPointMode.drop),
-                          dataLabelSettings: DataLabelSettings(isVisible: false),
-                          spacing: 0.2,
-                        ));
-                };
-              //  if (triSpeedList[i].tripsByDate![j].avgSpeed! > 0) {
-                  avgSpeedColumnSeriesData.add(ColumnSeries<TripModel, String>(
-                                                        pointColorMapper: (TripModel tripData, int index) {
-                                                          return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].tripsByDate![j].dataLineColor : blueColor;
- },
-                    dataSource: triSpeedList,
+                  tempDurationColumnSeriesData
+                      .add(ColumnSeries<TripModel, String>(
                     width: 0.9,
+                    color: Colors.transparent,
                     enableTooltip: true,
-                                        emptyPointSettings:
+                    dataSource: triSpeedList,
+                    xValueMapper: (TripModel tripData, _) => '',
+                    yValueMapper: (TripModel tripData, _) =>
+                        durationWithSeconds(
+                                    triSpeedList[i].tripsByDate![j].duration!) >
+                                0
+                            ? durationWithSeconds(
+                                triSpeedList[i].tripsByDate![j].duration!)
+                            : null,
+                    pointColorMapper: (TripModel tripData, int index) {
+                      return Colors.transparent;
+                      //return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].tripsByDate![j].dataLineColor : blueColor;
+                    },
+                    onPointTap: (ChartPointDetails args) {
+                      if (mounted) {
+                        selectedIndex = triSpeedList[i].tripsByDate![j].id!;
+                        Utils.customPrint("selected index: $selectedIndex");
+                        CustomLogger().logWithFile(Level.info,
+                            "selected index: $selectedIndex -> $page");
+                      }
+                    },
+                    name: 'Trip Duration',
+                    emptyPointSettings:
                         EmptyPointSettings(mode: EmptyPointMode.drop),
                     dataLabelSettings: DataLabelSettings(isVisible: false),
                     spacing: 0.2,
-                  
+                  ));
+                }
+                ;
+                //  if (triSpeedList[i].tripsByDate![j].avgSpeed! > 0) {
+                avgSpeedColumnSeriesData.add(ColumnSeries<TripModel, String>(
+                  pointColorMapper: (TripModel tripData, int index) {
+                    return triSpeedList[i].tripsByDate![j].dataLineColor != null
+                        ? triSpeedList[i].tripsByDate![j].dataLineColor
+                        : blueColor;
+                  },
+                  dataSource: triSpeedList,
+                  width: 0.9,
+                  enableTooltip: true,
+                  emptyPointSettings:
+                      EmptyPointSettings(mode: EmptyPointMode.drop),
+                  dataLabelSettings: DataLabelSettings(isVisible: false),
+                  spacing: 0.2,
 
-                    xValueMapper: (TripModel tripData, _) =>
-                       dateWithZeros( triSpeedList[i].date??""),
-                    yValueMapper: (TripModel tripData, _) =>
-                        triSpeedList[i].tripsByDate![j].avgSpeed! > 0
-                            ? triSpeedList[i].tripsByDate![j].avgSpeed!
-                            : null,
-                    onPointTap: (ChartPointDetails args) {
+                  xValueMapper: (TripModel tripData, _) =>
+                      dateWithZeros(triSpeedList[i].date ?? ""),
+                  yValueMapper: (TripModel tripData, _) =>
+                      triSpeedList[i].tripsByDate![j].avgSpeed! > 0
+                          ? triSpeedList[i].tripsByDate![j].avgSpeed!
+                          : null,
+                  onPointTap: (ChartPointDetails args) {
                     //  print('the avg column data series length was---')
-                      print('avg column series args point index was---- ${args.pointIndex}     ${args.seriesIndex}');
+                    print(
+                        'avg column series args point index was---- ${args.pointIndex}     ${args.seriesIndex}');
 
+                    reportsDataTableKey
+                        .currentState!.setSelectedRowIndex!(args.seriesIndex!);
+                    tooltipactivationMode = ActivationMode.singleTap;
 
-                                            reportsDataTableKey.currentState!.setSelectedRowIndex!(args.seriesIndex!);
-tooltipactivationMode=ActivationMode.singleTap;
+                    reportsDataTableKey.currentState!.setState(() {
+                      reportsDataTableKey.currentState!.selectedRowIndex =
+                          args.seriesIndex!;
+                    });
 
+                    for (int i = 0; i < durationGraphData.length; i++) {
+                      for (int j = 0;
+                          j < durationGraphData[i].tripsByDate!.length;
+                          j++) {
+                        durationGraphData[i].tripsByDate![j].dataLineColor =
+                            null;
+                      }
+                    }
 
-                      reportsDataTableKey.currentState!.setState(() {
-                        reportsDataTableKey.currentState!.selectedRowIndex=args.seriesIndex!;
+                    triSpeedList[i].tripsByDate![j].dataLineColor =
+                        Colors.green;
+                    setState(() {
+                      reportsDataTableKey.currentState!.isToolTipShown = true;
+                      bargraphtooltipBool = true;
+                      tooltipactivationMode = ActivationMode.none;
+                    });
 
-                      });
-
-
-
-
-            for (int i = 0; i < durationGraphData.length; i++) {
-              for (int j = 0;
-                  j < durationGraphData[i].tripsByDate!.length;
-                  j++) {
-
-                    durationGraphData[i].tripsByDate![j].dataLineColor=null;
-                  }}
-
-
-
-                                          triSpeedList[i].tripsByDate![j].dataLineColor=Colors.green;
-                                          setState(() {
-                                            reportsDataTableKey.currentState!.isToolTipShown=true;
-                                            bargraphtooltipBool=true;
-                                            tooltipactivationMode=ActivationMode.none;
-
-
-
-                                          });
-
-
-
-
-
-
-Future.delayed(Duration(milliseconds: 100),(){
-
-
-                  avgSpeedToolTip!.showByIndex(args.seriesIndex!, args.pointIndex!);
+                    Future.delayed(Duration(milliseconds: 100), () {
+                      avgSpeedToolTip!
+                          .showByIndex(args.seriesIndex!, args.pointIndex!);
                       // reportsDataTableKey.currentState!.setState(() {
 
                       //                                    reportsDataTableKey.currentState!.isToolTipShown=false;
                       //                                    });
+                    });
 
+                    if (mounted) {
+                      selectedIndex = triSpeedList[i].tripsByDate![j].id!;
+                      Utils.customPrint("selected index: $selectedIndex");
+                      CustomLogger().logWithFile(Level.info,
+                          "selected index: $selectedIndex -> $page");
+                    }
+                  },
+                  name: 'Avg Speed',
+                  // dataLabelSettings: DataLabelSettings(isVisible: false),
+                  // spacing: 0.1,
+                ));
 
-}
-);
-
-
-
-                                  
-
-
-
-                      if (mounted) {
-                        selectedIndex = triSpeedList[i].tripsByDate![j].id!;
-                        Utils.customPrint("selected index: $selectedIndex");
-                        CustomLogger().logWithFile(Level.info,
-                            "selected index: $selectedIndex -> $page");
-                      }
-                    },
-                    name: 'Avg Speed',
-                    // dataLabelSettings: DataLabelSettings(isVisible: false),
-                    // spacing: 0.1,
-                  ));
-
-                  tempAvgSpeedColumnSeriesData.add(ColumnSeries<TripModel, String>(
-                    pointColorMapper: (TripModel tripData, int index) {
-                      return Colors.transparent;
-                      //return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].tripsByDate![j].dataLineColor : blueColor;
-
-
-                    },
-                    dataSource: triSpeedList,
-                    width: 0.9,
-                    color: Colors.transparent,
-                    enableTooltip: true,
-                    xValueMapper: (TripModel tripData, _) =>'',
-                    yValueMapper: (TripModel tripData, _) =>
-                    triSpeedList[i].tripsByDate![j].avgSpeed! > 0
-                        ? triSpeedList[i].tripsByDate![j].avgSpeed!
-                        : null,
-                    onPointTap: (ChartPointDetails args) {
-                      if (mounted) {
-                        selectedIndex = triSpeedList[i].tripsByDate![j].id!;
-                        Utils.customPrint("selected index: $selectedIndex");
-                        CustomLogger().logWithFile(Level.info,
-                            "selected index: $selectedIndex -> $page");
-                      }
-                    },
-                    name: 'Avg Speed',
-                    dataLabelSettings: DataLabelSettings(isVisible: false),
-                    spacing: 0.2,
-                  ));
-             //   }
+                tempAvgSpeedColumnSeriesData
+                    .add(ColumnSeries<TripModel, String>(
+                  pointColorMapper: (TripModel tripData, int index) {
+                    return Colors.transparent;
+                    //return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].tripsByDate![j].dataLineColor : blueColor;
+                  },
+                  dataSource: triSpeedList,
+                  width: 0.9,
+                  color: Colors.transparent,
+                  enableTooltip: true,
+                  xValueMapper: (TripModel tripData, _) => '',
+                  yValueMapper: (TripModel tripData, _) =>
+                      triSpeedList[i].tripsByDate![j].avgSpeed! > 0
+                          ? triSpeedList[i].tripsByDate![j].avgSpeed!
+                          : null,
+                  onPointTap: (ChartPointDetails args) {
+                    if (mounted) {
+                      selectedIndex = triSpeedList[i].tripsByDate![j].id!;
+                      Utils.customPrint("selected index: $selectedIndex");
+                      CustomLogger().logWithFile(Level.info,
+                          "selected index: $selectedIndex -> $page");
+                    }
+                  },
+                  name: 'Avg Speed',
+                  dataLabelSettings: DataLabelSettings(isVisible: false),
+                  spacing: 0.2,
+                ));
+                //   }
 
                 if (triSpeedList[i].tripsByDate![j].fuelConsumption! > 0) {
                   fuelUsageColumnSeriesData.add(ColumnSeries<TripModel, String>(
-                                                        pointColorMapper: (TripModel tripData, int index) {
-
-return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].tripsByDate![j].dataLineColor : blueColor;
-
-
- },
-
-
+                    pointColorMapper: (TripModel tripData, int index) {
+                      return triSpeedList[i].tripsByDate![j].dataLineColor !=
+                              null
+                          ? triSpeedList[i].tripsByDate![j].dataLineColor
+                          : blueColor;
+                    },
                     width: 0.9,
                     enableTooltip: true,
                     dataSource: triSpeedList,
                     xValueMapper: (TripModel tripData, _) =>
-                       dateWithZeros( triSpeedList[i].date??""),
+                        dateWithZeros(triSpeedList[i].date ?? ""),
                     yValueMapper: (TripModel tripData, _) =>
                         triSpeedList[i].tripsByDate![j].fuelConsumption! > 0
                             ? triSpeedList[i].tripsByDate![j].fuelConsumption!
@@ -983,19 +894,17 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                 if (triSpeedList[i].tripsByDate![j].avgPower! > 0) {
                   powerUsageColumnSeriesData
                       .add(ColumnSeries<TripModel, String>(
-                                                        pointColorMapper: (TripModel tripData, int index) {
-
-return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].tripsByDate![j].dataLineColor : blueColor;
-
-
- },
-
-
+                    pointColorMapper: (TripModel tripData, int index) {
+                      return triSpeedList[i].tripsByDate![j].dataLineColor !=
+                              null
+                          ? triSpeedList[i].tripsByDate![j].dataLineColor
+                          : blueColor;
+                    },
                     width: 0.9,
                     enableTooltip: true,
                     dataSource: triSpeedList,
                     xValueMapper: (TripModel tripData, _) =>
-                       dateWithZeros( triSpeedList[i].date??''),
+                        dateWithZeros(triSpeedList[i].date ?? ''),
                     yValueMapper: (TripModel tripData, _) =>
                         triSpeedList[i].tripsByDate![j].avgPower! > 0
                             ? triSpeedList[i].tripsByDate![j].avgPower!
@@ -1132,9 +1041,6 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
     return formattedDate;
   }
 
-
-
-
   @override
   void initState() {
     super.initState();
@@ -1146,8 +1052,6 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp
     ]);
-
-
 
     barColors = List.generate(
       tripList.length,
@@ -1164,7 +1068,9 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
       getVesselAndTripsData();
     });
 
-    subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+    subscription = Connectivity()
+        .onConnectivityChanged
+        .listen((ConnectivityResult result) {
       // Got a new connectivity status!
       debugPrint("INTERNET CONNECTION ${Connectivity().onConnectivityChanged}");
       Future.delayed(Duration.zero, () {
@@ -1176,20 +1082,16 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
     addListenerToControllers();
   }
 
-  
-
   @override
   void dispose() {
-        WidgetsBinding.instance?.removeObserver(this);
-        subscription.cancel();
+    WidgetsBinding.instance?.removeObserver(this);
+    subscription.cancel();
     // TODO: implement dispose
     super.dispose();
     // SystemChrome.setPreferredOrientations([
     //   DeviceOrientation.portraitUp,
     // ]);
   }
-
-
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -1200,9 +1102,8 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
     } else if (state == AppLifecycleState.paused) {
       // App is going into the background
       print("App going into the background");
-    }else if(state==AppLifecycleState.inactive){
-            print("App is in active");
-
+    } else if (state == AppLifecycleState.inactive) {
+      print("App is in active");
     }
   }
 
@@ -1211,101 +1112,470 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
     commonProvider = context.watch<CommonProvider>();
 
     return Scaffold(
-      backgroundColor: backgroundColor,
-      key: scaffoldKey,
-      body:         OrientationBuilder(
-  builder: (context, orientation) {
-    return SingleChildScrollView(
-        controller: _mainScrollController,
-        child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 17, vertical: 17),
-          child: Column(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    color: reportTripsListBackColor),
-                child: Theme(
-                  data: Theme.of(context)
-                      .copyWith(dividerColor: Colors.transparent),
-                  child: ExpansionTile(
-                    key: new Key(_key.toString()),
-                    maintainState: true,
-                    initiallyExpanded: isExpansionCollapse!,
-                    onExpansionChanged: (isExpanded) {
-                      setState(() {
-                        Utils.customPrint(
-                            "isExpansionCollapse : $isExpanded");
-                        CustomLogger().logWithFile(Level.info,
-                            "isExpansionCollapse : $isExpanded -> $page");
+        backgroundColor: backgroundColor,
+        key: scaffoldKey,
+        body: OrientationBuilder(builder: (context, orientation) {
+          return SingleChildScrollView(
+            controller: _mainScrollController,
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 17, vertical: 17),
+              child: Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        color: reportTripsListBackColor),
+                    child: Theme(
+                      data: Theme.of(context)
+                          .copyWith(dividerColor: Colors.transparent),
+                      child: ExpansionTile(
+                        key: new Key(_key.toString()),
+                        maintainState: true,
+                        initiallyExpanded: isExpansionCollapse!,
+                        onExpansionChanged: (isExpanded) {
+                          setState(() {
+                            Utils.customPrint(
+                                "isExpansionCollapse : $isExpanded");
+                            CustomLogger().logWithFile(Level.info,
+                                "isExpansionCollapse : $isExpanded -> $page");
 
-                        isExpansionCollapse = !isExpansionCollapse!;
-                        isExpandedTile = !isExpandedTile;
-                      });
-                    },
-                    collapsedBackgroundColor: reportDropdownColor,
-                    title: Text(
-                      "Search & Filters",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w400,
-                          fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.043:displayWidth(context) * 0.022,
-                          fontFamily: outfit),
-                    ),
-                    trailing: isExpandedTile
-                        ? Icon(
-                            Icons.keyboard_arrow_down,
-                            color: Colors.black,
-                          )
-                        : Icon(
-                            Icons.keyboard_arrow_up,
-                            color: Colors.black,
-                          ),
-                    children: [
-                      Form(
-                        key: _formKey,
-                        child: Column(
-                          children: [
-                            isVesselDataLoading!
-                                ? InkWell(
-                              onTap: ()async{
+                            isExpansionCollapse = !isExpansionCollapse!;
+                            isExpandedTile = !isExpandedTile;
+                          });
+                        },
+                        collapsedBackgroundColor: reportDropdownColor,
+                        title: Text(
+                          "Search & Filters",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400,
+                              fontSize: orientation == Orientation.portrait
+                                  ? displayWidth(context) * 0.043
+                                  : displayWidth(context) * 0.02,
+                              fontFamily: outfit),
+                        ),
+                        trailing: isExpandedTile
+                            ? Icon(
+                                Icons.keyboard_arrow_down,
+                                color: Colors.black,
+                              )
+                            : Icon(
+                                Icons.keyboard_arrow_up,
+                                color: Colors.black,
+                              ),
+                        children: [
+                          Form(
+                            key: _formKey,
+                            child: Column(
+                              children: [
+                                isVesselDataLoading!
+                                    ? InkWell(
+                                        onTap: () async {
+                                          debugPrint(
+                                              "TAP TAP TAP !!!! $isInterConnectionIsOn!");
 
-                                debugPrint("TAP TAP TAP !!!! $isInterConnectionIsOn!");
+                                          if (!isInterConnectionIsOn!) {
+                                            Utils.showSnackBar(context,
+                                                scaffoldKey: scaffoldKey,
+                                                message:
+                                                    'Please enable your data connection.');
+                                          }
+                                        },
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          // height: orientation==Orientation.landscape?60:60,
+                                          width: displayWidth(context) * 0.8,
+                                          child: IgnorePointer(
+                                            ignoring: isBtnClick ?? false,
+                                            child: DropdownButtonHideUnderline(
+                                              child: FormField(
+                                                builder: (state) {
+                                                  return DropdownButtonFormField2<
+                                                      DropdownItem>(
+                                                    isExpanded: true,
+                                                    decoration: InputDecoration(
+                                                      //errorText: _showDropdownError1 ? 'Select Vessel' : null,
 
-                                if(!isInterConnectionIsOn!)
-                                  {
-                                    Utils.showSnackBar(context,
-                                        scaffoldKey: scaffoldKey, message: 'Please enable your data connection.');
-                                  }
-                              },
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                   // height: orientation==Orientation.landscape?60:60,
-                                      width: displayWidth(context) * 0.8,
-                              child: IgnorePointer(
-                                  ignoring: isBtnClick??false,
-                                  child: DropdownButtonHideUnderline(
-                                    child: FormField(
-                                      builder: (state) {
-                                    return
-                                       DropdownButtonFormField2<DropdownItem>(
+                                                      prefixIcon: Container(
+                                                          width: 50,
+                                                          height: displayHeight(
+                                                                  context) *
+                                                              0.02,
+                                                          child:
+                                                              Transform.scale(
+                                                            scale: 0.5,
+                                                            child: Image.asset(
+                                                              'assets/icons/vessels.png',
+                                                              height: displayHeight(
+                                                                      context) *
+                                                                  0.02,
+                                                            ),
+                                                          )),
+                                                      contentPadding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 0,
+                                                              vertical: orientation ==
+                                                                      Orientation
+                                                                          .portrait
+                                                                  ? 10
+                                                                  : 13),
 
+                                                      focusedBorder: OutlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              width: 1.5,
+                                                              color: Colors
+                                                                  .transparent),
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          15))),
+                                                      enabledBorder: OutlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              width: 1.5,
+                                                              color: Colors
+                                                                  .transparent),
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          15))),
+                                                      errorBorder: OutlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              width: 1.5,
+                                                              color: Colors
+                                                                  .red.shade300
+                                                                  .withOpacity(
+                                                                      0.7)),
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          15))),
+                                                      errorStyle: TextStyle(
+                                                          fontFamily: inter,
+                                                          fontSize: orientation ==
+                                                                  Orientation
+                                                                      .portrait
+                                                              ? displayWidth(
+                                                                      context) *
+                                                                  0.025
+                                                              : displayWidth(
+                                                                      context) *
+                                                                  0.015),
+                                                      focusedErrorBorder: OutlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              width: 1.5,
+                                                              color: Colors
+                                                                  .red.shade300
+                                                                  .withOpacity(
+                                                                      0.7)),
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          15))),
+                                                      fillColor:
+                                                          reportDropdownColor,
+                                                      filled: true,
+                                                      hintText: "Filter By",
+
+                                                      hintStyle: TextStyle(
+                                                          color: Theme.of(context)
+                                                                      .brightness ==
+                                                                  Brightness
+                                                                      .dark
+                                                              ? "Filter By" ==
+                                                                      'User SubRole'
+                                                                  ? Colors
+                                                                      .black54
+                                                                  : Colors.white
+                                                              : Colors.black,
+                                                          fontSize: orientation == Orientation.portrait
+                                                              ? displayWidth(
+                                                                      context) *
+                                                                  0.034
+                                                          : displayWidth(
+                                                              context) *
+                                                              0.015,
+                                                          fontFamily: outfit,
+                                                          fontWeight:
+                                                              FontWeight.w300),
+                                                    ),
+                                                    hint: Container(
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      margin: EdgeInsets.only(
+                                                        left: 15,
+                                                      ),
+                                                      child: Text(
+                                                        'Select Vessel *',
+                                                        style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: orientation ==
+                                                                    Orientation
+                                                                        .portrait
+                                                                ? displayWidth(
+                                                                        context) *
+                                                                    0.032
+                                                                : displayWidth(
+                                                                        context) *
+                                                                    0.02,
+                                                            fontFamily: outfit,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w400),
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
+                                                    ),
+                                                    value: selectedValue,
+                                                    items:
+                                                        vesselData.map((item) {
+                                                      return DropdownMenuItem<
+                                                          DropdownItem>(
+                                                        value: item,
+                                                        child: Container(
+                                                          margin:
+                                                              EdgeInsets.only(
+                                                            left: 15,
+                                                          ),
+                                                          child: Text(
+                                                            item.name!,
+                                                            style: TextStyle(
+                                                                fontSize: orientation ==
+                                                                        Orientation
+                                                                            .portrait
+                                                                    ? displayWidth(
+                                                                            context) *
+                                                                        0.032
+                                                                    : displayWidth(
+                                                                            context) *
+                                                                        0.02,
+                                                                color: Theme.of(context)
+                                                                            .brightness ==
+                                                                        Brightness
+                                                                            .dark
+                                                                    ? "Select Vessel" ==
+                                                                            'User SubRole'
+                                                                        ? Colors
+                                                                            .black
+                                                                        : Colors
+                                                                            .white
+                                                                    : Colors
+                                                                        .black,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500),
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }).toList(),
+                                                    validator: (value) {
+                                                      if (value == null) {
+                                                        return 'Select Vessel';
+                                                      }
+                                                      return null;
+                                                    },
+                                                    style: TextStyle(
+                                                        fontSize: orientation ==
+                                                            Orientation
+                                                                .portrait
+                                                            ? displayWidth(
+                                                            context) *
+                                                            0.032
+                                                            : displayWidth(
+                                                            context) *
+                                                            0.02,
+                                                        fontWeight:
+                                                        FontWeight
+                                                            .w500),
+                                                    onChanged: (item) {
+                                                      if (item != null) {
+                                                        if (item != null) {
+                                                          // Remove error for the first dropdown
+                                                          _formKey.currentState
+                                                              ?.validate();
+                                                        }
+                                                      }
+                                                      getVesselDetails(
+                                                          item?.id ?? "");
+                                                      Utils.customPrint(
+                                                          "id is: ${item?.id} ");
+                                                      CustomLogger().logWithFile(
+                                                          Level.info,
+                                                          "id is: ${item?.id}-> $page");
+
+                                                      parentValue = false;
+                                                      selectedVessel = item!.id;
+                                                      selectedVesselName =
+                                                          item.name;
+
+                                                      if (mounted) {
+                                                        setState(() {
+                                                          isTripIdListLoading =
+                                                              false;
+                                                          isSHowGraph = false;
+                                                          avgSpeed = null;
+                                                          avgDuration = null;
+                                                          avgFuelConsumption =
+                                                              null;
+                                                          avgPower = null;
+                                                          triSpeedList.clear();
+                                                          tripList.clear();
+                                                          duration1 = null;
+                                                          avgSpeed1 = null;
+                                                          fuelUsage = null;
+                                                          powerUsage = null;
+                                                          finalData.clear();
+                                                          durationGraphData
+                                                              .clear();
+
+                                                          durationColumnSeriesData
+                                                              .clear();
+                                                          tempDurationColumnSeriesData
+                                                              .clear();
+                                                          avgSpeedColumnSeriesData
+                                                              .clear();
+                                                          tempAvgSpeedColumnSeriesData
+                                                              .clear();
+                                                          fuelUsageColumnSeriesData
+                                                              .clear();
+                                                          tempFuelUsageColumnSeriesData
+                                                              .clear();
+                                                          powerUsageColumnSeriesData
+                                                              .clear();
+                                                          tempPowerUsageColumnSeriesData
+                                                              .clear();
+                                                          selectedTripIdList!
+                                                              .clear();
+                                                          selectedTripLabelList!
+                                                              .clear();
+                                                        });
+                                                      }
+
+                                                      dateTimeList!.clear();
+                                                      children!.clear();
+                                                      getTripListData(item.id!);
+                                                    },
+                                                    buttonStyleData:
+                                                        ButtonStyleData(
+                                                      padding: EdgeInsets.only(
+                                                          right: orientation ==
+                                                                  Orientation
+                                                                      .portrait
+                                                              ? 0
+                                                              : 10),
+                                                    ),
+                                                    iconStyleData:
+                                                        IconStyleData(
+                                                      icon: Icon(
+                                                        Icons
+                                                            .keyboard_arrow_down_rounded,
+                                                        color: Colors.black,
+                                                      ),
+                                                      iconSize: orientation ==
+                                                              Orientation
+                                                                  .portrait
+                                                          ? displayHeight(
+                                                                  context) *
+                                                              0.035
+                                                          : displayHeight(
+                                                                  context) *
+                                                              0.080,
+                                                    ),
+                                                    dropdownStyleData:
+                                                        DropdownStyleData(
+                                                      maxHeight: orientation ==
+                                                              Orientation
+                                                                  .portrait
+                                                          ? displayHeight(
+                                                                  context) *
+                                                              0.25
+                                                          : displayHeight(
+                                                                  context) *
+                                                              0.42,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(14),
+                                                        // color: backgroundColor,
+                                                      ),
+                                                      offset:
+                                                          const Offset(0, 0),
+                                                      scrollbarTheme:
+                                                          ScrollbarThemeData(
+                                                        radius: const Radius
+                                                            .circular(20),
+                                                        thickness:
+                                                            MaterialStateProperty
+                                                                .all<double>(6),
+                                                        thumbVisibility:
+                                                            MaterialStateProperty
+                                                                .all<bool>(
+                                                                    true),
+                                                      ),
+                                                    ),
+                                                    menuItemStyleData:
+                                                        MenuItemStyleData(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 0),
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : Container(
+                                        height: displayHeight(context) * 0.1,
+                                        child: Center(
+                                          child: CircularProgressIndicator(
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                    blueColor),
+                                          ),
+                                        ),
+                                      ),
+                                SizedBox(
+                                  height: orientation == Orientation.portrait
+                                      ? displayHeight(context) * 0.018
+                                      : displayHeight(context) * 0.050,
+                                ),
+                                Container(
+                                  width: displayWidth(context) * 0.8,
+                                  child: IgnorePointer(
+                                    ignoring: isBtnClick ?? false,
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButtonFormField2<String>(
                                         isExpanded: true,
                                         decoration: InputDecoration(
-                                                        //errorText: _showDropdownError1 ? 'Select Vessel' : null,
+                                          // errorText: _showDropdownError2 ? 'Select Filters' : null,
 
                                           prefixIcon: Container(
-
-                                                                  width: 50,
-                                            height:displayHeight(context) * 0.02 ,
-                                         child: Transform.scale(
-                                            scale: 0.5,
-                                            child: Image.asset('assets/icons/vessels.png',
-                                             height: displayHeight(context) * 0.02,),
-                                          )),
-                                          contentPadding:
-                                          EdgeInsets.symmetric(horizontal: 0,vertical: orientation==Orientation.portrait?10:13),
-
+                                              height:
+                                                  displayHeight(context) * 0.02,
+                                              width: 50,
+                                              child: Transform.scale(
+                                                scale: 0.5,
+                                                child: Image.asset(
+                                                  'assets/icons/filter_icon.png',
+                                                  height:
+                                                      displayHeight(context) *
+                                                          0.02,
+                                                ),
+                                              )),
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 0,
+                                              vertical: orientation ==
+                                                      Orientation.portrait
+                                                  ? 10
+                                                  : 15),
                                           focusedBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
                                                   width: 1.5,
@@ -1327,1048 +1597,958 @@ return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].t
                                                   Radius.circular(15))),
                                           errorStyle: TextStyle(
                                               fontFamily: inter,
-                                              fontSize:orientation==Orientation.portrait?
-                                              displayWidth(context) * 0.025:displayWidth(context) * 0.015
-
-
-                                              ),
-                                          focusedErrorBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  width: 1.5,
-                                                  color: Colors.red.shade300
-                                                      .withOpacity(0.7)),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(15))),
+                                              fontSize: orientation ==
+                                                      Orientation.portrait
+                                                  ? displayWidth(context) *
+                                                      0.025
+                                                  : displayWidth(context) *
+                                                      0.015),
+                                          focusedErrorBorder:
+                                              OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      width: 1.5,
+                                                      color: Colors.red.shade300
+                                                          .withOpacity(0.7)),
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(15))),
                                           fillColor: reportDropdownColor,
                                           filled: true,
-                                          hintText: "Filter By",
-
+                                          //hintText: "Filter By",
                                           hintStyle: TextStyle(
-                                              color: Theme.of(context).brightness ==
-                                                  Brightness.dark
-                                                  ? "Filter By" == 'User SubRole'
-                                                  ? Colors.black54
-                                                  : Colors.white
-                                                  : Colors.black,
-                                              fontSize:
-                                              displayWidth(context) * 0.034,
+                                              color: Colors.black,
+                                              // color: Theme.of(context).brightness ==
+                                              //     Brightness.dark
+                                              //     ? "Filter By" == 'User SubRole'
+                                              //     ? Colors.black54
+                                              //     : Colors.white
+                                              //     : Colors.black,
+                                              fontSize: orientation ==
+                                                      Orientation.portrait
+                                                  ? displayWidth(context) *
+                                                      0.034
+                                                  : displayWidth(context) *
+                                                      0.034,
                                               fontFamily: outfit,
                                               fontWeight: FontWeight.w300),
                                         ),
-                                        hint:                                          Container(
+                                        hint: Container(
                                           alignment: Alignment.centerLeft,
-                                          margin:EdgeInsets.only(left: 15,),
-
-
-
+                                          margin: EdgeInsets.only(left: 15),
                                           child: Text(
-                                            'Select Vessel *',
+                                            'Filter By *',
                                             style: TextStyle(
-                                              color: Colors.black,
-
-
-                                                fontSize:
-
-                                                orientation==Orientation.portrait?
-                                                displayWidth(context) *
-                                                    0.032:displayWidth(context) *
-                                                    0.022
-                                                ,
-
+                                                color: Colors.black,
+                                                // color: Theme.of(context)
+                                                //     .brightness ==
+                                                //     Brightness.dark
+                                                //     ? "Filter By" ==
+                                                //     'User SubRole'
+                                                //     ? Colors.black54
+                                                //     : Colors.white
+                                                //     : Colors.black54,
+                                                fontSize: orientation ==
+                                                        Orientation.portrait
+                                                    ? displayWidth(context) *
+                                                        0.032
+                                                    : displayWidth(context) *
+                                                        0.02,
                                                 fontFamily: outfit,
                                                 fontWeight: FontWeight.w400),
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                         ),
-                                        value: selectedValue,
-                                        items: vesselData.map((item) {
-
-                                          return DropdownMenuItem<
-                                              DropdownItem>(
+                                        value: selectedFilter,
+                                        items: filters.map((item) {
+                                          return DropdownMenuItem<String>(
                                             value: item,
                                             child: Container(
-                                          margin:EdgeInsets.only(left: 15,),
+                                              margin: EdgeInsets.only(left: 15),
                                               child: Text(
-                                                item.name!,
+                                                item,
                                                 style: TextStyle(
+                                                    fontSize: orientation ==
+                                                            Orientation.portrait
+                                                        ? displayWidth(
+                                                                context) *
+                                                            0.032
+                                                        : displayWidth(
+                                                                context) *
+                                                            0.02,
 
-                                               fontSize:   orientation==Orientation.portrait?
-                                              displayWidth(context) *
-                                                  0.032:displayWidth(context) *
-                                                  0.022,
-
+                                                    // fontSize: displayWidth(context) *
+                                                    //     0.0346,
                                                     color: Theme.of(context)
-                                                        .brightness ==
-                                                        Brightness.dark
-                                                        ? "Select Vessel" ==
-                                                        'User SubRole'
-                                                        ? Colors.black
-                                                        : Colors.white
+                                                                .brightness ==
+                                                            Brightness.dark
+                                                        ? "Filter by" ==
+                                                                'User SubRole'
+                                                            ? Colors.black
+                                                            : Colors.white
                                                         : Colors.black,
                                                     fontWeight:
-                                                    FontWeight.w500),
-                                                overflow:
-                                                TextOverflow.ellipsis,
+                                                        FontWeight.w500),
+                                                overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
                                           );
                                         }).toList(),
                                         validator: (value) {
                                           if (value == null) {
-                                            return 'Select Vessel';
+                                            return 'Select Filters';
                                           }
                                           return null;
                                         },
                                         onChanged: (item) {
-
-                                          if(item!=null){
-                                            if (item != null) {
-                                                  // Remove error for the first dropdown
-                                                  _formKey.currentState?.validate();
-                                                }
+                                          if (item != null) {
+                                            // Remove error for the second dropdown
+                                            _formKey.currentState?.validate();
                                           }
-                                          getVesselDetails(item?.id??"");
-                                          Utils.customPrint(
-                                              "id is: ${item?.id} ");
-                                          CustomLogger().logWithFile(
-                                              Level.info,
-                                              "id is: ${item?.id}-> $page");
 
-                                          parentValue = false;
-                                          selectedVessel = item!.id;
-                                          selectedVesselName = item.name;
-
-                                          if (mounted) {
+                                          if (item == "Filter by Date") {
                                             setState(() {
-                                              isTripIdListLoading = false;
+                                              selectedCaseType = 1;
                                               isSHowGraph = false;
-                                              avgSpeed = null;
-                                              avgDuration = null;
-                                              avgFuelConsumption = null;
-                                              avgPower = null;
-                                              triSpeedList.clear();
-                                              tripList.clear();
-                                              duration1 = null;
-                                              avgSpeed1 = null;
-                                              fuelUsage = null;
-                                              powerUsage = null;
-                                              finalData.clear();
-                                              durationGraphData.clear();
-
-                                              durationColumnSeriesData
-                                                  .clear();
-                                              tempDurationColumnSeriesData.clear();
-                                              avgSpeedColumnSeriesData
-                                                  .clear();
-                                              tempAvgSpeedColumnSeriesData.clear();
-                                              fuelUsageColumnSeriesData
-                                                  .clear();
-                                              tempFuelUsageColumnSeriesData.clear();
-                                              powerUsageColumnSeriesData
-                                                  .clear();
-                                              tempPowerUsageColumnSeriesData.clear();
-                                              selectedTripIdList!.clear();
-                                              selectedTripLabelList!.clear();
+                                              Utils.customPrint(
+                                                  "selectedCaseType: $selectedCaseType ");
+                                              CustomLogger().logWithFile(
+                                                  Level.info,
+                                                  "selectedCaseType: $selectedCaseType-> $page");
+                                              selectedTripsAndDateString =
+                                                  "Date Range";
+                                            });
+                                          } else if (item ==
+                                              "Filter by Trips") {
+                                            setState(() {
+                                              selectedCaseType = 2;
+                                              selectedTripsAndDateDetails = "";
+                                              isSHowGraph = false;
+                                              Utils.customPrint(
+                                                  "selectedCaseType: $selectedCaseType ");
+                                              CustomLogger().logWithFile(
+                                                  Level.info,
+                                                  "selectedCaseType: $selectedCaseType-> $page");
+                                              selectedTripsAndDateString =
+                                                  "Selected Trips";
                                             });
                                           }
-
-                                          dateTimeList!.clear();
-                                          children!.clear();
-                                          getTripListData(item.id!);
                                         },
-                                        buttonStyleData:  ButtonStyleData(
-                                          padding: EdgeInsets.only(right:orientation==Orientation.portrait? 0:10),
+                                        buttonStyleData: ButtonStyleData(
+                                          padding: EdgeInsets.only(
+                                              right: orientation ==
+                                                      Orientation.portrait
+                                                  ? 0
+                                                  : 10),
                                         ),
-                                        iconStyleData:  IconStyleData(
+                                        iconStyleData: IconStyleData(
                                           icon: Icon(
                                             Icons.keyboard_arrow_down_rounded,
                                             color: Colors.black,
                                           ),
-                                          iconSize:orientation==Orientation.portrait? displayHeight(context) * 0.035:displayHeight(context) * 0.080,
+                                          iconSize: orientation ==
+                                                  Orientation.portrait
+                                              ? displayHeight(context) * 0.035
+                                              : displayHeight(context) * 0.080,
                                         ),
                                         dropdownStyleData: DropdownStyleData(
-                                          maxHeight:orientation==Orientation.portrait? displayHeight(context) * 0.25:displayHeight(context) * 0.42,
+                                          maxHeight: orientation ==
+                                                  Orientation.portrait
+                                              ? displayHeight(context) * 0.25
+                                              : displayHeight(context) * 0.42,
                                           decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(14),
+                                            borderRadius:
+                                                BorderRadius.circular(14),
                                             // color: backgroundColor,
                                           ),
                                           offset: const Offset(0, 0),
                                           scrollbarTheme: ScrollbarThemeData(
                                             radius: const Radius.circular(20),
-                                            thickness: MaterialStateProperty.all<double>(6),
-                                            thumbVisibility: MaterialStateProperty.all<bool>(true),
+                                            thickness: MaterialStateProperty
+                                                .all<double>(6),
+                                            thumbVisibility:
+                                                MaterialStateProperty.all<bool>(
+                                                    true),
                                           ),
                                         ),
                                         menuItemStyleData: MenuItemStyleData(
-                                          padding: EdgeInsets.symmetric(horizontal: 0),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 0),
                                         ),
-
-                                      );
-                                      },
-                                    ),
-                                  ),
-                              ),
-                                    ),
-                                )
-                                : Container(
-                                    height: displayHeight(context) * 0.1,
-                                    child: Center(
-                                      child: CircularProgressIndicator(
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                                blueColor),
                                       ),
                                     ),
                                   ),
-                            SizedBox(
-                              height:orientation==Orientation.portrait?
-                              
-                               displayHeight(context) * 0.018:displayHeight(context) * 0.050,
-                            ),
-                            Container(
-                              width: displayWidth(context) * 0.8,
-                              child: IgnorePointer(
-                                ignoring: isBtnClick??false,
-                                child: DropdownButtonHideUnderline(
-                                  
-                                  child: DropdownButtonFormField2<String>(
-                              
-                                    isExpanded: true,
-                                    decoration: InputDecoration(
-                                                   // errorText: _showDropdownError2 ? 'Select Filters' : null,
-                              
-                                      prefixIcon: Container(
-                                        height:displayHeight(context) * 0.02 ,
-                                         width:50 ,
-                              
-                                    child:  Transform.scale(
-                                        scale: 0.5,
-                                        child: Image.asset('assets/icons/filter_icon.png', height: displayHeight(context) * 0.02,),
-                                      )),
-                                      contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 0,vertical: orientation==Orientation.portrait?10:15),
-                                      focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1.5,
-                                              color: Colors.transparent),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(15))),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1.5,
-                                              color: Colors.transparent),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(15))),
-                                      errorBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1.5,
-                                              color: Colors.red.shade300
-                                                  .withOpacity(0.7)),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(15))),
-                                      errorStyle: TextStyle(
-                                          fontFamily: inter,
-                                            fontSize:orientation==Orientation.portrait?
-                                            displayWidth(context) * 0.025:displayWidth(context) * 0.015
-                                          
-                                          
-                                          ),
-                                      focusedErrorBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              width: 1.5,
-                                              color: Colors.red.shade300
-                                                  .withOpacity(0.7)),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(15))),
-                                      fillColor: reportDropdownColor,
-                                      filled: true,
-                                      //hintText: "Filter By",
-                                      hintStyle: TextStyle(
-                                        color: Colors.black,
-                                          // color: Theme.of(context).brightness ==
-                                          //     Brightness.dark
-                                          //     ? "Filter By" == 'User SubRole'
-                                          //     ? Colors.black54
-                                          //     : Colors.white
-                                          //     : Colors.black,
-                                          fontSize:orientation==
-                                      Orientation.portrait?    displayWidth(context) * 0.034:displayWidth(context) * 0.034,
-                                          fontFamily: outfit,
-                                          fontWeight: FontWeight.w300),
-                                    ),
-                                    hint: Container(
-                                      alignment: Alignment.centerLeft,
-                                      margin:EdgeInsets.only(left: 15),
-                              
-                                      child: Text(
-                                        
-                                        'Filter By *',
-                                      
-                                        style: TextStyle(
-                              color: Colors.black,
-                                            // color: Theme.of(context)
-                                            //     .brightness ==
-                                            //     Brightness.dark
-                                            //     ? "Filter By" ==
-                                            //     'User SubRole'
-                                            //     ? Colors.black54
-                                            //     : Colors.white
-                                            //     : Colors.black54,
-                                            fontSize:
-                                    
-                                            orientation==Orientation.portrait?
-                                            displayWidth(context) *
-                                                0.032:displayWidth(context) *
-                                                0.022
-                                            ,
-                                    
-                                            fontFamily: outfit,
-                                            fontWeight: FontWeight.w400),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                    value: selectedFilter,
-                                  
-                                    items: filters.map((item) {
-                                      return DropdownMenuItem<String>(
-                                        value: item,
-                              
-                                        child: Container(
-                                      margin:EdgeInsets.only(left: 15),
-                                          child: Text(
-                                            item,
-                                            style: TextStyle(
-                                                                                         fontSize:   orientation==Orientation.portrait?
-                                          displayWidth(context) *
-                                              0.032:displayWidth(context) *
-                                              0.022,
-                              
-                                                // fontSize: displayWidth(context) *
-                                                //     0.0346,
-                                                color: Theme.of(context)
-                                                    .brightness ==
-                                                    Brightness.dark
-                                                    ? "Filter by" ==
-                                                    'User SubRole'
-                                                    ? Colors.black
-                                                    : Colors.white
-                                                    : Colors.black,
-                                                fontWeight: FontWeight.w500),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                      );
-                                    }).toList(),
-                                    validator: (value) {
-                                      if (value == null) {
-                                        return 'Select Filters';
-                                      }
-                                      return null;
-                                    },
-                                    onChanged: (item) {
-                              
-                                                                                  if (item != null) {
-                                              // Remove error for the second dropdown
-                                              _formKey.currentState?.validate();
-                                            }
-
-                                      if (item == "Filter by Date") {
-                                        setState(() {
-                                          selectedCaseType = 1;
-                                          isSHowGraph = false;
-                                          Utils.customPrint(
-                                              "selectedCaseType: $selectedCaseType ");
-                                          CustomLogger().logWithFile(Level.info,
-                                              "selectedCaseType: $selectedCaseType-> $page");
-                                          selectedTripsAndDateString =
-                                          "Date Range";
-                                        });
-                                      } else if (item == "Filter by Trips") {
-                                        setState(() {
-                                          selectedCaseType = 2;
-                                          selectedTripsAndDateDetails = "";
-                                          isSHowGraph = false;
-                                          Utils.customPrint(
-                                              "selectedCaseType: $selectedCaseType ");
-                                          CustomLogger().logWithFile(Level.info,
-                                              "selectedCaseType: $selectedCaseType-> $page");
-                                          selectedTripsAndDateString =
-                                          "Selected Trips";
-                                        });
-                                      }
-                                    },
-                                    buttonStyleData:  ButtonStyleData(
-                                      padding: EdgeInsets.only(right:orientation==Orientation.portrait? 0:10),
-                                    ),
-                                    iconStyleData:  IconStyleData(
-                                      icon: Icon(
-                                        Icons.keyboard_arrow_down_rounded,
-                                        color: Colors.black,
-                                      ),
-                                          iconSize:orientation==Orientation.portrait? displayHeight(context) * 0.035:displayHeight(context) * 0.080,
-                                    ),
-                                    dropdownStyleData: DropdownStyleData(
-                                      maxHeight:orientation==Orientation.portrait? displayHeight(context) * 0.25:displayHeight(context) * 0.42,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(14),
-                                        // color: backgroundColor,
-                                      ),
-                                      offset: const Offset(0, 0),
-                                      scrollbarTheme: ScrollbarThemeData(
-                                        radius: const Radius.circular(20),
-                                        thickness: MaterialStateProperty.all<double>(6),
-                                        thumbVisibility: MaterialStateProperty.all<bool>(true),
-                                      ),
-                                    ),
-                                    menuItemStyleData: MenuItemStyleData(
-                                      padding: EdgeInsets.symmetric(horizontal: 0),
-                                    ),
-                                  ),
                                 ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: displayWidth(context) * 0.04,
-                      ),
-                      selectedCaseType == 0
-                          ? Container()
-                          : selectedCaseType == 1
-                              ?
-                              
-                               filterByDate(context,orientation)!
-
-
-                              : filterByTrip(context,orientation)!,
-                      SizedBox(
-                        height: displayWidth(context) * 0.04,
-                      ),
-                      isBtnClick ?? false
-                          ? Container(
-                              child: Center(
-                                child: CircularProgressIndicator(
-                                  color: blueColor,
-                                ),
-                              ),
-                            )
-                          : Column(
-                              children: [
-                                CommonButtons.getAcceptButton(
-                                  "Generate Report",
-                                  
-                                  context,
-                                  blueColor,
-                                  
-
-                                  () {
-                                    if (_formKey.currentState!.validate()) {
-                                      setState(() {
-                                        isSHowGraph = false;
-                                        isBtnClick = true;
-                                        isExpansionCollapse = false;
-                                        isExpandedTile = true;
-                                        avgSpeed = null;
-                                        avgDuration = null;
-                                       // isSelectStartDate=false;
-                                        avgFuelConsumption = null;
-                                        avgPower = null;
-                                        triSpeedList.clear();
-                                        tripList.clear();
-                                        duration1 = null;
-                                        avgSpeed1 = null;
-                                        fuelUsage = null;
-                                        powerUsage = null;
-                                        finalData.clear();
-                                        durationGraphData.clear();
-
-                                        durationColumnSeriesData.clear();
-                                        tempDurationColumnSeriesData.clear();
-                                        avgSpeedColumnSeriesData.clear();
-                                        tempAvgSpeedColumnSeriesData.clear();
-                                        fuelUsageColumnSeriesData.clear();
-                                        tempFuelUsageColumnSeriesData.clear();
-                                        powerUsageColumnSeriesData.clear();
-                                        tempPowerUsageColumnSeriesData.clear();
-                                      });
-
-                                      // _collapseExpansionTile();
-                                      String? startDate = "";
-                                      String? endDate = "";
-                                      String? startDateToDispaly = "";
-                                      String? endDateToDispaly = "";
-                                      totalDuration = 0;
-                                      totalSpeed = 0;
-                                      totalFuelConsumption = 0;
-                                      totalAvgPower = 0;
-
-                                      if (selectedCaseType == 1) {
-                                        if (focusedDayString!.isNotEmpty ||
-                                            lastFocusedDayString!
-                                                .isNotEmpty) {
-                                          startDate = convertIntoYearMonthDay(
-                                              selectedDateForStartDate);
-                                          endDate = convertIntoYearMonthDay(
-                                              selectedDateForEndDate);
-                                          startDateToDispaly =
-                                              convertIntoYearMonthDayToShow(
-                                                  selectedDateForStartDate);
-                                          endDateToDispaly =
-                                              convertIntoYearMonthDayToShow(
-                                                  selectedDateForEndDate);
-                                          selectedTripsAndDateDetails =
-                                              "$startDateToDispaly to $endDateToDispaly";
-                                        }
-
-                                        if ((selectedStartDateFromCal !=
-                                                    null &&
-                                                selectedEndDateFromCal !=
-                                                    null) &&
-                                            selectedDateForEndDate!.isBefore(
-                                                selectedDateForStartDate)) {
-                                          isBtnClick = false;
-                                          Utils.showSnackBar(context,
-                                              scaffoldKey: scaffoldKey,
-                                              message:
-                                                  'End date ($endDate) should be greater than start date($startDate)',
-                                              duration: 2);
-                                          return;
-                                        }
-                                        if ((isSelectedStartDay! &&
-                                            isSelectedEndDay!)) {
-                                          getReportsData(selectedCaseType!,
-                                              startDate: startDate,
-                                              endDate: endDate,
-                                              vesselID: selectedVessel);
-                                        } else if (!isSelectedStartDay!) {
-                                          setState(() {
-                                            isBtnClick = false;
-                                          });
-                                          Utils.showSnackBar(context,
-                                              scaffoldKey: scaffoldKey,
-                                              message:
-                                                  'Please Select the Start Date',
-                                              duration: 2);
-                                        } else if (!isSelectedEndDay!) {
-                                          setState(() {
-                                            isBtnClick = false;
-                                          });
-                                          Utils.showSnackBar(context,
-                                              scaffoldKey: scaffoldKey,
-                                              message:
-                                                  'Please Select the End Date',
-                                              duration: 2);
-                                        }
-                                      } else if (selectedCaseType == 2) {
-                                        if (selectedTripIdList?.isNotEmpty ??
-                                            false) {
-                                          selectedTripLabelList!.sort((a, b) {
-                                            int numberA =
-                                                int.parse(a.split(" ")[1]);
-                                            int numberB =
-                                                int.parse(b.split(" ")[1]);
-                                            return numberA.compareTo(numberB);
-                                          });
-                                          getReportsData(selectedCaseType!,
-                                              selectedTripListID:
-                                                  selectedTripIdList);
-                                        } else {
-                                          setState(() {
-                                            isBtnClick = false;
-                                          });
-                                          if (selectedTripIdList?.isEmpty ??
-                                              false) {
-                                            Utils.showSnackBar(context,
-                                                scaffoldKey: scaffoldKey,
-                                                message:
-                                                    'Please Select the Trip',
-                                                duration: 2);
-                                          }
-                                        }
-                                      }
-                                    }
-                                    else{
-                                    }
-                                  },
-
-                               orientation==Orientation.portrait?   displayWidth(context) * 0.8:displayWidth(context) * 0.5,
-                                 orientation==Orientation.portrait? displayHeight(context) * 0.06:displayHeight(context) * 0.15,
-                                  Colors.grey.shade400,
-                                  Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? Colors.white
-                                      : Colors.white,
-                                orientation==Orientation.portrait?  displayHeight(context) * 0.021:displayWidth(context) * 0.026,
-                                  blueColor,
-                                  '',
-                                ),
-                                !isSHowGraph!
-                                    ? Padding(
-                                        padding: EdgeInsets.only(
-                                          top: displayWidth(context) * 0.01,
-                                        ),
-                                        child: GestureDetector(
-                                            onTap:  widget.onScreenShotCaptureCallback,
-                                            child: UserFeedback()
-                                                .getUserFeedback(context,orientation: orientation)),
-                                      )
-                                    : Container(),
                               ],
                             ),
-                      SizedBox(
-                        height: displayWidth(context) * 0.04,
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              !isSHowGraph!
-                  ? Container()
-                  : isReportDataLoading!
-                      ? Column(
-                          children: [
-                            Container(
-                              margin: EdgeInsets.only(
-                                left: displayWidth(context) * 0.03,
-                                right: displayWidth(context) * 0.03,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    height: displayWidth(context) * 0.055,
-                                  ),
-                                  vesselDetails(context,orientation),
-                                  SizedBox(
-                                    height: displayWidth(context) * 0.04,
-                                  ),
-                                  Visibility(
-                                    visible: selectedCaseType==1?true:false,
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          "$selectedTripsAndDateString",
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.w400,
-                                              fontFamily: outfit),
-                                        ),
-                                        SizedBox(
-                                          width: displayWidth(context) * 0.05,
-                                        ),
-                                      
-                                        Expanded(
-                                          child: Text(
-                                            selectedCaseType == 1
-                                                ? ": ${selectedTripsAndDateDetails}"
-                                                : ":  ${selectedTripLabelList!.join(', ')}",
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w400,
-                                                fontFamily: inter),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: displayWidth(context) * 0.06,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-
-            for (int i = 0; i < durationGraphData.length; i++) {
-              for (int j = 0;
-                  j < durationGraphData[i].tripsByDate!.length;
-                  j++) {
-                    durationGraphData[i].tripsByDate![j].dataLineColor=null;
-                  }}
-
-
-                      reportsDataTableKey.currentState!.setState(() {
-                        reportsDataTableKey.currentState!.selectedRowIndex=-1;
-
-
-                                                         reportsDataTableKey.currentState!.isToolTipShown=false;
-                                                         });
-
-
-
-
-                                          setState(() {
-                                            selectedButton = 'trip duration';
-                                            isStickyYAxisVisible = false;
-                                            tripDurationButtonColor = true;
-                                            avgSpeedButtonColor = false;
-                                            fuelUsageButtonColor = false;
-                                            powerUsageButtonColor = false;
-                                          });
-                                          Future.delayed(Duration(seconds: 1), (){
-                                            if(_tripDurationSrollController.positions.isNotEmpty){
-                                              _tripDurationSrollController.animateTo(
-                                                0.0,
-                                                duration: Duration(seconds: 2),
-                                                curve: Curves.fastOutSlowIn,
-                                              );
-                                            }
-                                          });
-                                        },
-                                        child: Container(
-                                          width: displayWidth(context) * 0.20,
-                                          height:orientation==Orientation.portrait?
-                                              displayHeight(context) * 0.041:displayHeight(context) * 0.099,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                              color: !tripDurationButtonColor!
-                                                  ? reportsNewTabColor
-                                                  : Color(0xff2663DB)),
-                                          child: Padding(
-                                            padding: EdgeInsets.all(6.0),
-                                            child: Center(
-                                              child: Text(
-                                                "Trip Duration",
-                                                style: TextStyle(
-                                                    color:
-                                                        tripDurationButtonColor!
-                                                            ? Colors.white
-                                                            : Colors.black,
-                                                            //fontSize: 11,
-                                                    fontSize: displayWidth(context) * 0.025,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-
-            for (int i = 0; i < durationGraphData.length; i++) {
-              for (int j = 0;
-                  j < durationGraphData[i].tripsByDate!.length;
-                  j++) {
-                    durationGraphData[i].tripsByDate![j].dataLineColor=null;
-                  }}
-
-
-                      reportsDataTableKey.currentState!.setState(() {
-                        reportsDataTableKey.currentState!.selectedRowIndex=-1;
-
-
-                                                         reportsDataTableKey.currentState!.isToolTipShown=false;
-                                                         });
-
-
-                                          setState(() {
-                                            selectedButton = 'avg speed';
-                                            isStickyYAxisVisible = false;
-                                            tripDurationButtonColor = false;
-                                            avgSpeedButtonColor = true;
-                                            fuelUsageButtonColor = false;
-                                            powerUsageButtonColor = false;
-                                          });
-                                          Future.delayed(Duration(seconds: 1), (){
-                                            if(_avgSpeedSrollController.positions.isNotEmpty){
-                                              _avgSpeedSrollController.animateTo(
-                                                0.0,
-                                                duration: Duration(seconds: 2),
-                                                curve: Curves.fastOutSlowIn,
-                                              );
-                                            }
-                                          });
-                                        },
-                                        child: Container(
-                                          width: displayWidth(context) * 0.18,
-                                          height:orientation==Orientation.portrait?
-                                              displayHeight(context) * 0.041:displayHeight(context) * 0.099,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                              color: !avgSpeedButtonColor!
-                                                  ? reportsNewTabColor
-                                                  : Color(0xff2663DB)),
-                                          child: Padding(
-                                            padding: EdgeInsets.all(6.0),
-                                            child: Center(
-                                              child: Text(
-                                                "Avg Speed",
-                                                style: TextStyle(
-                                                    color:
-                                                        avgSpeedButtonColor!
-                                                            ? Colors.white
-                                                            : Colors.black,
-                                                    fontSize: displayWidth(context) * 0.025,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-
-
-                                                      for (int i = 0; i < durationGraphData.length; i++) {
-              for (int j = 0;
-                  j < durationGraphData[i].tripsByDate!.length;
-                  j++) {
-                    durationGraphData[i].tripsByDate![j].dataLineColor=null;
-                  }}
-
-
-                      reportsDataTableKey.currentState!.setState(() {
-                        reportsDataTableKey.currentState!.selectedRowIndex=-1;
-
-
-                                                         reportsDataTableKey.currentState!.isToolTipShown=false;
-                                                         });
-
-                                          setState(() {
-                                            selectedButton = 'fuel usage';
-                                            isStickyYAxisVisible = false;
-                                            tripDurationButtonColor = false;
-                                            avgSpeedButtonColor = false;
-                                            fuelUsageButtonColor = true;
-                                            powerUsageButtonColor = false;
-                                          });
-                                          Future.delayed(Duration(seconds: 1), (){
-                                            if(_fuelUsageSrollController.positions.isNotEmpty){
-                                              _fuelUsageSrollController.animateTo(
-                                                0.0,
-                                                duration: Duration(seconds: 2),
-                                                curve: Curves.fastOutSlowIn,
-                                              );
-                                            }
-                                          });
-                                        },
-                                        child: Container(
-                                          width: displayWidth(context) * 0.20,
-                                          height:orientation==Orientation.portrait?
-                                              displayHeight(context) * 0.042:displayHeight(context) * 0.099,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                              color: !fuelUsageButtonColor!
-                                                  ? reportsNewTabColor
-                                                  : Color(0xff2663DB)),
-                                          child: Padding(
-                                            padding: EdgeInsets.all(6.0),
-                                            child: Center(
-                                              child: Text(
-                                                "Fuel Usage",
-                                                style: TextStyle(
-                                                    color:
-                                                        fuelUsageButtonColor!
-                                                            ? Colors.white
-                                                            : Colors.black,
-                                                    fontSize: displayWidth(context) * 0.025,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                                      for (int i = 0; i < durationGraphData.length; i++) {
-              for (int j = 0;
-                  j < durationGraphData[i].tripsByDate!.length;
-                  j++) {
-                    durationGraphData[i].tripsByDate![j].dataLineColor=null;
-                  }}
-
-
-                      reportsDataTableKey.currentState!.setState(() {
-                        reportsDataTableKey.currentState!.selectedRowIndex=-1;
-
-
-                                                         reportsDataTableKey.currentState!.isToolTipShown=false;
-                                                         });
-
-                                          setState(() {
-                                            selectedButton = 'power usage';
-                                            isStickyYAxisVisible = false;
-                                            tripDurationButtonColor = false;
-                                            avgSpeedButtonColor = false;
-                                            fuelUsageButtonColor = false;
-                                            powerUsageButtonColor = true;
-                                          });
-                                          Future.delayed(Duration(seconds: 1), (){
-                                            if(_powerUsageSrollController.positions.isNotEmpty){
-                                              _powerUsageSrollController.animateTo(
-                                                0.0,
-                                                duration: Duration(seconds: 2),
-                                                curve: Curves.fastOutSlowIn,
-                                              );
-                                            }
-                                          });
-                                        },
-                                        child: Container(
-                                          width: displayWidth(context) * 0.22,
-                                          height:orientation==Orientation.portrait?
-                                              displayHeight(context) * 0.042:displayHeight(context) * 0.099,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                              color: !powerUsageButtonColor!
-                                                  ? reportsNewTabColor
-                                                  : Color(0xff2663DB)),
-                                          child: Padding(
-                                            padding: EdgeInsets.all(6.0),
-                                            child: Center(
-                                              child: Text(
-                                                "Power Usage",
-                                                style: TextStyle(
-                                                    color:
-                                                        powerUsageButtonColor!
-                                                            ? Colors.white
-                                                            : Colors.black,
-                                                    fontSize: displayWidth(context) * 0.025,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: displayWidth(context) * 0.02,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            isReportDataLoading!
-                                ? buildGraph(context,orientation)
-                                : Center(
+                          ),
+                          SizedBox(
+                            height: displayWidth(context) * 0.04,
+                          ),
+                          selectedCaseType == 0
+                              ? Container()
+                              : selectedCaseType == 1
+                                  ? filterByDate(context, orientation)!
+                                  : filterByTrip(context, orientation)!,
+                          SizedBox(
+                            height: displayWidth(context) * 0.04,
+                          ),
+                          isBtnClick ?? false
+                              ? Container(
+                                  child: Center(
                                     child: CircularProgressIndicator(
-                                      valueColor:
-                                          AlwaysStoppedAnimation<Color>(
-                                              blueColor),
+                                      color: blueColor,
                                     ),
                                   ),
-                           // table(context)!,
+                                )
+                              : Column(
+                                  children: [
+                                    CommonButtons.getAcceptButton(
+                                      "Generate Report",
+                                      context,
+                                      blueColor,
+                                      () {
+                                        if (_formKey.currentState!.validate()) {
+                                          setState(() {
+                                            isSHowGraph = false;
+                                            isBtnClick = true;
+                                            isExpansionCollapse = false;
+                                            isExpandedTile = true;
+                                            avgSpeed = null;
+                                            avgDuration = null;
+                                            // isSelectStartDate=false;
+                                            avgFuelConsumption = null;
+                                            avgPower = null;
+                                            triSpeedList.clear();
+                                            tripList.clear();
+                                            duration1 = null;
+                                            avgSpeed1 = null;
+                                            fuelUsage = null;
+                                            powerUsage = null;
+                                            finalData.clear();
+                                            durationGraphData.clear();
 
-ReportsDataTable(tripList: tripList, finalData: finalData,onTapCallBack: scorllToParticularPostion,barIndex: selectedBarIndex,key: reportsDataTableKey,orientation: orientation, ),
+                                            durationColumnSeriesData.clear();
+                                            tempDurationColumnSeriesData
+                                                .clear();
+                                            avgSpeedColumnSeriesData.clear();
+                                            tempAvgSpeedColumnSeriesData
+                                                .clear();
+                                            fuelUsageColumnSeriesData.clear();
+                                            tempFuelUsageColumnSeriesData
+                                                .clear();
+                                            powerUsageColumnSeriesData.clear();
+                                            tempPowerUsageColumnSeriesData
+                                                .clear();
+                                          });
 
-                            SizedBox(
-                              height: displayWidth(context) * 0.03,
-                            ),
-                            SizedBox(
-                                  height:orientation==Orientation.portrait? displayHeight(context) * 0.06:displayHeight(context) * 0.15,
+                                          // _collapseExpansionTile();
+                                          String? startDate = "";
+                                          String? endDate = "";
+                                          String? startDateToDispaly = "";
+                                          String? endDateToDispaly = "";
+                                          totalDuration = 0;
+                                          totalSpeed = 0;
+                                          totalFuelConsumption = 0;
+                                          totalAvgPower = 0;
 
-                              child: isExportBtnClick??false?Center(
-                            child:    CircularProgressIndicator(color: blueColor,)
+                                          if (selectedCaseType == 1) {
+                                            if (focusedDayString!.isNotEmpty ||
+                                                lastFocusedDayString!
+                                                    .isNotEmpty) {
+                                              startDate =
+                                                  convertIntoYearMonthDay(
+                                                      selectedDateForStartDate);
+                                              endDate = convertIntoYearMonthDay(
+                                                  selectedDateForEndDate);
+                                              startDateToDispaly =
+                                                  convertIntoYearMonthDayToShow(
+                                                      selectedDateForStartDate);
+                                              endDateToDispaly =
+                                                  convertIntoYearMonthDayToShow(
+                                                      selectedDateForEndDate);
+                                              selectedTripsAndDateDetails =
+                                                  "$startDateToDispaly to $endDateToDispaly";
+                                            }
 
-                              ):
-                              
-                              
-                              
-                              InkWell(
-                                onTap: (){
-                                  exportTripData();
-                                
-                                },
-                                child: 
-                                
-                                
+                                            if ((selectedStartDateFromCal !=
+                                                        null &&
+                                                    selectedEndDateFromCal !=
+                                                        null) &&
+                                                selectedDateForEndDate!.isBefore(
+                                                    selectedDateForStartDate)) {
+                                              isBtnClick = false;
+                                              Utils.showSnackBar(context,
+                                                  scaffoldKey: scaffoldKey,
+                                                  message:
+                                                      'End date ($endDate) should be greater than start date($startDate)',
+                                                  duration: 2);
+                                              return;
+                                            }
+                                            if ((isSelectedStartDay! &&
+                                                isSelectedEndDay!)) {
+                                              getReportsData(selectedCaseType!,
+                                                  startDate: startDate,
+                                                  endDate: endDate,
+                                                  vesselID: selectedVessel);
+                                            } else if (!isSelectedStartDay!) {
+                                              setState(() {
+                                                isBtnClick = false;
+                                              });
+                                              Utils.showSnackBar(context,
+                                                  scaffoldKey: scaffoldKey,
+                                                  message:
+                                                      'Please Select the Start Date',
+                                                  duration: 2);
+                                            } else if (!isSelectedEndDay!) {
+                                              setState(() {
+                                                isBtnClick = false;
+                                              });
+                                              Utils.showSnackBar(context,
+                                                  scaffoldKey: scaffoldKey,
+                                                  message:
+                                                      'Please Select the End Date',
+                                                  duration: 2);
+                                            }
+                                          } else if (selectedCaseType == 2) {
+                                            if (selectedTripIdList
+                                                    ?.isNotEmpty ??
+                                                false) {
+                                              selectedTripLabelList!
+                                                  .sort((a, b) {
+                                                int numberA =
+                                                    int.parse(a.split(" ")[1]);
+                                                int numberB =
+                                                    int.parse(b.split(" ")[1]);
+                                                return numberA
+                                                    .compareTo(numberB);
+                                              });
+                                              getReportsData(selectedCaseType!,
+                                                  selectedTripListID:
+                                                      selectedTripIdList);
+                                            } else {
+                                              setState(() {
+                                                isBtnClick = false;
+                                              });
+                                              if (selectedTripIdList?.isEmpty ??
+                                                  false) {
+                                                Utils.showSnackBar(context,
+                                                    scaffoldKey: scaffoldKey,
+                                                    message:
+                                                        'Please Select the Trip',
+                                                    duration: 2);
+                                              }
+                                            }
+                                          }
+                                        } else {}
+                                      },
+                                      orientation == Orientation.portrait
+                                          ? displayWidth(context) * 0.8
+                                          : displayWidth(context) * 0.4,
+                                      orientation == Orientation.portrait
+                                          ? displayHeight(context) * 0.06
+                                          : displayHeight(context) * 0.15,
+                                      Colors.grey.shade400,
+                                      Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.white
+                                          : Colors.white,
+                                      orientation == Orientation.portrait
+                                          ? displayHeight(context) * 0.021
+                                          : displayWidth(context) * 0.022,
+                                      blueColor,
+                                      '',
+                                    ),
+                                    !isSHowGraph!
+                                        ? Padding(
+                                            padding: EdgeInsets.only(
+                                              top: displayWidth(context) * 0.01,
+                                            ),
+                                            child: GestureDetector(
+                                                onTap: widget
+                                                    .onScreenShotCaptureCallback,
+                                                child: UserFeedback()
+                                                    .getUserFeedback(context,
+                                                        orientation:
+                                                            orientation)),
+                                          )
+                                        : Container(),
+                                  ],
+                                ),
+                          SizedBox(
+                            height: displayWidth(context) * 0.04,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  !isSHowGraph!
+                      ? Container()
+                      : isReportDataLoading!
+                          ? Column(
+                              children: [
                                 Container(
-                                  height:orientation==Orientation.portrait? displayHeight(context) * 0.06:displayHeight(context) * 0.15,
-                                  width:orientation==Orientation.portrait? displayWidth(context) * 0.8:displayWidth(context) * 0.5,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: blueColor),
-                                  child:
-                                  
-                                  
-                                  
-                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                  margin: EdgeInsets.only(
+                                    left: displayWidth(context) * 0.03,
+                                    right: displayWidth(context) * 0.03,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Icon(
-                                        Icons.file_download_outlined,
-                                        color: Colors.white,
-                                        size: 25,
+                                      SizedBox(
+                                        height: displayWidth(context) * 0.055,
+                                      ),
+                                      vesselDetails(context, orientation),
+                                      SizedBox(
+                                        height: displayWidth(context) * 0.04,
+                                      ),
+                                      Visibility(
+                                        visible: selectedCaseType == 1
+                                            ? true
+                                            : false,
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              "$selectedTripsAndDateString",
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w400,
+                                                  fontFamily: outfit),
+                                            ),
+                                            SizedBox(
+                                              width:
+                                                  displayWidth(context) * 0.05,
+                                            ),
+                                            Expanded(
+                                              child: Text(
+                                                selectedCaseType == 1
+                                                    ? ": ${selectedTripsAndDateDetails}"
+                                                    : ":  ${selectedTripLabelList!.join(', ')}",
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w400,
+                                                    fontFamily: inter),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                       SizedBox(
-                                        width: displayWidth(context) * 0.01,
+                                        height: displayWidth(context) * 0.06,
                                       ),
-                                      commonText(
-                                        context: context,
-                                        
-                                        text: 'Export Complete Report',
-                                        
-                                        fontWeight: FontWeight.w600,
-                                        textColor: Colors.white,
-                                        textSize:orientation==Orientation.portrait? displayWidth(context) * 0.041:displayWidth(context) * 0.026,
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              for (int i = 0;
+                                                  i < durationGraphData.length;
+                                                  i++) {
+                                                for (int j = 0;
+                                                    j <
+                                                        durationGraphData[i]
+                                                            .tripsByDate!
+                                                            .length;
+                                                    j++) {
+                                                  durationGraphData[i]
+                                                      .tripsByDate![j]
+                                                      .dataLineColor = null;
+                                                }
+                                              }
+
+                                              reportsDataTableKey.currentState!
+                                                  .setState(() {
+                                                reportsDataTableKey
+                                                    .currentState!
+                                                    .selectedRowIndex = -1;
+
+                                                reportsDataTableKey
+                                                    .currentState!
+                                                    .isToolTipShown = false;
+                                              });
+
+                                              setState(() {
+                                                selectedButton =
+                                                    'trip duration';
+                                                isStickyYAxisVisible = false;
+                                                tripDurationButtonColor = true;
+                                                avgSpeedButtonColor = false;
+                                                fuelUsageButtonColor = false;
+                                                powerUsageButtonColor = false;
+                                              });
+                                              Future.delayed(
+                                                  Duration(seconds: 1), () {
+                                                if (_tripDurationSrollController
+                                                    .positions.isNotEmpty) {
+                                                  _tripDurationSrollController
+                                                      .animateTo(
+                                                    0.0,
+                                                    duration:
+                                                        Duration(seconds: 2),
+                                                    curve: Curves.fastOutSlowIn,
+                                                  );
+                                                }
+                                              });
+                                            },
+                                            child: Container(
+                                              width:
+                                                  displayWidth(context) * 0.20,
+                                              height: orientation ==
+                                                      Orientation.portrait
+                                                  ? displayHeight(context) *
+                                                      0.041
+                                                  : displayHeight(context) *
+                                                      0.099,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  color:
+                                                      !tripDurationButtonColor!
+                                                          ? reportsNewTabColor
+                                                          : Color(0xff2663DB)),
+                                              child: Padding(
+                                                padding: EdgeInsets.all(6.0),
+                                                child: Center(
+                                                  child: Text(
+                                                    "Trip Duration",
+                                                    style: TextStyle(
+                                                        color:
+                                                            tripDurationButtonColor!
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                        //fontSize: 11,
+                                                        fontSize: orientation ==
+                                                                Orientation
+                                                                    .portrait
+                                                            ? displayWidth(
+                                                                    context) *
+                                                                0.025
+                                                            : displayWidth(
+                                                                    context) *
+                                                                0.02,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              for (int i = 0;
+                                                  i < durationGraphData.length;
+                                                  i++) {
+                                                for (int j = 0;
+                                                    j <
+                                                        durationGraphData[i]
+                                                            .tripsByDate!
+                                                            .length;
+                                                    j++) {
+                                                  durationGraphData[i]
+                                                      .tripsByDate![j]
+                                                      .dataLineColor = null;
+                                                }
+                                              }
+
+                                              reportsDataTableKey.currentState!
+                                                  .setState(() {
+                                                reportsDataTableKey
+                                                    .currentState!
+                                                    .selectedRowIndex = -1;
+
+                                                reportsDataTableKey
+                                                    .currentState!
+                                                    .isToolTipShown = false;
+                                              });
+
+                                              setState(() {
+                                                selectedButton = 'avg speed';
+                                                isStickyYAxisVisible = false;
+                                                tripDurationButtonColor = false;
+                                                avgSpeedButtonColor = true;
+                                                fuelUsageButtonColor = false;
+                                                powerUsageButtonColor = false;
+                                              });
+                                              Future.delayed(
+                                                  Duration(seconds: 1), () {
+                                                if (_avgSpeedSrollController
+                                                    .positions.isNotEmpty) {
+                                                  _avgSpeedSrollController
+                                                      .animateTo(
+                                                    0.0,
+                                                    duration:
+                                                        Duration(seconds: 2),
+                                                    curve: Curves.fastOutSlowIn,
+                                                  );
+                                                }
+                                              });
+                                            },
+                                            child: Container(
+                                              width:
+                                                  displayWidth(context) * 0.18,
+                                              height: orientation ==
+                                                      Orientation.portrait
+                                                  ? displayHeight(context) *
+                                                      0.041
+                                                  : displayHeight(context) *
+                                                      0.099,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  color: !avgSpeedButtonColor!
+                                                      ? reportsNewTabColor
+                                                      : Color(0xff2663DB)),
+                                              child: Padding(
+                                                padding: EdgeInsets.all(6.0),
+                                                child: Center(
+                                                  child: Text(
+                                                    "Avg Speed",
+                                                    style: TextStyle(
+                                                        color:
+                                                            avgSpeedButtonColor!
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                        fontSize: orientation ==
+                                                            Orientation
+                                                                .portrait
+                                                            ? displayWidth(
+                                                            context) *
+                                                            0.025
+                                                            : displayWidth(
+                                                            context) *
+                                                            0.02,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              for (int i = 0;
+                                                  i < durationGraphData.length;
+                                                  i++) {
+                                                for (int j = 0;
+                                                    j <
+                                                        durationGraphData[i]
+                                                            .tripsByDate!
+                                                            .length;
+                                                    j++) {
+                                                  durationGraphData[i]
+                                                      .tripsByDate![j]
+                                                      .dataLineColor = null;
+                                                }
+                                              }
+
+                                              reportsDataTableKey.currentState!
+                                                  .setState(() {
+                                                reportsDataTableKey
+                                                    .currentState!
+                                                    .selectedRowIndex = -1;
+
+                                                reportsDataTableKey
+                                                    .currentState!
+                                                    .isToolTipShown = false;
+                                              });
+
+                                              setState(() {
+                                                selectedButton = 'fuel usage';
+                                                isStickyYAxisVisible = false;
+                                                tripDurationButtonColor = false;
+                                                avgSpeedButtonColor = false;
+                                                fuelUsageButtonColor = true;
+                                                powerUsageButtonColor = false;
+                                              });
+                                              Future.delayed(
+                                                  Duration(seconds: 1), () {
+                                                if (_fuelUsageSrollController
+                                                    .positions.isNotEmpty) {
+                                                  _fuelUsageSrollController
+                                                      .animateTo(
+                                                    0.0,
+                                                    duration:
+                                                        Duration(seconds: 2),
+                                                    curve: Curves.fastOutSlowIn,
+                                                  );
+                                                }
+                                              });
+                                            },
+                                            child: Container(
+                                              width:
+                                                  displayWidth(context) * 0.20,
+                                              height: orientation ==
+                                                      Orientation.portrait
+                                                  ? displayHeight(context) *
+                                                      0.042
+                                                  : displayHeight(context) *
+                                                      0.099,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  color: !fuelUsageButtonColor!
+                                                      ? reportsNewTabColor
+                                                      : Color(0xff2663DB)),
+                                              child: Padding(
+                                                padding: EdgeInsets.all(6.0),
+                                                child: Center(
+                                                  child: Text(
+                                                    "Fuel Usage",
+                                                    style: TextStyle(
+                                                        color:
+                                                            fuelUsageButtonColor!
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                        fontSize: orientation ==
+                                                            Orientation
+                                                                .portrait
+                                                            ? displayWidth(
+                                                            context) *
+                                                            0.025
+                                                            : displayWidth(
+                                                            context) *
+                                                            0.02,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              for (int i = 0;
+                                                  i < durationGraphData.length;
+                                                  i++) {
+                                                for (int j = 0;
+                                                    j <
+                                                        durationGraphData[i]
+                                                            .tripsByDate!
+                                                            .length;
+                                                    j++) {
+                                                  durationGraphData[i]
+                                                      .tripsByDate![j]
+                                                      .dataLineColor = null;
+                                                }
+                                              }
+
+                                              reportsDataTableKey.currentState!
+                                                  .setState(() {
+                                                reportsDataTableKey
+                                                    .currentState!
+                                                    .selectedRowIndex = -1;
+
+                                                reportsDataTableKey
+                                                    .currentState!
+                                                    .isToolTipShown = false;
+                                              });
+
+                                              setState(() {
+                                                selectedButton = 'power usage';
+                                                isStickyYAxisVisible = false;
+                                                tripDurationButtonColor = false;
+                                                avgSpeedButtonColor = false;
+                                                fuelUsageButtonColor = false;
+                                                powerUsageButtonColor = true;
+                                              });
+                                              Future.delayed(
+                                                  Duration(seconds: 1), () {
+                                                if (_powerUsageSrollController
+                                                    .positions.isNotEmpty) {
+                                                  _powerUsageSrollController
+                                                      .animateTo(
+                                                    0.0,
+                                                    duration:
+                                                        Duration(seconds: 2),
+                                                    curve: Curves.fastOutSlowIn,
+                                                  );
+                                                }
+                                              });
+                                            },
+                                            child: Container(
+                                              width:
+                                                  displayWidth(context) * 0.22,
+                                              height: orientation ==
+                                                      Orientation.portrait
+                                                  ? displayHeight(context) *
+                                                      0.042
+                                                  : displayHeight(context) *
+                                                      0.099,
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  color: !powerUsageButtonColor!
+                                                      ? reportsNewTabColor
+                                                      : Color(0xff2663DB)),
+                                              child: Padding(
+                                                padding: EdgeInsets.all(6.0),
+                                                child: Center(
+                                                  child: Text(
+                                                    "Power Usage",
+                                                    style: TextStyle(
+                                                        color:
+                                                            powerUsageButtonColor!
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                        fontSize: orientation ==
+                                                            Orientation
+                                                                .portrait
+                                                            ? displayWidth(
+                                                            context) *
+                                                            0.025
+                                                            : displayWidth(
+                                                            context) *
+                                                            0.02,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: displayWidth(context) * 0.02,
                                       ),
                                     ],
                                   ),
                                 ),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                bottom: displayWidth(context) * 0.025,
-                              ),
-                              child: GestureDetector(
-                                  onTap:widget.onScreenShotCaptureCallback,
-                                  child: UserFeedback()
-                                      .getUserFeedback(context,orientation: orientation)),
-                            ),
-                          ],
-                        )
-                      : Container(),
-            ],
-          ),
-        ),
-  
-      );
-  })
-    );
+                                isReportDataLoading!
+                                    ? buildGraph(context, orientation)
+                                    : Center(
+                                        child: CircularProgressIndicator(
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                  blueColor),
+                                        ),
+                                      ),
+                                // table(context)!,
+
+                                ReportsDataTable(
+                                  tripList: tripList,
+                                  finalData: finalData,
+                                  onTapCallBack: scorllToParticularPostion,
+                                  barIndex: selectedBarIndex,
+                                  key: reportsDataTableKey,
+                                  orientation: orientation,
+                                ),
+
+                                SizedBox(
+                                  height: displayWidth(context) * 0.03,
+                                ),
+                                SizedBox(
+                                  height: orientation == Orientation.portrait
+                                      ? displayHeight(context) * 0.06
+                                      : displayHeight(context) * 0.15,
+                                  child: isExportBtnClick ?? false
+                                      ? Center(
+                                          child: CircularProgressIndicator(
+                                          color: blueColor,
+                                        ))
+                                      : InkWell(
+                                          onTap: () {
+                                            exportTripData();
+                                          },
+                                          child: Container(
+                                            height: orientation ==
+                                                    Orientation.portrait
+                                                ? displayHeight(context) * 0.06
+                                                : displayHeight(context) * 0.15,
+                                            width: orientation ==
+                                                    Orientation.portrait
+                                                ? displayWidth(context) * 0.8
+                                                : displayWidth(context) * 0.4,
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                color: blueColor),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  Icons.file_download_outlined,
+                                                  color: Colors.white,
+                                                  size: 25,
+                                                ),
+                                                SizedBox(
+                                                  width: displayWidth(context) *
+                                                      0.01,
+                                                ),
+                                                commonText(
+                                                  context: context,
+                                                  text:
+                                                      'Export Complete Report',
+                                                  fontWeight: FontWeight.w600,
+                                                  textColor: Colors.white,
+                                                  textSize: orientation ==
+                                                          Orientation.portrait
+                                                      ? displayWidth(context) *
+                                                          0.041
+                                                      : displayWidth(context) *
+                                                          0.02,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    bottom: displayWidth(context) * 0.025,
+                                  ),
+                                  child: GestureDetector(
+                                      onTap: widget.onScreenShotCaptureCallback,
+                                      child: UserFeedback().getUserFeedback(
+                                          context,
+                                          orientation: orientation)),
+                                ),
+                              ],
+                            )
+                          : Container(),
+                ],
+              ),
+            ),
+          );
+        }));
   }
 
   //Vessel Details in report screen
-  Widget vesselDetails(BuildContext context,Orientation orentation) {
+  Widget vesselDetails(BuildContext context, Orientation orentation) {
     return Container(
-    height:orentation==Orientation.portrait? displayHeight(context) * 0.14:displayHeight(context) * 0.30,
+      height: orentation == Orientation.portrait
+          ? displayHeight(context) * 0.14
+          : displayHeight(context) * 0.30,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(20)),
           color: selectDayBackgroundColor),
       child: Row(
         children: [
           Container(
-            alignment: Alignment.center,
-            margin: EdgeInsets.only(left: 8,top: 2),
-            height: orentation==Orientation.portrait?displayHeight(context) * 0.1:displayHeight(context) * 0.5,
-            width: displayWidth(context) * 0.19,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(18),
-                      image: imageUrl!=null&&imageUrl!.isNotEmpty?
-                      DecorationImage(  
+              alignment: Alignment.center,
+              margin: EdgeInsets.only(left: 8, top: 2),
+              height: orentation == Orientation.portrait
+                  ? displayHeight(context) * 0.1
+                  : displayHeight(context) * 0.5,
+              width: displayWidth(context) * 0.19,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                image: imageUrl != null && imageUrl!.isNotEmpty
+                    ? DecorationImage(
                         fit: BoxFit.cover,
-                          image:
-                          FileImage(
-                          File(imageUrl??''))):                     
-                            DecorationImage(
-                            fit: BoxFit.cover,
-                            image:AssetImage("assets/images/vessel_default_img.png",)
-                  ),
-                )),
+                        image: FileImage(File(imageUrl ?? '')))
+                    : DecorationImage(
+                        fit: BoxFit.cover,
+                        image: AssetImage(
+                          "assets/images/vessel_default_img.png",
+                        )),
+              )),
           SizedBox(
             width: displayWidth(context) * 0.04,
           ),
@@ -2377,8 +2557,9 @@ ReportsDataTable(tripList: tripList, finalData: finalData,onTapCallBack: scorllT
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                margin: EdgeInsets.only( left:orentation==Orientation.portrait? 10:27),
-                width: displayWidth(context)/2,
+                margin: EdgeInsets.only(
+                    left: orentation == Orientation.portrait ? 10 : 27),
+                width: displayWidth(context) / 2,
                 child: Text(
                   "$selectedVesselName",
                   maxLines: 1,
@@ -2435,11 +2616,13 @@ ReportsDataTable(tripList: tripList, finalData: finalData,onTapCallBack: scorllT
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          builtYear??'-',
+                          builtYear ?? '-',
                           style: TextStyle(
                               fontWeight: FontWeight.w700,
                               fontFamily: inter,
-                              fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.035:displayWidth(context) * 0.025,
+                              fontSize: orentation == Orientation.portrait
+                                  ? displayWidth(context) * 0.035
+                                  : displayWidth(context) * 0.02,
                               color: blutoothDialogTxtColor),
                         ),
                         SizedBox(
@@ -2451,7 +2634,9 @@ ReportsDataTable(tripList: tripList, finalData: finalData,onTapCallBack: scorllT
                           style: TextStyle(
                               fontWeight: FontWeight.w500,
                               fontFamily: inter,
-                              fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
+                              fontSize: orentation == Orientation.portrait
+                                  ? displayWidth(context) * 0.026
+                                  : displayWidth(context) * 0.018,
                               color: blutoothDialogTxtColor),
                         ),
                       ],
@@ -2462,17 +2647,22 @@ ReportsDataTable(tripList: tripList, finalData: finalData,onTapCallBack: scorllT
                   ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
+                        registerNumber == null
+                            ? '-'
+                            : registerNumber!.isEmpty
+                                ? '-'
+                                : registerNumber.toString(),
 
-
-                   // registerNumber==null&&  registerNumber!.isEmpty?'-' : registerNumber!,
+                        // registerNumber==null&&  registerNumber!.isEmpty?'-' : registerNumber!,
                         style: TextStyle(
                             fontWeight: FontWeight.w700,
                             fontFamily: inter,
-                            fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.035:displayWidth(context) * 0.025,
+                            fontSize: orentation == Orientation.portrait
+                                ? displayWidth(context) * 0.035
+                                : displayWidth(context) * 0.02,
                             color: blutoothDialogTxtColor),
                       ),
                       SizedBox(
@@ -2483,7 +2673,9 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
                         style: TextStyle(
                             fontWeight: FontWeight.w500,
                             fontFamily: inter,
-                            fontSize:orentation==Orientation.portrait? displayWidth(context) * 0.026:displayWidth(context) * 0.018,
+                            fontSize: orentation == Orientation.portrait
+                                ? displayWidth(context) * 0.026
+                                : displayWidth(context) * 0.018,
                             color: blutoothDialogTxtColor),
                       ),
                     ],
@@ -2497,10 +2689,11 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
     );
   }
 
-
   //Custom selection graph
-  buildGraph(BuildContext context,Orientation orientation) {
-    double graph_height=orientation==Orientation.portrait? displayHeight(context) * 0.4: displayHeight(context) * 0.95;
+  buildGraph(BuildContext context, Orientation orientation) {
+    double graph_height = orientation == Orientation.portrait
+        ? displayHeight(context) * 0.4
+        : displayHeight(context) * 0.95;
 
     Utils.customPrint('SELECTED BUTTON Text $selectedButton');
     CustomLogger().logWithFile(
@@ -2508,23 +2701,26 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
 
     switch (selectedButton.toLowerCase()) {
       case 'trip duration':
-        return tripDurationGraph(context,graph_height, orientation);
+        return tripDurationGraph(context, graph_height, orientation);
       case 'avg speed':
-        return avgSpeedGraph(context,graph_height, orientation);
+        return avgSpeedGraph(context, graph_height, orientation);
       case 'fuel usage':
-        return fuelUsageGraph(context,graph_height, orientation);
+        return fuelUsageGraph(context, graph_height, orientation);
       case 'power usage':
-        return powerUsageGraph(context,graph_height, orientation);
+        return powerUsageGraph(context, graph_height, orientation);
       default:
         return Container();
     }
   }
 
   //Trip duration graph
-  Widget tripDurationGraph(BuildContext context, double graph_height, Orientation orientation) {
-     tooltipBehaviorDurationGraph = TooltipBehavior(
+  Widget tripDurationGraph(
+      BuildContext context, double graph_height, Orientation orientation) {
+    tooltipBehaviorDurationGraph = TooltipBehavior(
       enable: reportsDataTableKey.currentState?.isToolTipShown,
-      activationMode: reportsDataTableKey.currentState?.isToolTipShown==null?ActivationMode.singleTap: tooltipactivationMode,
+      activationMode: reportsDataTableKey.currentState?.isToolTipShown == null
+          ? ActivationMode.singleTap
+          : tooltipactivationMode,
       shouldAlwaysShow: true,
       color: commonBackgroundColor,
       borderWidth: 1,
@@ -2533,7 +2729,9 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
         CartesianChartPoint currentPoint = point;
         final String yValue = currentPoint.y.toString();
         return Container(
-          width:orientation==Orientation.portrait? displayWidth(context) * 0.4:displayWidth(context)/4.2,
+          width: orientation == Orientation.portrait
+              ? displayWidth(context) * 0.4
+              : displayWidth(context) / 4.2,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20),
@@ -2572,33 +2770,32 @@ registerNumber==null?'-':registerNumber!.isEmpty?'-':registerNumber.toString(),
                         color: Colors.white,
                       )),
                   TextButton(
-                    onPressed: ()async {
+                    onPressed: () async {
                       Utils.customPrint("tapped on go to report button");
                       CustomLogger().logWithFile(Level.info,
                           "Navigating user into Trip Analytics Screen -> $page");
- bool isTripExists= await _databaseService.checkIfTripExist(selectedIndex);
- if(isTripExists){
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => NewTripAnalyticsScreen(
-                                    tripId: selectedIndex,
-                                    vesselName: selectedVesselName,
-                                    // avgInfo: reportModel!.data!.avgInfo,
-                                    vesselId: selectedVessel,
-                                    tripIsRunningOrNot: false,
-                                    calledFrom: 'Report',
-                                    // vessel: getVesselById[0]
-                                  )));
-
- }else{
-Utils.showSnackBar(context,
-            scaffoldKey: scaffoldKey, message: 'Click on sync from cloud to reload your trips data to view trip analytics screen'); }
-
+                      bool isTripExists = await _databaseService
+                          .checkIfTripExist(selectedIndex);
+                      if (isTripExists) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => NewTripAnalyticsScreen(
+                                      tripId: selectedIndex,
+                                      vesselName: selectedVesselName,
+                                      // avgInfo: reportModel!.data!.avgInfo,
+                                      vesselId: selectedVessel,
+                                      tripIsRunningOrNot: false,
+                                      calledFrom: 'Report',
+                                      // vessel: getVesselById[0]
+                                    )));
+                      } else {
+                        Utils.showSnackBar(context,
+                            scaffoldKey: scaffoldKey,
+                            message:
+                                'Click on sync from cloud to reload your trips data to view trip analytics screen');
+                      }
                     },
-
-
-
                     child: Text('Go to Trip Report',
                         style: TextStyle(
                           fontSize: 12,
@@ -2610,21 +2807,23 @@ Utils.showSnackBar(context,
             ],
           ),
         );
-     },
+      },
     );
-    return
-     Stack(
-       children: [
-         SingleChildScrollView(
+    return Stack(
+      children: [
+        SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           controller: _tripDurationSrollController,
           child: SizedBox(
               width: durationColumnSeriesData.length > 3
-                  ?orientation==Orientation.portrait? (1.5 * 100 * durationColumnSeriesData.length):durationColumnSeriesData.length > 4?(1.5 * 100 * durationColumnSeriesData.length):displayWidth(context)
+                  ? orientation == Orientation.portrait
+                      ? (1.5 * 100 * durationColumnSeriesData.length)
+                      : durationColumnSeriesData.length > 4
+                          ? (1.5 * 100 * durationColumnSeriesData.length)
+                          : displayWidth(context)
                   : displayWidth(context),
               height: graph_height,
               child: SfCartesianChart(
-              
                 tooltipBehavior: tooltipBehaviorDurationGraph,
                 enableSideBySideSeriesPlacement: true,
                 // zoomPanBehavior: zoomPanBehavior,
@@ -2641,7 +2840,7 @@ Utils.showSnackBar(context,
                       color: Colors.black,
                       fontSize: orientation == Orientation.portrait
                           ? displayWidth(context) * 0.034
-                          : displayWidth(context) * 0.022,
+                          : displayWidth(context) * 0.018,
                       fontWeight: FontWeight.w500,
                       fontFamily: poppins,
                     )),
@@ -2653,7 +2852,9 @@ Utils.showSnackBar(context,
                         text: 'Time ($minutes)',
                         textStyle: TextStyle(
                           color: Colors.black,
-                          fontSize: displayWidth(context) * 0.028,
+                          fontSize: orientation == Orientation.portrait
+                              ? displayWidth(context) * 0.028
+                              : displayWidth(context) * 0.018,
                           fontWeight: FontWeight.w500,
                           fontFamily: poppins,
                         )),
@@ -2669,14 +2870,18 @@ Utils.showSnackBar(context,
                       String value = axisLabelRenderArgs.text.length == 1
                           ? '00${axisLabelRenderArgs.text}'
                           : axisLabelRenderArgs.text.length == 2
-                          ? '0${axisLabelRenderArgs.text}'
-                          : axisLabelRenderArgs.text;
-                      return ChartAxisLabel(value, TextStyle(
-                        color: Colors.black,
-                        fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.034:displayWidth(context) * 0.025,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: poppins,
-                      ));
+                              ? '0${axisLabelRenderArgs.text}'
+                              : axisLabelRenderArgs.text;
+                      return ChartAxisLabel(
+                          value,
+                          TextStyle(
+                            color: Colors.black,
+                            fontSize: orientation == Orientation.portrait
+                                ? displayWidth(context) * 0.034
+                                : displayWidth(context) * 0.018,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: poppins,
+                          ));
                     },
                     plotBands: [
                       PlotBand(
@@ -2689,20 +2894,19 @@ Utils.showSnackBar(context,
                           shouldRenderAboveSeries: true,
                           textStyle: TextStyle(
                             color: Colors.black,
-                            fontSize: displayWidth(context) * 0.028,
+                            fontSize: orientation == Orientation.portrait
+                                ? displayWidth(context) * 0.028
+                                : displayWidth(context) * 0.018,
                             fontWeight: FontWeight.w500,
                             fontFamily: poppins,
                           ),
                           dashArray: <double>[4, 8],
                           horizontalTextAlignment: TextAnchor.start),
-                    ]
-                    
-                    ),
-                    
+                    ]),
+
                 series: durationColumnSeriesData,
               )),
         ),
-
         Positioned(
           top: 0,
           bottom: 0,
@@ -2713,18 +2917,17 @@ Utils.showSnackBar(context,
                   width: orientation == Orientation.portrait
                       ? displayWidth(context) * 0.198
                       : displayWidth(context) * 0.135,
-                    // ? displayWidth(context) * 0.16
-                     // ? tempDurationColumnSeriesData.length > 10 ? displayWidth(context) * 0.168 : displayWidth(context) * 0.20
-                      //: tempDurationColumnSeriesData.length > 10 ? displayWidth(context) * 0.14 : displayWidth(context) * 0.1450,
+                  // ? displayWidth(context) * 0.16
+                  // ? tempDurationColumnSeriesData.length > 10 ? displayWidth(context) * 0.168 : displayWidth(context) * 0.20
+                  //: tempDurationColumnSeriesData.length > 10 ? displayWidth(context) * 0.14 : displayWidth(context) * 0.1450,
                   height: graph_height,
                   color: Colors.white,
                   child: SfCartesianChart(
-                    
                     //plotAreaBorderWidth: 0,
                     tooltipBehavior: tooltipBehaviorDurationGraph,
-                   // enableSideBySideSeriesPlacement: true,
+                    // enableSideBySideSeriesPlacement: true,
                     primaryXAxis: CategoryAxis(
-                      //axisLine: AxisLine(width: 0),
+                        //axisLine: AxisLine(width: 0),
                         isVisible: true,
                         //labelPlacement: LabelPlacement.betweenTicks,
                         // Or LabelPlacement.onTicks
@@ -2734,7 +2937,7 @@ Utils.showSnackBar(context,
                           color: Colors.black,
                           fontSize: orientation == Orientation.portrait
                               ? displayWidth(context) * 0.034
-                              : displayWidth(context) * 0.022,
+                              : displayWidth(context) * 0.018,
                           fontWeight: FontWeight.w500,
                           fontFamily: poppins,
                         )),
@@ -2744,46 +2947,45 @@ Utils.showSnackBar(context,
                             text: 'Time ($minutes)',
                             textStyle: TextStyle(
                               color: Colors.black,
-                              fontSize: displayWidth(context) * 0.028,
+                              fontSize: orientation == Orientation.portrait
+                                  ? displayWidth(context) * 0.028
+                                  : displayWidth(context) * 0.018,
                               fontWeight: FontWeight.w500,
                               fontFamily: poppins,
                             )),
                         //majorTickLines: MajorTickLines(width: 0),
                         //minorTickLines: MinorTickLines(width: 0),
-                      //majorGridLines: MajorGridLines(width: 0),
-                      //minorGridLines: MinorGridLines(width: 0),
+                        //majorGridLines: MajorGridLines(width: 0),
+                        //minorGridLines: MinorGridLines(width: 0),
                         labelStyle: TextStyle(
                           color: Colors.black,
                           fontSize: displayWidth(context) * 0.034,
                           fontWeight: FontWeight.w500,
                           fontFamily: poppins,
                         ),
-                      axisLabelFormatter: (axisLabelRenderArgs) {
-                        String value = axisLabelRenderArgs.text.length == 1
-                            ? '00${axisLabelRenderArgs.text}'
-                            : axisLabelRenderArgs.text.length == 2
-                            ? '0${axisLabelRenderArgs.text}'
-                            : axisLabelRenderArgs.text;
-                        return ChartAxisLabel(value, TextStyle(
-                          color: Colors.black,
-                        fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.034:displayWidth(context) * 0.025,
-                          fontWeight: FontWeight.w500,
-                          fontFamily: poppins,
-                        ));
-                      },
+                        axisLabelFormatter: (axisLabelRenderArgs) {
+                          String value = axisLabelRenderArgs.text.length == 1
+                              ? '00${axisLabelRenderArgs.text}'
+                              : axisLabelRenderArgs.text.length == 2
+                                  ? '0${axisLabelRenderArgs.text}'
+                                  : axisLabelRenderArgs.text;
+                          return ChartAxisLabel(
+                              value,
+                              TextStyle(
+                                color: Colors.black,
+                                fontSize: orientation == Orientation.portrait
+                                    ? displayWidth(context) * 0.034
+                                    : displayWidth(context) * 0.018,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: poppins,
+                              ));
+                        },
                         plotBands: <PlotBand>[]),
                     series: tempDurationColumnSeriesData,
-
-),    
-
-
-              ),
-
-              
-             
-          
-    ),
-         /*Positioned(
+                  ),
+                ),
+        ),
+        /*Positioned(
            top: 0,
            bottom: 0,
            left: 0,
@@ -2833,15 +3035,18 @@ Utils.showSnackBar(context,
                )
            ),
          ),*/
-       ],
-     );
+      ],
+    );
   }
 
   // Average speed graph in reports
-  Widget avgSpeedGraph(BuildContext context, double graph_height, Orientation orientation) {
-     avgSpeedToolTip = TooltipBehavior(
+  Widget avgSpeedGraph(
+      BuildContext context, double graph_height, Orientation orientation) {
+    avgSpeedToolTip = TooltipBehavior(
       enable: reportsDataTableKey.currentState?.isToolTipShown,
-      activationMode: reportsDataTableKey.currentState?.isToolTipShown==null?ActivationMode.singleTap: tooltipactivationMode,
+      activationMode: reportsDataTableKey.currentState?.isToolTipShown == null
+          ? ActivationMode.singleTap
+          : tooltipactivationMode,
       shouldAlwaysShow: true,
       color: commonBackgroundColor,
       borderWidth: 1,
@@ -2854,7 +3059,9 @@ Utils.showSnackBar(context,
         final double? yValue = currentPoint.y;
 
         return Container(
-          width:orientation==Orientation.portrait? displayWidth(context) * 0.4:displayWidth(context)/4.2,
+          width: orientation == Orientation.portrait
+              ? displayWidth(context) * 0.4
+              : displayWidth(context) / 4.2,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20),
@@ -2890,34 +3097,33 @@ Utils.showSnackBar(context,
                 ],
               ),
               TextButton(
-                onPressed: () async{
+                onPressed: () async {
                   Utils.customPrint("tapped on go to report button");
                   CustomLogger().logWithFile(Level.info,
                       "Navigating user into Trip Analytics Screen -> $page");
 
- bool isTripExists= await _databaseService.checkIfTripExist(selectedIndex);
- if(isTripExists){
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => NewTripAnalyticsScreen(
-                                    tripId: selectedIndex,
-                                    vesselName: selectedVesselName,
-                                    // avgInfo: reportModel!.data!.avgInfo,
-                                    vesselId: selectedVessel,
-                                    tripIsRunningOrNot: false,
-                                    calledFrom: 'Report',
-                                    // vessel: getVesselById[0]
-                                  )));
-
- }else{
-Utils.showSnackBar(context,
-            scaffoldKey: scaffoldKey, message: 'Click on sync from cloud to reload your trips data to view trip analytics screen'); }
-
-                    },
-
-
-                
+                  bool isTripExists =
+                      await _databaseService.checkIfTripExist(selectedIndex);
+                  if (isTripExists) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => NewTripAnalyticsScreen(
+                                  tripId: selectedIndex,
+                                  vesselName: selectedVesselName,
+                                  // avgInfo: reportModel!.data!.avgInfo,
+                                  vesselId: selectedVessel,
+                                  tripIsRunningOrNot: false,
+                                  calledFrom: 'Report',
+                                  // vessel: getVesselById[0]
+                                )));
+                  } else {
+                    Utils.showSnackBar(context,
+                        scaffoldKey: scaffoldKey,
+                        message:
+                            'Click on sync from cloud to reload your trips data to view trip analytics screen');
+                  }
+                },
                 child: Text('Go to Trip Report',
                     style: TextStyle(
                       fontSize: 12,
@@ -2936,9 +3142,13 @@ Utils.showSnackBar(context,
           controller: _avgSpeedSrollController,
           scrollDirection: Axis.horizontal,
           child: SizedBox(
-              width: avgSpeedColumnSeriesData.length > 3
-                  ?orientation==Orientation.portrait? (1.5 * 100 * avgSpeedColumnSeriesData.length):avgSpeedColumnSeriesData.length > 4?(1.5 * 100 * avgSpeedColumnSeriesData.length):displayWidth(context)
-                  : displayWidth(context),
+            width: avgSpeedColumnSeriesData.length > 3
+                ? orientation == Orientation.portrait
+                    ? (1.5 * 100 * avgSpeedColumnSeriesData.length)
+                    : avgSpeedColumnSeriesData.length > 4
+                        ? (1.5 * 100 * avgSpeedColumnSeriesData.length)
+                        : displayWidth(context)
+                : displayWidth(context),
             height: graph_height,
             child: SfCartesianChart(
               // palette: barsColor,
@@ -2949,7 +3159,9 @@ Utils.showSnackBar(context,
                   labelAlignment: LabelAlignment.center,
                   labelStyle: TextStyle(
                     color: Colors.black,
-                    fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.034: displayWidth(context) * 0.022,
+                    fontSize: orientation == Orientation.portrait
+                        ? displayWidth(context) * 0.034
+                        : displayWidth(context) * 0.018,
                     fontWeight: FontWeight.w500,
                     fontFamily: poppins,
                   )),
@@ -2960,7 +3172,9 @@ Utils.showSnackBar(context,
                       text: 'Speed ($knotReport)',
                       textStyle: TextStyle(
                         color: Colors.black,
-                        fontSize: displayWidth(context) * 0.028,
+                        fontSize: orientation == Orientation.portrait
+                            ? displayWidth(context) * 0.028
+                        : displayWidth(context) * 0.018,
                         fontWeight: FontWeight.w500,
                         fontFamily: poppins,
                       )),
@@ -2974,14 +3188,18 @@ Utils.showSnackBar(context,
                     String value = axisLabelRenderArgs.text.length == 1
                         ? '00${axisLabelRenderArgs.text}'
                         : axisLabelRenderArgs.text.length == 2
-                        ? '0${axisLabelRenderArgs.text}'
-                        : axisLabelRenderArgs.text;
-                    return ChartAxisLabel(value, TextStyle(
-                      color: Colors.black,
-                        fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.034:displayWidth(context) * 0.025,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: poppins,
-                    ));
+                            ? '0${axisLabelRenderArgs.text}'
+                            : axisLabelRenderArgs.text;
+                    return ChartAxisLabel(
+                        value,
+                        TextStyle(
+                          color: Colors.black,
+                          fontSize: orientation == Orientation.portrait
+                              ? displayWidth(context) * 0.034
+                              : displayWidth(context) * 0.018,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: poppins,
+                        ));
                   },
                   plotBands: <PlotBand>[
                     PlotBand(
@@ -2994,15 +3212,16 @@ Utils.showSnackBar(context,
                       shouldRenderAboveSeries: true,
                       textStyle: TextStyle(
                         color: Colors.black,
-                        fontSize: displayWidth(context) * 0.028,
+                        fontSize: orientation == Orientation.portrait
+                            ? displayWidth(context) * 0.028
+                            : displayWidth(context) * 0.018,
                         fontWeight: FontWeight.w500,
                         fontFamily: poppins,
                       ),
                       dashArray: <double>[4, 8],
                       horizontalTextAlignment: TextAnchor.start,
                     ),
-                  ]
-                  ),
+                  ]),
               series: avgSpeedColumnSeriesData,
             ),
           ),
@@ -3011,7 +3230,8 @@ Utils.showSnackBar(context,
           top: 0,
           bottom: 0,
           left: 0,
-          child: !isStickyYAxisVisible ? SizedBox()
+          child: !isStickyYAxisVisible
+              ? SizedBox()
               : Container(
                   width: orientation == Orientation.portrait
                       ? displayWidth(context) * 0.198
@@ -3029,18 +3249,20 @@ Utils.showSnackBar(context,
                           color: Colors.black,
                           fontSize: orientation == Orientation.portrait
                               ? displayWidth(context) * 0.034
-                              : displayWidth(context) * 0.022,
+                              : displayWidth(context) * 0.018,
                           fontWeight: FontWeight.w500,
                           fontFamily: poppins,
                         )),
                     primaryYAxis: NumericAxis(
                         // interval: 5,
-                        axisLine: AxisLine(width:1),
+                        axisLine: AxisLine(width: 1),
                         title: AxisTitle(
                             text: 'Speed ($knotReport)',
                             textStyle: TextStyle(
                               color: Colors.black,
-                              fontSize: displayWidth(context) * 0.028,
+                              fontSize: orientation == Orientation.portrait
+                                  ? displayWidth(context) * 0.028
+                                  : displayWidth(context) * 0.018,
                               fontWeight: FontWeight.w500,
                               fontFamily: poppins,
                             )),
@@ -3054,30 +3276,36 @@ Utils.showSnackBar(context,
                           String value = axisLabelRenderArgs.text.length == 1
                               ? '00${axisLabelRenderArgs.text}'
                               : axisLabelRenderArgs.text.length == 2
-                              ? '0${axisLabelRenderArgs.text}'
-                              : axisLabelRenderArgs.text;
-                          return ChartAxisLabel(value, TextStyle(
-                            color: Colors.black,
-                        fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.034:displayWidth(context) * 0.025,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: poppins,
-                          ));
+                                  ? '0${axisLabelRenderArgs.text}'
+                                  : axisLabelRenderArgs.text;
+                          return ChartAxisLabel(
+                              value,
+                              TextStyle(
+                                color: Colors.black,
+                                fontSize: orientation == Orientation.portrait
+                                    ? displayWidth(context) * 0.034
+                                    : displayWidth(context) * 0.018,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: poppins,
+                              ));
                         },
                         plotBands: <PlotBand>[]),
                     series: tempAvgSpeedColumnSeriesData,
                   ),
                 ),
-              ),
-
+        ),
       ],
     );
   }
 
   // Fuel usage graph on reports
-  Widget fuelUsageGraph(BuildContext context, double graph_height, Orientation orientation) {
-     fuelUsageToolTip = TooltipBehavior(
+  Widget fuelUsageGraph(
+      BuildContext context, double graph_height, Orientation orientation) {
+    fuelUsageToolTip = TooltipBehavior(
       enable: reportsDataTableKey.currentState?.isToolTipShown,
-      activationMode: reportsDataTableKey.currentState?.isToolTipShown==null?ActivationMode.singleTap: tooltipactivationMode,
+      activationMode: reportsDataTableKey.currentState?.isToolTipShown == null
+          ? ActivationMode.singleTap
+          : tooltipactivationMode,
       shouldAlwaysShow: true,
       color: commonBackgroundColor,
       borderWidth: 1,
@@ -3091,7 +3319,9 @@ Utils.showSnackBar(context,
             .logWithFile(Level.info, "fuel y data is: ${yValue} -> $page");
 
         return Container(
-          width:orientation==Orientation.portrait? displayWidth(context) * 0.4:displayWidth(context)/4.2,
+          width: orientation == Orientation.portrait
+              ? displayWidth(context) * 0.4
+              : displayWidth(context) / 4.2,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20),
@@ -3127,34 +3357,33 @@ Utils.showSnackBar(context,
                 ],
               ),
               TextButton(
-                onPressed: ()async {
+                onPressed: () async {
                   Utils.customPrint("tapped on go to report button");
                   CustomLogger().logWithFile(Level.info,
                       "Navigating user into Trip Analytics Screen -> $page");
 
- bool isTripExists= await _databaseService.checkIfTripExist(selectedIndex);
- if(isTripExists){
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => NewTripAnalyticsScreen(
-                                    tripId: selectedIndex,
-                                    vesselName: selectedVesselName,
-                                    // avgInfo: reportModel!.data!.avgInfo,
-                                    vesselId: selectedVessel,
-                                    tripIsRunningOrNot: false,
-                                    calledFrom: 'Report',
-                                    // vessel: getVesselById[0]
-                                  )));
-
- }else{
-Utils.showSnackBar(context,
-            scaffoldKey: scaffoldKey, message: 'Click on sync from cloud to reload your trips data to view trip analytics screen'); }
-
-                    },
-
-
-                
+                  bool isTripExists =
+                      await _databaseService.checkIfTripExist(selectedIndex);
+                  if (isTripExists) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => NewTripAnalyticsScreen(
+                                  tripId: selectedIndex,
+                                  vesselName: selectedVesselName,
+                                  // avgInfo: reportModel!.data!.avgInfo,
+                                  vesselId: selectedVessel,
+                                  tripIsRunningOrNot: false,
+                                  calledFrom: 'Report',
+                                  // vessel: getVesselById[0]
+                                )));
+                  } else {
+                    Utils.showSnackBar(context,
+                        scaffoldKey: scaffoldKey,
+                        message:
+                            'Click on sync from cloud to reload your trips data to view trip analytics screen');
+                  }
+                },
                 child: Text('Go to Trip Report',
                     style: TextStyle(
                       fontSize: 12,
@@ -3167,71 +3396,175 @@ Utils.showSnackBar(context,
       },
     );
 
-    return SingleChildScrollView(
-      controller: _fuelUsageSrollController,
-      scrollDirection: Axis.horizontal,
-      child: SizedBox(
-              width: fuelUsageColumnSeriesData.length > 3
-                  ?orientation==Orientation.portrait? (1.5 * 100 * fuelUsageColumnSeriesData.length):fuelUsageColumnSeriesData.length > 4?(1.5 * 100 * fuelUsageColumnSeriesData.length):displayWidth(context)
-                  : displayWidth(context),
-        height: graph_height,
-        child: SfCartesianChart(
-          tooltipBehavior: fuelUsageToolTip,
-          primaryXAxis: CategoryAxis(
-              autoScrollingMode: AutoScrollingMode.end,
-              labelAlignment: LabelAlignment.center,
-              labelStyle: TextStyle(
-                color: Colors.black,
-                    fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.034: displayWidth(context) * 0.022,
-                fontWeight: FontWeight.w500,
-                fontFamily: poppins,
-              )),
-          primaryYAxis: NumericAxis(
-              labelFormat: '{value}',
-              
-              axisLine: AxisLine(width: 2),
-              title: AxisTitle(
-                  text: 'Volume ($literReport)',
-                  textStyle: TextStyle(
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          controller: _fuelUsageSrollController,
+          scrollDirection: Axis.horizontal,
+          physics: fuelUsageColumnSeriesData.isEmpty
+              ? NeverScrollableScrollPhysics()
+              : AlwaysScrollableScrollPhysics(),
+          child: SizedBox(
+            width: fuelUsageColumnSeriesData.length > 3
+                ? orientation == Orientation.portrait
+                    ? (1.5 * 100 * fuelUsageColumnSeriesData.length)
+                    : fuelUsageColumnSeriesData.length > 4
+                        ? (1.5 * 100 * fuelUsageColumnSeriesData.length)
+                        : displayWidth(context)
+                : displayWidth(context),
+            height: graph_height,
+            child: SfCartesianChart(
+              tooltipBehavior: fuelUsageToolTip,
+              primaryXAxis: CategoryAxis(
+                  autoScrollingMode: AutoScrollingMode.end,
+                  labelAlignment: LabelAlignment.center,
+                  labelStyle: TextStyle(
                     color: Colors.black,
-                    fontSize: displayWidth(context) * 0.028,
+                    fontSize: orientation == Orientation.portrait
+                        ? displayWidth(context) * 0.034
+                        : displayWidth(context) * 0.018,
                     fontWeight: FontWeight.w500,
                     fontFamily: poppins,
                   )),
-              labelStyle: TextStyle(
-                color: Colors.black,
-                fontSize: displayWidth(context) * 0.034,
-                fontWeight: FontWeight.w500,
-                fontFamily: poppins,
-              ),
-              plotBands: [
-                PlotBand(
-                    text: 'avg ${avgFuelConsumption}$liters',
-                    isVisible: true,
-                    start: avgFuelConsumption,
-                    end: avgFuelConsumption,
-                    borderWidth: 2,
-                    borderColor: Colors.grey,
-                    textStyle: TextStyle(
-                      color: Colors.black,
-                      fontSize: displayWidth(context) * 0.028,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: poppins,
-                    ),
-                    dashArray: <double>[4, 8],
-                    horizontalTextAlignment: TextAnchor.start),
-              ]),
-          series: fuelUsageColumnSeriesData,
+              primaryYAxis: NumericAxis(
+                  labelFormat: '{value}',
+                  axisLine: AxisLine(width: 2),
+                  title: AxisTitle(
+                      text: 'Volume ($literReport)',
+                      textStyle: TextStyle(
+                        color: Colors.black,
+                        fontSize: orientation == Orientation.portrait
+                            ? displayWidth(context) * 0.028
+                            : displayWidth(context) * 0.018,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: poppins,
+                      )),
+                  labelStyle: TextStyle(
+                    color: Colors.black,
+                    fontSize: orientation == Orientation.portrait
+                        ? displayWidth(context) * 0.028
+                        : displayWidth(context) * 0.018,
+                    fontWeight: FontWeight.w500,
+                    fontFamily: poppins,
+                  ),
+                  axisLabelFormatter: (axisLabelRenderArgs) {
+                    String value = axisLabelRenderArgs.text.length == 1
+                        ? '00${axisLabelRenderArgs.text}'
+                        : axisLabelRenderArgs.text.length == 2
+                            ? '0${axisLabelRenderArgs.text}'
+                            : axisLabelRenderArgs.text;
+                    return ChartAxisLabel(
+                        value,
+                        TextStyle(
+                          color: Colors.black,
+                          fontSize: orientation == Orientation.portrait
+                              ? displayWidth(context) * 0.034
+                              : displayWidth(context) * 0.018,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: poppins,
+                        ));
+                  },
+                  plotBands: [
+                    PlotBand(
+                        text: 'avg ${avgFuelConsumption}$liters',
+                        isVisible: true,
+                        start: avgFuelConsumption,
+                        end: avgFuelConsumption,
+                        borderWidth: 2,
+                        borderColor: Colors.grey,
+                        textStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: orientation == Orientation.portrait
+                              ? displayWidth(context) * 0.028
+                              : displayWidth(context) * 0.018,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: poppins,
+                        ),
+                        dashArray: <double>[4, 8],
+                        horizontalTextAlignment: TextAnchor.start),
+                  ]),
+              series: fuelUsageColumnSeriesData,
+            ),
+          ),
         ),
-      ),
+        Positioned(
+          top: 0,
+          bottom: 0,
+          left: 0,
+          child: !isStickyYAxisVisible
+              ? SizedBox()
+              : Container(
+                  width: orientation == Orientation.portrait
+                      ? displayWidth(context) * 0.198
+                      : displayWidth(context) * 0.135,
+                  color: Colors.white,
+                  height: graph_height,
+                  child: SfCartesianChart(
+                    tooltipBehavior: fuelUsageToolTip,
+                    primaryXAxis: CategoryAxis(
+                        autoScrollingMode: AutoScrollingMode.end,
+                        labelAlignment: LabelAlignment.center,
+                        labelStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: orientation == Orientation.portrait
+                              ? displayWidth(context) * 0.034
+                              : displayWidth(context) * 0.018,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: poppins,
+                        )),
+                    primaryYAxis: NumericAxis(
+                        labelFormat: '{value}',
+                        axisLine: AxisLine(width: 2),
+                        title: AxisTitle(
+                            text: 'Volume ($literReport)',
+                            textStyle: TextStyle(
+                              color: Colors.black,
+                              fontSize: orientation == Orientation.portrait
+                                  ? displayWidth(context) * 0.028
+                                  : displayWidth(context) * 0.018,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: poppins,
+                            )),
+                        labelStyle: TextStyle(
+                          color: Colors.black,
+                          fontSize: displayWidth(context) * 0.034,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: poppins,
+                        ),
+                        axisLabelFormatter: (axisLabelRenderArgs) {
+                          String value = axisLabelRenderArgs.text.length == 1
+                              ? '00${axisLabelRenderArgs.text}'
+                              : axisLabelRenderArgs.text.length == 2
+                                  ? '0${axisLabelRenderArgs.text}'
+                                  : axisLabelRenderArgs.text;
+                          return ChartAxisLabel(
+                              value,
+                              TextStyle(
+                                color: Colors.black,
+                                fontSize: orientation == Orientation.portrait
+                                    ? displayWidth(context) * 0.034
+                                    : displayWidth(context) * 0.018,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: poppins,
+                              ));
+                        },
+                        plotBands: []),
+                    series: tempFuelUsageColumnSeriesData,
+                  ),
+                ),
+        ),
+      ],
     );
   }
 
   // Power usage graph on reports
-  Widget powerUsageGraph(BuildContext context, double graph_height, Orientation orientation) {
-     powerUsageToolTip = TooltipBehavior(
+  Widget powerUsageGraph(
+      BuildContext context, double graph_height, Orientation orientation) {
+    powerUsageToolTip = TooltipBehavior(
       enable: reportsDataTableKey.currentState?.isToolTipShown,
-      activationMode: reportsDataTableKey.currentState?.isToolTipShown==null?ActivationMode.singleTap: tooltipactivationMode,
+      activationMode: reportsDataTableKey.currentState?.isToolTipShown == null
+          ? ActivationMode.singleTap
+          : tooltipactivationMode,
       shouldAlwaysShow: true,
       color: commonBackgroundColor,
       borderWidth: 1,
@@ -3245,7 +3578,9 @@ Utils.showSnackBar(context,
             .logWithFile(Level.info, "power y data is: ${yValue} -> $page");
 
         return Container(
-          width:orientation==Orientation.portrait? displayWidth(context) * 0.4:displayWidth(context)/4.2,
+          width: orientation == Orientation.portrait
+              ? displayWidth(context) * 0.4
+              : displayWidth(context) / 4.2,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20),
@@ -3281,35 +3616,33 @@ Utils.showSnackBar(context,
                 ],
               ),
               TextButton(
-                onPressed: () async{
+                onPressed: () async {
                   Utils.customPrint("tapped on go to report button");
                   CustomLogger().logWithFile(Level.info,
                       "Navigating user into Trip Analytics Screen -> $page");
-print('the selected index was---'+selectedIndex.toString());
- bool isTripExists= await _databaseService.checkIfTripExist(selectedIndex);
- if(isTripExists){
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => NewTripAnalyticsScreen(
-                                    tripId: selectedIndex,
-                                    vesselName: selectedVesselName,
-                                    // avgInfo: reportModel!.data!.avgInfo,
-                                    vesselId: selectedVessel,
-                                    tripIsRunningOrNot: false,
-                                    calledFrom: 'Report',
-                                    // vessel: getVesselById[0]
-                                  )));
-
- }else{
-Utils.showSnackBar(context,
-            scaffoldKey: scaffoldKey, message: 'Click on sync from cloud to reload your trips data to view trip analytics screen'); }
-
-                    },
-
-
-
-                
+                  print('the selected index was---' + selectedIndex.toString());
+                  bool isTripExists =
+                      await _databaseService.checkIfTripExist(selectedIndex);
+                  if (isTripExists) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => NewTripAnalyticsScreen(
+                                  tripId: selectedIndex,
+                                  vesselName: selectedVesselName,
+                                  // avgInfo: reportModel!.data!.avgInfo,
+                                  vesselId: selectedVessel,
+                                  tripIsRunningOrNot: false,
+                                  calledFrom: 'Report',
+                                  // vessel: getVesselById[0]
+                                )));
+                  } else {
+                    Utils.showSnackBar(context,
+                        scaffoldKey: scaffoldKey,
+                        message:
+                            'Click on sync from cloud to reload your trips data to view trip analytics screen');
+                  }
+                },
                 child: Text('Go to Trip Report',
                     style: TextStyle(
                       fontSize: 12,
@@ -3325,10 +3658,17 @@ Utils.showSnackBar(context,
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       controller: _powerUsageSrollController,
+      physics: powerUsageColumnSeriesData.isEmpty
+          ? NeverScrollableScrollPhysics()
+          : AlwaysScrollableScrollPhysics(),
       child: SizedBox(
-              width: powerUsageColumnSeriesData.length > 3
-                  ?orientation==Orientation.portrait? (1.5 * 100 * powerUsageColumnSeriesData.length):powerUsageColumnSeriesData.length > 4?(1.5 * 100 * powerUsageColumnSeriesData.length):displayWidth(context)
-                  : displayWidth(context),
+        width: powerUsageColumnSeriesData.length > 3
+            ? orientation == Orientation.portrait
+                ? (1.5 * 100 * powerUsageColumnSeriesData.length)
+                : powerUsageColumnSeriesData.length > 4
+                    ? (1.5 * 100 * powerUsageColumnSeriesData.length)
+                    : displayWidth(context)
+            : displayWidth(context),
         height: graph_height,
         child: SfCartesianChart(
           tooltipBehavior: powerUsageToolTip,
@@ -3337,7 +3677,9 @@ Utils.showSnackBar(context,
               labelAlignment: LabelAlignment.center,
               labelStyle: TextStyle(
                 color: Colors.black,
-                    fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.034: displayWidth(context) * 0.022,
+                fontSize: orientation == Orientation.portrait
+                    ? displayWidth(context) * 0.034
+                    : displayWidth(context) * 0.018,
                 fontWeight: FontWeight.w500,
                 fontFamily: poppins,
               )),
@@ -3347,7 +3689,9 @@ Utils.showSnackBar(context,
                   text: 'Power ($watsReport)',
                   textStyle: TextStyle(
                     color: Colors.black,
-                    fontSize: displayWidth(context) * 0.028,
+                    fontSize: orientation == Orientation.portrait
+                        ? displayWidth(context) * 0.028
+                        : displayWidth(context) * 0.018,
                     fontWeight: FontWeight.w500,
                     fontFamily: poppins,
                   )),
@@ -3357,6 +3701,23 @@ Utils.showSnackBar(context,
                 fontWeight: FontWeight.w500,
                 fontFamily: poppins,
               ),
+              axisLabelFormatter: (axisLabelRenderArgs) {
+                String value = axisLabelRenderArgs.text.length == 1
+                    ? '00${axisLabelRenderArgs.text}'
+                    : axisLabelRenderArgs.text.length == 2
+                    ? '0${axisLabelRenderArgs.text}'
+                    : axisLabelRenderArgs.text;
+                return ChartAxisLabel(
+                    value,
+                    TextStyle(
+                      color: Colors.black,
+                      fontSize: orientation == Orientation.portrait
+                          ? displayWidth(context) * 0.034
+                          : displayWidth(context) * 0.018,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: poppins,
+                    ));
+              },
               plotBands: [
                 PlotBand(
                     text: 'avg ${avgPower.toStringAsFixed(2)}$watt',
@@ -3367,7 +3728,9 @@ Utils.showSnackBar(context,
                     borderColor: Colors.grey,
                     textStyle: TextStyle(
                       color: Colors.black,
-                      fontSize: displayWidth(context) * 0.028,
+                      fontSize: orientation == Orientation.portrait
+                          ? displayWidth(context) * 0.028
+                          : displayWidth(context) * 0.018,
                       fontWeight: FontWeight.w500,
                       fontFamily: poppins,
                     ),
@@ -3381,7 +3744,7 @@ Utils.showSnackBar(context,
   }
 
   // Widget for filter by date in reports
-  Widget? filterByDate(BuildContext context,Orientation orientation) {
+  Widget? filterByDate(BuildContext context, Orientation orientation) {
     return Column(
       children: [
         Column(
@@ -3392,17 +3755,19 @@ Utils.showSnackBar(context,
                 GestureDetector(
                   onTap: () {
                     setState(() {
-                      isEndDateSected=false;
+                      isEndDateSected = false;
                       isStartDate = true;
                       selectDateOption = 1;
                       isSelectStartDate = true;
 
-                      isStartDateSelected=false;
+                      isStartDateSelected = false;
                     });
                   },
                   child: Container(
                     width: displayWidth(context) * 0.385,
-                    height:orientation==Orientation.portrait? displayWidth(context) * 0.1:displayWidth(context) * 0.075,
+                    height: orientation == Orientation.portrait
+                        ? displayWidth(context) * 0.1
+                        : displayWidth(context) * 0.075,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
                         color: reportDropdownColor),
@@ -3413,8 +3778,7 @@ Utils.showSnackBar(context,
                       child: Row(
                         children: [
                           SizedBox(
-                            width:displayWidth(context) * 0.23 ,
-
+                            width: displayWidth(context) * 0.23,
                             child: Text(
                               pickStartDate!,
                               style: TextStyle(
@@ -3441,44 +3805,36 @@ Utils.showSnackBar(context,
                 ),
                 GestureDetector(
                   onTap: () {
-                    if(isSelectedStartDay!){
-                      if(!isSelectStartDate){
-
-
+                    if (isSelectedStartDay!) {
+                      if (!isSelectStartDate) {
                         Utils.showSnackBar(context,
                             scaffoldKey: scaffoldKey,
-                            message:
-                            'Please Select The Start Date',
+                            message: 'Please Select The Start Date',
                             duration: 2);
-
-
-                      }
-                      else{
-
+                      } else {
                         setState(() {
-                          isEndDateSected=false;
+                          isEndDateSected = false;
                           isEndDate = true;
                           selectDateOption = 2;
 
                           isSelectEndDate = true;
                         });
                       }
-                    } else{
+                    } else {
                       Utils.showSnackBar(context,
                           scaffoldKey: scaffoldKey,
-                          message:
-                          'Please Select Start Date.',
+                          message: 'Please Select Start Date.',
                           duration: 2);
                     }
-
                   },
                   child: Container(
                     width: displayWidth(context) * 0.385,
-                    height:orientation==Orientation.portrait? displayWidth(context) * 0.1:displayWidth(context) * 0.075,
+                    height: orientation == Orientation.portrait
+                        ? displayWidth(context) * 0.1
+                        : displayWidth(context) * 0.075,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
-                        color: reportDropdownColor
-                        ),
+                        color: reportDropdownColor),
                     child: Padding(
                       padding: EdgeInsets.only(
                           left: displayWidth(context) * 0.04,
@@ -3486,7 +3842,7 @@ Utils.showSnackBar(context,
                       child: Row(
                         children: [
                           SizedBox(
-                            width:displayWidth(context) * 0.23 ,
+                            width: displayWidth(context) * 0.23,
                             child: Text(
                               pickEndDate!,
                               style: TextStyle(
@@ -3517,8 +3873,8 @@ Utils.showSnackBar(context,
         ),
         selectDateOption == 1 && isSelectStartDate
             ? Visibility(
-           visible: !isEndDateSected!,
-              child: Column(
+                visible: !isEndDateSected!,
+                child: Column(
                   children: [
                     Padding(
                       padding: EdgeInsets.only(
@@ -3540,14 +3896,15 @@ Utils.showSnackBar(context,
                         child: Padding(
                           padding: EdgeInsets.only(
                               left: displayWidth(context) * 0.03,
-                             top:orientation==Orientation.portrait? displayWidth(context) * 0.05:displayWidth(context) * 0.02
-                              ),
+                              top: orientation == Orientation.portrait
+                                  ? displayWidth(context) * 0.05
+                                  : displayWidth(context) * 0.02),
                           child: Text(
                             "Select Start Date",
                             style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w700,
-                                fontFamily: 'DM Sans'
-                                ),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                fontFamily: 'DM Sans'),
                           ),
                         ),
                       ),
@@ -3558,58 +3915,51 @@ Utils.showSnackBar(context,
                           right: displayWidth(context) * 0.045),
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(20),bottomRight: Radius.circular(20)
-                          )
-                        ),
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(20),
+                                bottomRight: Radius.circular(20))),
                         child: Visibility(
                           visible: !isEndDateSected!,
                           child: IgnorePointer(
-                                                          ignoring: isBtnClick??false,
-
+                            ignoring: isBtnClick ?? false,
                             child: TableCalendar(
-
-
                               daysOfWeekVisible: true,
                               focusedDay: selectedDateForStartDate,
                               firstDay: firstDate,
                               lastDay: lastDate,
-
                               onFormatChanged: (CalendarFormat _format) {},
                               calendarBuilders: CalendarBuilders(
+                                selectedBuilder: (context, date, events) =>
+                                    Container(
+                                        margin: const EdgeInsets.all(5.0),
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                            color: blueColor,
+                                            borderRadius:
+                                                BorderRadius.circular(15)
+                                            //shape: BoxShape.circle
 
-                                selectedBuilder: (context, date, events) => Container(
-                                    margin: const EdgeInsets.all(5.0),
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                        color: blueColor,
-                                        borderRadius: BorderRadius.circular(15)
-                                        //shape: BoxShape.circle
-
-                                        ),
-                                    child: Text(
-                                      date.day.toString(),
-                                      style: TextStyle(color: Colors.white,
-                                      fontFamily: dmsans
-                                      ),
-                                    )),
+                                            ),
+                                        child: Text(
+                                          date.day.toString(),
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: dmsans),
+                                        )),
                               ),
                               calendarStyle: CalendarStyle(
-
-
-                                      todayDecoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                                          border: Border.all(
-
-                                            color: blueColor,
-                                          )),
+                                  todayDecoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                                        color: blueColor,
+                                      )),
                                   isTodayHighlighted: true,
                                   selectedDecoration: BoxDecoration(
-                                                                borderRadius: BorderRadius.circular(8),
+                                    borderRadius: BorderRadius.circular(8),
 
                                     // color: blueColor,
-                                   shape: BoxShape.rectangle,
+                                    shape: BoxShape.rectangle,
                                   ),
                                   selectedTextStyle: TextStyle(
                                       fontWeight: FontWeight.bold,
@@ -3620,50 +3970,56 @@ Utils.showSnackBar(context,
                                       fontWeight: FontWeight.normal,
                                       fontSize: 16.0,
                                       fontFamily: dmsans,
-                                      color: selectedDateForStartDate == DateTime.now()
+                                      color: selectedDateForStartDate ==
+                                              DateTime.now()
                                           ? Colors.white
                                           : blueColor)),
                               selectedDayPredicate: (DateTime date) {
-                                return isSameDay(selectedDateForStartDate, date);
+                                return isSameDay(
+                                    selectedDateForStartDate, date);
                               },
                               startingDayOfWeek: StartingDayOfWeek.monday,
-                              onDaySelected: (DateTime? selectDay, DateTime? focusDay) {
+                              onDaySelected:
+                                  (DateTime? selectDay, DateTime? focusDay) {
                                 setState(() {
                                   isSelectedStartDay = true;
                                   selectedDateForStartDate = selectDay!;
                                   focusedDay = focusDay!;
                                   focusedDayString = focusDay.toString();
-                                  pickStartDate = convertIntoMonthDayYear(selectDay);
+                                  pickStartDate =
+                                      convertIntoMonthDayYear(selectDay);
                                   selectedStartDateFromCal = selectDay;
-                                  isStartDateSelected=true;
-                                  isSelectEndDate=true;
-                          selectDateOption = 2;
-                          isSelectEndDate = true;
+                                  isStartDateSelected = true;
+                                  isSelectEndDate = true;
+                                  selectDateOption = 2;
+                                  isSelectEndDate = true;
 
-                                  Utils.customPrint("pick start date: $pickStartDate");
+                                  Utils.customPrint(
+                                      "pick start date: $pickStartDate");
                                   CustomLogger().logWithFile(Level.info,
                                       "pick start date: $pickStartDate -> $page");
                                 });
                                 Utils.customPrint("focusedDay: $focusDay");
-                                CustomLogger().logWithFile(
-                                    Level.info, "focused Day: $focusedDay -> $page");
+                                CustomLogger().logWithFile(Level.info,
+                                    "focused Day: $focusedDay -> $page");
                               },
                               headerStyle: HeaderStyle(
-                                                titleCentered: true,
+                                titleCentered: true,
 
-                                                titleTextStyle: TextStyle(fontSize: 17,
-                                                fontFamily: dmsans,
-                                                fontWeight: FontWeight.w600,
-                                                color: blackcolorCalender
-
-                                                ), // Center the month title
+                                titleTextStyle: TextStyle(
+                                    fontSize: 17,
+                                    fontFamily: dmsans,
+                                    fontWeight: FontWeight.w600,
+                                    color: blackcolorCalender),
+                                // Center the month title
 
                                 formatButtonVisible: false,
                                 formatButtonDecoration: BoxDecoration(
                                   color: Colors.black,
                                   borderRadius: BorderRadius.circular(22.0),
                                 ),
-                                formatButtonTextStyle: TextStyle(color: Colors.white),
+                                formatButtonTextStyle:
+                                    TextStyle(color: Colors.white),
                                 formatButtonShowsNext: false,
                               ),
                             ),
@@ -3673,12 +4029,11 @@ Utils.showSnackBar(context,
                     ),
                   ],
                 ),
-            )
+              )
             : isSelectEndDate
                 ? Visibility(
-                                          visible: !isEndDateSected!,
-
-                  child: Column(
+                    visible: !isEndDateSected!,
+                    child: Column(
                       children: [
                         Padding(
                           padding: EdgeInsets.only(
@@ -3700,9 +4055,9 @@ Utils.showSnackBar(context,
                             child: Padding(
                               padding: EdgeInsets.only(
                                   left: displayWidth(context) * 0.03,
-                             top:orientation==Orientation.portrait? displayWidth(context) * 0.05:displayWidth(context) * 0.02
-                                  
-                                  ),
+                                  top: orientation == Orientation.portrait
+                                      ? displayWidth(context) * 0.05
+                                      : displayWidth(context) * 0.02),
                               child: Text(
                                 "Select End Date",
                                 style: TextStyle(
@@ -3716,17 +4071,14 @@ Utils.showSnackBar(context,
                               left: displayWidth(context) * 0.045,
                               right: displayWidth(context) * 0.045),
                           child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(20),bottomRight: Radius.circular(20)
-                          )
-                        ),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(20),
+                                    bottomRight: Radius.circular(20))),
                             child: IgnorePointer(
-                                                        ignoring: isBtnClick??false,
-                            
+                              ignoring: isBtnClick ?? false,
                               child: TableCalendar(
-                                
                                 daysOfWeekVisible: true,
                                 focusedDay: selectedDateForEndDate,
                                 firstDay: firstDate,
@@ -3734,25 +4086,26 @@ Utils.showSnackBar(context,
                                 onFormatChanged: (CalendarFormat _format) {},
                                 calendarBuilders: CalendarBuilders(
                                   selectedBuilder: (context, date, events) =>
-                             Container(
-                                  margin: const EdgeInsets.all(5.0),
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                      color: blueColor,
-                                      borderRadius: BorderRadius.circular(15)
-                                      //shape: BoxShape.circle
-                                      
-                                      ),
+                                      Container(
+                                          margin: const EdgeInsets.all(5.0),
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                              color: blueColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(15)
+                                              //shape: BoxShape.circle
+
+                                              ),
                                           child: Text(
                                             date.day.toString(),
-                                            style: TextStyle(color: Colors.white),
+                                            style:
+                                                TextStyle(color: Colors.white),
                                           )),
                                 ),
                                 calendarStyle: CalendarStyle(
                                     todayDecoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
+                                        borderRadius: BorderRadius.circular(20),
                                         border: Border.all(
-                            
                                           color: blueColor,
                                         )),
                                     isTodayHighlighted: true,
@@ -3768,12 +4121,13 @@ Utils.showSnackBar(context,
                                     todayTextStyle: TextStyle(
                                         fontWeight: FontWeight.normal,
                                         fontSize: 16.0,
-                                        color:
-                                            selectedDateForEndDate == DateTime.now()
-                                                ? Colors.white
-                                                : blueColor)),
+                                        color: selectedDateForEndDate ==
+                                                DateTime.now()
+                                            ? Colors.white
+                                            : blueColor)),
                                 selectedDayPredicate: (DateTime date) {
-                                  return isSameDay(selectedDateForEndDate, date);
+                                  return isSameDay(
+                                      selectedDateForEndDate, date);
                                 },
                                 startingDayOfWeek: StartingDayOfWeek.monday,
                                 onDaySelected:
@@ -3783,11 +4137,13 @@ Utils.showSnackBar(context,
                                     selectedDateForEndDate = selectDay!;
                                     lastDayFocused = focusDay!;
                                     lastFocusedDayString = focusDay.toString();
-                                    pickEndDate = convertIntoMonthDayYear(selectDay);
+                                    pickEndDate =
+                                        convertIntoMonthDayYear(selectDay);
                                     selectedEndDateFromCal = selectDay;
-                                    isEndDateSected=true;
-                                                    
-                                    Utils.customPrint("pick end date: $pickEndDate");
+                                    isEndDateSected = true;
+
+                                    Utils.customPrint(
+                                        "pick end date: $pickEndDate");
                                     CustomLogger().logWithFile(Level.info,
                                         "pick end date: $pickEndDate -> $page");
                                   });
@@ -3796,16 +4152,15 @@ Utils.showSnackBar(context,
                                   CustomLogger().logWithFile(Level.info,
                                       "lastDayFocused: $lastDayFocused -> $page");
                                 },
-                                                    headerStyle: HeaderStyle(
-                                              titleCentered: true,
-                                              
-                                              titleTextStyle: TextStyle(fontSize: 17,
-                                              fontWeight: FontWeight.w600,
-                                              color: blackcolorCalender
-                                              
-                                              ), // Center the month title
-                            
-                            
+                                headerStyle: HeaderStyle(
+                                  titleCentered: true,
+
+                                  titleTextStyle: TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w600,
+                                      color: blackcolorCalender),
+                                  // Center the month title
+
                                   formatButtonVisible: false,
                                   formatButtonDecoration: BoxDecoration(
                                     color: Colors.black,
@@ -3821,17 +4176,17 @@ Utils.showSnackBar(context,
                         ),
                       ],
                     ),
-                )
+                  )
                 : Container(),
       ],
     );
   }
 
   //Filter by trip in reports
-  Widget? filterByTrip(BuildContext context,Orientation orientation) {
+  Widget? filterByTrip(BuildContext context, Orientation orientation) {
     return isTripIdListLoading!
         ? Container(
-        padding: EdgeInsets.only(bottom:tripIdList!.length != 0? 15:0),
+            padding: EdgeInsets.only(bottom: tripIdList!.length != 0 ? 15 : 0),
             decoration: BoxDecoration(
                 color: reportTripsListBackColor,
                 borderRadius: BorderRadius.all(
@@ -3840,15 +4195,14 @@ Utils.showSnackBar(context,
               children: [
                 tripIdList!.length == 0
                     ? Container(
-                      padding: EdgeInsets.all(8),
+                        padding: EdgeInsets.all(8),
                         child: commonText(
                             text: 'No Trips Available',
                             textSize: displayWidth(context) * 0.030,
                             textColor: primaryColor))
                     : IgnorePointer(
-                                                      ignoring: isBtnClick??false,
-
-                      child: ListView(
+                        ignoring: isBtnClick ?? false,
+                        child: ListView(
                           primary: false,
                           physics: NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
@@ -3858,28 +4212,30 @@ Utils.showSnackBar(context,
                                   left: displayWidth(context) * 0.046),
                               child: CustomLabeledCheckbox(
                                 orientation: orientation,
-                    
                                 label: 'Select All',
-                                value: parentValue != null ? parentValue! : false,
+                                value:
+                                    parentValue != null ? parentValue! : false,
                                 onChanged: (value) {
-                      if (value) {
-                        Utils.customPrint("select all status: $value");
-                        selectedTripIdList!.clear();
-                        selectedTripIdList!.addAll(tripIdList!);
-                        isSHowGraph = false;
-                        selectedTripLabelList!.clear();
-                        selectedTripLabelList!.addAll(children!);
-                        Utils.customPrint(
-                            "selected trip label list: ${selectedTripLabelList}");
-                        CustomLogger().logWithFile(Level.info, "selected trip label list: ${selectedTripLabelList} -> $page");
-                        _checkAll(value);
-                      } else if (!value) {
-                        // Tristate
-                    
-                        selectedTripIdList!.clear();
-                        selectedTripLabelList!.clear();
-                        _checkAll(false);
-                      }
+                                  if (value) {
+                                    Utils.customPrint(
+                                        "select all status: $value");
+                                    selectedTripIdList!.clear();
+                                    selectedTripIdList!.addAll(tripIdList!);
+                                    isSHowGraph = false;
+                                    selectedTripLabelList!.clear();
+                                    selectedTripLabelList!.addAll(children!);
+                                    Utils.customPrint(
+                                        "selected trip label list: ${selectedTripLabelList}");
+                                    CustomLogger().logWithFile(Level.info,
+                                        "selected trip label list: ${selectedTripLabelList} -> $page");
+                                    _checkAll(value);
+                                  } else if (!value) {
+                                    // Tristate
+
+                                    selectedTripIdList!.clear();
+                                    selectedTripLabelList!.clear();
+                                    _checkAll(false);
+                                  }
                                 },
                                 checkboxType: CheckboxType.Parent,
                                 activeColor: Colors.indigo,
@@ -3892,51 +4248,48 @@ Utils.showSnackBar(context,
                               itemBuilder: (context, index) => Column(
                                 children: [
                                   SizedBox(
-                                    height:orientation==Orientation.portrait? displayHeight(context) * 0.01:displayHeight(context) * 0.03,
+                                    height: orientation == Orientation.portrait
+                                        ? displayHeight(context) * 0.01
+                                        : displayHeight(context) * 0.03,
                                   ),
                                   CustomLabeledCheckboxNew(
-                                    orientation:orientation,
+                                    orientation: orientation,
                                     label: children![index],
                                     value: childrenValue![index],
                                     imageUrl: imageUrl,
                                     dateTime: dateTimeList![index],
-                                    distance: '${distanceList![index]} $nauticalMile',
+                                    distance:
+                                        '${distanceList![index]} $nauticalMile',
                                     time: timeList![index],
                                     onChanged: (value) {
-                          isSHowGraph = false;
-                          Utils.customPrint("trip list id: ${tripIdList![index]}");
-                          CustomLogger().logWithFile(Level.info, "trip list id: ${tripIdList![index]} -> $page");
-                    
-                    
-                          if(selectedTripIdList!.contains(tripIdList![index])){
-                    
-                            selectedTripIdList!
-                                .remove(tripIdList![index]);
-                            //tripIdList!.remove(index);
-                            selectedTripLabelList!
-                                .remove(children![index]);
-                            Utils.customPrint(
-                                "selected trip label list: ${selectedTripLabelList}");
-                            CustomLogger().logWithFile(Level.info, "selected trip label list: ${selectedTripLabelList} -> $page");
-                            setState(() {
-                    
-                            });
-                    
-                          }else{
-                    
-                            selectedTripIdList!
-                                .add(tripIdList![index]);
-                            // tripIdList!.add(index);
-                            selectedTripLabelList!
-                                .add(children![index]);
-                            setState(() {
-                    
-                            });
-                    
-                    
-                          }
-                    
-                          manageTristate(index, value);
+                                      isSHowGraph = false;
+                                      Utils.customPrint(
+                                          "trip list id: ${tripIdList![index]}");
+                                      CustomLogger().logWithFile(Level.info,
+                                          "trip list id: ${tripIdList![index]} -> $page");
+
+                                      if (selectedTripIdList!
+                                          .contains(tripIdList![index])) {
+                                        selectedTripIdList!
+                                            .remove(tripIdList![index]);
+                                        //tripIdList!.remove(index);
+                                        selectedTripLabelList!
+                                            .remove(children![index]);
+                                        Utils.customPrint(
+                                            "selected trip label list: ${selectedTripLabelList}");
+                                        CustomLogger().logWithFile(Level.info,
+                                            "selected trip label list: ${selectedTripLabelList} -> $page");
+                                        setState(() {});
+                                      } else {
+                                        selectedTripIdList!
+                                            .add(tripIdList![index]);
+                                        // tripIdList!.add(index);
+                                        selectedTripLabelList!
+                                            .add(children![index]);
+                                        setState(() {});
+                                      }
+
+                                      manageTristate(index, value);
                                     },
                                     checkboxType: CheckboxType.Child,
                                     activeColor: Colors.indigo,
@@ -3946,7 +4299,7 @@ Utils.showSnackBar(context,
                             ),
                           ],
                         ),
-                    )
+                      )
               ],
             ),
           )
@@ -3957,148 +4310,112 @@ Utils.showSnackBar(context,
           );
   }
 
-  void getTappedItemBarIndex(int index){
-    selectedBarIndex=index;
-
+  void getTappedItemBarIndex(int index) {
+    selectedBarIndex = index;
   }
 
-  void scorllToParticularPostion(int index,dynamic persondata,Orientation orientation){
-selectedIndex= persondata['tripDetails'];
-tooltipactivationMode=ActivationMode.singleTap;
-                      reportsDataTableKey.currentState!.setState(() {
+  void scorllToParticularPostion(
+      int index, dynamic persondata, Orientation orientation) {
+    selectedIndex = persondata['tripDetails'];
+    tooltipactivationMode = ActivationMode.singleTap;
+    reportsDataTableKey.currentState!.setState(() {
+      reportsDataTableKey.currentState!.isToolTipShown = true;
+    });
 
-                                                         reportsDataTableKey.currentState!.isToolTipShown=true;
-                                                         });
-
-
-
-
-
-
-            for (int i = 0; i < durationGraphData.length; i++) {
-              for (int j = 0;
-                  j < durationGraphData[i].tripsByDate!.length;
-                  j++) {
-                    durationGraphData[i].tripsByDate![j].dataLineColor = blueColor;
-                    if(durationGraphData[i].tripsByDate![j].id==persondata['tripDetails']){
-durationGraphData[i].tripsByDate![j].dataLineColor=Colors.green;
-
-                    }
-
-                  }
-                  
-                  
-                  }
-
-            final scrollPosition = index* 150.0;
-            selectedRowIndex=index;
-            setState(() {
-              
-            });
-if(orientation==Orientation.portrait){
-            _mainScrollController.animateTo(
-  0.0, // Scroll to the top
-  duration: Duration(milliseconds: 100), // Adjust the duration as needed
-  curve: Curves.easeInOut, // Specify the easing curve
-);
-
-
-}else{
-
-            _mainScrollController.animateTo(
-  500, // Scroll to the top
-  duration: Duration(milliseconds: 100), // Adjust the duration as needed
-  curve: Curves.easeInOut, // Specify the easing curve
-);
-
-
-
-}
-
-
-             // Calculate the scroll position based on your data
-if(selectedButton=="trip duration"){
-        _tripDurationSrollController.animateTo(
-          scrollPosition,
-          duration: Duration(milliseconds: 100), // Adjust the duration as needed
-          curve: Curves.easeInOut,
-        ).then((value) {
-
-          Future.delayed(Duration(seconds: 1), (){
-            tooltipBehaviorDurationGraph?.showByIndex(selectedRowIndex!, pointIndex??0);
-          });
-        });
-
-}else if(selectedButton=='avg speed'){
-          _avgSpeedSrollController.animateTo(
-          scrollPosition,
-          duration: Duration(milliseconds: 100), // Adjust the duration as needed
-          curve: Curves.easeInOut,
-        ).then((value) {
-
-          Future.delayed(Duration(seconds: 1), (){
-            avgSpeedToolTip?.showByIndex(selectedRowIndex!, pointIndex??0);
-          });
-        });
-
-}else if(selectedButton=='fuel usage'){
-            _fuelUsageSrollController.animateTo(
-          scrollPosition,
-          duration: Duration(milliseconds: 100), // Adjust the duration as needed
-          curve: Curves.easeInOut,
-        )..then((value) {
-
-          Future.delayed(Duration(seconds: 1), (){
-            fuelUsageToolTip!.showByIndex(selectedRowIndex!, pointIndex??0);
-          });
-        });
-
-
-
-}else{
-              _powerUsageSrollController.animateTo(
-          scrollPosition,
-          duration: Duration(milliseconds: 500), // Adjust the duration as needed
-          curve: Curves.easeInOut,
-        )..then((value) {
-
-          Future.delayed(Duration(seconds: 1), (){
-            powerUsageToolTip!.showByIndex(selectedRowIndex!, pointIndex??0);
-          });
-        });
-
-}
-
-
-
-
-
-  }
-
-  addListenerToControllers(){
-    _tripDurationSrollController.addListener(() {
-      if(_tripDurationSrollController.position.maxScrollExtent == _tripDurationSrollController.position.pixels)
-      {
-
+    for (int i = 0; i < durationGraphData.length; i++) {
+      for (int j = 0; j < durationGraphData[i].tripsByDate!.length; j++) {
+        durationGraphData[i].tripsByDate![j].dataLineColor = blueColor;
+        if (durationGraphData[i].tripsByDate![j].id ==
+            persondata['tripDetails']) {
+          durationGraphData[i].tripsByDate![j].dataLineColor = Colors.green;
+        }
       }
-      else
-      {
+    }
+
+    final scrollPosition = index * 150.0;
+    selectedRowIndex = index;
+    setState(() {});
+    if (orientation == Orientation.portrait) {
+      _mainScrollController.animateTo(
+        0.0, // Scroll to the top
+        duration: Duration(milliseconds: 100), // Adjust the duration as needed
+        curve: Curves.easeInOut, // Specify the easing curve
+      );
+    } else {
+      _mainScrollController.animateTo(
+        500, // Scroll to the top
+        duration: Duration(milliseconds: 100), // Adjust the duration as needed
+        curve: Curves.easeInOut, // Specify the easing curve
+      );
+    }
+
+    // Calculate the scroll position based on your data
+    if (selectedButton == "trip duration") {
+      _tripDurationSrollController
+          .animateTo(
+        scrollPosition,
+        duration: Duration(milliseconds: 100), // Adjust the duration as needed
+        curve: Curves.easeInOut,
+      )
+          .then((value) {
+        Future.delayed(Duration(seconds: 1), () {
+          tooltipBehaviorDurationGraph?.showByIndex(
+              selectedRowIndex!, pointIndex ?? 0);
+        });
+      });
+    } else if (selectedButton == 'avg speed') {
+      _avgSpeedSrollController
+          .animateTo(
+        scrollPosition,
+        duration: Duration(milliseconds: 100), // Adjust the duration as needed
+        curve: Curves.easeInOut,
+      )
+          .then((value) {
+        Future.delayed(Duration(seconds: 1), () {
+          avgSpeedToolTip?.showByIndex(selectedRowIndex!, pointIndex ?? 0);
+        });
+      });
+    } else if (selectedButton == 'fuel usage') {
+      _fuelUsageSrollController.animateTo(
+        scrollPosition,
+        duration: Duration(milliseconds: 100), // Adjust the duration as needed
+        curve: Curves.easeInOut,
+      )..then((value) {
+          Future.delayed(Duration(seconds: 1), () {
+            fuelUsageToolTip!.showByIndex(selectedRowIndex!, pointIndex ?? 0);
+          });
+        });
+    } else {
+      _powerUsageSrollController.animateTo(
+        scrollPosition,
+        duration: Duration(milliseconds: 500), // Adjust the duration as needed
+        curve: Curves.easeInOut,
+      )..then((value) {
+          Future.delayed(Duration(seconds: 1), () {
+            powerUsageToolTip!.showByIndex(selectedRowIndex!, pointIndex ?? 0);
+          });
+        });
+    }
+  }
+
+  addListenerToControllers() {
+    _tripDurationSrollController.addListener(() {
+      if (_tripDurationSrollController.position.maxScrollExtent ==
+          _tripDurationSrollController.position.pixels) {
+      } else {
         setState(() {
-          if(!isStickyYAxisVisible)
-          {
+          if (!isStickyYAxisVisible) {
             isStickyYAxisVisible = true;
           }
         });
 
-        if(_tripDurationSrollController.offset <= 51.0)
-        {
+        if (_tripDurationSrollController.offset <= 51.0) {
           setState(() {
             isStickyYAxisVisible = false;
           });
         }
         bool isTop = _tripDurationSrollController.position.pixels == 0;
-        if(isTop)
-        {
+        if (isTop) {
           setState(() {
             isStickyYAxisVisible = false;
           });
@@ -4107,28 +4424,22 @@ if(selectedButton=="trip duration"){
     });
 
     _avgSpeedSrollController.addListener(() {
-      if(_avgSpeedSrollController.position.maxScrollExtent == _avgSpeedSrollController.position.pixels)
-      {
-
-      }
-      else
-      {
+      if (_avgSpeedSrollController.position.maxScrollExtent ==
+          _avgSpeedSrollController.position.pixels) {
+      } else {
         setState(() {
-          if(!isStickyYAxisVisible)
-          {
+          if (!isStickyYAxisVisible) {
             isStickyYAxisVisible = true;
           }
         });
 
-        if(_avgSpeedSrollController.offset <= 51.0)
-        {
+        if (_avgSpeedSrollController.offset <= 51.0) {
           setState(() {
             isStickyYAxisVisible = false;
           });
         }
         bool isTop = _avgSpeedSrollController.position.pixels == 0;
-        if(isTop)
-        {
+        if (isTop) {
           setState(() {
             isStickyYAxisVisible = false;
           });
@@ -4137,28 +4448,22 @@ if(selectedButton=="trip duration"){
     });
 
     _fuelUsageSrollController.addListener(() {
-      if(_fuelUsageSrollController.position.maxScrollExtent == _fuelUsageSrollController.position.pixels)
-      {
-
-      }
-      else
-      {
+      if (_fuelUsageSrollController.position.maxScrollExtent ==
+          _fuelUsageSrollController.position.pixels) {
+      } else {
         setState(() {
-          if(!isStickyYAxisVisible)
-          {
+          if (!isStickyYAxisVisible) {
             isStickyYAxisVisible = true;
           }
         });
 
-        if(_fuelUsageSrollController.offset <= 51.0)
-        {
+        if (_fuelUsageSrollController.offset <= 51.0) {
           setState(() {
             isStickyYAxisVisible = false;
           });
         }
         bool isTop = _fuelUsageSrollController.position.pixels == 0;
-        if(isTop)
-        {
+        if (isTop) {
           setState(() {
             isStickyYAxisVisible = false;
           });
@@ -4167,35 +4472,28 @@ if(selectedButton=="trip duration"){
     });
 
     _powerUsageSrollController.addListener(() {
-      if(_powerUsageSrollController.position.maxScrollExtent == _powerUsageSrollController.position.pixels)
-      {
-
-      }
-      else
-      {
+      if (_powerUsageSrollController.position.maxScrollExtent ==
+          _powerUsageSrollController.position.pixels) {
+      } else {
         setState(() {
-          if(!isStickyYAxisVisible)
-          {
+          if (!isStickyYAxisVisible) {
             isStickyYAxisVisible = true;
           }
         });
 
-        if(_powerUsageSrollController.offset <= 51.0)
-        {
+        if (_powerUsageSrollController.offset <= 51.0) {
           setState(() {
             isStickyYAxisVisible = false;
           });
         }
         bool isTop = _powerUsageSrollController.position.pixels == 0;
-        if(isTop)
-        {
+        if (isTop) {
           setState(() {
             isStickyYAxisVisible = false;
           });
         }
       }
     });
-
   }
 }
 
