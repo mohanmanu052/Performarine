@@ -1999,8 +1999,10 @@ class _ReportsModuleState extends State<ReportsModule>
                                         height: displayWidth(context) * 0.055,
                                       ),
                                       vesselDetails(context, orientation),
-                                      SizedBox(
-                                        height: displayWidth(context) * 0.04,
+                                      Container(
+                                        child: SizedBox(
+                                          height: displayWidth(context) * 0.04,
+                                        ),
                                       ),
                                       Visibility(
                                         visible: selectedCaseType == 1
@@ -2038,7 +2040,9 @@ class _ReportsModuleState extends State<ReportsModule>
                                         ),
                                       ),
                                       SizedBox(
-                                        height: displayWidth(context) * 0.06,
+                                        height: orientation == Orientation.portrait
+                                                ? displayWidth(context) * 0.06
+                                        : displayWidth(context) * 0.02,
                                       ),
                                       Row(
                                         mainAxisAlignment:
@@ -2916,7 +2920,7 @@ class _ReportsModuleState extends State<ReportsModule>
               : Container(
                   width: orientation == Orientation.portrait
                       ? displayWidth(context) * 0.198
-                      : displayWidth(context) * 0.135,
+                      : displayWidth(context) * 0.106,
                   // ? displayWidth(context) * 0.16
                   // ? tempDurationColumnSeriesData.length > 10 ? displayWidth(context) * 0.168 : displayWidth(context) * 0.20
                   //: tempDurationColumnSeriesData.length > 10 ? displayWidth(context) * 0.14 : displayWidth(context) * 0.1450,
@@ -2929,6 +2933,7 @@ class _ReportsModuleState extends State<ReportsModule>
                     primaryXAxis: CategoryAxis(
                         //axisLine: AxisLine(width: 0),
                         isVisible: true,
+                        isInversed: true,
                         //labelPlacement: LabelPlacement.betweenTicks,
                         // Or LabelPlacement.onTicks
                         autoScrollingMode: AutoScrollingMode.end,
@@ -2985,56 +2990,6 @@ class _ReportsModuleState extends State<ReportsModule>
                   ),
                 ),
         ),
-        /*Positioned(
-           top: 0,
-           bottom: 0,
-           left: 0,
-           child: !isStickyYAxisVisible ? SizedBox()
-           : Container(
-               width: orientation==Orientation.portrait? displayWidth(context) * 0.16: displayWidth(context) * 0.1128,
-               height: graph_height,
-               color: Colors.white,
-               child: SfCartesianChart(
-                 plotAreaBorderWidth: 0,
-                 tooltipBehavior: tooltipBehaviorDurationGraph,
-                 enableSideBySideSeriesPlacement: true,
-                 primaryXAxis: CategoryAxis(
-                     isVisible: true,
-                     labelPlacement: LabelPlacement.betweenTicks, // Or LabelPlacement.onTicks
-                     autoScrollingMode: AutoScrollingMode.end,
-                     labelAlignment: LabelAlignment.start,
-                     labelStyle: TextStyle(
-                       color: Colors.black,
-                    fontSize:orientation==Orientation.portrait? displayWidth(context) * 0.034: displayWidth(context) * 0.022,
-                       fontWeight: FontWeight.w500,
-                       fontFamily: poppins,
-                     )),
-                 primaryYAxis: NumericAxis(
-                     axisLine: AxisLine(
-                       width: 0,
-                       color: Colors.transparent
-                     ),
-                     title: AxisTitle(
-                         text: 'Time ($minutes)',
-                         textStyle: TextStyle(
-                           color: Colors.black,
-                           fontSize: displayWidth(context) * 0.028,
-                           fontWeight: FontWeight.w500,
-                           fontFamily: poppins,
-                         )),
-                     majorTickLines: MajorTickLines(width: 0),
-                     minorTickLines: MinorTickLines(width: 0),
-                     labelStyle: TextStyle(
-                       color: Colors.black,
-                       fontSize: displayWidth(context) * 0.034,
-                       fontWeight: FontWeight.w500,
-                       fontFamily: poppins,
-                     ),
-                     plotBands: []),
-                 series: tempDurationColumnSeriesData,
-               )
-           ),
-         ),*/
       ],
     );
   }
@@ -3235,7 +3190,7 @@ class _ReportsModuleState extends State<ReportsModule>
               : Container(
                   width: orientation == Orientation.portrait
                       ? displayWidth(context) * 0.198
-                      : displayWidth(context) * 0.135,
+                      : displayWidth(context) * 0.106,
                   color: Colors.white,
                   height: graph_height,
                   child: SfCartesianChart(
