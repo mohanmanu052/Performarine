@@ -424,7 +424,7 @@ class _BottomNavigationState extends State<BottomNavigation>
                         textColor: Colors.black87,
                         textSize: orientation == Orientation.portrait
                             ? displayWidth(context) * 0.05
-                            : displayWidth(context) * 0.03,
+                            : displayWidth(context) * 0.025,
                         fontFamily: outfit),
                     actions: [
                       _bottomNavIndex != 0
@@ -455,7 +455,8 @@ class _BottomNavigationState extends State<BottomNavigation>
                             ),
                     ],
                   ),
-                  bottomNavigationBar: Container(
+                  bottomNavigationBar: orientation == Orientation.portrait
+                      ? Container(
                     height: orientation == Orientation.portrait
                         ? displayHeight(context) * 0.1
                         : displayHeight(context) * 0.17,
@@ -576,7 +577,8 @@ class _BottomNavigationState extends State<BottomNavigation>
                         ),
                       ),
                     ),
-                  ),
+                  )
+                  : SizedBox(),
                   body: screensList[_bottomNavIndex],
                 ),
               );
