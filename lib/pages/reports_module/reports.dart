@@ -726,6 +726,7 @@ class _ReportsModuleState extends State<ReportsModule>
                     width: 0.9,
                     color: Colors.transparent,
                     enableTooltip: true,
+                    isVisible: false,
                     dataSource: triSpeedList,
                     xValueMapper: (TripModel tripData, _) => '',
                     yValueMapper: (TripModel tripData, _) =>
@@ -838,6 +839,7 @@ class _ReportsModuleState extends State<ReportsModule>
                   width: 0.9,
                   color: Colors.transparent,
                   enableTooltip: true,
+                  isVisible: false,
                   xValueMapper: (TripModel tripData, _) => '',
                   yValueMapper: (TripModel tripData, _) =>
                       triSpeedList[i].tripsByDate![j].avgSpeed! > 0
@@ -2918,8 +2920,9 @@ class _ReportsModuleState extends State<ReportsModule>
           child: !isStickyYAxisVisible
               ? SizedBox()
               : Container(
+                  padding: EdgeInsets.only(bottom: 20),
                   width: orientation == Orientation.portrait
-                      ? displayWidth(context) * 0.198
+                      ? displayWidth(context) * 0.20
                       : displayWidth(context) * 0.106,
                   // ? displayWidth(context) * 0.16
                   // ? tempDurationColumnSeriesData.length > 10 ? displayWidth(context) * 0.168 : displayWidth(context) * 0.20
@@ -2929,11 +2932,12 @@ class _ReportsModuleState extends State<ReportsModule>
                   child: SfCartesianChart(
                     //plotAreaBorderWidth: 0,
                     tooltipBehavior: tooltipBehaviorDurationGraph,
+                    plotAreaBorderColor: Colors.transparent,
                     // enableSideBySideSeriesPlacement: true,
                     primaryXAxis: CategoryAxis(
                         //axisLine: AxisLine(width: 0),
                         isVisible: true,
-                        isInversed: true,
+                        //isInversed: true,
                         //labelPlacement: LabelPlacement.betweenTicks,
                         // Or LabelPlacement.onTicks
                         autoScrollingMode: AutoScrollingMode.end,
@@ -3188,6 +3192,7 @@ class _ReportsModuleState extends State<ReportsModule>
           child: !isStickyYAxisVisible
               ? SizedBox()
               : Container(
+                  padding: EdgeInsets.only(bottom: 20),
                   width: orientation == Orientation.portrait
                       ? displayWidth(context) * 0.198
                       : displayWidth(context) * 0.106,
@@ -3196,6 +3201,7 @@ class _ReportsModuleState extends State<ReportsModule>
                   child: SfCartesianChart(
                     // palette: barsColor,
                     tooltipBehavior: avgSpeedToolTip,
+                    plotAreaBorderColor: Colors.transparent,
                     primaryXAxis: CategoryAxis(
                         isVisible: true,
                         autoScrollingMode: AutoScrollingMode.end,
