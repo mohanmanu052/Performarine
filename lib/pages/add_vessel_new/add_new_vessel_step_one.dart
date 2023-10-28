@@ -283,7 +283,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                 child: CommonTextField(
                     controller: weightController,
                     focusNode: weightFocusNode,
-                    labelText: 'Weight ($pound)',
+                    labelText: 'Displacement ($pound)',
                     hintText: '',
                     suffixText: null,
                     textInputAction: TextInputAction.next,
@@ -298,7 +298,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                     },
                     validator: (value) {
                       if (value!.trim().isEmpty) {
-                        return 'Enter Vessel Weight';
+                        return 'Enter Vessel Displacement';
                       }
 
                       return null;

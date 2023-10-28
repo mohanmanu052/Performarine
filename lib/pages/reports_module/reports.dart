@@ -726,16 +726,16 @@ class _ReportsModuleState extends State<ReportsModule>
                     width: 0.9,
                     color: Colors.transparent,
                     enableTooltip: true,
-                    isVisible: false,
+                    isVisible: true,
                     dataSource: triSpeedList,
                     xValueMapper: (TripModel tripData, _) => '',
                     yValueMapper: (TripModel tripData, _) =>
-                        durationWithSeconds(
-                                    triSpeedList[i].tripsByDate![j].duration!) >
-                                0
-                            ? durationWithSeconds(
-                                triSpeedList[i].tripsByDate![j].duration!)
-                            : null,
+                       durationWithSeconds(
+                                  triSpeedList[i].tripsByDate![j].duration!) >
+                              0
+                          ? durationWithSeconds(
+                              triSpeedList[i].tripsByDate![j].duration!)
+                          : null,
                     pointColorMapper: (TripModel tripData, int index) {
                       return Colors.transparent;
                       //return triSpeedList[i].tripsByDate![j].dataLineColor != null ? triSpeedList[i].tripsByDate![j].dataLineColor : blueColor;
@@ -839,7 +839,7 @@ class _ReportsModuleState extends State<ReportsModule>
                   width: 0.9,
                   color: Colors.transparent,
                   enableTooltip: true,
-                  isVisible: false,
+                  isVisible: true,
                   xValueMapper: (TripModel tripData, _) => '',
                   yValueMapper: (TripModel tripData, _) =>
                       triSpeedList[i].tripsByDate![j].avgSpeed! > 0
@@ -2821,6 +2821,7 @@ class _ReportsModuleState extends State<ReportsModule>
           scrollDirection: Axis.horizontal,
           controller: _tripDurationSrollController,
           child: SizedBox(
+            
               width: durationColumnSeriesData.length > 3
                   ? orientation == Orientation.portrait
                       ? (1.5 * 100 * durationColumnSeriesData.length)
@@ -2920,10 +2921,11 @@ class _ReportsModuleState extends State<ReportsModule>
           child: !isStickyYAxisVisible
               ? SizedBox()
               : Container(
-                  padding: EdgeInsets.only(bottom: 20),
+                
+                //  padding: EdgeInsets.only(bottom: 20),
                   width: orientation == Orientation.portrait
-                      ? displayWidth(context) * 0.20
-                      : displayWidth(context) * 0.106,
+                      ? displayWidth(context) * 0.18
+                      : displayWidth(context) * 0.105,
                   // ? displayWidth(context) * 0.16
                   // ? tempDurationColumnSeriesData.length > 10 ? displayWidth(context) * 0.168 : displayWidth(context) * 0.20
                   //: tempDurationColumnSeriesData.length > 10 ? displayWidth(context) * 0.14 : displayWidth(context) * 0.1450,
@@ -2935,6 +2937,7 @@ class _ReportsModuleState extends State<ReportsModule>
                     plotAreaBorderColor: Colors.transparent,
                     // enableSideBySideSeriesPlacement: true,
                     primaryXAxis: CategoryAxis(
+                      
                         //axisLine: AxisLine(width: 0),
                         isVisible: true,
                         //isInversed: true,
@@ -2962,10 +2965,10 @@ class _ReportsModuleState extends State<ReportsModule>
                               fontWeight: FontWeight.w500,
                               fontFamily: poppins,
                             )),
-                        //majorTickLines: MajorTickLines(width: 0),
-                        //minorTickLines: MinorTickLines(width: 0),
-                        //majorGridLines: MajorGridLines(width: 0),
-                        //minorGridLines: MinorGridLines(width: 0),
+                        majorTickLines: MajorTickLines(width: 0),
+                        minorTickLines: MinorTickLines(width: 0),
+                        majorGridLines: MajorGridLines(width: 0),
+                        minorGridLines: MinorGridLines(width: 0),
                         labelStyle: TextStyle(
                           color: Colors.black,
                           fontSize: displayWidth(context) * 0.034,
@@ -2973,11 +2976,11 @@ class _ReportsModuleState extends State<ReportsModule>
                           fontFamily: poppins,
                         ),
                         axisLabelFormatter: (axisLabelRenderArgs) {
-                          String value = axisLabelRenderArgs.text.length == 1
-                              ? '00${axisLabelRenderArgs.text}'
-                              : axisLabelRenderArgs.text.length == 2
-                                  ? '0${axisLabelRenderArgs.text}'
-                                  : axisLabelRenderArgs.text;
+                      String value = axisLabelRenderArgs.text.length == 1
+                          ? '00${axisLabelRenderArgs.text}'
+                          : axisLabelRenderArgs.text.length == 2
+                              ? '0${axisLabelRenderArgs.text}'
+                              : axisLabelRenderArgs.text;
                           return ChartAxisLabel(
                               value,
                               TextStyle(
@@ -3126,7 +3129,10 @@ class _ReportsModuleState extends State<ReportsModule>
                   )),
               primaryYAxis: NumericAxis(
                   // interval: 5,
-                  axisLine: AxisLine(width: 2),
+                  axisLine: AxisLine(width: 0),
+                                      majorTickLines: MajorTickLines(width: 0),
+                    minorTickLines: MinorTickLines(width: 0),
+
                   title: AxisTitle(
                       text: 'Speed ($knotReport)',
                       textStyle: TextStyle(
@@ -3192,10 +3198,10 @@ class _ReportsModuleState extends State<ReportsModule>
           child: !isStickyYAxisVisible
               ? SizedBox()
               : Container(
-                  padding: EdgeInsets.only(bottom: 20),
+                  //padding: EdgeInsets.only(bottom: 20),
                   width: orientation == Orientation.portrait
-                      ? displayWidth(context) * 0.198
-                      : displayWidth(context) * 0.106,
+                      ? displayWidth(context) * 0.18
+                      : displayWidth(context) * 0.105,
                   color: Colors.white,
                   height: graph_height,
                   child: SfCartesianChart(
@@ -3204,6 +3210,11 @@ class _ReportsModuleState extends State<ReportsModule>
                     plotAreaBorderColor: Colors.transparent,
                     primaryXAxis: CategoryAxis(
                         isVisible: true,
+                                                majorTickLines: MajorTickLines(width: 0),
+                        minorTickLines: MinorTickLines(width: 0),
+                        majorGridLines: MajorGridLines(width: 0),
+                        minorGridLines: MinorGridLines(width: 0),
+
                         autoScrollingMode: AutoScrollingMode.end,
                         labelAlignment: LabelAlignment.center,
                         labelStyle: TextStyle(
@@ -3216,7 +3227,12 @@ class _ReportsModuleState extends State<ReportsModule>
                         )),
                     primaryYAxis: NumericAxis(
                         // interval: 5,
-                        axisLine: AxisLine(width: 1),
+                       // axisLine: AxisLine(width: 1),
+                                               majorTickLines: MajorTickLines(width: 0),
+                        minorTickLines: MinorTickLines(width: 0),
+                        majorGridLines: MajorGridLines(width: 0),
+                        minorGridLines: MinorGridLines(width: 0),
+
                         title: AxisTitle(
                             text: 'Speed ($knotReport)',
                             textStyle: TextStyle(
@@ -3389,7 +3405,10 @@ class _ReportsModuleState extends State<ReportsModule>
                   )),
               primaryYAxis: NumericAxis(
                   labelFormat: '{value}',
-                  axisLine: AxisLine(width: 2),
+                  axisLine: AxisLine(width: 0),
+                                      majorTickLines: MajorTickLines(width: 0),
+                    minorTickLines: MinorTickLines(width: 0),
+
                   title: AxisTitle(
                       text: 'Volume ($literReport)',
                       textStyle: TextStyle(
@@ -3645,7 +3664,9 @@ class _ReportsModuleState extends State<ReportsModule>
                 fontFamily: poppins,
               )),
           primaryYAxis: NumericAxis(
-              axisLine: AxisLine(width: 2),
+                  axisLine: AxisLine(width: 0),
+                                      majorTickLines: MajorTickLines(width: 0),
+                    minorTickLines: MinorTickLines(width: 0),
               title: AxisTitle(
                   text: 'Power ($watsReport)',
                   textStyle: TextStyle(
