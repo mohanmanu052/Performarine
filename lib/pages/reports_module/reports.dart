@@ -1045,7 +1045,7 @@ class _ReportsModuleState extends State<ReportsModule>
 
   @override
   void initState() {
-    super.initState();
+    // super.initState();
     WidgetsBinding.instance?.addObserver(this);
 
     SystemChrome.setPreferredOrientations([
@@ -1080,8 +1080,8 @@ class _ReportsModuleState extends State<ReportsModule>
       });
     });
     tripDurationButtonColor = true;
-
     addListenerToControllers();
+    super.initState();
   }
 
   @override

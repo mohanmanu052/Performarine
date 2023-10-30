@@ -69,7 +69,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
   FocusNode lengthOverallFocusNode = FocusNode();
   FocusNode moldedBeamFocusNode = FocusNode();
   FocusNode moldedDepthFocusNode = FocusNode();
-  FocusNode displcementFocusNode = FocusNode();
+  FocusNode displacementFocusNode = FocusNode();
   FocusNode sizeFocusNode = FocusNode();
   FocusNode capacityFocusNode = FocusNode();
   FocusNode builtYearFocusNode = FocusNode();
@@ -204,7 +204,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                   SizedBox(height: displayHeight(context) * 0.03),
                   commonText(
                       context: context,
-                      text: 'Size of the boat ',
+                      text: 'Size of the boat *',
                       fontWeight: FontWeight.w500,
                       textColor: blutoothDialogTxtColor,
                       textSize: displayWidth(context) * 0.035,
@@ -218,7 +218,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                     child: CommonTextField(
                         controller: freeBoardController,
                         focusNode: freeBoardFocusNode,
-                        labelText: 'Freeboard ($feet)',
+                        labelText: 'Freeboard ($feet) *',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
@@ -251,7 +251,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                     child: CommonTextField(
                         controller: lengthOverallController,
                         focusNode: lengthOverallFocusNode,
-                        labelText: 'Length Overall ($feet)',
+                        labelText: 'Length Overall ($feet) *',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
@@ -283,7 +283,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                     child: CommonTextField(
                         controller: moldedBeamController,
                         focusNode: moldedBeamFocusNode,
-                        labelText: 'Beam ($feet)',
+                        labelText: 'Beam ($feet) *',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
@@ -316,7 +316,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                     child: CommonTextField(
                         controller: moldedDepthController,
                         focusNode: moldedDepthFocusNode,
-                        labelText: 'Draft ($feet)',
+                        labelText: 'Draft ($feet) *',
                         hintText: '',
                         suffixText: null,
                         isForDecimal: true,
@@ -325,7 +325,8 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         textCapitalization: TextCapitalization.words,
                         maxLength: 6,
                         prefixIcon: null,
-                        requestFocusNode: displcementFocusNode,
+                        //why this focused to displacementFocusNode?
+                        requestFocusNode: displacementFocusNode,
                         obscureText: false,
                         onTap: () {},
                         onChanged: (String value) {
@@ -346,7 +347,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                   SizedBox(height: displayHeight(context) * 0.02),
                   commonText(
                       context: context,
-                      text: 'Engine characteristics',
+                      text: 'Engine characteristics *',
                       fontWeight: FontWeight.w500,
                       textColor: blutoothDialogTxtColor,
                       textSize: displayWidth(context) * 0.035,
@@ -360,11 +361,11 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                     child: CommonTextField(
                         controller: sizeController,
                         focusNode: sizeFocusNode,
-                        labelText: 'Size ($hp)',
+                        labelText: 'Size ($hp) *',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
-                        textInputType: TextInputType.number,
+                        textInputType: TextInputType.numberWithOptions(decimal: true),
                         textCapitalization: TextCapitalization.words,
                         maxLength: 6,
                         prefixIcon: null,
@@ -424,7 +425,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                     child: CommonTextField(
                         controller: builtYearController,
                         focusNode: builtYearFocusNode,
-                        labelText: 'Built Year ($year)',
+                        labelText: 'Built Year ($year) *',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.done,

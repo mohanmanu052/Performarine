@@ -218,7 +218,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                 child: CommonTextField(
                     controller: nameController,
                     focusNode: nameFocusNode,
-                    labelText: 'Name of the Vessel',
+                    labelText: 'Name of the Vessel *',
                     hintText: '',
                     suffixText: null,
                     textInputAction: TextInputAction.next,
@@ -249,7 +249,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                 child: CommonTextField(
                     controller: modelController,
                     focusNode: modelFocusNode,
-                    labelText: 'Model',
+                    labelText: 'Model *',
                     hintText: '',
                     suffixText: null,
                     textInputAction: TextInputAction.next,
@@ -283,7 +283,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                 child: CommonTextField(
                     controller: weightController,
                     focusNode: weightFocusNode,
-                    labelText: 'Displacement ($pound)',
+                    labelText: 'Displacement ($pound) *',
                     hintText: '',
                     suffixText: null,
                     textInputAction: TextInputAction.next,
@@ -305,7 +305,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                     },
                     onSaved: (String value) {
                       Utils.customPrint(value);
-                      CustomLogger().logWithFile(Level.info, "Vessel Weight $value -> $page");
+                      CustomLogger().logWithFile(Level.info, "Vessel Displacement $value -> $page");
                     }),
               ),
               SizedBox(height: displayHeight(context) * 0.015),
@@ -317,7 +317,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                   child: CommonDropDownFormField(
                     context: context,
                     value: selectedEngineType,
-                    hintText: 'Engine Type',
+                    hintText: 'Engine Type *',
                     labelText: '',
                     onChanged: (String value) {
                       setState(() {
@@ -376,7 +376,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                     child: CommonTextField(
                         controller: fuelCapacityController,
                         focusNode: fuelCapacityFocusNode,
-                        labelText: 'Fuel ($liters)',
+                        labelText: 'Fuel ($liters) *',
                         hintText: '',
                         suffixText: null,
                         textInputAction: selectedEngineType == 'Hybrid'
@@ -420,7 +420,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                     child: CommonTextField(
                         controller: batteryCapacityController,
                         focusNode: batteryCapacityFocusNode,
-                        labelText: 'Battery Capacity ($kiloWattHour)',
+                        labelText: 'Battery Capacity ($kiloWattHour) *',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.done,
@@ -456,7 +456,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                   childrenPadding: EdgeInsets.zero,
                   title: commonText(
                       context: context,
-                      text: 'Other Information',
+                      text: 'Other Optional Information',
                       fontWeight: FontWeight.w500,
                       textColor: Colors.black45,
                       textSize: displayWidth(context) * 0.036,
@@ -599,7 +599,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                             // return; */
 
                             Utils.customPrint(
-                                'WEIGHT 1 ${int.parse(weightController.text)}');
+                                'Displacement ${int.parse(weightController.text)}');
                             CustomLogger().logWithFile(Level.info, "WEIGHT 1 ${int.parse(weightController.text)} -> $page");
 
                             commonProvider.addVesselRequestModel = CreateVessel();

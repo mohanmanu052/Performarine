@@ -434,7 +434,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     initDeepLinkListener();
     Utils.customPrint('APP IN BG INIT');
     CustomLogger().logWithFile(Level.info, "APP IN BG INIT -> -> $page ");
-
     checkGPS();
   }
 
