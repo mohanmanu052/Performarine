@@ -233,7 +233,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         onChanged: (String value) {
                         },
                         validator: (value) {
-                          if (value!.trim().isEmpty) {
+                          if (value!.trim().isEmpty||value!.trim()=='.') {
                             return 'Enter Vessel Freeboard';
                           }
 
@@ -266,7 +266,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         onChanged: (String value) {
                         },
                         validator: (value) {
-                          if (value!.trim().isEmpty) {
+                          if (value!.trim().isEmpty||value!.trim()=='.') {
                             return 'Enter Vessel Length Overall';
                           }
                           return null;
@@ -298,7 +298,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         onChanged: (String value) {
                         },
                         validator: (value) {
-                          if (value!.trim().isEmpty) {
+                          if (value!.trim().isEmpty||value!.trim()=='.') {
                             return 'Enter Vessel Beam';
                           }
 
@@ -332,7 +332,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         onChanged: (String value) {
                         },
                         validator: (value) {
-                          if (value!.trim().isEmpty) {
+                          if (value!.trim().isEmpty||value!.trim()=='.') {
                             return 'Enter Vessel Draft';
                           }
 
@@ -362,6 +362,9 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         controller: sizeController,
                         focusNode: sizeFocusNode,
                         labelText: 'Size ($hp) *',
+isForDecimal: true,
+  
+
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
@@ -375,7 +378,24 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         onChanged: (String value) {
                         },
                         validator: (value) {
-                          if (value!.trim().isEmpty) {
+int dotCount = value!.split('.').length - 1;
+
+if (dotCount > 1) {
+  
+
+  // Return an error or handle the case where the value contains more than one dot
+                          //  return 'Enter Valid Vessel Size';
+} else {
+  // The value is valid, you can proceed with it
+  print("Value is valid");
+}
+
+
+
+
+
+
+                          if (value!.trim().isEmpty||value!.trim()=='.') {
                             return 'Enter Vessel Size';
                           }
 
@@ -509,7 +529,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                                   ? num.parse(double.parse(displacementController.text).toStringAsFixed(5)).toDouble()
                                   : double.parse(displacementController.text);*/
                               commonProvider.addVesselRequestModel!.vesselSize =
-                                  sizeController.text;
+                               double.parse(sizeController.text)   ;
                               commonProvider.addVesselRequestModel!.capacity = 0;
                                 //  int.parse(capacityController.text);
                               commonProvider.addVesselRequestModel!.builtYear =
