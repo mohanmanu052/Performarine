@@ -520,7 +520,7 @@ class Utils {
                           child: commonText(
                               context: context,
                               text:
-                              'Your trip is less than 10s going to be archive. Do you want to End the trip ?',
+                              'Your trip is less than 10 seconds. If you end it now, the trip data will be discarded. Do you want to proceed?',
                               fontWeight: FontWeight.w500,
                               textColor: Colors.black87,
                               textSize: displayWidth(context) * 0.042,
@@ -533,7 +533,7 @@ class Utils {
                           children: [
                             Center(
                               child: CommonButtons.getAcceptButton(
-                                  'End Trip',
+                                  'End and Delete',
                                   context,
                                   endTripBtnColor,
                                   endTripBtnClick,

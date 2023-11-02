@@ -120,7 +120,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
         lengthOverallController.text = appendAsInt(widget.addVesselData!.lengthOverall!);
         moldedBeamController.text = appendAsInt(widget.addVesselData!.beam!);
         moldedDepthController.text = appendAsInt(widget.addVesselData!.draft!);
-        displacementController.text = widget.addVesselData!.displacement ?? "";
+        //displacementController.text = widget.addVesselData!.displacement ?? "";
         sizeController.text = widget.addVesselData!.vesselSize!.toString();
       //  capacityController.text = widget.addVesselData!.capacity!.toString();
         builtYearController.text = widget.addVesselData!.builtYear!.toString();
@@ -489,7 +489,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                           width: displayWidth(context),
                           onTap: () async {
                             if (freeBoardFormKey.currentState!.validate() && lengthFormKey.currentState!.validate() && beamFormKey.currentState!.validate()
-                                && draftFormKey.currentState!.validate() && displacementKey.currentState!.validate() && sizeFormKey.currentState!.validate() && builtYearFormKey.currentState!.validate()) {
+                                && draftFormKey.currentState!.validate() && sizeFormKey.currentState!.validate() && builtYearFormKey.currentState!.validate()) {
                               setState(() {
                                 isBtnClicked = true;
                               });
@@ -510,7 +510,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                                   double.parse(moldedBeamController.text);
                               commonProvider.addVesselRequestModel!.draft =
                                   double.parse(moldedDepthController.text);
-                              commonProvider.addVesselRequestModel!.displacement = displacementController.text;
+                              //commonProvider.addVesselRequestModel!.displacement = displacementController.text;
                               commonProvider.addVesselRequestModel!.vesselSize =
                                   double.parse(sizeController.text);
                               commonProvider.addVesselRequestModel!.capacity = 0;
