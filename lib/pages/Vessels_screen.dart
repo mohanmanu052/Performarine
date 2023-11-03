@@ -1,19 +1,12 @@
-
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:performarine/pages/vessel_form.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
 import 'package:provider/provider.dart';
 
 import '../common_widgets/utils/colors.dart';
-import '../common_widgets/utils/common_size_helper.dart';
-import '../common_widgets/utils/constants.dart';
 import '../common_widgets/utils/utils.dart';
 import '../common_widgets/vessel_builder.dart';
-import '../common_widgets/widgets/common_widgets.dart';
 import '../models/vessel.dart';
-import '../old_ui/old_vessel_single_view.dart';
 import '../provider/common_provider.dart';
 import '../services/database_service.dart';
 

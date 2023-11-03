@@ -648,6 +648,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                   if(finalSelectedFiles.isNotEmpty){
                     isDeleted = true;
                     finalSelectedFiles.clear();
+                    commonProvider.selectedImageFiles.clear();
                   }
                 });
                 Utils.customPrint(

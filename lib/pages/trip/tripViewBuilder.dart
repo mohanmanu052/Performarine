@@ -1,18 +1,13 @@
-import 'package:background_locator_2/background_locator.dart';
-import 'package:background_locator_2/settings/android_settings.dart';
-import 'package:background_locator_2/settings/ios_settings.dart';
-import 'package:background_locator_2/settings/locator_settings.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:logger/logger.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/models/trip.dart';
-import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
 import 'package:performarine/pages/trip/trip_widget.dart';
 import 'package:performarine/provider/common_provider.dart';
@@ -20,15 +15,6 @@ import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
-import '../../analytics/location_callback_handler.dart';
-import '../../analytics/start_trip.dart';
-import '../../common_widgets/widgets/common_buttons.dart';
-import '../../common_widgets/widgets/log_level.dart';
-import '../../common_widgets/widgets/user_feed_back.dart';
-import 'dart:io';
-
-import '../../main.dart';
-import '../../old_ui/old_trip_widget.dart';
 
 class TripViewListing extends StatefulWidget {
   String? vesselId, calledFrom;
