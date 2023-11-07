@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
@@ -18,6 +19,7 @@ class SingleLPRDevice extends StatefulWidget {
   final StateSetter? setSetter;
   final Function(bool)? onSingleDeviceTapped;
   String? connectedDeviceId;
+
   SingleLPRDevice(
       {Key? key,
       this.device,
@@ -25,7 +27,7 @@ class SingleLPRDevice extends StatefulWidget {
       this.onSelected,
       this.onBluetoothConnection,
       this.setSetter,
-        this.connectedDeviceId,
+      this.connectedDeviceId,
       this.onSingleDeviceTapped})
       : super(key: key);
 
@@ -37,6 +39,7 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
   bool isConnect = false;
   DateTime? connectDeviceClickTime;
   String page = "single_lpr_device";
+  final FlutterSecureStorage storage = FlutterSecureStorage();
 
   @override
   void initState() {
@@ -54,22 +57,24 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
           widget.connectedDeviceId = widget.device!.id.id;
           widget.onSingleDeviceTapped!(true);
         });
+        await storage.write(key: 'lprDeviceId', value: widget.device!.id.id);
+        debugPrint("SINGLE SELECTED BLE ID ${widget.device!.id.id}");
 
         widget.device!.connect().then((value) {}).catchError((s) {
-
           CustomLogger().logWithFile(Level.error, "ERROR $s-> $page");
           widget.device!.state.listen((event) {
             if (event == BluetoothDeviceState.connected) {
-              CustomLogger().logWithFile(Level.info, "CONNECTION EVENT ${event}-> $page");
+              CustomLogger()
+                  .logWithFile(Level.info, "CONNECTION EVENT ${event}-> $page");
               widget.device!.disconnect().then((value) {
                 widget.device!.connect().then((value) {
-                  CustomLogger().logWithFile(Level.info, "CONNECTION NAME ${widget.device!.name}-> $page");
+                  CustomLogger().logWithFile(Level.info,
+                      "CONNECTION NAME ${widget.device!.name}-> $page");
                   widget.onSelected!(
                       widget.device!.name == null || widget.device!.name.isEmpty
                           ? widget.device!.id.toString()
                           : widget.device!.name);
                   widget.onBluetoothConnection!(true);
-
 
                   Navigator.pop(
                     widget.dialogContext!,
@@ -82,13 +87,14 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
                 });
               });
             } else {
-
-              CustomLogger().logWithFile(Level.error, "ERROR CONNECTED 1212-> $page");
+              CustomLogger()
+                  .logWithFile(Level.error, "ERROR CONNECTED 1212-> $page");
             }
           });
         });
         CustomLogger().logWithFile(Level.error, "ERROR CONNECTED-> $page");
-        CustomLogger().logWithFile(Level.error, "ERROR CONNECTED FIRST-> $page");
+        CustomLogger()
+            .logWithFile(Level.error, "ERROR CONNECTED FIRST-> $page");
 
         widget.setSetter!(() {
           widget.onBluetoothConnection!(true);
@@ -117,7 +123,7 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
             textColor: Colors.black87,
             textSize: displayWidth(context) * 0.036,
             textAlign: TextAlign.start,
-        fontFamily: inter),
+            fontFamily: inter),
       ),
       subtitle: commonText(
           context: context,
@@ -133,15 +139,24 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
         builder: (c, snapshot) {
           // if (snapshot.data ==
           //     BluetoothDeviceState.connected) {
-          return widget.connectedDeviceId == widget.device!.id.id
-              ? commonText(
-                  context: context,
-                  text: 'Connected',
-                  fontWeight: FontWeight.w400,
-                  textColor: Colors.green,
-                  textSize: displayWidth(context) * 0.032,
-                  textAlign: TextAlign.start,
-                  fontFamily: inter)
+          return widget.connectedDeviceId != null
+              ? widget.connectedDeviceId == widget.device!.id.id
+                  ? commonText(
+                      context: context,
+                      text: 'Connected',
+                      fontWeight: FontWeight.w400,
+                      textColor: Colors.green,
+                      textSize: displayWidth(context) * 0.032,
+                      textAlign: TextAlign.start,
+                      fontFamily: inter)
+                  : commonText(
+                      context: context,
+                      text: 'Tap to connect',
+                      fontWeight: FontWeight.w400,
+                      textColor: blueColor,
+                      textSize: displayWidth(context) * 0.032,
+                      textAlign: TextAlign.start,
+                      fontFamily: inter)
               : commonText(
                   context: context,
                   text: 'Tap to connect',
