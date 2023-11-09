@@ -4,6 +4,8 @@ import 'dart:ui';
 import 'package:background_locator_2/background_locator.dart';
 import 'package:background_locator_2/location_dto.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/analytics/create_zip.dart';
 import 'package:performarine/analytics/location_service_repository.dart';
@@ -35,6 +37,15 @@ class EndTrip {
     ReceivePort port = ReceivePort();
     String? latitude, longitude;
     geo.Position currentPosition = await geo.Geolocator.getCurrentPosition();
+    var connectedDevicesList = await FlutterBluePlus.connectedDevices;
+    final FlutterSecureStorage storage = FlutterSecureStorage();
+    if(connectedDevicesList.isNotEmpty)
+      {
+        await storage.write(key: 'lprDeviceId', value: connectedDevicesList.first.remoteId.str);
+        await connectedDevicesList.first.disconnect();
+
+      }
+
 
     if(currentPosition != null)
     {

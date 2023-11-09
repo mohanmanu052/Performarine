@@ -67,7 +67,7 @@ void main() async {
     DeviceOrientation.portraitUp,
   ]);
 
-  flutterBluePlus = FlutterBluePlus.instance;
+  flutterBluePlus = FlutterBluePlus();
 
   configEasyLoading();
 

@@ -31,7 +31,7 @@ class _LPRBluetoothListState extends State<LPRBluetoothList> {
       child: AbsorbPointer(
         absorbing: isConnectToDevice,
         child: StreamBuilder<List<ScanResult>>(
-          stream: FlutterBluePlus.instance.scanResults,
+          stream: FlutterBluePlus.scanResults,
           initialData: const [],
           builder: (c, snapshot) => Column(
             children: snapshot.data != null

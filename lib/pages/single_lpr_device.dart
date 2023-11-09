@@ -57,7 +57,7 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
       visualDensity: VisualDensity(horizontal: 0, vertical: -4),
       onTap: () async {
         List<BluetoothDevice> connectedDevicesList =
-        await FlutterBluePlus.instance.connectedDevices;
+        await FlutterBluePlus.connectedDevices;
         Utils.customPrint("BONDED LIST $connectedDevicesList");
 
         if (connectedDevicesList.isNotEmpty) {
@@ -80,57 +80,20 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
               }
               widget.setSetter!(() {
                 isConnect = true;
-                widget.connectedDeviceId = widget.device!.id.id;
+                widget.connectedDeviceId = widget.device!.remoteId.str;
                 widget.onSingleDeviceTapped!(true);
               });
-              await storage.write(
-                  key: 'lprDeviceId', value: widget.device!.id.id);
-              debugPrint("SINGLE SELECTED BLE ID ${widget.device!.id.id}");
-
-              // widget.device!.connect().then((value) {}).catchError((s) {
-              //   CustomLogger().logWithFile(Level.error, "ERROR $s-> $page");
-              //   widget.device!.state.listen((event) {
-              //     if (event == BluetoothDeviceState.connected) {
-              //       CustomLogger()
-              //           .logWithFile(Level.info, "CONNECTION EVENT ${event}-> $page");
-              //       widget.device!.disconnect().then((value) {
-              //         widget.device!.connect().then((value) {
-              //           CustomLogger().logWithFile(Level.info,
-              //               "CONNECTION NAME ${widget.device!.name}-> $page");
-              //           widget.onSelected!(
-              //               widget.device!.name == null || widget.device!.name.isEmpty
-              //                   ? widget.device!.id.toString()
-              //                   : widget.device!.name);
-              //           widget.onBluetoothConnection!(true);
-              //
-              //           Navigator.pop(
-              //             widget.dialogContext!,
-              //           );
-              //           widget.setSetter!(() {
-              //             isConnect = false;
-              //             widget.onSingleDeviceTapped!(false);
-              //           });
-              //           FlutterBluePlus.instance.stopScan();
-              //         });
-              //       });
-              //     } else {
-              //       CustomLogger()
-              //           .logWithFile(Level.error, "ERROR CONNECTED 1212-> $page");
-              //     }
-              //   });
-              // });
-              // CustomLogger().logWithFile(Level.error, "ERROR CONNECTED-> $page");
-              // CustomLogger()
-              //     .logWithFile(Level.error, "ERROR CONNECTED FIRST-> $page");
+              //await storage.write(key: 'lprDeviceId', value: widget.device!.remoteId.str);
+              debugPrint("SINGLE SELECTED BLE ID ${widget.device!.remoteId.str}");
 
               widget.device!.connect().then((value) {});
 
               widget.setSetter!(() {
                 widget.onBluetoothConnection!(true);
                 widget.onSelected!(
-                    widget.device!.name == null || widget.device!.name.isEmpty
-                        ? widget.device!.id.toString()
-                        : widget.device!.name);
+                    widget.device!.platformName == null || widget.device!.platformName.isEmpty
+                        ? widget.device!.remoteId.str
+                        : widget.device!.platformName);
               });
 
               Future.delayed(Duration(seconds: 1), () {
@@ -152,56 +115,19 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
           }
           widget.setSetter!(() {
             isConnect = true;
-            widget.connectedDeviceId = widget.device!.id.id;
+            widget.connectedDeviceId = widget.device!.remoteId.str;
             widget.onSingleDeviceTapped!(true);
           });
-          await storage.write(key: 'lprDeviceId', value: widget.device!.id.id);
-          debugPrint("SINGLE SELECTED BLE ID ${widget.device!.id.id}");
-
-          // widget.device!.connect().then((value) {}).catchError((s) {
-          //   CustomLogger().logWithFile(Level.error, "ERROR $s-> $page");
-          //   widget.device!.state.listen((event) {
-          //     if (event == BluetoothDeviceState.connected) {
-          //       CustomLogger()
-          //           .logWithFile(Level.info, "CONNECTION EVENT ${event}-> $page");
-          //       widget.device!.disconnect().then((value) {
-          //         widget.device!.connect().then((value) {
-          //           CustomLogger().logWithFile(Level.info,
-          //               "CONNECTION NAME ${widget.device!.name}-> $page");
-          //           widget.onSelected!(
-          //               widget.device!.name == null || widget.device!.name.isEmpty
-          //                   ? widget.device!.id.toString()
-          //                   : widget.device!.name);
-          //           widget.onBluetoothConnection!(true);
-          //
-          //           Navigator.pop(
-          //             widget.dialogContext!,
-          //           );
-          //           widget.setSetter!(() {
-          //             isConnect = false;
-          //             widget.onSingleDeviceTapped!(false);
-          //           });
-          //           FlutterBluePlus.instance.stopScan();
-          //         });
-          //       });
-          //     } else {
-          //       CustomLogger()
-          //           .logWithFile(Level.error, "ERROR CONNECTED 1212-> $page");
-          //     }
-          //   });
-          // });
-          // CustomLogger().logWithFile(Level.error, "ERROR CONNECTED-> $page");
-          // CustomLogger()
-          //     .logWithFile(Level.error, "ERROR CONNECTED FIRST-> $page");
-
+        //  await storage.write(key: 'lprDeviceId', value: widget.device!.remoteId.str);
+          debugPrint("SINGLE SELECTED BLE ID ${widget.device!.remoteId.str}");
           widget.device!.connect().then((value) {});
 
           widget.setSetter!(() {
             widget.onBluetoothConnection!(true);
             widget.onSelected!(
-                widget.device!.name == null || widget.device!.name.isEmpty
-                    ? widget.device!.id.toString()
-                    : widget.device!.name);
+                widget.device!.platformName == null || widget.device!.platformName.isEmpty
+                    ? widget.device!.remoteId.str
+                    : widget.device!.platformName);
           });
 
           Future.delayed(Duration(seconds: 1), () {
@@ -219,7 +145,7 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
         padding: const EdgeInsets.only(bottom: 2.0),
         child: commonText(
             context: context,
-            text: widget.device!.name,
+            text: widget.device!.platformName,
             fontWeight: FontWeight.w600,
             textColor: Colors.black87,
             textSize: displayWidth(context) * 0.036,
@@ -228,20 +154,20 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
       ),
       subtitle: commonText(
           context: context,
-          text: widget.device!.id.toString(),
+          text: widget.device!.remoteId.str,
           fontWeight: FontWeight.w500,
           textColor: Colors.black54,
           textSize: displayWidth(context) * 0.032,
           textAlign: TextAlign.start,
           fontFamily: inter),
-      trailing: StreamBuilder<BluetoothDeviceState>(
-        stream: widget.device!.state,
-        initialData: BluetoothDeviceState.disconnected,
+      trailing: StreamBuilder<BluetoothConnectionState>(
+        stream: widget.device!.connectionState,
+        initialData: BluetoothConnectionState.disconnected,
         builder: (c, snapshot) {
           // if (snapshot.data ==
           //     BluetoothDeviceState.connected) {
           return widget.connectedDeviceId != null
-              ? widget.connectedDeviceId == widget.device!.id.id
+              ? widget.connectedDeviceId == widget.device!.remoteId.str
               ? commonText(
               context: context,
               text: 'Connected',

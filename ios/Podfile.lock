@@ -135,10 +135,6 @@ PODS:
     - ZIPFoundation (= 0.9.13)
   - flutter_blue_plus (0.0.1):
     - Flutter
-    - flutter_blue_plus/Protos (= 0.0.1)
-  - flutter_blue_plus/Protos (0.0.1):
-    - Flutter
-    - Protobuf (~> 3.21)
   - flutter_image_compress (1.0.0):
     - Flutter
     - Mantle
@@ -258,7 +254,6 @@ PODS:
   - PromisesObjC (2.3.1)
   - PromisesSwift (2.3.1):
     - PromisesObjC (= 2.3.1)
-  - Protobuf (3.23.4)
   - ReachabilitySwift (5.0.0)
   - SDWebImage (5.17.0):
     - SDWebImage/Core (= 5.17.0)
@@ -351,7 +346,6 @@ SPEC REPOS:
     - nanopb
     - PromisesObjC
     - PromisesSwift
-    - Protobuf
     - ReachabilitySwift
     - SDWebImage
     - SDWebImageWebPCoder
@@ -448,7 +442,7 @@ SPEC CHECKSUMS:
   FirebaseSessions: a4ee211eeb31a2224cd8d9d4e30a0fccde9aa00c
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_archive: 1805fdd3a695fd284b43edb53dc35ca843fb761c
-  flutter_blue_plus: 316ac8d1179789616d2c148e8a03c37720e63933
+  flutter_blue_plus: 4837da7d00cf5d441fdd6635b3a57f936778ea96
   flutter_image_compress: 5a5e9aee05b6553048b8df1c3bc456d0afaac433
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   flutter_secure_storage: 23fc622d89d073675f2eaa109381aefbcf5a49be
@@ -472,7 +466,6 @@ SPEC CHECKSUMS:
   permission_handler_apple: e76247795d700c14ea09e3a2d8855d41ee80a2e6
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
   PromisesSwift: 28dca69a9c40779916ac2d6985a0192a5cb4a265
-  Protobuf: c6bc59bbab3d38a71c67f62d7cb7ca8f8ea4eca1
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   SDWebImage: 750adf017a315a280c60fde706ab1e552a3ae4e9
   SDWebImageWebPCoder: af09429398d99d524cae2fe00f6f0f6e491ed102

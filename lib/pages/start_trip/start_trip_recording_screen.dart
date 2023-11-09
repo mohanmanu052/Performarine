@@ -2472,12 +2472,14 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
   }
 
   Future<bool> blueIsOn() async {
-    FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
-    final isOn = await _flutterBlue.isOn;
+    // FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
+    BluetoothAdapterState adapterState = await FlutterBluePlus.adapterState.first;
+    final isOn = adapterState == BluetoothAdapterState.on;
     if (isOn) return true;
 
     await Future.delayed(const Duration(seconds: 1));
-    return await FlutterBluePlus.instance.isOn;
+    BluetoothAdapterState tempAdapterState = await FlutterBluePlus.adapterState.first;
+    return tempAdapterState == BluetoothAdapterState.on;
   }
 
   /// To enable Bluetooth
@@ -3015,7 +3017,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     Utils.customPrint("LPR DEVICE ID $lprDeviceId");
 
     /// TODO
-    List<BluetoothDevice> connectedDevicesList = await FlutterBluePlus.instance.connectedDevices;
+    List<BluetoothDevice> connectedDevicesList = await FlutterBluePlus.connectedDevices;
     Utils.customPrint("BONDED LIST $connectedDevicesList");
 
     if(connectedDevicesList.isNotEmpty){
@@ -3054,151 +3056,90 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
       String deviceId = '';
       BluetoothDevice? connectedBluetoothDevice;
 
-      FlutterBluePlus.instance
-          .startScan(timeout: Duration(seconds: 4))
-          .then((value) async {
+      FlutterBluePlus.scanResults.listen((value) async {
+        if(value.isNotEmpty){
+          for (int i = 0; i < value.length; i++) {
+            ScanResult r = value[i];
 
-        for (int i = 0; i < value.length; i++) {
-          ScanResult r = value[i];
-
-          if(lprDeviceId != null)
-          {
-            Utils.customPrint('STORED ID: $lprDeviceId - ${r.device.id.id}');
-            if(r.device.id.id == lprDeviceId)
+            if(lprDeviceId != null)
             {
-              // r.device.connect().catchError((e) {
-              //   print('ERROR BLE: $e');
-              //   r.device.state.listen((event) {
-              //     if (event == BluetoothDeviceState.connected) {
-              //
-              //       r.device.disconnect().then((value) {
-              //         r.device.connect().catchError((e) {
-              //           if (mounted) {
-              //             setState(() {
-              //               isBluetoothPermitted = true;
-              //               progress = 1.0;
-              //               lprSensorProgress = 1.0;
-              //               isStartButton = true;
-              //               debugPrint(
-              //                   "BLUETOOTH PERMISSION CODE 4 $isBluetoothPermitted");
-              //             });
-              //           }
-              //         });
-              //       });
-              //     }
-              //   });
-              // });
-              r.device.connect().then((value) {
-                Utils.customPrint('CONNECTED TO DEVICE BLE');
-              }).catchError((onError){
-                Utils.customPrint('ERROR BLE: $onError');
-              });
+              Utils.customPrint('STORED ID: $lprDeviceId - ${r.device.remoteId.str}');
+              if(r.device.remoteId.str == lprDeviceId)
+              {
+                r.device.connect().then((value) {
+                  Utils.customPrint('CONNECTED TO DEVICE BLE');
+                }).catchError((onError){
+                  Utils.customPrint('ERROR BLE: $onError');
+                });
 
-              bluetoothName = r.device.name;
-              await storage.write(key: 'lprDeviceId', value: r.device.id.id);
-              deviceId = r.device.id.id;
-              connectedBluetoothDevice = r.device;
-              setState(() {
-                bluetoothName = r.device.name;
-                isBluetoothPermitted = true;
-                progress = 1.0;
-                lprSensorProgress = 1.0;
-                isStartButton = true;
-              });
-              FlutterBluePlus.instance.stopScan();
-              break;
-            }
-            else
-            {
-              if (r.device.name.toLowerCase().contains("lpr")) {
-                // r.device.connect().catchError((e) {
-                //   r.device.state.listen((event) {
-                //     if (event == BluetoothDeviceState.connected) {
-                //       r.device.disconnect().then((value) {
-                //         r.device.connect().catchError((e) {
-                //           if (mounted) {
-                //             setState(() {
-                //               isBluetoothPermitted = true;
-                //               progress = 1.0;
-                //               lprSensorProgress = 1.0;
-                //               isStartButton = true;
-                //               debugPrint(
-                //                   "BLUETOOTH PERMISSION CODE 4 $isBluetoothPermitted");
-                //             });
-                //           }
-                //         });
-                //       });
-                //     }
-                //   });
-                // });
 
-                r.device.connect().then((value) {});
-                bluetoothName = r.device.name;
-                await storage.write(key: 'lprDeviceId', value: r.device.id.id);
-                deviceId = r.device.id.id;
+                bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+                //await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
+                deviceId = r.device.remoteId.str;
                 connectedBluetoothDevice = r.device;
                 setState(() {
-                  bluetoothName = r.device.name;
+                  bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
                   isBluetoothPermitted = true;
                   progress = 1.0;
                   lprSensorProgress = 1.0;
                   isStartButton = true;
                 });
-                FlutterBluePlus.instance.stopScan();
+                FlutterBluePlus.stopScan();
+                break;
+              }
+              else
+              {
+                if (r.device.platformName.toLowerCase().contains("lpr")) {
+                  r.device.connect().then((value) {});
+                  bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+                 // await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
+                  deviceId = r.device.remoteId.str;
+                  connectedBluetoothDevice = r.device;
+                  setState(() {
+                    bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+                    isBluetoothPermitted = true;
+                    progress = 1.0;
+                    lprSensorProgress = 1.0;
+                    isStartButton = true;
+                  });
+                  FlutterBluePlus.stopScan();
+                  break;
+                }
+              }
+            }
+            else
+            {
+              if (r.device.platformName.toLowerCase().contains("lpr")) {
+                r.device.connect().then((value) {});
+                bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+                //await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
+                deviceId = r.device.remoteId.str;
+                connectedBluetoothDevice = r.device;
+                setState(() {
+                  bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+                  isBluetoothPermitted = true;
+                  progress = 1.0;
+                  lprSensorProgress = 1.0;
+                  isStartButton = true;
+                });
+                FlutterBluePlus.stopScan();
                 break;
               }
             }
           }
-          else
-          {
-            if (r.device.name.toLowerCase().contains("lpr")) {
-              // r.device.connect().catchError((e) {
-              //   r.device.state.listen((event) {
-              //     if (event == BluetoothDeviceState.connected) {
-              //       r.device.disconnect().then((value) {
-              //         r.device.connect().catchError((e) {
-              //           if (mounted) {
-              //             setState(() {
-              //               isBluetoothPermitted = true;
-              //               progress = 1.0;
-              //               lprSensorProgress = 1.0;
-              //               isStartButton = true;
-              //               debugPrint(
-              //                   "BLUETOOTH PERMISSION CODE 4 $isBluetoothPermitted");
-              //             });
-              //           }
-              //         });
-              //       });
-              //     }
-              //   });
-              // });
-
-              r.device.connect().then((value) {});
-              bluetoothName = r.device.name;
-              await storage.write(key: 'lprDeviceId', value: r.device.id.id);
-              deviceId = r.device.id.id;
-              connectedBluetoothDevice = r.device;
-              setState(() {
-                bluetoothName = r.device.name;
-                isBluetoothPermitted = true;
-                progress = 1.0;
-                lprSensorProgress = 1.0;
-                isStartButton = true;
-              });
-              FlutterBluePlus.instance.stopScan();
-              break;
-            }
-          }
         }
+      });
 
-        Future.delayed(Duration(seconds: 2), () {
-          showBluetoothListDialog(context, deviceId, connectedBluetoothDevice);
-          EasyLoading.dismiss();
-        });
+      FlutterBluePlus
+          .startScan(timeout: Duration(seconds: 4));
+
+      Future.delayed(Duration(seconds: 4), () {
+        showBluetoothListDialog(context, deviceId, connectedBluetoothDevice);
+        EasyLoading.dismiss();
       });
     }
     return;
-    FlutterBluePlus.instance.scanResults.listen((results) async {
+    FlutterBluePlus.scanResults.listen((results) async {
       for (ScanResult r in results) {
         if (r.device.name.toLowerCase().contains("jbl")) {
           Utils.customPrint('FOUND DEVICE AGAIN');
@@ -3234,7 +3175,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
             isStartButton = true;
             debugPrint("BLUETOOTH PERMISSION CODE 5 $isBluetoothPermitted");
           });
-          FlutterBluePlus.instance.stopScan();
+          FlutterBluePlus.stopScan();
           break;
         } else {
           r.device
@@ -3256,8 +3197,8 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     if (Platform.isAndroid) {
       bool isLocationPermitted = await Permission.locationAlways.isGranted;
       if (isLocationPermitted) {
-        FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
-        FlutterBluePlus.instance.scanResults.listen((results) async {
+        FlutterBluePlus.startScan(timeout: Duration(seconds: 4));
+        FlutterBluePlus.scanResults.listen((results) async {
           for (ScanResult r in results) {
             if(lprDeviceId != null)
             {
@@ -3294,7 +3235,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                   isStartButton = true;
                   debugPrint("BLUETOOTH PERMISSION CODE 7 $isBluetoothPermitted");
                 });
-                FlutterBluePlus.instance.stopScan();
+                FlutterBluePlus.stopScan();
                 break;
               }
             }
@@ -3483,8 +3424,8 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
         await Utils.getLocationPermissions(context, scaffoldKey);
         bool isLocationPermitted = await Permission.locationAlways.isGranted;
         if (isLocationPermitted) {
-          FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
-          FlutterBluePlus.instance.scanResults.listen((results) async {
+          FlutterBluePlus.startScan(timeout: Duration(seconds: 4));
+          FlutterBluePlus.scanResults.listen((results) async {
             for (ScanResult r in results) {
               if(lprDeviceId != null)
               {
@@ -3518,7 +3459,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                   debugPrint(
                       "BLUETOOTH PERMISSION CODE 9 $isBluetoothPermitted");
                 });
-                FlutterBluePlus.instance.stopScan();
+                FlutterBluePlus.stopScan();
                 break;
               }
               else
@@ -3546,7 +3487,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                   });
 
                   bluetoothName = r.device.name;
-                  await storage.write(key: 'lprDeviceId', value: r.device.id.id);
+                  //await storage.write(key: 'lprDeviceId', value: r.device.id.id);
                   setState(() {
                     isBluetoothPermitted = true;
                     progress = 1.0;
@@ -3555,7 +3496,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                     debugPrint(
                         "BLUETOOTH PERMISSION CODE 9 $isBluetoothPermitted");
                   });
-                  FlutterBluePlus.instance.stopScan();
+                  FlutterBluePlus.stopScan();
                   break;
                 } else {
                   r.device.disconnect().then(
@@ -3744,8 +3685,8 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
       bool isLocationPermitted = await Permission.locationAlways.isGranted;
       if (isLocationPermitted) {
-        FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
-        FlutterBluePlus.instance.scanResults.listen((results) async {
+        FlutterBluePlus.startScan(timeout: Duration(seconds: 4));
+        FlutterBluePlus.scanResults.listen((results) async {
           for (ScanResult r in results) {
             if(lprDeviceId != null)
             {
@@ -3784,7 +3725,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                     debugPrint(
                         "BLUETOOTH PERMISSION CODE 11 $isBluetoothPermitted");
                   });
-                  FlutterBluePlus.instance.stopScan();
+                  FlutterBluePlus.stopScan();
                   break;
                 }
               }
@@ -3816,7 +3757,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                 });
 
                 bluetoothName = r.device.name;
-                await storage.write(key: 'lprDeviceId', value: r.device.id.id);
+                //await storage.write(key: 'lprDeviceId', value: r.device.id.id);
                 setState(() {
                   isBluetoothPermitted = true;
                   progress = 1.0;
@@ -3825,7 +3766,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                   debugPrint(
                       "BLUETOOTH PERMISSION CODE 11 $isBluetoothPermitted");
                 });
-                FlutterBluePlus.instance.stopScan();
+                FlutterBluePlus.stopScan();
                 break;
               } else {
                 r.device.disconnect().then(
@@ -4006,8 +3947,8 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
         await Utils.getLocationPermissions(context, scaffoldKey);
         bool isLocationPermitted = await Permission.locationAlways.isGranted;
         if (isLocationPermitted) {
-          FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
-          FlutterBluePlus.instance.scanResults.listen((results) async {
+          FlutterBluePlus.startScan(timeout: Duration(seconds: 4));
+          FlutterBluePlus.scanResults.listen((results) async {
             for (ScanResult r in results) {
               if (r.device.name.toLowerCase().contains("lpr")) {
                 r.device.connect().catchError((e) {
@@ -4040,7 +3981,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                   debugPrint(
                       "BLUETOOTH PERMISSION CODE 13 $isBluetoothPermitted");
                 });
-                FlutterBluePlus.instance.stopScan();
+                FlutterBluePlus.stopScan();
                 break;
               } else {
                 r.device.disconnect().then(
@@ -4231,7 +4172,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
     // checkAndGetLPRList();
 
-    FlutterBluePlus.instance
+    FlutterBluePlus
         .startScan(timeout: Duration(seconds: 4));
 
     return showDialog(
@@ -4417,7 +4358,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                               onTap: () {
                                 // FlutterBluePlus.instance.
 
-                                FlutterBluePlus.instance.stopScan();
+                                FlutterBluePlus.stopScan();
 
                                 setDialogState(() {
                                   isScanningBluetooth = false;
