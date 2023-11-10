@@ -109,7 +109,8 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
           }, onCancelClick: () {
             Navigator.of(context).pop();
           });
-        } else {
+        }
+        else {
           if (widget.connectedBluetoothDevice != null) {
             widget.connectedBluetoothDevice!.disconnect();
           }
