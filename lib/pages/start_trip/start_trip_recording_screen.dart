@@ -114,6 +114,10 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
   late TextEditingController textEditingController;
   FocusNode _focusNode = FocusNode();
 
+  bool openedSettingsPageForPermission = false;
+
+  StreamSubscription<List<ScanResult>>? autoConnectStreamSubscription;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -142,11 +146,12 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
       }
     });
 
-    checkPermissionsAndAutoConnectToDevice();
-
+    Future.delayed(Duration(milliseconds: 500), (){
+      checkPermissionsAndAutoConnectToDevice(context);
+    });
   }
 
-  checkPermissionsAndAutoConnectToDevice() async
+  checkPermissionsAndAutoConnectToDevice(BuildContext context) async
   {
     bool isNDPermDenied =
     await Permission
@@ -177,8 +182,8 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
           });
       return;
     } else {
-      if (Platform
-          .isIOS) {
+      /// START
+      if(Platform.isIOS){
         dynamic isBluetoothEnable = Platform
             .isAndroid
             ? await blueIsOn()
@@ -187,131 +192,111 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
             scaffoldKey,
                 () {
               showBluetoothDialog(
-                  context);
+                  context, autoConnect: true);
             });
 
-        if (isBluetoothEnable !=
-            null) {
-          if (isBluetoothEnable) {
-            if (Platform
-                .isIOS) {
-              autoConnectToDevice();
-              // checkAndGetLPRList(
-              //     context);
-              // showBluetoothListDialog(context);
-            } else {
-              if (await Permission
-                  .location
-                  .isPermanentlyDenied) {
-                Utils.showSnackBar(
-                    context,
-                    scaffoldKey:
-                    scaffoldKey,
-                    message:
-                    'Location permissions are denied without permissions we are unable to start the trip');
-                Future.delayed(
-                    Duration(
-                        seconds: 2),
-                        () async {
-                      await openAppSettings();
-                    });
-              } else {
-                if (await Permission
-                    .location
-                    .isGranted) {
-                  autoConnectToDevice();
-                  // checkAndGetLPRList(
-                  //     context);
-                  // showBluetoothListDialog(context);
-                } else {
-                  await Permission
-                      .location
-                      .request();
-                }
-              }
-            }
-          } else {
+        if(isBluetoothEnable != null){
+          if(isBluetoothEnable){
+            autoConnectToDevice();
+          }
+          else{
+            Utils.customPrint('BLED - SHOWN FIRST');
             showBluetoothDialog(
-                context);
+                context, autoConnect: true);
           }
         }
-      } else {
+      }
+      else{
         bool
         isNDPermittedOne =
         await Permission
             .bluetoothConnect
             .isGranted;
 
-        if (isNDPermittedOne) {
-          bool isBluetoothEnable = Platform
-              .isAndroid
-              ? await blueIsOn()
-              : await commonProvider
-              .checkIfBluetoothIsEnabled(
-              scaffoldKey,
-                  () {
-                showBluetoothDialog(
-                    context);
-              });
+        if(isNDPermittedOne){
 
-          if (isBluetoothEnable) {
-            if (Platform
-                .isIOS) {
-              autoConnectToDevice();
+          if (await Permission
+              .location
+              .isPermanentlyDenied) {
+            Utils.showSnackBar(
+                context,
+                scaffoldKey:
+                scaffoldKey,
+                message:
+                'Location permissions are denied without permissions we are unable to start the trip');
+            Future.delayed(
+                Duration(
+                    seconds: 2),
+                    () async {
+                      openedSettingsPageForPermission = true;
+                  await openAppSettings();
+                });
+          }
+          else {
+            if (await Permission
+                .location
+                .isGranted) {
+              bool isBluetoothEnable = await blueIsOn();
+
+              if(isBluetoothEnable){
+                autoConnectToDevice();
+              }
+              else{
+                Utils.customPrint('BLED - SHOWN SECOND');
+                showBluetoothDialog(context, autoConnect: true);
+              }
+
               // checkAndGetLPRList(
               //     context);
               // showBluetoothListDialog(context);
-            } else {
-              if (await Permission
+            }
+            else {
+              if ((await Permission
                   .location
-                  .isPermanentlyDenied) {
+                  .shouldShowRequestRationale)) {
                 Utils.showSnackBar(
                     context,
-                    scaffoldKey:
-                    scaffoldKey,
-                    message:
-                    'Location permissions are denied without permissions we are unable to start the trip');
+                    scaffoldKey: scaffoldKey,
+                    message: 'Location permissions are denied without permissions we are unable to start the trip');
                 Future.delayed(
-                    Duration(
-                        seconds: 2),
+                    Duration(seconds: 2),
                         () async {
+                          openedSettingsPageForPermission = true;
                       await openAppSettings();
                     });
-              } else {
-
-                if (await Permission
+              }
+              else {
+                await Permission
                     .location
-                    .isGranted) {
-                  autoConnectToDevice();
-                  // checkAndGetLPRList(
-                  //     context);
-                  // showBluetoothListDialog(context);
-                } else {
-                  if (!(await Permission
-                      .location
-                      .shouldShowRequestRationale)) {
-                    Utils.showSnackBar(
-                        context,
-                        scaffoldKey: scaffoldKey,
-                        message: 'Location permissions are denied without permissions we are unable to start the trip');
-                    Future.delayed(
-                        Duration(seconds: 2),
-                            () async {
-                          await openAppSettings();
-                        });
-                  } else {
-                    await Permission
-                        .location
-                        .request();
+                    .request();
+                if(await Permission
+                    .location.isGranted){
+                  bool isBluetoothEnable = Platform
+                      .isAndroid
+                      ? await blueIsOn()
+                      : await commonProvider
+                      .checkIfBluetoothIsEnabled(
+                      scaffoldKey,
+                          () {
+                        showBluetoothDialog(
+                            context, autoConnect: true);
+                      });
+                  if(isBluetoothEnable){
+                    autoConnectToDevice();
                   }
+                  else{
+                    Utils.customPrint('BLED - SHOWN THIRD');
+                    showBluetoothDialog(context, autoConnect: true);
+                  }
+                }
+                else{
+                  checkPermissionsAndAutoConnectToDevice(context);
                 }
               }
             }
-          } else {
-            showBluetoothDialog(
-                context);
           }
-        } else {
+        }
+        else{
           await Permission
               .bluetoothConnect
               .request();
@@ -320,59 +305,98 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
           await Permission
               .bluetoothConnect
               .isGranted;
-          if (isNDPermitted) {
-            bool isBluetoothEnable = Platform
-                .isAndroid
-                ? await blueIsOn()
-                : await commonProvider.checkIfBluetoothIsEnabled(
-                scaffoldKey,
-                    () {
-                  showBluetoothDialog(
-                      context);
-                });
 
-            if (isBluetoothEnable) {
-              if (Platform
-                  .isIOS) {
-                autoConnectToDevice();
+          if(isNDPermitted){
+            if (await Permission
+                .location
+                .isPermanentlyDenied) {
+              Utils.showSnackBar(
+                  context,
+                  scaffoldKey:
+                  scaffoldKey,
+                  message:
+                  'Location permissions are denied without permissions we are unable to start the trip');
+              Future.delayed(
+                  Duration(
+                      seconds: 2),
+                      () async {
+                        openedSettingsPageForPermission = true;
+                    await openAppSettings();
+                  });
+            }
+            else {
+              if (await Permission
+                  .location
+                  .isGranted) {
+                bool isBluetoothEnable = Platform
+                    .isAndroid
+                    ? await blueIsOn()
+                    : await commonProvider
+                    .checkIfBluetoothIsEnabled(
+                    scaffoldKey,
+                        () {
+                      showBluetoothDialog(
+                          context, autoConnect: true);
+                    });
+                if(isBluetoothEnable){
+                  autoConnectToDevice();
+                }
+                else{
+                  Utils.customPrint('BLED - SHOWN FOURTH');
+                  showBluetoothDialog(context, autoConnect: true);
+                }
+
                 // checkAndGetLPRList(
                 //     context);
                 // showBluetoothListDialog(context);
-              } else {
-                if (await Permission
+              }
+              else {
+                if ((await Permission
                     .location
-                    .isPermanentlyDenied) {
+                    .shouldShowRequestRationale)) {
                   Utils.showSnackBar(
                       context,
-                      scaffoldKey:
-                      scaffoldKey,
-                      message:
-                      'Location permissions are denied without permissions we are unable to start the trip');
+                      scaffoldKey: scaffoldKey,
+                      message: 'Location permissions are denied without permissions we are unable to start the trip');
                   Future.delayed(
                       Duration(seconds: 2),
                           () async {
+                            openedSettingsPageForPermission = true;
                         await openAppSettings();
                       });
-                } else {
-                  if (await Permission
+                }
+                else {
+                  await Permission
                       .location
-                      .isGranted) {
-                    autoConnectToDevice();
-                    // checkAndGetLPRList(
-                    //     context);
-                    // showBluetoothListDialog(context);
-                  } else {
-                    await Permission
-                        .location
-                        .request();
+                      .request();
+                  if(await Permission
+                      .location.isGranted){
+                    bool isBluetoothEnable = Platform
+                        .isAndroid
+                        ? await blueIsOn()
+                        : await commonProvider
+                        .checkIfBluetoothIsEnabled(
+                        scaffoldKey,
+                            () {
+                          showBluetoothDialog(
+                              context, autoConnect: true);
+                        });
+                    if(isBluetoothEnable){
+                      autoConnectToDevice();
+                    }
+                    else{
+                      Utils.customPrint('BLED - SHOWN FIFTH');
+                      showBluetoothDialog(context, autoConnect: true);
+                    }
+                  }
+                  else{
+                    checkPermissionsAndAutoConnectToDevice(context);
                   }
                 }
               }
-            } else {
-              showBluetoothDialog(
-                  context);
             }
-          } else {
+          }
+          else{
             if (await Permission
                 .bluetoothConnect
                 .isDenied ||
@@ -398,6 +422,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                           () async {
                         Get.back();
 
+                        openedSettingsPageForPermission = true;
                         await openAppSettings();
                       },
                     );
@@ -406,6 +431,249 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
           }
         }
       }
+      /// END
+
+
+
+
+      // if (Platform
+      //     .isIOS) {
+      //   dynamic isBluetoothEnable = Platform
+      //       .isAndroid
+      //       ? await blueIsOn()
+      //       : await commonProvider
+      //       .checkIfBluetoothIsEnabled(
+      //       scaffoldKey,
+      //           () {
+      //         showBluetoothDialog(
+      //             context);
+      //       });
+      //
+      //   if (isBluetoothEnable !=
+      //       null) {
+      //     if (isBluetoothEnable) {
+      //       if (Platform
+      //           .isIOS) {
+      //         autoConnectToDevice();
+      //         // checkAndGetLPRList(
+      //         //     context);
+      //         // showBluetoothListDialog(context);
+      //       } else {
+      //         if (await Permission
+      //             .location
+      //             .isPermanentlyDenied) {
+      //           Utils.showSnackBar(
+      //               context,
+      //               scaffoldKey:
+      //               scaffoldKey,
+      //               message:
+      //               'Location permissions are denied without permissions we are unable to start the trip');
+      //           Future.delayed(
+      //               Duration(
+      //                   seconds: 2),
+      //                   () async {
+      //                 await openAppSettings();
+      //               });
+      //         } else {
+      //           if (await Permission
+      //               .location
+      //               .isGranted) {
+      //             autoConnectToDevice();
+      //             // checkAndGetLPRList(
+      //             //     context);
+      //             // showBluetoothListDialog(context);
+      //           } else {
+      //             await Permission
+      //                 .location
+      //                 .request();
+      //           }
+      //         }
+      //       }
+      //     } else {
+      //       showBluetoothDialog(
+      //           context);
+      //     }
+      //   }
+      // }
+      // else {
+      //   bool
+      //   isNDPermittedOne =
+      //   await Permission
+      //       .bluetoothConnect
+      //       .isGranted;
+      //
+      //   if (isNDPermittedOne) {
+      //     bool isBluetoothEnable = Platform
+      //         .isAndroid
+      //         ? await blueIsOn()
+      //         : await commonProvider
+      //         .checkIfBluetoothIsEnabled(
+      //         scaffoldKey,
+      //             () {
+      //           showBluetoothDialog(
+      //               context);
+      //         });
+      //
+      //     if (isBluetoothEnable) {
+      //       if (Platform
+      //           .isIOS) {
+      //         autoConnectToDevice();
+      //         // checkAndGetLPRList(
+      //         //     context);
+      //         // showBluetoothListDialog(context);
+      //       } else {
+      //         if (await Permission
+      //             .location
+      //             .isPermanentlyDenied) {
+      //           Utils.showSnackBar(
+      //               context,
+      //               scaffoldKey:
+      //               scaffoldKey,
+      //               message:
+      //               'Location permissions are denied without permissions we are unable to start the trip');
+      //           Future.delayed(
+      //               Duration(
+      //                   seconds: 2),
+      //                   () async {
+      //                 await openAppSettings();
+      //               });
+      //         }
+      //         else {
+      //
+      //           if (await Permission
+      //               .location
+      //               .isGranted) {
+      //             autoConnectToDevice();
+      //             // checkAndGetLPRList(
+      //             //     context);
+      //             // showBluetoothListDialog(context);
+      //           }
+      //           else {
+      //             if (!(await Permission
+      //                 .location
+      //                 .shouldShowRequestRationale)) {
+      //               Utils.showSnackBar(
+      //                   context,
+      //                   scaffoldKey: scaffoldKey,
+      //                   message: 'Location permissions are denied without permissions we are unable to start the trip');
+      //               Future.delayed(
+      //                   Duration(seconds: 2),
+      //                       () async {
+      //                     await openAppSettings();
+      //                   });
+      //             } else {
+      //               await Permission
+      //                   .location
+      //                   .request();
+      //             }
+      //           }
+      //         }
+      //       }
+      //     } else {
+      //       showBluetoothDialog(
+      //           context);
+      //     }
+      //   }
+      //   else {
+      //     await Permission
+      //         .bluetoothConnect
+      //         .request();
+      //     bool
+      //     isNDPermitted =
+      //     await Permission
+      //         .bluetoothConnect
+      //         .isGranted;
+      //     if (isNDPermitted) {
+      //       bool isBluetoothEnable = Platform
+      //           .isAndroid
+      //           ? await blueIsOn()
+      //           : await commonProvider.checkIfBluetoothIsEnabled(
+      //           scaffoldKey,
+      //               () {
+      //             showBluetoothDialog(
+      //                 context);
+      //           });
+      //
+      //       if (isBluetoothEnable) {
+      //         if (Platform
+      //             .isIOS) {
+      //           autoConnectToDevice();
+      //           // checkAndGetLPRList(
+      //           //     context);
+      //           // showBluetoothListDialog(context);
+      //         } else {
+      //           if (await Permission
+      //               .location
+      //               .isPermanentlyDenied) {
+      //             Utils.showSnackBar(
+      //                 context,
+      //                 scaffoldKey:
+      //                 scaffoldKey,
+      //                 message:
+      //                 'Location permissions are denied without permissions we are unable to start the trip');
+      //             Future.delayed(
+      //                 Duration(seconds: 2),
+      //                     () async {
+      //                   await openAppSettings();
+      //                 });
+      //           } else {
+      //             if (await Permission
+      //                 .location
+      //                 .isGranted) {
+      //               autoConnectToDevice();
+      //               // checkAndGetLPRList(
+      //               //     context);
+      //               // showBluetoothListDialog(context);
+      //             } else {
+      //               await Permission
+      //                   .location
+      //                   .request();
+      //               if (await Permission
+      //                   .location
+      //                   .isGranted){
+      //                 autoConnectToDevice();
+      //               }
+      //             }
+      //           }
+      //         }
+      //       } else {
+      //         showBluetoothDialog(
+      //             context);
+      //       }
+      //     } else {
+      //       if (await Permission
+      //           .bluetoothConnect
+      //           .isDenied ||
+      //           await Permission
+      //               .bluetoothConnect
+      //               .isPermanentlyDenied) {
+      //         showDialog(
+      //             context:
+      //             context,
+      //             builder:
+      //                 (BuildContext
+      //             context) {
+      //               return LocationPermissionCustomDialog(
+      //                 isLocationDialogBox:
+      //                 false,
+      //                 text:
+      //                 'Allow nearby devices',
+      //                 subText:
+      //                 'Allow nearby devices to connect to the app',
+      //                 buttonText:
+      //                 'OK',
+      //                 buttonOnTap:
+      //                     () async {
+      //                   Get.back();
+      //
+      //                   await openAppSettings();
+      //                 },
+      //               );
+      //             });
+      //       }
+      //     }
+      //   }
+      // }
     }
   }
 
@@ -416,26 +684,31 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     );
     Utils.customPrint("LPR DEVICE ID $lprDeviceId");
 
+    EasyLoading.show(
+        status: 'Searching for available devices...',
+        maskType: EasyLoadingMaskType.black);
+
     /// Check for already connected device.
     List<BluetoothDevice> connectedDevicesList = FlutterBluePlus.connectedDevices;
     Utils.customPrint("BONDED LIST $connectedDevicesList");
 
     if(connectedDevicesList.isEmpty){
-      EasyLoading.show(
-          status: 'Searching for available devices...',
-          maskType: EasyLoadingMaskType.black);
+
 
       await FlutterBluePlus.startScan(timeout: Duration(seconds: 4));
 
-      await Future.delayed(Duration(seconds: 4), (){
+      await Future.delayed(Duration(seconds: 4), () async {
+        // await FlutterBluePlus.startScan(timeout: Duration(seconds: 4));
         EasyLoading.dismiss();
       });
 
       String deviceId = '';
       BluetoothDevice? connectedBluetoothDevice;
 
-      FlutterBluePlus.scanResults.listen((value) async {
+      autoConnectStreamSubscription = FlutterBluePlus.scanResults.listen((value) {
+        Utils.customPrint('BLED - SCAN RESULT - ${value.isEmpty}');
         if(value.isNotEmpty){
+
           for (int i = 0; i < value.length; i++) {
             ScanResult r = value[i];
 
@@ -482,10 +755,17 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                   FlutterBluePlus.stopScan();
                   break;
                 }
+                else{
+                  if(mounted){
+                    showBluetoothListDialog(context, null, null);
+                  }
+
+                }
               }
             }
             else
             {
+              Utils.customPrint('BLED - ELSE COND');
               if (r.device.platformName.toLowerCase().contains("lpr")) {
                 r.device.connect().then((value) {});
                 bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
@@ -502,13 +782,27 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                 FlutterBluePlus.stopScan();
                 break;
               }
+              else{
+                if(mounted){
+                  showBluetoothListDialog(context, null, null);
+                }
+              }
             }
+          }
+        }
+        else{
+          if (mounted){
+            showBluetoothListDialog(context, null, null);
           }
         }
       });
     }
     else{
-      // Show snackbar -> "Connected to <device_name> device."
+      // Show snack bar -> "Connected to <device_name> device."
+      Future.delayed(Duration(seconds: 4), () async {
+        // await FlutterBluePlus.startScan(timeout: Duration(seconds: 4));
+        EasyLoading.dismiss();
+      });
       setState(() {
         bluetoothName = connectedDevicesList.first.platformName.isNotEmpty ? connectedDevicesList.first.platformName : connectedDevicesList.first.remoteId.str;
       });
@@ -517,9 +811,11 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
   forgetDeviceOrConnectToNewDevice() async{
     if(FlutterBluePlus.connectedDevices.isEmpty){
-      showBluetoothListDialog(context, null, null);
+      checkAndGetLPRList(context);
+      // showBluetoothListDialog(context, null, null);
     }
     else{
+
       showForgetDeviceDialog(
           context,
           forgetDeviceBtnClick: () async {
@@ -564,6 +860,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     switch (state) {
       case AppLifecycleState.resumed:
         checkTempPermissions();
+        checkIfAlreadyConnectedToLPRDevice();
         break;
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
@@ -2865,6 +3162,18 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     setState(() {});
   }
 
+  checkIfAlreadyConnectedToLPRDevice(){
+    if(openedSettingsPageForPermission){
+      openedSettingsPageForPermission = false;
+      Utils.customPrint('BLED - BACKGROUND');
+      List<BluetoothDevice> connectedDevices = FlutterBluePlus.connectedDevices;
+      if(connectedDevices.isEmpty){
+        checkPermissionsAndAutoConnectToDevice(context);
+      }
+    }
+
+  }
+
   //To get all vessels
   getVesselAndTripsData() async {
     setState(() {
@@ -2890,19 +3199,22 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     // FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
     BluetoothAdapterState adapterState = await FlutterBluePlus.adapterState.first;
     final isOn = adapterState == BluetoothAdapterState.on;
-    if (isOn) return true;
-
-    await Future.delayed(const Duration(seconds: 1));
-    BluetoothAdapterState tempAdapterState = await FlutterBluePlus.adapterState.first;
-    return tempAdapterState == BluetoothAdapterState.on;
+    // if (isOn) return true;
+    //
+    // await Future.delayed(const Duration(seconds: 1));
+    // BluetoothAdapterState tempAdapterState = await FlutterBluePlus.adapterState.first;
+    return isOn;
   }
 
   /// To enable Bluetooth
-  Future<void> enableBT() async {
+  Future<void> enableBT(bool autoConnect) async {
     BluetoothEnable.enableBluetooth.then((value) async {
       Utils.customPrint("BLUETOOTH ENABLE $value");
 
       if (value == 'true') {
+        if(autoConnect){
+          autoConnectToDevice();
+        }
         Utils.customPrint(" bluetooth state$value");
       } else {
         bool isNearByDevicePermitted =
@@ -3277,7 +3589,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
         });
   }
 
-  showBluetoothDialog(BuildContext context) {
+  showBluetoothDialog(BuildContext context, {bool autoConnect = false}) {
     return showDialog(
         barrierDismissible: false,
         context: context,
@@ -3357,7 +3669,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                             onTap: () async {
                               Utils.customPrint("Tapped on enable Bluetooth");
                               Navigator.pop(context);
-                              enableBT();
+                              enableBT(autoConnect);
                               //showBluetoothListDialog(context);
                             },
                             child: Container(
@@ -4579,13 +4891,15 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
   }
 
   showBluetoothListDialog(BuildContext context, String? connectedDeviceId, BluetoothDevice? connectedBluetoothDevice) {
-    setState(() {
-      progress = 0.9;
-      lprSensorProgress = 0.0;
-      isStartButton = false;
-    });
+    // setState(() {
+    //   progress = 0.9;
+    //   lprSensorProgress = 0.0;
+    //   isStartButton = false;
+    // });
 
     // checkAndGetLPRList();
+
+    if(autoConnectStreamSubscription != null) autoConnectStreamSubscription!.cancel();
 
     FlutterBluePlus
         .startScan(timeout: Duration(seconds: 4));
