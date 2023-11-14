@@ -21,8 +21,12 @@ import 'package:logger/logger.dart';
 
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:performarine/common_widgets/utils/colors.dart';
+import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
+import 'package:performarine/common_widgets/widgets/common_buttons.dart';
+import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/pages/new_splash_screen.dart';
 import 'package:performarine/new_trip_analytics_screen.dart';
 import 'package:performarine/pages/auth/reset_password.dart';
@@ -426,7 +430,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   @override
-  void initState() {
+  void initState(){
     super.initState();
 
     getBaseUrl();
@@ -437,6 +441,56 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     CustomLogger().logWithFile(Level.info, "APP IN BG INIT -> -> $page ");
 
     checkGPS();
+    listenToBluetoothState();
+  }
+
+  listenToBluetoothState(){
+    FlutterBluePlus.adapterState.listen((BluetoothAdapterState state) {
+      Utils.customPrint('BLE STATE: $state');
+      if (state == BluetoothAdapterState.turningOff) {
+        showEnableBluetoothState();
+      }
+    });
+  }
+
+  showEnableBluetoothState(){
+    Fluttertoast.showToast(
+        msg: "Please enable bluetooth",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.black,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
+
+    Future.delayed(Duration(seconds: 2), ()async{
+      await AppSettings.openAppSettings(type: AppSettingsType.bluetooth, asAnotherTask: true);
+
+    });
+  }
+
+  checkIfBluetoothIsOnAfterRedirecting() async {
+    var pref = await Utils.initSharedPreferences();
+    bool? isTripStarted = pref.getBool('trip_started') ?? false;
+
+    if(isTripStarted){
+      bool isEnabled = await blueIsOn();
+      if(!isEnabled){
+        showEnableBluetoothState();
+      }
+    }
+  }
+
+  Future<bool> blueIsOn() async {
+    // FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
+    BluetoothAdapterState adapterState = await FlutterBluePlus.adapterState.first;
+    final isOn = adapterState == BluetoothAdapterState.on;
+    // if (isOn) return true;
+    //
+    // await Future.delayed(const Duration(seconds: 1));
+    // BluetoothAdapterState tempAdapterState = await FlutterBluePlus.adapterState.first;
+    return isOn;
   }
 
   checkGPS()
@@ -537,6 +591,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     switch (state) {
       case AppLifecycleState.resumed:
+        checkIfBluetoothIsOnAfterRedirecting();
         if(!(await Geolocator.isLocationServiceEnabled()))
         {
           checkGPS();
