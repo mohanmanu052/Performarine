@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:logger/logger.dart';
 import 'package:objectid/objectid.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
+import 'package:performarine/common_widgets/widgets/common_dropdown.dart';
 import 'package:performarine/pages/add_vessel_new/successfully_added_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -51,6 +55,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
   GlobalKey<FormState> sizeFormKey = GlobalKey<FormState>();
   GlobalKey<FormState> capacityFormKey = GlobalKey<FormState>();
   GlobalKey<FormState> builtYearFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> selectedHullFormKey = GlobalKey<FormState>();
   final DatabaseService _databaseService = DatabaseService();
 
   AutovalidateMode _autoValidate = AutovalidateMode.onUserInteraction;
@@ -89,6 +94,9 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
   List<File?> pickFilePath = [];
   List<File?> finalSelectedFiles = [];
 
+  String? selectedHullType;
+  List<Map<String, dynamic>> hullTypesList = [];
+
   String appendAsInt(double value) {
     int intValue = value.toInt();
     return intValue.toString();
@@ -97,6 +105,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
   @override
   void didUpdateWidget(covariant AddNewVesselStepTwo oldWidget) {
     super.didUpdateWidget(oldWidget);
+    getHullTypes();
     if(commonProvider.selectedImageFiles != null && commonProvider.selectedImageFiles.isNotEmpty){
       finalSelectedFiles = commonProvider.selectedImageFiles;
     } else{
@@ -111,6 +120,8 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
       scaffoldKey = widget.scaffoldKey!;
     });
 
+    getHullTypes();
+
     commonProvider = context.read<CommonProvider>();
 
     if (widget.isEdit!) {
@@ -124,6 +135,9 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
         sizeController.text = widget.addVesselData!.vesselSize!.toString();
       //  capacityController.text = widget.addVesselData!.capacity!.toString();
         builtYearController.text = widget.addVesselData!.builtYear!.toString();
+        Utils.customPrint('HHHHH FROM API: ${widget.addVesselData!.hullType}');
+        Utils.customPrint('HHHHH LIST: ${hullTypesList}');
+        selectedHullType = widget.addVesselData!.hullType.toString();
 
       }
     }
@@ -132,6 +146,25 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
       finalSelectedFiles = commonProvider.selectedImageFiles;
     } else{
       isDeleted = true;
+    }
+  }
+
+  getHullTypes() async {
+    FlutterSecureStorage storage = FlutterSecureStorage();
+    String? hullTypes = await storage.read(
+        key: 'hullTypes'
+    );
+
+    if(hullTypes != null){
+      Map<String, dynamic> mapOfHullTypes = jsonDecode(hullTypes);
+      Utils.customPrint('HHHHH MAP: ${mapOfHullTypes}');
+      hullTypesList.clear();
+      mapOfHullTypes.forEach((key, value) {
+        hullTypesList.add({"key": key, "value": value});
+      });
+      setState(() {
+
+      });
     }
   }
 
@@ -353,6 +386,39 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                           CustomLogger().logWithFile(Level.info, "Displacement $value -> $page");
                         }),
                   ),
+                  SizedBox(height: displayHeight(context) * 0.015),
+                  Form(
+                    key: selectedHullFormKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    child: Container(
+                      margin: EdgeInsets.only(top: 2.0),
+                      child: CommonMapDropDownFormField(
+                        context: context,
+                        value: selectedHullType,
+                        hintText: 'Hull Type',
+                        labelText: '',
+                        onChanged: (String value) {
+                          setState(() {
+                            selectedHullType = value;
+                            Utils.customPrint('SELECTED HULL TYPE $selectedHullType');
+                            CustomLogger().logWithFile(Level.info, "hull $selectedHullType -> $page");
+                          });
+                        },
+                        dataSource: hullTypesList,
+                        borderRadius: 10,
+                        padding: 6,
+                        textColor: Colors.black,
+                        textField: 'value',
+                        valueField: 'key',
+                        validator: (value) {
+                          if (value == null) {
+                            return 'Select Hull Type';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                  ),
                   SizedBox(height: displayHeight(context) * 0.02),
                   commonText(
                       context: context,
@@ -489,7 +555,8 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                           width: displayWidth(context),
                           onTap: () async {
                             if (freeBoardFormKey.currentState!.validate() && lengthFormKey.currentState!.validate() && beamFormKey.currentState!.validate()
-                                && draftFormKey.currentState!.validate() && sizeFormKey.currentState!.validate() && builtYearFormKey.currentState!.validate()) {
+                                && draftFormKey.currentState!.validate() && sizeFormKey.currentState!.validate() && builtYearFormKey.currentState!.validate()
+                            && selectedHullFormKey.currentState!.validate()) {
                               setState(() {
                                 isBtnClicked = true;
                               });
@@ -536,6 +603,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                                   commonProvider.loginModel!.userId.toString();
                               commonProvider.addVesselRequestModel!.updatedBy =
                                   commonProvider.loginModel!.userId.toString();
+                              commonProvider.addVesselRequestModel!.hullType = int.parse(selectedHullType!);
 
                               if (commonProvider.addVesselRequestModel!
                                   .selectedImages!.isNotEmpty) {

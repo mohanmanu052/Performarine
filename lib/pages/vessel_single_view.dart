@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_sensors/flutter_sensors.dart' as s;
 import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
@@ -131,7 +133,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
   String totalDistance = '0',
       avgSpeed = '0',
       tripsCount = '0',
-      totalDuration = "00:00:00";
+      totalDuration = "00:00:00", hullType = '-';
 
   @override
   void didUpdateWidget(covariant VesselSingleView oldWidget) {
@@ -154,6 +156,29 @@ class VesselSingleViewState extends State<VesselSingleView> {
     checkSensorAvailabelOrNot();
 
     getVesselAnalytics(widget.vessel!.id!);
+
+    getHullTypes();
+  }
+
+  /// To get hull types from secure storage
+  getHullTypes() async {
+    FlutterSecureStorage storage = FlutterSecureStorage();
+    String? hullTypes = await storage.read(
+        key: 'hullTypes'
+    );
+
+    if(hullTypes != null){
+      Map<String, dynamic> mapOfHullTypes = jsonDecode(hullTypes);
+      Utils.customPrint('HHHHH MAP: ${mapOfHullTypes}');
+      mapOfHullTypes.forEach((key, value) {
+        if(key == widget.vessel!.hullType.toString()){
+          hullType = value;
+        }
+      });
+      setState(() {
+
+      });
+    }
   }
 
   /// To get running trip details
@@ -751,7 +776,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                           commonText(
                                                               context: context,
                                                               text:
-                                                              'Planning',
+                                                              hullType,
                                                               fontWeight: FontWeight.w700,
                                                               textColor: Colors.black,
                                                               textSize:

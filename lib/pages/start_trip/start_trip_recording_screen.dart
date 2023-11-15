@@ -16,6 +16,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_xlider/flutter_xlider.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart' as geo;
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
@@ -726,6 +727,9 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                 ScanResult r = storedDeviceIdResultList.first;
                 r.device.connect().then((value) {
                   Utils.customPrint('CONNECTED TO DEVICE BLE');
+                  setState(() {
+
+                  });
                 }).catchError((onError){
                   Utils.customPrint('ERROR BLE: $onError');
                 });
@@ -748,7 +752,11 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                 List<ScanResult> lprNameResultList = streamOfScanResultList.where((element) => element.device.platformName.toLowerCase().contains('lpr')).toList();
                 if(lprNameResultList.isNotEmpty){
                   ScanResult r = lprNameResultList.first;
-                  r.device.connect().then((value) {});
+                  r.device.connect().then((value) {
+                    setState(() {
+
+                    });
+                  });
                   bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
                   // await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
                   deviceId = r.device.remoteId.str;
@@ -774,11 +782,34 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
               }
             }
             else{
-              if (mounted){
-                Future.delayed(Duration(seconds: 2), (){
-                  EasyLoading.dismiss();
-                  showBluetoothListDialog(context, null, null);
+              List<ScanResult> lprNameResultList = streamOfScanResultList.where((element) => element.device.platformName.toLowerCase().contains('lpr')).toList();
+              if(lprNameResultList.isNotEmpty){
+                ScanResult r = lprNameResultList.first;
+                r.device.connect().then((value) {
+                  setState(() {
+
+                  });
                 });
+                bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+                // await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
+                deviceId = r.device.remoteId.str;
+                connectedBluetoothDevice = r.device;
+                setState(() {
+                  bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+                  isBluetoothPermitted = true;
+                  progress = 1.0;
+                  lprSensorProgress = 1.0;
+                  isStartButton = true;
+                });
+                FlutterBluePlus.stopScan();
+                EasyLoading.dismiss();
+              }
+              else{
+                if (mounted){
+                  Future.delayed(Duration(seconds: 2), (){
+                    showBluetoothListDialog(context, null, null);
+                  });
+                }
               }
             }
 
@@ -3303,6 +3334,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
       if (value == 'true') {
         if(autoConnect){
+          await Future.delayed(Duration(milliseconds: 500), (){});
           autoConnectToDevice();
         }
         Utils.customPrint(" bluetooth state$value");
@@ -3894,13 +3926,15 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                 //await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
                 deviceId = r.device.remoteId.str;
                 connectedBluetoothDevice = r.device;
-                setState(() {
-                  bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
-                  isBluetoothPermitted = true;
-                  progress = 1.0;
-                  lprSensorProgress = 1.0;
-                  isStartButton = true;
-                });
+                if(mounted){
+                  setState(() {
+                    bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+                    isBluetoothPermitted = true;
+                    progress = 1.0;
+                    lprSensorProgress = 1.0;
+                    isStartButton = true;
+                  });
+                }
                 FlutterBluePlus.stopScan();
                 break;
               }
@@ -3912,13 +3946,15 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                   // await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
                   deviceId = r.device.remoteId.str;
                   connectedBluetoothDevice = r.device;
-                  setState(() {
-                    bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
-                    isBluetoothPermitted = true;
-                    progress = 1.0;
-                    lprSensorProgress = 1.0;
-                    isStartButton = true;
-                  });
+                  if(mounted){
+                    setState(() {
+                      bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+                      isBluetoothPermitted = true;
+                      progress = 1.0;
+                      lprSensorProgress = 1.0;
+                      isStartButton = true;
+                    });
+                  }
                   FlutterBluePlus.stopScan();
                   break;
                 }
@@ -3932,13 +3968,15 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                 //await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
                 deviceId = r.device.remoteId.str;
                 connectedBluetoothDevice = r.device;
-                setState(() {
-                  bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
-                  isBluetoothPermitted = true;
-                  progress = 1.0;
-                  lprSensorProgress = 1.0;
-                  isStartButton = true;
-                });
+                if(mounted){
+                  setState(() {
+                    bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+                    isBluetoothPermitted = true;
+                    progress = 1.0;
+                    lprSensorProgress = 1.0;
+                    isStartButton = true;
+                  });
+                }
                 FlutterBluePlus.stopScan();
                 break;
               }
@@ -4998,6 +5036,7 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     }
 
 
+    EasyLoading.dismiss();
     return showDialog(
         barrierDismissible: false,
         context: context,
@@ -5225,6 +5264,9 @@ class _StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                 );
               }));
         }).then((value) {
+      setState(() {
+
+      });
       Utils.customPrint('DIALOG VALUE $value');
     });
   }

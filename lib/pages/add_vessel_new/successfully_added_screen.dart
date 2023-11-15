@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 
@@ -28,11 +31,38 @@ class SuccessfullyAddedScreen extends StatefulWidget {
 class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
 
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
-  String page = "Successfully_added_screen";
+  String page = "Successfully_added_screen", hullType = '-';
 
   bool isVesselParticularExpanded = true,
       isVesselDimensionsExpanded = true,
       isDataUpdated = false;
+
+  @override
+  initState(){
+    super.initState();
+    getHullTypes();
+  }
+
+  /// To get hull types from secure storage
+  getHullTypes() async {
+    FlutterSecureStorage storage = FlutterSecureStorage();
+    String? hullTypes = await storage.read(
+        key: 'hullTypes'
+    );
+
+    if(hullTypes != null){
+      Map<String, dynamic> mapOfHullTypes = jsonDecode(hullTypes);
+      Utils.customPrint('HHHHH MAP: ${mapOfHullTypes}');
+      mapOfHullTypes.forEach((key, value) {
+        if(key == widget.data!.hullType.toString()){
+          hullType = value;
+        }
+      });
+      setState(() {
+
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1061,7 +1091,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                                           commonText(
                                               context: context,
                                               text:
-                                              'Planning',
+                                              hullType,
                                               fontWeight: FontWeight.w700,
                                               textColor: Colors.black,
                                               textSize:

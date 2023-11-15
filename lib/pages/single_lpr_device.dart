@@ -111,6 +111,9 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
           });
         }
         else {
+          EasyLoading.show(
+              status: 'Connecting...',
+              maskType: EasyLoadingMaskType.black);
           if (widget.connectedBluetoothDevice != null) {
             widget.connectedBluetoothDevice!.disconnect();
           }
@@ -121,7 +124,9 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
           });
         //  await storage.write(key: 'lprDeviceId', value: widget.device!.remoteId.str);
           debugPrint("SINGLE SELECTED BLE ID ${widget.device!.remoteId.str}");
-          widget.device!.connect().then((value) {});
+          widget.device!.connect().then((value) {}).catchError((onError){
+            EasyLoading.dismiss();
+          });
 
           widget.setSetter!(() {
             widget.onBluetoothConnection!(true);
@@ -138,6 +143,7 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
                 widget.onSingleDeviceTapped!(false);
               });
             }
+            EasyLoading.dismiss();
             Navigator.pop(widget.dialogContext!);
           });
         }

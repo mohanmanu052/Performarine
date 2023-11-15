@@ -696,12 +696,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   EasyLoading.dismiss();
                 }
               } else {
-                EasyLoading.dismiss();
-                sharedPreferences!.reload();
-                bool? result =
-                    sharedPreferences!.getBool('sp_key_called_from_noti');
-
-                Utils.customPrint('********$result');
+                // EasyLoading.dismiss();
+                // sharedPreferences!.reload();
+                // bool? result =
+                //     sharedPreferences!.getBool('sp_key_called_from_noti');
+                //
+                // Utils.customPrint('********XXXXX$result');
               }
             });
           });
@@ -736,12 +736,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void getBaseUrl() async {
     FirebaseRemoteConfig data = await setupRemoteConfig();
     String vinValidation = data.getString('version');
+    String hullTypes = data.getString('HullType');
 
-    Utils.customPrint('VINNNNNNNNNNNNNNN ${vinValidation}');
+    Utils.customPrint('VINNNNNNNNNNNNNNN ${hullTypes}');
 
     final FlutterSecureStorage storage = FlutterSecureStorage();
 
     await storage.write(key: 'baseUrl', value: vinValidation);
+    await storage.write(key: 'hullTypes', value: hullTypes);
 
     readData();
 
