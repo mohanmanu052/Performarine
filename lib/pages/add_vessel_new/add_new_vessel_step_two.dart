@@ -1,11 +1,15 @@
+import 'dart:convert';
+
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:logger/logger.dart';
 import 'package:objectid/objectid.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
+import 'package:performarine/common_widgets/widgets/common_dropdown.dart';
 import 'package:performarine/pages/add_vessel_new/successfully_added_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -52,6 +56,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
   GlobalKey<FormState> sizeFormKey = GlobalKey<FormState>();
   GlobalKey<FormState> capacityFormKey = GlobalKey<FormState>();
   GlobalKey<FormState> builtYearFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> selectedHullFormKey = GlobalKey<FormState>();
   final DatabaseService _databaseService = DatabaseService();
 
   AutovalidateMode _autoValidate = AutovalidateMode.onUserInteraction;
@@ -90,6 +95,9 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
   List<File?> pickFilePath = [];
   List<File?> finalSelectedFiles = [];
 
+  String? selectedHullType;
+  List<Map<String, dynamic>> hullTypesList = [];
+
   String appendAsInt(double value) {
     int intValue = value.toInt();
     return intValue.toString();
@@ -110,13 +118,14 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
   @override
   void initState() {
     super.initState();
-            SystemChrome.setPreferredOrientations([
+    SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
 
     setState(() {
       scaffoldKey = widget.scaffoldKey!;
     });
+    getHullTypes();
 
     commonProvider = context.read<CommonProvider>();
 
@@ -129,8 +138,15 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
         moldedDepthController.text = widget.addVesselData!.draft!.toString();
         //displacementController.text = widget.addVesselData!.displacement.toString();
         sizeController.text = widget.addVesselData!.vesselSize!.toString();
-      //  capacityController.text = widget.addVesselData!.capacity!.toString();
+        //  capacityController.text = widget.addVesselData!.capacity!.toString();s
         builtYearController.text = widget.addVesselData!.builtYear!.toString();
+        if(widget.addVesselData!.hullType != null)
+          {
+            selectedHullType = widget.addVesselData!.hullType.toString();
+            Utils.customPrint('HHHHH HULL TYPE: ${selectedHullType is String}');
+          }
+
+
       }
     }
 
@@ -141,17 +157,35 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
     }
   }
 
-@override
+  @override
   void dispose() {
-                                      SystemChrome.setPreferredOrientations([
-                          DeviceOrientation.portraitDown,
-                          DeviceOrientation.portraitUp,
-                        ]);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp,
+    ]);
 
     // TODO: implement dispose
     super.dispose();
   }
 
+  getHullTypes() async {
+    FlutterSecureStorage storage = FlutterSecureStorage();
+    String? hullTypes = await storage.read(
+        key: 'hullTypes'
+    );
+
+    if(hullTypes != null){
+      Map<String, dynamic> mapOfHullTypes = jsonDecode(hullTypes);
+      Utils.customPrint('HHHHH MAP: ${mapOfHullTypes}');
+      hullTypesList.clear();
+      mapOfHullTypes.forEach((key, value) {
+        hullTypesList.add({"key": key, "value": value});
+      });
+      setState(() {
+
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -344,6 +378,40 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         }),
                   ),
 
+                  SizedBox(height: displayHeight(context) * 0.015),
+                  Form(
+                    key: selectedHullFormKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    child: Container(
+                      margin: EdgeInsets.only(top: 2.0),
+                      child: CommonMapDropDownFormField(
+                        context: context,
+                        value: selectedHullType,
+                        hintText: 'Hull Type',
+                        labelText: '',
+                        onChanged: (String value) {
+                          setState(() {
+                            selectedHullType = value;
+                            Utils.customPrint('SELECTED HULL TYPE $selectedHullType');
+                            CustomLogger().logWithFile(Level.info, "hull $selectedHullType -> $page");
+                          });
+                        },
+                        dataSource: hullTypesList,
+                        borderRadius: 10,
+                        padding: 6,
+                        textColor: Colors.black,
+                        textField: 'value',
+                        valueField: 'key',
+                        validator: (value) {
+                          if (value == null) {
+                            return 'Select Hull Type';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                  ),
+
                   SizedBox(height: displayHeight(context) * 0.02),
                   commonText(
                       context: context,
@@ -362,9 +430,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         controller: sizeController,
                         focusNode: sizeFocusNode,
                         labelText: 'Size ($hp) *',
-isForDecimal: true,
-  
-
+                        isForDecimal: true,
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
@@ -406,7 +472,7 @@ if (dotCount > 1) {
                           CustomLogger().logWithFile(Level.info, "Vessel Size $value -> $page");
                         }),
                   ),
-              /*    SizedBox(height: displayHeight(context) * 0.015),
+                  /*    SizedBox(height: displayHeight(context) * 0.015),
                   Form(
                     key: capacityFormKey,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -500,7 +566,8 @@ if (dotCount > 1) {
                           width: displayWidth(context),
                           onTap: () async {
                             if (freeBoardFormKey.currentState!.validate() && lengthFormKey.currentState!.validate() && beamFormKey.currentState!.validate()
-                                && draftFormKey.currentState!.validate() && sizeFormKey.currentState!.validate() && builtYearFormKey.currentState!.validate()) {
+                                && draftFormKey.currentState!.validate() && sizeFormKey.currentState!.validate() && builtYearFormKey.currentState!.validate()
+                                && selectedHullFormKey.currentState!.validate()) {
                               setState(() {
                                 isBtnClicked = true;
                               });
@@ -513,7 +580,7 @@ if (dotCount > 1) {
                                     .addVesselRequestModel!.imageURLs = '';
                               }
                               commonProvider.addVesselRequestModel!.freeBoard =
-                                  freeBoardController.text.length >= 6 ? num.parse(double.parse(freeBoardController.text).toStringAsFixed(4)).toDouble()
+                              freeBoardController.text.length >= 6 ? num.parse(double.parse(freeBoardController.text).toStringAsFixed(4)).toDouble()
                                   : double.parse(freeBoardController.text);
                               commonProvider
                                   .addVesselRequestModel!.lengthOverall = lengthOverallController.text.length >=6
@@ -523,15 +590,15 @@ if (dotCount > 1) {
                                   ? num.parse(double.parse(moldedBeamController.text).toStringAsFixed(4)).toDouble()
                                   : double.parse(moldedBeamController.text);
                               commonProvider.addVesselRequestModel!.draft = moldedDepthController.text.length >= 6
-                                ? num.parse(double.parse(moldedDepthController.text).toStringAsFixed(4)).toDouble()
-                                : double.parse(moldedDepthController.text);
+                                  ? num.parse(double.parse(moldedDepthController.text).toStringAsFixed(4)).toDouble()
+                                  : double.parse(moldedDepthController.text);
                               /*commonProvider.addVesselRequestModel!.displacement = displacementController.text.length >= 7
                                   ? num.parse(double.parse(displacementController.text).toStringAsFixed(5)).toDouble()
                                   : double.parse(displacementController.text);*/
                               commonProvider.addVesselRequestModel!.vesselSize =
-                               double.parse(sizeController.text)   ;
+                                  sizeController.text;
                               commonProvider.addVesselRequestModel!.capacity = 0;
-                                //  int.parse(capacityController.text);
+                              //  int.parse(capacityController.text);
                               commonProvider.addVesselRequestModel!.builtYear =
                                   builtYearController.text;
                               commonProvider.addVesselRequestModel!.id =
@@ -553,6 +620,7 @@ if (dotCount > 1) {
                                   commonProvider.loginModel!.userId.toString();
                               commonProvider.addVesselRequestModel!.updatedBy =
                                   commonProvider.loginModel!.userId.toString();
+                              commonProvider.addVesselRequestModel!.hullType = int.parse(selectedHullType!);
 
                               if (commonProvider.addVesselRequestModel!
                                   .selectedImages!.isNotEmpty) {
@@ -643,10 +711,10 @@ if (dotCount > 1) {
                                     commonProvider.selectedImageFiles = [];
 
                                     CustomLogger().logWithFile(Level.info, "User Navigating to SuccessfullyAddedScreen -> $page");
-await SystemChrome.setPreferredOrientations([
-                          DeviceOrientation.portraitDown,
-                          DeviceOrientation.portraitUp,
-                        ]);
+                            await SystemChrome.setPreferredOrientations([
+                                      DeviceOrientation.portraitDown,
+                                      DeviceOrientation.portraitUp,
+                                    ]);
 
                                     Navigator.pushReplacement(
                                       context,
@@ -675,10 +743,11 @@ await SystemChrome.setPreferredOrientations([
                                       scaffoldKey: scaffoldKey,
                                       message: "Vessel Created Successfully");
                                   commonProvider.selectedImageFiles = [];
-                                await  SystemChrome.setPreferredOrientations([
-                          DeviceOrientation.portraitDown,
-                          DeviceOrientation.portraitUp,
-                        ]);
+
+                                  await  SystemChrome.setPreferredOrientations([
+                                    DeviceOrientation.portraitDown,
+                                    DeviceOrientation.portraitUp,
+                                  ]);
 
                                   Navigator.pushReplacement(
                                     context,

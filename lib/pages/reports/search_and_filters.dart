@@ -2606,24 +2606,24 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                 label: 'Select All',
                 value: parentValue != null ? parentValue! : false,
                 onChanged: (value) {
-                    if (value) {
-                      Utils.customPrint("select all status: $value");
-                      selectedTripIdList!.clear();
-                      selectedTripIdList!.addAll(tripIdList!);
-                      isSHowGraph = false;
-                      selectedTripLabelList!.clear();
-                      selectedTripLabelList!.addAll(children!);
-                      Utils.customPrint(
-                          "selected trip label list: ${selectedTripLabelList}");
-                      CustomLogger().logWithFile(Level.info, "selected trip label list: ${selectedTripLabelList} -> $page");
-                      _checkAll(value);
-                    } else if (!value) {
-                      // Tristate
+                  if (value) {
+                    Utils.customPrint("select all status: $value");
+                    selectedTripIdList!.clear();
+                    selectedTripIdList!.addAll(tripIdList!);
+                    isSHowGraph = false;
+                    selectedTripLabelList!.clear();
+                    selectedTripLabelList!.addAll(children!);
+                    Utils.customPrint(
+                        "selected trip label list: ${selectedTripLabelList}");
+                    CustomLogger().logWithFile(Level.info, "selected trip label list: ${selectedTripLabelList} -> $page");
+                    _checkAll(value);
+                  } else if (!value) {
+                    // Tristate
 
-                      selectedTripIdList!.clear();
-                      selectedTripLabelList!.clear();
-                      _checkAll(false);
-                    }
+                    selectedTripIdList!.clear();
+                    selectedTripLabelList!.clear();
+                    _checkAll(false);
+                  }
                 },
                 checkboxType: CheckboxType.Parent,
                 activeColor: Colors.indigo,
@@ -2646,60 +2646,60 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
                     tripId: tripIdList![index],
                     dateTime: dateTimeList![index],
                     onChanged: (value) async{
-                        isSHowGraph = false;
-                        Utils.customPrint("trip list id: ${tripIdList![index]}");
-                        CustomLogger().logWithFile(Level.info, "trip list id: ${tripIdList![index]} -> $page");
+                      isSHowGraph = false;
+                      Utils.customPrint("trip list id: ${tripIdList![index]}");
+                      CustomLogger().logWithFile(Level.info, "trip list id: ${tripIdList![index]} -> $page");
 
 
-                        if(selectedTripIdList!.contains(tripIdList![index])){
+                      if(selectedTripIdList!.contains(tripIdList![index])){
 
-                          selectedTripIdList!
-                              .remove(tripIdList![index]);
-                          //tripIdList!.remove(index);
-                          selectedTripLabelList!
-                              .remove(children![index]);
-                          Utils.customPrint(
-                              "selected trip label list: ${selectedTripLabelList}");
-                          CustomLogger().logWithFile(Level.info, "selected trip label list: ${selectedTripLabelList} -> $page");
-                          setState(() {
+                        selectedTripIdList!
+                            .remove(tripIdList![index]);
+                        //tripIdList!.remove(index);
+                        selectedTripLabelList!
+                            .remove(children![index]);
+                        Utils.customPrint(
+                            "selected trip label list: ${selectedTripLabelList}");
+                        CustomLogger().logWithFile(Level.info, "selected trip label list: ${selectedTripLabelList} -> $page");
+                        setState(() {
 
-                          });
+                        });
 
-                        }else{
+                      }else{
 
-                          selectedTripIdList!
-                              .add(tripIdList![index]);
-                          // tripIdList!.add(index);
-                          selectedTripLabelList!
-                              .add(children![index]);
-                          setState(() {
+                        selectedTripIdList!
+                            .add(tripIdList![index]);
+                        // tripIdList!.add(index);
+                        selectedTripLabelList!
+                            .add(children![index]);
+                        setState(() {
 
-                          });
+                        });
 
 
-                        }
+                      }
 
-                        // if (!selectedTripIdList!
-                        //     .contains(tripIdList![index])) {
-                        //       print('removed select id list--- coming to add');
-                        //   selectedTripIdList!.add(tripIdList![index]);
-                        //   selectedTripLabelList!
-                        //       .add(children![index]);
-                        //   Utils.customPrint(
-                        //       "selected trip label list: ${selectedTripLabelList}");
-                        //   CustomLogger().logWithFile(Level.info, "trip list id: ${tripIdList![index]} -> $page");
-                        // } else {
-                        //   print('removed select id list---'+tripIdList![index]);
-                        //   selectedTripIdList!
-                        //       .remove(tripIdList![index]);
-                        //   // tripIdList!.removeAt(index);
-                        //   selectedTripLabelList!
-                        //       .remove(children![index]);
-                        //   Utils.customPrint(
-                        //       "selected trip label list: ${selectedTripLabelList}");
-                        //   CustomLogger().logWithFile(Level.info, "selected trip label list: ${selectedTripLabelList} -> $page");
-                        // }
-                        manageTristate(index, value);
+                      // if (!selectedTripIdList!
+                      //     .contains(tripIdList![index])) {
+                      //       print('removed select id list--- coming to add');
+                      //   selectedTripIdList!.add(tripIdList![index]);
+                      //   selectedTripLabelList!
+                      //       .add(children![index]);
+                      //   Utils.customPrint(
+                      //       "selected trip label list: ${selectedTripLabelList}");
+                      //   CustomLogger().logWithFile(Level.info, "trip list id: ${tripIdList![index]} -> $page");
+                      // } else {
+                      //   print('removed select id list---'+tripIdList![index]);
+                      //   selectedTripIdList!
+                      //       .remove(tripIdList![index]);
+                      //   // tripIdList!.removeAt(index);
+                      //   selectedTripLabelList!
+                      //       .remove(children![index]);
+                      //   Utils.customPrint(
+                      //       "selected trip label list: ${selectedTripLabelList}");
+                      //   CustomLogger().logWithFile(Level.info, "selected trip label list: ${selectedTripLabelList} -> $page");
+                      // }
+                      manageTristate(index, value);
 
                     },
                     checkboxType: CheckboxType.Child,

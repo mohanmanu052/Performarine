@@ -140,7 +140,7 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
                         Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            AddVesselStepOne(
+                            AddNewVesselStepOne(
                               pageController: pageController,
                               scaffoldKey: scaffoldKey,
                               addVesselData:

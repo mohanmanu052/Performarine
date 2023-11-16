@@ -13,7 +13,6 @@ import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
 
 import '../../common_widgets/widgets/log_level.dart';
-import '../../old_ui/old_vessel_single_view.dart';
 import '../bottom_navigation.dart';
 
 //Successfully added screen

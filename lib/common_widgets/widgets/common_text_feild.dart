@@ -34,29 +34,29 @@ class CommonTextField extends StatefulWidget {
 
   CommonTextField(
       {Key? key,
-      this.controller,
-      this.focusNode,
-      this.textInputAction,
-      this.textInputType,
-      this.textCapitalization,
-      this.maxLength,
-      this.prefixIcon,
-      this.suffixIcon,
-      this.labelText,
-      this.hintText,
-      this.suffixText,
-      this.requestFocusNode,
-      this.obscureText,
-      this.readOnly = false,
-      this.validator,
-      this.onSuffixIconTap,
-      this.onChanged,
-      this.onFieldSubmitted,
-      this.onSaved,
-      this.onTap,
-      this.inputFormatter,
-      this.maxLines = 1,
-      this.isForDecimal = false
+        this.controller,
+        this.focusNode,
+        this.textInputAction,
+        this.textInputType,
+        this.textCapitalization,
+        this.maxLength,
+        this.prefixIcon,
+        this.suffixIcon,
+        this.labelText,
+        this.hintText,
+        this.suffixText,
+        this.requestFocusNode,
+        this.obscureText,
+        this.readOnly = false,
+        this.validator,
+        this.onSuffixIconTap,
+        this.onChanged,
+        this.onFieldSubmitted,
+        this.onSaved,
+        this.onTap,
+        this.inputFormatter,
+        this.maxLines = 1,
+        this.isForDecimal = false
       })
       : super(key: key);
 
@@ -137,29 +137,29 @@ class _CommonTextFieldState extends State<CommonTextField> {
             prefixIcon: widget.prefixIcon == null
                 ? null
                 : Icon(
-                    widget.prefixIcon,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.grey
-                        : Colors.grey,
-                  ),
+              widget.prefixIcon,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.grey
+                  : Colors.grey,
+            ),
             suffixIcon: widget.suffixIcon == null
                 ? widget.obscureText!
-                    ? InkWell(
-                        onTap: () {
-                          setState(() {
-                            obscureText = !obscureText!;
-                          });
-                        },
-                        child: Icon(
-                          obscureText!
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                          color: Theme.of(context).brightness == Brightness.dark
-                              ? Colors.white
-                              : Colors.black,
-                        ),
-                      )
-                    : null
+                ? InkWell(
+              onTap: () {
+                setState(() {
+                  obscureText = !obscureText!;
+                });
+              },
+              child: Icon(
+                obscureText!
+                    ? Icons.visibility_off
+                    : Icons.visibility,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
+              ),
+            )
+                : null
                 : widget.suffixIcon,
             focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(

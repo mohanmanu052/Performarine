@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_sensors/flutter_sensors.dart' as s;
 import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
@@ -132,7 +134,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
   String totalDistance = '0',
       avgSpeed = '0',
       tripsCount = '0',
-      totalDuration = "00:00:00";
+      totalDuration = "00:00:00", hullType = '-';
 
   @override
   void didUpdateWidget(covariant VesselSingleView oldWidget) {
@@ -150,9 +152,34 @@ SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
     commonProvider = context.read<CommonProvider>();
 
+   // Utils.customPrint('VESSEL Image ${widget.vessel!.displacement!.isEmpty}');
+
     checkSensorAvailabelOrNot();
 
     getVesselAnalytics(widget.vessel!.id!);
+
+    getHullTypes();
+  }
+
+  /// To get hull types from secure storage
+  getHullTypes() async {
+    FlutterSecureStorage storage = FlutterSecureStorage();
+    String? hullTypes = await storage.read(
+        key: 'hullTypes'
+    );
+
+    if(hullTypes != null){
+      Map<String, dynamic> mapOfHullTypes = jsonDecode(hullTypes);
+      Utils.customPrint('HHHHH MAP: ${mapOfHullTypes}');
+      mapOfHullTypes.forEach((key, value) {
+        if(key == widget.vessel!.hullType.toString()){
+          hullType = value;
+        }
+      });
+      setState(() {
+
+      });
+    }
   }
 
 @override
@@ -722,7 +749,7 @@ SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                                                         children: [
                                                           commonText(
                                                               context: context,
-                                                              text: '${widget.vessel!.weight} $pound',
+                                                              text: widget.vessel!.weight!.isEmpty ? '0 $pound': '${widget.vessel!.weight} $pound',
                                                               fontWeight: FontWeight.w700,
                                                               textColor: Colors.black,
                                                               textSize:
@@ -758,7 +785,7 @@ SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                                                           commonText(
                                                               context: context,
                                                               text:
-                                                              'Planning',
+                                                              hullType,
                                                               fontWeight: FontWeight.w700,
                                                               textColor: Colors.black,
                                                               textSize:

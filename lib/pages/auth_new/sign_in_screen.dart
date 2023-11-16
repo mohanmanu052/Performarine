@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:performarine/new-design/new_intro_screen.dart';
+import 'package:performarine/pages/new_intro_screen.dart';
 import 'package:performarine/pages/auth_new/sign_up_screen.dart';
 import 'package:provider/provider.dart';
 

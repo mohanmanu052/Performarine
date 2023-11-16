@@ -7,15 +7,17 @@ import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/pages/start_trip/start_trip_recording_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class StartTripLprPermission  {
-  
-  void locationPermissions(bool isTripRecordingStarted,GlobalKey<StartTripRecordingScreenState> satrtTrip_sate, GlobalKey<ScaffoldState> scaffoldKey,BuildContext context)async{
-      
-        if (Platform.isAndroid) {
+class StartTripLprPermission {
+  void locationPermissions(
+      bool isTripRecordingStarted,
+      GlobalKey<StartTripRecordingScreenState> satrtTrip_sate,
+      GlobalKey<ScaffoldState> scaffoldKey,
+      BuildContext context) async {
+    if (Platform.isAndroid) {
       bool isLocationPermitted = await Permission.locationAlways.isGranted;
       if (isLocationPermitted) {
-        FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
-        FlutterBluePlus.instance.scanResults.listen((results) async {
+        FlutterBluePlus.startScan(timeout: Duration(seconds: 4));
+        FlutterBluePlus.scanResults.listen((results) async {
           for (ScanResult r in results) {
             if (r.device.name.toLowerCase().contains("lpr")) {
               Utils.customPrint('FOUND DEVICE AGAIN');
@@ -26,17 +28,19 @@ class StartTripLprPermission  {
                     r.device.disconnect().then((value) {
                       r.device.connect().catchError((e) {
                         if (satrtTrip_sate.currentState!.mounted) {
-                       //satrtTrip_sate.currentState!.setState(() {
-                         
-                        {
-                        satrtTrip_sate.currentState!.    isBluetoothPermitted = true;
-                        satrtTrip_sate.currentState!.     progress = 1.0;
-                          satrtTrip_sate.currentState!.   lprSensorProgress = 1.0;
-                          satrtTrip_sate.currentState!.   isStartButton = true;
+                          //satrtTrip_sate.currentState!.setState(() {
+
+                          {
+                            satrtTrip_sate.currentState!.isBluetoothPermitted =
+                                true;
+                            satrtTrip_sate.currentState!.progress = 1.0;
+                            satrtTrip_sate.currentState!.lprSensorProgress =
+                                1.0;
+                            satrtTrip_sate.currentState!.isStartButton = true;
                           }
                           //}
-                       
-                         // );
+
+                          // );
                         }
                       });
                     });
@@ -44,25 +48,25 @@ class StartTripLprPermission  {
                 });
               });
 
-            satrtTrip_sate.currentState!.  bluetoothName = r.device.name;
-          // satrtTrip_sate.currentState!.   setState(() {
-             satrtTrip_sate.currentState!.   isBluetoothPermitted = true;
-             satrtTrip_sate.currentState!.   progress = 1.0;
-             satrtTrip_sate.currentState!.   lprSensorProgress = 1.0;
-             satrtTrip_sate.currentState!.   isStartButton = true;
-            //  });
-              FlutterBluePlus.instance.stopScan();
+              satrtTrip_sate.currentState!.bluetoothName = r.device.name;
+              // satrtTrip_sate.currentState!.   setState(() {
+              satrtTrip_sate.currentState!.isBluetoothPermitted = true;
+              satrtTrip_sate.currentState!.progress = 1.0;
+              satrtTrip_sate.currentState!.lprSensorProgress = 1.0;
+              satrtTrip_sate.currentState!.isStartButton = true;
+              //  });
+              FlutterBluePlus.stopScan();
               break;
             } else {
               r.device.disconnect().then(
-                      (value) => Utils.customPrint("is device disconnected:"));
+                  (value) => Utils.customPrint("is device disconnected:"));
             }
           }
         });
 
-     //satrtTrip_sate.currentState!.   setState(() {
-          satrtTrip_sate.currentState!.isLocationPermitted = isLocationPermitted;
-       // });
+        //satrtTrip_sate.currentState!.   setState(() {
+        satrtTrip_sate.currentState!.isLocationPermitted = isLocationPermitted;
+        // });
 
         if (isTripRecordingStarted) {
           bool isLocationPermitted = await Permission.location.isGranted;
@@ -75,16 +79,17 @@ class StartTripLprPermission  {
                 var isStoragePermitted = await Permission.storage.status;
                 if (isStoragePermitted.isGranted) {
                   bool isNotificationPermitted =
-                  await Permission.notification.isGranted;
+                      await Permission.notification.isGranted;
 
                   if (isNotificationPermitted) {
-                  satrtTrip_sate.currentState!.    startWritingDataToDB(context);
+                    satrtTrip_sate.currentState!.startWritingDataToDB(context);
                   } else {
                     await Utils.getNotificationPermission(context);
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
                     if (isNotificationPermitted) {
-                    satrtTrip_sate.currentState!.    startWritingDataToDB(context);
+                      satrtTrip_sate.currentState!
+                          .startWritingDataToDB(context);
                     }
                   }
                 } else {
@@ -95,47 +100,49 @@ class StartTripLprPermission  {
 
                   if (isStoragePermitted.isGranted) {
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
 
                     if (isNotificationPermitted) {
-                      satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                      satrtTrip_sate.currentState!
+                          .startWritingDataToDB(context);
                     } else {
                       await Utils.getNotificationPermission(context);
                       bool isNotificationPermitted =
-                      await Permission.notification.isGranted;
+                          await Permission.notification.isGranted;
                       if (isNotificationPermitted) {
-                        satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                        satrtTrip_sate.currentState!
+                            .startWritingDataToDB(context);
                       }
                     }
                   }
                 }
               } else {
                 bool isNotificationPermitted =
-                await Permission.notification.isGranted;
+                    await Permission.notification.isGranted;
 
                 if (isNotificationPermitted) {
-                  satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                  satrtTrip_sate.currentState!.startWritingDataToDB(context);
                 } else {
                   await Utils.getNotificationPermission(context);
                   bool isNotificationPermitted =
-                  await Permission.notification.isGranted;
+                      await Permission.notification.isGranted;
                   if (isNotificationPermitted) {
-                    satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                    satrtTrip_sate.currentState!.startWritingDataToDB(context);
                   }
                 }
               }
             } else {
               bool isNotificationPermitted =
-              await Permission.notification.isGranted;
+                  await Permission.notification.isGranted;
 
               if (isNotificationPermitted) {
-                satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                satrtTrip_sate.currentState!.startWritingDataToDB(context);
               } else {
                 await Utils.getNotificationPermission(context);
                 bool isNotificationPermitted =
-                await Permission.notification.isGranted;
+                    await Permission.notification.isGranted;
                 if (isNotificationPermitted) {
-                  satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                  satrtTrip_sate.currentState!.startWritingDataToDB(context);
                 }
               }
             }
@@ -153,16 +160,18 @@ class StartTripLprPermission  {
                   var isStoragePermitted = await Permission.storage.status;
                   if (isStoragePermitted.isGranted) {
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
 
                     if (isNotificationPermitted) {
-                      satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                      satrtTrip_sate.currentState!
+                          .startWritingDataToDB(context);
                     } else {
                       await Utils.getNotificationPermission(context);
                       bool isNotificationPermitted =
-                      await Permission.notification.isGranted;
+                          await Permission.notification.isGranted;
                       if (isNotificationPermitted) {
-                        satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                        satrtTrip_sate.currentState!
+                            .startWritingDataToDB(context);
                       }
                     }
                   } else {
@@ -173,47 +182,50 @@ class StartTripLprPermission  {
 
                     if (isStoragePermitted.isGranted) {
                       bool isNotificationPermitted =
-                      await Permission.notification.isGranted;
+                          await Permission.notification.isGranted;
 
                       if (isNotificationPermitted) {
-                        satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                        satrtTrip_sate.currentState!
+                            .startWritingDataToDB(context);
                       } else {
                         await Utils.getNotificationPermission(context);
                         bool isNotificationPermitted =
-                        await Permission.notification.isGranted;
+                            await Permission.notification.isGranted;
                         if (isNotificationPermitted) {
-                          satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                          satrtTrip_sate.currentState!
+                              .startWritingDataToDB(context);
                         }
                       }
                     }
                   }
                 } else {
                   bool isNotificationPermitted =
-                  await Permission.notification.isGranted;
+                      await Permission.notification.isGranted;
 
                   if (isNotificationPermitted) {
-                    satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                    satrtTrip_sate.currentState!.startWritingDataToDB(context);
                   } else {
                     await Utils.getNotificationPermission(context);
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
                     if (isNotificationPermitted) {
-                      satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                      satrtTrip_sate.currentState!
+                          .startWritingDataToDB(context);
                     }
                   }
                 }
               } else {
                 bool isNotificationPermitted =
-                await Permission.notification.isGranted;
+                    await Permission.notification.isGranted;
 
                 if (isNotificationPermitted) {
-                  satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                  satrtTrip_sate.currentState!.startWritingDataToDB(context);
                 } else {
                   await Utils.getNotificationPermission(context);
                   bool isNotificationPermitted =
-                  await Permission.notification.isGranted;
+                      await Permission.notification.isGranted;
                   if (isNotificationPermitted) {
-                    satrtTrip_sate.currentState!.  startWritingDataToDB(
+                    satrtTrip_sate.currentState!.startWritingDataToDB(
                       context,
                     );
                   }
@@ -222,13 +234,12 @@ class StartTripLprPermission  {
             }
           }
         }
-
       } else {
         await Utils.getLocationPermissions(context, scaffoldKey);
         bool isLocationPermitted = await Permission.locationAlways.isGranted;
         if (isLocationPermitted) {
-          FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
-          FlutterBluePlus.instance.scanResults.listen((results) async {
+          FlutterBluePlus.startScan(timeout: Duration(seconds: 4));
+          FlutterBluePlus.scanResults.listen((results) async {
             for (ScanResult r in results) {
               if (r.device.name.toLowerCase().contains("lpr")) {
                 r.device.connect().catchError((e) {
@@ -237,12 +248,14 @@ class StartTripLprPermission  {
                       r.device.disconnect().then((value) {
                         r.device.connect().catchError((e) {
                           if (satrtTrip_sate.currentState!.mounted) {
-                       // satrtTrip_sate.currentState!.    setState(() {
-                          satrtTrip_sate.currentState!.     isBluetoothPermitted = true;
-                          satrtTrip_sate.currentState!.     progress = 1.0;
-                           satrtTrip_sate.currentState!.    lprSensorProgress = 1.0;
-                            satrtTrip_sate.currentState!.   isStartButton = true;
-                          //  });
+                            // satrtTrip_sate.currentState!.    setState(() {
+                            satrtTrip_sate.currentState!.isBluetoothPermitted =
+                                true;
+                            satrtTrip_sate.currentState!.progress = 1.0;
+                            satrtTrip_sate.currentState!.lprSensorProgress =
+                                1.0;
+                            satrtTrip_sate.currentState!.isStartButton = true;
+                            //  });
                           }
                         });
                       });
@@ -250,25 +263,26 @@ class StartTripLprPermission  {
                   });
                 });
 
-              satrtTrip_sate.currentState!.  bluetoothName = r.device.name;
-              // satrtTrip_sate.currentState!. setState(() {
-              satrtTrip_sate.currentState!.     isBluetoothPermitted = true;
-                 satrtTrip_sate.currentState!.  progress = 1.0;
-                satrtTrip_sate.currentState!.   lprSensorProgress = 1.0;
-                 satrtTrip_sate.currentState!.  isStartButton = true;
-               // });
-                FlutterBluePlus.instance.stopScan();
+                satrtTrip_sate.currentState!.bluetoothName = r.device.name;
+                // satrtTrip_sate.currentState!. setState(() {
+                satrtTrip_sate.currentState!.isBluetoothPermitted = true;
+                satrtTrip_sate.currentState!.progress = 1.0;
+                satrtTrip_sate.currentState!.lprSensorProgress = 1.0;
+                satrtTrip_sate.currentState!.isStartButton = true;
+                // });
+                FlutterBluePlus.stopScan();
                 break;
               } else {
                 r.device.disconnect().then(
-                        (value) => Utils.customPrint("is device disconnected: "));
+                    (value) => Utils.customPrint("is device disconnected: "));
               }
             }
           });
 
-      // satrtTrip_sate.currentState!.   setState(() {
-            satrtTrip_sate.currentState!. isLocationPermitted = isLocationPermitted;
-        //  });
+          // satrtTrip_sate.currentState!.   setState(() {
+          satrtTrip_sate.currentState!.isLocationPermitted =
+              isLocationPermitted;
+          //  });
 
           if (isTripRecordingStarted) {
             bool isLocationPermitted = await Permission.location.isGranted;
@@ -281,16 +295,18 @@ class StartTripLprPermission  {
                   var isStoragePermitted = await Permission.storage.status;
                   if (isStoragePermitted.isGranted) {
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
 
                     if (isNotificationPermitted) {
-                      satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                      satrtTrip_sate.currentState!
+                          .startWritingDataToDB(context);
                     } else {
                       await Utils.getNotificationPermission(context);
                       bool isNotificationPermitted =
-                      await Permission.notification.isGranted;
+                          await Permission.notification.isGranted;
                       if (isNotificationPermitted) {
-                        satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                        satrtTrip_sate.currentState!
+                            .startWritingDataToDB(context);
                       }
                     }
                   } else {
@@ -301,47 +317,50 @@ class StartTripLprPermission  {
 
                     if (isStoragePermitted.isGranted) {
                       bool isNotificationPermitted =
-                      await Permission.notification.isGranted;
+                          await Permission.notification.isGranted;
 
                       if (isNotificationPermitted) {
-                        satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                        satrtTrip_sate.currentState!
+                            .startWritingDataToDB(context);
                       } else {
                         await Utils.getNotificationPermission(context);
                         bool isNotificationPermitted =
-                        await Permission.notification.isGranted;
+                            await Permission.notification.isGranted;
                         if (isNotificationPermitted) {
-                          satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                          satrtTrip_sate.currentState!
+                              .startWritingDataToDB(context);
                         }
                       }
                     }
                   }
                 } else {
                   bool isNotificationPermitted =
-                  await Permission.notification.isGranted;
+                      await Permission.notification.isGranted;
 
                   if (isNotificationPermitted) {
-                    satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                    satrtTrip_sate.currentState!.startWritingDataToDB(context);
                   } else {
                     await Utils.getNotificationPermission(context);
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
                     if (isNotificationPermitted) {
-                      satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                      satrtTrip_sate.currentState!
+                          .startWritingDataToDB(context);
                     }
                   }
                 }
               } else {
                 bool isNotificationPermitted =
-                await Permission.notification.isGranted;
+                    await Permission.notification.isGranted;
 
                 if (isNotificationPermitted) {
-                  satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                  satrtTrip_sate.currentState!.startWritingDataToDB(context);
                 } else {
                   await Utils.getNotificationPermission(context);
                   bool isNotificationPermitted =
-                  await Permission.notification.isGranted;
+                      await Permission.notification.isGranted;
                   if (isNotificationPermitted) {
-                    satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                    satrtTrip_sate.currentState!.startWritingDataToDB(context);
                   }
                 }
               }
@@ -359,16 +378,18 @@ class StartTripLprPermission  {
                     var isStoragePermitted = await Permission.storage.status;
                     if (isStoragePermitted.isGranted) {
                       bool isNotificationPermitted =
-                      await Permission.notification.isGranted;
+                          await Permission.notification.isGranted;
 
                       if (isNotificationPermitted) {
-                        satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                        satrtTrip_sate.currentState!
+                            .startWritingDataToDB(context);
                       } else {
                         await Utils.getNotificationPermission(context);
                         bool isNotificationPermitted =
-                        await Permission.notification.isGranted;
+                            await Permission.notification.isGranted;
                         if (isNotificationPermitted) {
-                          satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                          satrtTrip_sate.currentState!
+                              .startWritingDataToDB(context);
                         }
                       }
                     } else {
@@ -379,47 +400,51 @@ class StartTripLprPermission  {
 
                       if (isStoragePermitted.isGranted) {
                         bool isNotificationPermitted =
-                        await Permission.notification.isGranted;
+                            await Permission.notification.isGranted;
 
                         if (isNotificationPermitted) {
-                          satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                          satrtTrip_sate.currentState!
+                              .startWritingDataToDB(context);
                         } else {
                           await Utils.getNotificationPermission(context);
                           bool isNotificationPermitted =
-                          await Permission.notification.isGranted;
+                              await Permission.notification.isGranted;
                           if (isNotificationPermitted) {
-                            satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                            satrtTrip_sate.currentState!
+                                .startWritingDataToDB(context);
                           }
                         }
                       }
                     }
                   } else {
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
 
                     if (isNotificationPermitted) {
-                      satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                      satrtTrip_sate.currentState!
+                          .startWritingDataToDB(context);
                     } else {
                       await Utils.getNotificationPermission(context);
                       bool isNotificationPermitted =
-                      await Permission.notification.isGranted;
+                          await Permission.notification.isGranted;
                       if (isNotificationPermitted) {
-                        satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                        satrtTrip_sate.currentState!
+                            .startWritingDataToDB(context);
                       }
                     }
                   }
                 } else {
                   bool isNotificationPermitted =
-                  await Permission.notification.isGranted;
+                      await Permission.notification.isGranted;
 
                   if (isNotificationPermitted) {
-                    satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                    satrtTrip_sate.currentState!.startWritingDataToDB(context);
                   } else {
                     await Utils.getNotificationPermission(context);
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
                     if (isNotificationPermitted) {
-                      satrtTrip_sate.currentState!.  startWritingDataToDB(
+                      satrtTrip_sate.currentState!.startWritingDataToDB(
                         context,
                       );
                     }
@@ -428,14 +453,13 @@ class StartTripLprPermission  {
               }
             }
           }
-
         }
       }
     } else {
       bool isLocationPermitted = await Permission.locationAlways.isGranted;
       if (isLocationPermitted) {
-        FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
-        FlutterBluePlus.instance.scanResults.listen((results) async {
+        FlutterBluePlus.startScan(timeout: Duration(seconds: 4));
+        FlutterBluePlus.scanResults.listen((results) async {
           for (ScanResult r in results) {
             if (r.device.name.toLowerCase().contains("lpr")) {
               Utils.customPrint('FOUND DEVICE AGAIN');
@@ -446,12 +470,13 @@ class StartTripLprPermission  {
                     r.device.disconnect().then((value) {
                       r.device.connect().catchError((e) {
                         if (satrtTrip_sate.currentState!.mounted) {
-                        // satrtTrip_sate.currentState!. setState(() {
-                          satrtTrip_sate.currentState!.  isBluetoothPermitted = true;
-                          satrtTrip_sate.currentState!.  progress = 1.0;
-                           satrtTrip_sate.currentState!. lprSensorProgress = 1.0;
-                           satrtTrip_sate.currentState!. isStartButton = true;
-                         // });
+                          // satrtTrip_sate.currentState!. setState(() {
+                          satrtTrip_sate.currentState!.isBluetoothPermitted =
+                              true;
+                          satrtTrip_sate.currentState!.progress = 1.0;
+                          satrtTrip_sate.currentState!.lprSensorProgress = 1.0;
+                          satrtTrip_sate.currentState!.isStartButton = true;
+                          // });
                         }
                       });
                     });
@@ -459,25 +484,25 @@ class StartTripLprPermission  {
                 });
               });
 
-            satrtTrip_sate.currentState!.  bluetoothName = r.device.name;
-            // satrtTrip_sate.currentState!. setState(() {
-              satrtTrip_sate.currentState!.  isBluetoothPermitted = true;
-              satrtTrip_sate.currentState!.  progress = 1.0;
-             satrtTrip_sate.currentState!.   lprSensorProgress = 1.0;
-             satrtTrip_sate.currentState!.   isStartButton = true;
-             // });
-              FlutterBluePlus.instance.stopScan();
+              satrtTrip_sate.currentState!.bluetoothName = r.device.name;
+              // satrtTrip_sate.currentState!. setState(() {
+              satrtTrip_sate.currentState!.isBluetoothPermitted = true;
+              satrtTrip_sate.currentState!.progress = 1.0;
+              satrtTrip_sate.currentState!.lprSensorProgress = 1.0;
+              satrtTrip_sate.currentState!.isStartButton = true;
+              // });
+              FlutterBluePlus.stopScan();
               break;
             } else {
               r.device.disconnect().then(
-                      (value) => Utils.customPrint("is device disconnected: "));
+                  (value) => Utils.customPrint("is device disconnected: "));
             }
           }
         });
 
-     // satrtTrip_sate.currentState!.  setState(() {
-        satrtTrip_sate.currentState!.  isLocationPermitted = isLocationPermitted;
-       // });
+        // satrtTrip_sate.currentState!.  setState(() {
+        satrtTrip_sate.currentState!.isLocationPermitted = isLocationPermitted;
+        // });
 
         if (isTripRecordingStarted) {
           bool isLocationPermitted = await Permission.location.isGranted;
@@ -490,16 +515,17 @@ class StartTripLprPermission  {
                 var isStoragePermitted = await Permission.storage.status;
                 if (isStoragePermitted.isGranted) {
                   bool isNotificationPermitted =
-                  await Permission.notification.isGranted;
+                      await Permission.notification.isGranted;
 
                   if (isNotificationPermitted) {
-                    satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                    satrtTrip_sate.currentState!.startWritingDataToDB(context);
                   } else {
                     await Utils.getNotificationPermission(context);
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
                     if (isNotificationPermitted) {
-                      satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                      satrtTrip_sate.currentState!
+                          .startWritingDataToDB(context);
                     }
                   }
                 } else {
@@ -510,47 +536,49 @@ class StartTripLprPermission  {
 
                   if (isStoragePermitted.isGranted) {
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
 
                     if (isNotificationPermitted) {
-                      satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                      satrtTrip_sate.currentState!
+                          .startWritingDataToDB(context);
                     } else {
                       await Utils.getNotificationPermission(context);
                       bool isNotificationPermitted =
-                      await Permission.notification.isGranted;
+                          await Permission.notification.isGranted;
                       if (isNotificationPermitted) {
-                        satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                        satrtTrip_sate.currentState!
+                            .startWritingDataToDB(context);
                       }
                     }
                   }
                 }
               } else {
                 bool isNotificationPermitted =
-                await Permission.notification.isGranted;
+                    await Permission.notification.isGranted;
 
                 if (isNotificationPermitted) {
-                  satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                  satrtTrip_sate.currentState!.startWritingDataToDB(context);
                 } else {
                   await Utils.getNotificationPermission(context);
                   bool isNotificationPermitted =
-                  await Permission.notification.isGranted;
+                      await Permission.notification.isGranted;
                   if (isNotificationPermitted) {
-                    satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                    satrtTrip_sate.currentState!.startWritingDataToDB(context);
                   }
                 }
               }
             } else {
               bool isNotificationPermitted =
-              await Permission.notification.isGranted;
+                  await Permission.notification.isGranted;
 
               if (isNotificationPermitted) {
-                satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                satrtTrip_sate.currentState!.startWritingDataToDB(context);
               } else {
                 await Utils.getNotificationPermission(context);
                 bool isNotificationPermitted =
-                await Permission.notification.isGranted;
+                    await Permission.notification.isGranted;
                 if (isNotificationPermitted) {
-                  satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                  satrtTrip_sate.currentState!.startWritingDataToDB(context);
                 }
               }
             }
@@ -568,16 +596,18 @@ class StartTripLprPermission  {
                   var isStoragePermitted = await Permission.storage.status;
                   if (isStoragePermitted.isGranted) {
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
 
                     if (isNotificationPermitted) {
-                      satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                      satrtTrip_sate.currentState!
+                          .startWritingDataToDB(context);
                     } else {
                       await Utils.getNotificationPermission(context);
                       bool isNotificationPermitted =
-                      await Permission.notification.isGranted;
+                          await Permission.notification.isGranted;
                       if (isNotificationPermitted) {
-                        satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                        satrtTrip_sate.currentState!
+                            .startWritingDataToDB(context);
                       }
                     }
                   } else {
@@ -588,47 +618,50 @@ class StartTripLprPermission  {
 
                     if (isStoragePermitted.isGranted) {
                       bool isNotificationPermitted =
-                      await Permission.notification.isGranted;
+                          await Permission.notification.isGranted;
 
                       if (isNotificationPermitted) {
-                        satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                        satrtTrip_sate.currentState!
+                            .startWritingDataToDB(context);
                       } else {
                         await Utils.getNotificationPermission(context);
                         bool isNotificationPermitted =
-                        await Permission.notification.isGranted;
+                            await Permission.notification.isGranted;
                         if (isNotificationPermitted) {
-                          satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                          satrtTrip_sate.currentState!
+                              .startWritingDataToDB(context);
                         }
                       }
                     }
                   }
                 } else {
                   bool isNotificationPermitted =
-                  await Permission.notification.isGranted;
+                      await Permission.notification.isGranted;
 
                   if (isNotificationPermitted) {
-                    satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                    satrtTrip_sate.currentState!.startWritingDataToDB(context);
                   } else {
                     await Utils.getNotificationPermission(context);
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
                     if (isNotificationPermitted) {
-                      satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                      satrtTrip_sate.currentState!
+                          .startWritingDataToDB(context);
                     }
                   }
                 }
               } else {
                 bool isNotificationPermitted =
-                await Permission.notification.isGranted;
+                    await Permission.notification.isGranted;
 
                 if (isNotificationPermitted) {
-                  satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                  satrtTrip_sate.currentState!.startWritingDataToDB(context);
                 } else {
                   await Utils.getNotificationPermission(context);
                   bool isNotificationPermitted =
-                  await Permission.notification.isGranted;
+                      await Permission.notification.isGranted;
                   if (isNotificationPermitted) {
-                    satrtTrip_sate.currentState!.  startWritingDataToDB(
+                    satrtTrip_sate.currentState!.startWritingDataToDB(
                       context,
                     );
                   }
@@ -637,13 +670,12 @@ class StartTripLprPermission  {
             }
           }
         }
-
       } else {
         await Utils.getLocationPermissions(context, scaffoldKey);
         bool isLocationPermitted = await Permission.locationAlways.isGranted;
         if (isLocationPermitted) {
-          FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
-          FlutterBluePlus.instance.scanResults.listen((results) async {
+          FlutterBluePlus.startScan(timeout: Duration(seconds: 4));
+          FlutterBluePlus.scanResults.listen((results) async {
             for (ScanResult r in results) {
               if (r.device.name.toLowerCase().contains("lpr")) {
                 r.device.connect().catchError((e) {
@@ -652,11 +684,13 @@ class StartTripLprPermission  {
                       r.device.disconnect().then((value) {
                         r.device.connect().catchError((e) {
                           if (satrtTrip_sate.currentState!.mounted) {
-                         // satrtTrip_sate.currentState!.  setState(() {
-                           satrtTrip_sate.currentState!.   isBluetoothPermitted = true;
-                           satrtTrip_sate.currentState!.   progress = 1.0;
-                             satrtTrip_sate.currentState!. lprSensorProgress = 1.0;
-                             satrtTrip_sate.currentState!. isStartButton = true;
+                            // satrtTrip_sate.currentState!.  setState(() {
+                            satrtTrip_sate.currentState!.isBluetoothPermitted =
+                                true;
+                            satrtTrip_sate.currentState!.progress = 1.0;
+                            satrtTrip_sate.currentState!.lprSensorProgress =
+                                1.0;
+                            satrtTrip_sate.currentState!.isStartButton = true;
                             //});
                           }
                         });
@@ -665,25 +699,26 @@ class StartTripLprPermission  {
                   });
                 });
 
-               satrtTrip_sate.currentState!. bluetoothName = r.device.name;
-              //satrtTrip_sate.currentState!.  setState(() {
-               satrtTrip_sate.currentState!.   isBluetoothPermitted = true;
-                satrtTrip_sate.currentState!.  progress = 1.0;
-                 satrtTrip_sate.currentState!. lprSensorProgress = 1.0;
-                 satrtTrip_sate.currentState!. isStartButton = true;
-               // });
-                FlutterBluePlus.instance.stopScan();
+                satrtTrip_sate.currentState!.bluetoothName = r.device.name;
+                //satrtTrip_sate.currentState!.  setState(() {
+                satrtTrip_sate.currentState!.isBluetoothPermitted = true;
+                satrtTrip_sate.currentState!.progress = 1.0;
+                satrtTrip_sate.currentState!.lprSensorProgress = 1.0;
+                satrtTrip_sate.currentState!.isStartButton = true;
+                // });
+                FlutterBluePlus.stopScan();
                 break;
               } else {
                 r.device.disconnect().then(
-                        (value) => Utils.customPrint("is device disconnected: "));
+                    (value) => Utils.customPrint("is device disconnected: "));
               }
             }
           });
 
-        //satrtTrip_sate.currentState!.   setState(() {
-            satrtTrip_sate.currentState!.isLocationPermitted = isLocationPermitted;
-         // });
+          //satrtTrip_sate.currentState!.   setState(() {
+          satrtTrip_sate.currentState!.isLocationPermitted =
+              isLocationPermitted;
+          // });
 
           if (isTripRecordingStarted) {
             bool isLocationPermitted = await Permission.location.isGranted;
@@ -696,16 +731,18 @@ class StartTripLprPermission  {
                   var isStoragePermitted = await Permission.storage.status;
                   if (isStoragePermitted.isGranted) {
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
 
                     if (isNotificationPermitted) {
-                      satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                      satrtTrip_sate.currentState!
+                          .startWritingDataToDB(context);
                     } else {
                       await Utils.getNotificationPermission(context);
                       bool isNotificationPermitted =
-                      await Permission.notification.isGranted;
+                          await Permission.notification.isGranted;
                       if (isNotificationPermitted) {
-                        satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                        satrtTrip_sate.currentState!
+                            .startWritingDataToDB(context);
                       }
                     }
                   } else {
@@ -716,47 +753,50 @@ class StartTripLprPermission  {
 
                     if (isStoragePermitted.isGranted) {
                       bool isNotificationPermitted =
-                      await Permission.notification.isGranted;
+                          await Permission.notification.isGranted;
 
                       if (isNotificationPermitted) {
-                        satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                        satrtTrip_sate.currentState!
+                            .startWritingDataToDB(context);
                       } else {
                         await Utils.getNotificationPermission(context);
                         bool isNotificationPermitted =
-                        await Permission.notification.isGranted;
+                            await Permission.notification.isGranted;
                         if (isNotificationPermitted) {
-                          satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                          satrtTrip_sate.currentState!
+                              .startWritingDataToDB(context);
                         }
                       }
                     }
                   }
                 } else {
                   bool isNotificationPermitted =
-                  await Permission.notification.isGranted;
+                      await Permission.notification.isGranted;
 
                   if (isNotificationPermitted) {
-                    satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                    satrtTrip_sate.currentState!.startWritingDataToDB(context);
                   } else {
                     await Utils.getNotificationPermission(context);
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
                     if (isNotificationPermitted) {
-                      satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                      satrtTrip_sate.currentState!
+                          .startWritingDataToDB(context);
                     }
                   }
                 }
               } else {
                 bool isNotificationPermitted =
-                await Permission.notification.isGranted;
+                    await Permission.notification.isGranted;
 
                 if (isNotificationPermitted) {
-                  satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                  satrtTrip_sate.currentState!.startWritingDataToDB(context);
                 } else {
                   await Utils.getNotificationPermission(context);
                   bool isNotificationPermitted =
-                  await Permission.notification.isGranted;
+                      await Permission.notification.isGranted;
                   if (isNotificationPermitted) {
-                    satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                    satrtTrip_sate.currentState!.startWritingDataToDB(context);
                   }
                 }
               }
@@ -774,16 +814,18 @@ class StartTripLprPermission  {
                     var isStoragePermitted = await Permission.storage.status;
                     if (isStoragePermitted.isGranted) {
                       bool isNotificationPermitted =
-                      await Permission.notification.isGranted;
+                          await Permission.notification.isGranted;
 
                       if (isNotificationPermitted) {
-                        satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                        satrtTrip_sate.currentState!
+                            .startWritingDataToDB(context);
                       } else {
                         await Utils.getNotificationPermission(context);
                         bool isNotificationPermitted =
-                        await Permission.notification.isGranted;
+                            await Permission.notification.isGranted;
                         if (isNotificationPermitted) {
-                          satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                          satrtTrip_sate.currentState!
+                              .startWritingDataToDB(context);
                         }
                       }
                     } else {
@@ -794,47 +836,51 @@ class StartTripLprPermission  {
 
                       if (isStoragePermitted.isGranted) {
                         bool isNotificationPermitted =
-                        await Permission.notification.isGranted;
+                            await Permission.notification.isGranted;
 
                         if (isNotificationPermitted) {
-                          satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                          satrtTrip_sate.currentState!
+                              .startWritingDataToDB(context);
                         } else {
                           await Utils.getNotificationPermission(context);
                           bool isNotificationPermitted =
-                          await Permission.notification.isGranted;
+                              await Permission.notification.isGranted;
                           if (isNotificationPermitted) {
-                            satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                            satrtTrip_sate.currentState!
+                                .startWritingDataToDB(context);
                           }
                         }
                       }
                     }
                   } else {
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
 
                     if (isNotificationPermitted) {
-                      satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                      satrtTrip_sate.currentState!
+                          .startWritingDataToDB(context);
                     } else {
                       await Utils.getNotificationPermission(context);
                       bool isNotificationPermitted =
-                      await Permission.notification.isGranted;
+                          await Permission.notification.isGranted;
                       if (isNotificationPermitted) {
-                        satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                        satrtTrip_sate.currentState!
+                            .startWritingDataToDB(context);
                       }
                     }
                   }
                 } else {
                   bool isNotificationPermitted =
-                  await Permission.notification.isGranted;
+                      await Permission.notification.isGranted;
 
                   if (isNotificationPermitted) {
-                    satrtTrip_sate.currentState!.  startWritingDataToDB(context);
+                    satrtTrip_sate.currentState!.startWritingDataToDB(context);
                   } else {
                     await Utils.getNotificationPermission(context);
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
                     if (isNotificationPermitted) {
-                      satrtTrip_sate.currentState!.  startWritingDataToDB(
+                      satrtTrip_sate.currentState!.startWritingDataToDB(
                         context,
                       );
                     }
@@ -843,13 +889,8 @@ class StartTripLprPermission  {
               }
             }
           }
-
         }
       }
     }
-
-    }
-    
-
-  
+  }
 }

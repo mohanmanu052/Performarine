@@ -120,7 +120,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
   void initState() {
     // TODO: implement initState
     super.initState();
-                SystemChrome.setPreferredOrientations([
+    SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
 
@@ -156,9 +156,10 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
       }
     }
   }
-@override
+
+  @override
   void dispose() {
-                    SystemChrome.setPreferredOrientations([
+    SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
 
@@ -705,6 +706,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                   if(finalSelectedFiles.isNotEmpty){
                     isDeleted = true;
                     finalSelectedFiles.clear();
+                    commonProvider.selectedImageFiles.clear();
                   }
                 });
                 Utils.customPrint(
@@ -753,7 +755,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                   isImageSelected = true;
                   finalSelectedFiles.addAll(selectedImageFileList);
                   commonProvider.selectedImageFiles = selectedImageFileList;
-                //  widget.addVesselData?.selectedImages = selectedImageFileList;
+                  //  widget.addVesselData?.selectedImages = selectedImageFileList;
                   Utils.customPrint('CAMERA FILE ${finalSelectedFiles[0]!.path}');
                   CustomLogger().logWithFile(Level.info, "CAMERA FILE ${finalSelectedFiles[0]!.path} -> $page");
                   Utils.customPrint('CAMERA FILE ${File(finalSelectedFiles[0]!.path).existsSync()}');

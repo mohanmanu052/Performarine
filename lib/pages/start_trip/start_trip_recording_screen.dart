@@ -11,8 +11,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_map/plugin_api.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_xlider/flutter_xlider.dart';
 import 'package:geolocator/geolocator.dart' as geo;
 import 'package:get/get.dart';
@@ -56,7 +58,7 @@ class StartTripRecordingScreen extends StatefulWidget {
   final int? bottomNavIndex;
   const StartTripRecordingScreen(
       {super.key,
-      this.bottomNavIndex,
+        this.bottomNavIndex,
         /*this.isLocationPermitted = false, this.isBluetoothConnected = false,*/ this.calledFrom =
       ''});
 
@@ -67,7 +69,7 @@ class StartTripRecordingScreen extends StatefulWidget {
 
 class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     with WidgetsBindingObserver, TickerProviderStateMixin {
-      GlobalKey<StartTripRecordingScreenState> tripState=GlobalKey();
+  GlobalKey<StartTripRecordingScreenState> tripState=GlobalKey();
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
   List<VesselDropdownItem> vesselData = [];
@@ -109,12 +111,17 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
   DeviceInfo? deviceDetails;
   late Future<List<CreateVessel>> vesselList;
 
-  double progress = 0.9, lprSensorProgress = 1.0, 
-  sliderMinVal = 11;
+  double progress = 0.9, lprSensorProgress = 1.0,
+      sliderMinVal = 11;
 
   late AnimationController popupAnimationController;
   late TextEditingController textEditingController;
   FocusNode _focusNode = FocusNode();
+
+  bool openedSettingsPageForPermission = false;
+
+  StreamSubscription<List<ScanResult>>? autoConnectStreamSubscription;
+  StreamSubscription<bool>? autoConnectIsScanningStreamSubscription;
 
   @override
   void initState() {
@@ -122,14 +129,14 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     super.initState();
 
 
-Future.delayed(Duration(seconds: 1)).then((value) {
-
-if(tripState.currentState!=null){
-StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, context);
-
-}
-
-});
+    // Future.delayed(Duration(seconds: 1)).then((value) {
+    //
+    //   if(tripState.currentState!=null){
+    //     StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, context);
+    //
+    //   }
+    //
+    // });
 
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
@@ -157,6 +164,826 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
             extentOffset: textEditingController.value.text.length);
       }
     });
+
+    Future.delayed(Duration(milliseconds: 500), (){
+      checkPermissionsAndAutoConnectToDevice(context);
+    });
+  }
+
+  checkPermissionsAndAutoConnectToDevice(BuildContext context) async
+  {
+    bool isNDPermDenied =
+    await Permission
+        .bluetoothConnect
+        .isPermanentlyDenied;
+
+    if (isNDPermDenied) {
+      showDialog(
+          context:
+          context,
+          builder:
+              (BuildContext
+          context) {
+            return LocationPermissionCustomDialog(
+              isLocationDialogBox:
+              false,
+              text:
+              'Allow nearby devices',
+              subText:
+              'Allow nearby devices to connect to the app',
+              buttonText:
+              'OK',
+              buttonOnTap:
+                  () async {
+                Get.back();
+              },
+            );
+          });
+      return;
+    } else {
+      /// START
+      if(Platform.isIOS){
+        dynamic isBluetoothEnable = Platform
+            .isAndroid
+            ? await blueIsOn()
+            : await commonProvider
+            .checkIfBluetoothIsEnabled(
+            scaffoldKey,
+                () {
+              showBluetoothDialog(
+                  context, autoConnect: true);
+            });
+
+        if(isBluetoothEnable != null){
+          if(isBluetoothEnable){
+            autoConnectToDevice();
+          }
+          else{
+            Utils.customPrint('BLED - SHOWN FIRST');
+            showBluetoothDialog(
+                context, autoConnect: true);
+          }
+        }
+      }
+      else{
+        bool
+        isNDPermittedOne =
+        await Permission
+            .bluetoothConnect
+            .isGranted;
+
+        if(isNDPermittedOne){
+
+          if (await Permission
+              .location
+              .isPermanentlyDenied) {
+            Utils.showSnackBar(
+                context,
+                scaffoldKey:
+                scaffoldKey,
+                message:
+                'Location permissions are denied without permissions we are unable to start the trip');
+            Future.delayed(
+                Duration(
+                    seconds: 2),
+                    () async {
+                  openedSettingsPageForPermission = true;
+                  await openAppSettings();
+                });
+          }
+          else {
+            if (await Permission
+                .location
+                .isGranted) {
+              bool isBluetoothEnable = await blueIsOn();
+
+              if(isBluetoothEnable){
+                autoConnectToDevice();
+              }
+              else{
+                Utils.customPrint('BLED - SHOWN SECOND');
+                showBluetoothDialog(context, autoConnect: true);
+              }
+
+              // checkAndGetLPRList(
+              //     context);
+              // showBluetoothListDialog(context);
+            }
+            else {
+              if ((await Permission
+                  .location
+                  .shouldShowRequestRationale)) {
+                Utils.showSnackBar(
+                    context,
+                    scaffoldKey: scaffoldKey,
+                    message: 'Location permissions are denied without permissions we are unable to start the trip');
+                Future.delayed(
+                    Duration(seconds: 2),
+                        () async {
+                      openedSettingsPageForPermission = true;
+                      await openAppSettings();
+                    });
+              }
+              else {
+                await Permission
+                    .location
+                    .request();
+                if(await Permission
+                    .location.isGranted){
+                  bool isBluetoothEnable = Platform
+                      .isAndroid
+                      ? await blueIsOn()
+                      : await commonProvider
+                      .checkIfBluetoothIsEnabled(
+                      scaffoldKey,
+                          () {
+                        showBluetoothDialog(
+                            context, autoConnect: true);
+                      });
+                  if(isBluetoothEnable){
+                    autoConnectToDevice();
+                  }
+                  else{
+                    Utils.customPrint('BLED - SHOWN THIRD');
+                    showBluetoothDialog(context, autoConnect: true);
+                  }
+                }
+                else{
+                  checkPermissionsAndAutoConnectToDevice(context);
+                }
+              }
+            }
+          }
+        }
+        else{
+          await Permission
+              .bluetoothConnect
+              .request();
+          bool
+          isNDPermitted =
+          await Permission
+              .bluetoothConnect
+              .isGranted;
+
+          if(isNDPermitted){
+            if (await Permission
+                .location
+                .isPermanentlyDenied) {
+              Utils.showSnackBar(
+                  context,
+                  scaffoldKey:
+                  scaffoldKey,
+                  message:
+                  'Location permissions are denied without permissions we are unable to start the trip');
+              Future.delayed(
+                  Duration(
+                      seconds: 2),
+                      () async {
+                    openedSettingsPageForPermission = true;
+                    await openAppSettings();
+                  });
+            }
+            else {
+              if (await Permission
+                  .location
+                  .isGranted) {
+                bool isBluetoothEnable = Platform
+                    .isAndroid
+                    ? await blueIsOn()
+                    : await commonProvider
+                    .checkIfBluetoothIsEnabled(
+                    scaffoldKey,
+                        () {
+                      showBluetoothDialog(
+                          context, autoConnect: true);
+                    });
+                if(isBluetoothEnable){
+                  autoConnectToDevice();
+                }
+                else{
+                  Utils.customPrint('BLED - SHOWN FOURTH');
+                  showBluetoothDialog(context, autoConnect: true);
+                }
+
+                // checkAndGetLPRList(
+                //     context);
+                // showBluetoothListDialog(context);
+              }
+              else {
+                if ((await Permission
+                    .location
+                    .shouldShowRequestRationale)) {
+                  Utils.showSnackBar(
+                      context,
+                      scaffoldKey: scaffoldKey,
+                      message: 'Location permissions are denied without permissions we are unable to start the trip');
+                  Future.delayed(
+                      Duration(seconds: 2),
+                          () async {
+                        openedSettingsPageForPermission = true;
+                        await openAppSettings();
+                      });
+                }
+                else {
+                  await Permission
+                      .location
+                      .request();
+                  if(await Permission
+                      .location.isGranted){
+                    bool isBluetoothEnable = Platform
+                        .isAndroid
+                        ? await blueIsOn()
+                        : await commonProvider
+                        .checkIfBluetoothIsEnabled(
+                        scaffoldKey,
+                            () {
+                          showBluetoothDialog(
+                              context, autoConnect: true);
+                        });
+                    if(isBluetoothEnable){
+                      autoConnectToDevice();
+                    }
+                    else{
+                      Utils.customPrint('BLED - SHOWN FIFTH');
+                      showBluetoothDialog(context, autoConnect: true);
+                    }
+                  }
+                  else{
+                    checkPermissionsAndAutoConnectToDevice(context);
+                  }
+                }
+              }
+            }
+          }
+          else{
+            if (await Permission
+                .bluetoothConnect
+                .isDenied ||
+                await Permission
+                    .bluetoothConnect
+                    .isPermanentlyDenied) {
+              showDialog(
+                  context:
+                  context,
+                  builder:
+                      (BuildContext
+                  context) {
+                    return LocationPermissionCustomDialog(
+                      isLocationDialogBox:
+                      false,
+                      text:
+                      'Allow nearby devices',
+                      subText:
+                      'Allow nearby devices to connect to the app',
+                      buttonText:
+                      'OK',
+                      buttonOnTap:
+                          () async {
+                        Get.back();
+
+                        openedSettingsPageForPermission = true;
+                        await openAppSettings();
+                      },
+                    );
+                  });
+            }
+          }
+        }
+      }
+      /// END
+
+
+
+
+      // if (Platform
+      //     .isIOS) {
+      //   dynamic isBluetoothEnable = Platform
+      //       .isAndroid
+      //       ? await blueIsOn()
+      //       : await commonProvider
+      //       .checkIfBluetoothIsEnabled(
+      //       scaffoldKey,
+      //           () {
+      //         showBluetoothDialog(
+      //             context);
+      //       });
+      //
+      //   if (isBluetoothEnable !=
+      //       null) {
+      //     if (isBluetoothEnable) {
+      //       if (Platform
+      //           .isIOS) {
+      //         autoConnectToDevice();
+      //         // checkAndGetLPRList(
+      //         //     context);
+      //         // showBluetoothListDialog(context);
+      //       } else {
+      //         if (await Permission
+      //             .location
+      //             .isPermanentlyDenied) {
+      //           Utils.showSnackBar(
+      //               context,
+      //               scaffoldKey:
+      //               scaffoldKey,
+      //               message:
+      //               'Location permissions are denied without permissions we are unable to start the trip');
+      //           Future.delayed(
+      //               Duration(
+      //                   seconds: 2),
+      //                   () async {
+      //                 await openAppSettings();
+      //               });
+      //         } else {
+      //           if (await Permission
+      //               .location
+      //               .isGranted) {
+      //             autoConnectToDevice();
+      //             // checkAndGetLPRList(
+      //             //     context);
+      //             // showBluetoothListDialog(context);
+      //           } else {
+      //             await Permission
+      //                 .location
+      //                 .request();
+      //           }
+      //         }
+      //       }
+      //     } else {
+      //       showBluetoothDialog(
+      //           context);
+      //     }
+      //   }
+      // }
+      // else {
+      //   bool
+      //   isNDPermittedOne =
+      //   await Permission
+      //       .bluetoothConnect
+      //       .isGranted;
+      //
+      //   if (isNDPermittedOne) {
+      //     bool isBluetoothEnable = Platform
+      //         .isAndroid
+      //         ? await blueIsOn()
+      //         : await commonProvider
+      //         .checkIfBluetoothIsEnabled(
+      //         scaffoldKey,
+      //             () {
+      //           showBluetoothDialog(
+      //               context);
+      //         });
+      //
+      //     if (isBluetoothEnable) {
+      //       if (Platform
+      //           .isIOS) {
+      //         autoConnectToDevice();
+      //         // checkAndGetLPRList(
+      //         //     context);
+      //         // showBluetoothListDialog(context);
+      //       } else {
+      //         if (await Permission
+      //             .location
+      //             .isPermanentlyDenied) {
+      //           Utils.showSnackBar(
+      //               context,
+      //               scaffoldKey:
+      //               scaffoldKey,
+      //               message:
+      //               'Location permissions are denied without permissions we are unable to start the trip');
+      //           Future.delayed(
+      //               Duration(
+      //                   seconds: 2),
+      //                   () async {
+      //                 await openAppSettings();
+      //               });
+      //         }
+      //         else {
+      //
+      //           if (await Permission
+      //               .location
+      //               .isGranted) {
+      //             autoConnectToDevice();
+      //             // checkAndGetLPRList(
+      //             //     context);
+      //             // showBluetoothListDialog(context);
+      //           }
+      //           else {
+      //             if (!(await Permission
+      //                 .location
+      //                 .shouldShowRequestRationale)) {
+      //               Utils.showSnackBar(
+      //                   context,
+      //                   scaffoldKey: scaffoldKey,
+      //                   message: 'Location permissions are denied without permissions we are unable to start the trip');
+      //               Future.delayed(
+      //                   Duration(seconds: 2),
+      //                       () async {
+      //                     await openAppSettings();
+      //                   });
+      //             } else {
+      //               await Permission
+      //                   .location
+      //                   .request();
+      //             }
+      //           }
+      //         }
+      //       }
+      //     } else {
+      //       showBluetoothDialog(
+      //           context);
+      //     }
+      //   }
+      //   else {
+      //     await Permission
+      //         .bluetoothConnect
+      //         .request();
+      //     bool
+      //     isNDPermitted =
+      //     await Permission
+      //         .bluetoothConnect
+      //         .isGranted;
+      //     if (isNDPermitted) {
+      //       bool isBluetoothEnable = Platform
+      //           .isAndroid
+      //           ? await blueIsOn()
+      //           : await commonProvider.checkIfBluetoothIsEnabled(
+      //           scaffoldKey,
+      //               () {
+      //             showBluetoothDialog(
+      //                 context);
+      //           });
+      //
+      //       if (isBluetoothEnable) {
+      //         if (Platform
+      //             .isIOS) {
+      //           autoConnectToDevice();
+      //           // checkAndGetLPRList(
+      //           //     context);
+      //           // showBluetoothListDialog(context);
+      //         } else {
+      //           if (await Permission
+      //               .location
+      //               .isPermanentlyDenied) {
+      //             Utils.showSnackBar(
+      //                 context,
+      //                 scaffoldKey:
+      //                 scaffoldKey,
+      //                 message:
+      //                 'Location permissions are denied without permissions we are unable to start the trip');
+      //             Future.delayed(
+      //                 Duration(seconds: 2),
+      //                     () async {
+      //                   await openAppSettings();
+      //                 });
+      //           } else {
+      //             if (await Permission
+      //                 .location
+      //                 .isGranted) {
+      //               autoConnectToDevice();
+      //               // checkAndGetLPRList(
+      //               //     context);
+      //               // showBluetoothListDialog(context);
+      //             } else {
+      //               await Permission
+      //                   .location
+      //                   .request();
+      //               if (await Permission
+      //                   .location
+      //                   .isGranted){
+      //                 autoConnectToDevice();
+      //               }
+      //             }
+      //           }
+      //         }
+      //       } else {
+      //         showBluetoothDialog(
+      //             context);
+      //       }
+      //     } else {
+      //       if (await Permission
+      //           .bluetoothConnect
+      //           .isDenied ||
+      //           await Permission
+      //               .bluetoothConnect
+      //               .isPermanentlyDenied) {
+      //         showDialog(
+      //             context:
+      //             context,
+      //             builder:
+      //                 (BuildContext
+      //             context) {
+      //               return LocationPermissionCustomDialog(
+      //                 isLocationDialogBox:
+      //                 false,
+      //                 text:
+      //                 'Allow nearby devices',
+      //                 subText:
+      //                 'Allow nearby devices to connect to the app',
+      //                 buttonText:
+      //                 'OK',
+      //                 buttonOnTap:
+      //                     () async {
+      //                   Get.back();
+      //
+      //                   await openAppSettings();
+      //                 },
+      //               );
+      //             });
+      //       }
+      //     }
+      //   }
+      // }
+    }
+  }
+
+  autoConnectToDevice() async {
+    final FlutterSecureStorage storage = FlutterSecureStorage();
+    var lprDeviceId = await storage.read(
+        key: 'lprDeviceId'
+    );
+
+    Utils.customPrint("LPR DEVICE ID $lprDeviceId");
+
+    EasyLoading.show(
+        status: 'Searching for available devices...',
+        maskType: EasyLoadingMaskType.black);
+
+    /// Check for already connected device.
+    List<BluetoothDevice> connectedDevicesList = FlutterBluePlus.connectedDevices;
+    Utils.customPrint("BONDED LIST $connectedDevicesList");
+
+    if(connectedDevicesList.isEmpty){
+
+      FlutterBluePlus.startScan(timeout: Duration(seconds: 4));
+
+      List<ScanResult> streamOfScanResultList = [];
+
+      // await Future.delayed(Duration(seconds: 4), () async {
+      //   // await FlutterBluePlus.startScan(timeout: Duration(seconds: 4));
+      //   EasyLoading.dismiss();
+      // });
+
+      String deviceId = '';
+      BluetoothDevice? connectedBluetoothDevice;
+
+      autoConnectStreamSubscription = FlutterBluePlus.scanResults.listen((value) {
+        Utils.customPrint('BLED - SCAN RESULT - ${value.isEmpty}');
+        streamOfScanResultList = value;
+      });
+
+      autoConnectIsScanningStreamSubscription = FlutterBluePlus.isScanning.listen((event) {
+        Utils.customPrint('BLED - IS SCANNING: $event');
+        Utils.customPrint('BLED - IS SCANNING: ${streamOfScanResultList.length}');
+        if(!event){
+          autoConnectIsScanningStreamSubscription!.cancel();
+          if(streamOfScanResultList.isNotEmpty){
+
+            if(lprDeviceId != null){
+              List<ScanResult> storedDeviceIdResultList = streamOfScanResultList.where((element) => element.device.remoteId.str == lprDeviceId).toList();
+              if(storedDeviceIdResultList.isNotEmpty){
+                ScanResult r = storedDeviceIdResultList.first;
+                r.device.connect().then((value) {
+                  Utils.customPrint('CONNECTED TO DEVICE BLE');
+                  setState(() {
+
+                  });
+                }).catchError((onError){
+                  Utils.customPrint('ERROR BLE: $onError');
+                });
+
+                bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+                //await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
+                deviceId = r.device.remoteId.str;
+                connectedBluetoothDevice = r.device;
+                setState(() {
+                  bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+                  isBluetoothPermitted = true;
+                  progress = 1.0;
+                  lprSensorProgress = 1.0;
+                  isStartButton = true;
+                });
+                FlutterBluePlus.stopScan();
+                EasyLoading.dismiss();
+              }
+              else{
+                List<ScanResult> lprNameResultList = streamOfScanResultList.where((element) => element.device.platformName.toLowerCase().contains('lpr')).toList();
+                if(lprNameResultList.isNotEmpty){
+                  ScanResult r = lprNameResultList.first;
+                  r.device.connect().then((value) {
+                    setState(() {
+
+                    });
+                  });
+                  bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+                  // await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
+                  deviceId = r.device.remoteId.str;
+                  connectedBluetoothDevice = r.device;
+                  setState(() {
+                    bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+                    isBluetoothPermitted = true;
+                    progress = 1.0;
+                    lprSensorProgress = 1.0;
+                    isStartButton = true;
+                  });
+                  FlutterBluePlus.stopScan();
+                  EasyLoading.dismiss();
+                }
+                else{
+                  if (mounted){
+                    Future.delayed(Duration(seconds: 2), (){
+                      EasyLoading.dismiss();
+                      showBluetoothListDialog(context, null, null);
+                    });
+                  }
+                }
+              }
+            }
+            else{
+              List<ScanResult> lprNameResultList = streamOfScanResultList.where((element) => element.device.platformName.toLowerCase().contains('lpr')).toList();
+              if(lprNameResultList.isNotEmpty){
+                ScanResult r = lprNameResultList.first;
+                r.device.connect().then((value) {
+                  setState(() {
+
+                  });
+                });
+                bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+                // await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
+                deviceId = r.device.remoteId.str;
+                connectedBluetoothDevice = r.device;
+                setState(() {
+                  bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+                  isBluetoothPermitted = true;
+                  progress = 1.0;
+                  lprSensorProgress = 1.0;
+                  isStartButton = true;
+                });
+                FlutterBluePlus.stopScan();
+                EasyLoading.dismiss();
+              }
+              else{
+                if (mounted){
+                  Future.delayed(Duration(seconds: 2), (){
+                    EasyLoading.dismiss();
+                    showBluetoothListDialog(context, null, null);
+                  });
+                }
+              }
+            }
+
+
+
+            // for (int i = 0; i < streamOfScanResultList.length; i++) {
+            //   ScanResult r = streamOfScanResultList[i];
+            //
+            //   if(lprDeviceId != null)
+            //   {
+            //     Utils.customPrint('STORED ID: $lprDeviceId - ${r.device.remoteId.str}');
+            //     if(r.device.remoteId.str == lprDeviceId)
+            //     {
+            //       r.device.connect().then((value) {
+            //         Utils.customPrint('CONNECTED TO DEVICE BLE');
+            //       }).catchError((onError){
+            //         Utils.customPrint('ERROR BLE: $onError');
+            //       });
+            //
+            //       bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+            //       //await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
+            //       deviceId = r.device.remoteId.str;
+            //       connectedBluetoothDevice = r.device;
+            //       setState(() {
+            //         bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+            //         isBluetoothPermitted = true;
+            //         progress = 1.0;
+            //         lprSensorProgress = 1.0;
+            //         isStartButton = true;
+            //       });
+            //       FlutterBluePlus.stopScan();
+            //       EasyLoading.dismiss();
+            //       break;
+            //     }
+            //     else
+            //     {
+            //       if (r.device.platformName.toLowerCase().contains("lpr")) {
+            //         r.device.connect().then((value) {});
+            //         bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+            //         // await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
+            //         deviceId = r.device.remoteId.str;
+            //         connectedBluetoothDevice = r.device;
+            //         setState(() {
+            //           bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+            //           isBluetoothPermitted = true;
+            //           progress = 1.0;
+            //           lprSensorProgress = 1.0;
+            //           isStartButton = true;
+            //         });
+            //         FlutterBluePlus.stopScan();
+            //         EasyLoading.dismiss();
+            //         break;
+            //       }
+            //       else{
+            //         if(mounted){
+            //           Future.delayed(Duration(seconds: 2), (){
+            //             EasyLoading.dismiss();
+            //             showBluetoothListDialog(context, null, null);
+            //           });
+            //
+            //         }
+            //
+            //       }
+            //     }
+            //   }
+            //   else
+            //   {
+            //     Utils.customPrint('BLED - ELSE COND');
+            //     if (r.device.platformName.toLowerCase().contains("lpr")) {
+            //       r.device.connect().then((value) {});
+            //       bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+            //       //await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
+            //       deviceId = r.device.remoteId.str;
+            //       connectedBluetoothDevice = r.device;
+            //       setState(() {
+            //         bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+            //         isBluetoothPermitted = true;
+            //         progress = 1.0;
+            //         lprSensorProgress = 1.0;
+            //         isStartButton = true;
+            //       });
+            //       FlutterBluePlus.stopScan();
+            //       EasyLoading.dismiss();
+            //       break;
+            //     }
+            //     else{
+            //       if(mounted){
+            //         Future.delayed(Duration(seconds: 2), (){
+            //           EasyLoading.dismiss();
+            //           showBluetoothListDialog(context, null, null);
+            //         });
+            //       }
+            //     }
+            //   }
+            // }
+
+          }
+          else{
+            if (mounted){
+              Future.delayed(Duration(seconds: 2), (){
+                EasyLoading.dismiss();
+                showBluetoothListDialog(context, null, null);
+              });
+            }
+          }
+
+        }
+      });
+    }
+    else{
+      // Show snack bar -> "Connected to <device_name> device."
+      Future.delayed(Duration(seconds: 4), () async {
+        EasyLoading.dismiss();
+      });
+      setState(() {
+        bluetoothName = connectedDevicesList.first.platformName.isNotEmpty ? connectedDevicesList.first.platformName : connectedDevicesList.first.remoteId.str;
+      });
+    }
+  }
+
+  forgetDeviceOrConnectToNewDevice() async{
+    if(FlutterBluePlus.connectedDevices.isEmpty){
+      checkAndGetLPRList(context);
+      // showBluetoothListDialog(context, null, null);
+    }
+    else{
+
+      showForgetDeviceDialog(
+          context,
+          forgetDeviceBtnClick: () async {
+            Navigator.of(context).pop();
+            EasyLoading.show(
+                status: 'Disconnecting...',
+                maskType: EasyLoadingMaskType.black);
+            for(int i = 0; i < FlutterBluePlus.connectedDevices.length; i++){
+              await FlutterBluePlus.connectedDevices[i].disconnect();
+            }
+            EasyLoading.dismiss();
+            setState(() {
+              bluetoothName = 'LPR';
+              isBluetoothPermitted = false;
+            });
+            EasyLoading.show(
+                status: 'Searching for available devices...',
+                maskType: EasyLoadingMaskType.black);
+            Future.delayed(Duration(seconds: 2), () {
+              showBluetoothListDialog(context, null, null);
+              EasyLoading.dismiss();
+            });
+          },
+          onCancelClick: (){
+            Navigator.of(context).pop();
+          }
+      );
+
+    }
   }
 
   @override
@@ -176,6 +1003,7 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
     switch (state) {
       case AppLifecycleState.resumed:
         checkTempPermissions();
+        checkIfAlreadyConnectedToLPRDevice();
         break;
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
@@ -194,13 +1022,13 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
         key: tripState,
         onWillPop: ()async{
           if(commonProvider.bottomNavIndex==1){
-          SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-            DeviceOrientation.portraitDown,
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
+            SystemChrome.setPreferredOrientations([
+              DeviceOrientation.portraitUp,
+              DeviceOrientation.portraitDown,
+              DeviceOrientation.landscapeLeft,
+              DeviceOrientation.landscapeRight,
 
-    ]);
+            ]);
 
           }
 
@@ -217,16 +1045,16 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
               elevation: 0,
               leading: IconButton(
                 onPressed: () async {
-          if(commonProvider.bottomNavIndex==1){
-          SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-            DeviceOrientation.portraitDown,
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
+                  if(commonProvider.bottomNavIndex==1){
+                    SystemChrome.setPreferredOrientations([
+                      DeviceOrientation.portraitUp,
+                      DeviceOrientation.portraitDown,
+                      DeviceOrientation.landscapeLeft,
+                      DeviceOrientation.landscapeRight,
 
-    ]);
+                    ]);
 
-          }
+                  }
 
                   Navigator.of(context).pop(true);
                 },
@@ -247,17 +1075,17 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                   margin: EdgeInsets.only(right: 8),
                   child: IconButton(
                     onPressed: ()async {
-                            await    SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,]);
-      
+                      await    SystemChrome.setPreferredOrientations([
+                        DeviceOrientation.portraitUp,]);
+
                       Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
                               builder: (context) => BottomNavigation()),
                           ModalRoute.withName("")).then((value) =>        SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-          ]));
-                },
+                        DeviceOrientation.portraitUp,
+                      ]));
+                    },
                     icon:
                     Image.asset('assets/icons/performarine_appbar_icon.png'),
                     color: Theme.of(context).brightness == Brightness.dark
@@ -341,9 +1169,9 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                                 InkWell(
                                   onTap: (){
                                     if(vesselData.isEmpty)
-                                      {
-                                        addNewVesselDialogBox(context);
-                                      }
+                                    {
+                                      addNewVesselDialogBox(context);
+                                    }
                                   },
                                   child: DropdownButtonHideUnderline(
                                     child: DropdownButton2<VesselDropdownItem>(
@@ -481,7 +1309,7 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                                                 0.5,
                                             child: FlutterSlider(
                                               values: [
-                                               // 10
+                                                // 10
                                                 numberOfPassengers
                                                     .toDouble()
                                               ],
@@ -500,7 +1328,7 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                                                     debugPrint("NUMBER OF PASS 1 $value");
                                                     String data = value.toInt().toString();
                                                     numberOfPassengers = value.toInt();
-                                            return Container(
+                                                    return Container(
                                                       padding: EdgeInsets.symmetric(
                                                           horizontal: 6,
                                                           vertical:
@@ -535,15 +1363,15 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                                                 // setState(() {
                                                 //   isSliderDisable = false;
                                                 // });
-                                               //val != 11 ? passengerValue = val.toInt() : val;
+                                                //val != 11 ? passengerValue = val.toInt() : val;
                                                 passengerValue = val == 11 ? (val.toInt() - 1) : val.toInt();
                                                 print("On dragging: value: $value, val: $val, val1: $val1");
                                                 numberOfPassengers = passengerValue;
                                                 textEditingController.text = (passengerValue).toString();
-      
+
                                                 if(val == sliderMinVal){
                                                   if(mounted){
-      
+
                                                     setState(() {
                                                       isCheck = true;
                                                       isSliderDisable =
@@ -553,9 +1381,9 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                                                           .then((value) {
                                                         _focusNode
                                                             .requestFocus();
-      
+
                                                       }
-      
+
                                                       );
                                                     });
                                                   }
@@ -712,7 +1540,8 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                                               mainAxisAlignment:
                                               MainAxisAlignment
                                                   .spaceBetween,
-                                              mainAxisSize: MainAxisSize.min,
+                                              mainAxisSize:
+                                              MainAxisSize.min,
                                               children: [
                                                 Expanded(
                                                   child: Row(
@@ -729,269 +1558,342 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                                                       SizedBox(
                                                         width: displayWidth(
                                                             context) *
-                                                            0.04,
+                                                            0.034,
                                                       ),
                                                       Expanded(
-                                                        child: InkWell(
-                                                          onTap: () async {
-      
-                                                            bool
-                                                            isNDPermDenied =
-                                                            await Permission
-                                                                .bluetoothConnect
-                                                                .isPermanentlyDenied;
-      
-                                                            if (isNDPermDenied) {
-                                                              showDialog(
-                                                                  context:
-                                                                  context,
-                                                                  builder:
-                                                                      (BuildContext
-                                                                  context) {
-                                                                    return LocationPermissionCustomDialog(
-                                                                      isLocationDialogBox:
-                                                                      false,
-                                                                      text:
-                                                                      'Allow nearby devices',
-                                                                      subText:
-                                                                      'Allow nearby devices to connect to the app',
-                                                                      buttonText:
-                                                                      'OK',
-                                                                      buttonOnTap:
-                                                                          () async {
-                                                                        Get.back();
-                                                                      },
-                                                                    );
-                                                                  });
-                                                              return;
-                                                            } else {
-                                                              if (Platform
-                                                                  .isIOS) {
-                                                                dynamic isBluetoothEnable = Platform
-                                                                    .isAndroid
-                                                                    ? await blueIsOn()
-                                                                    : await commonProvider.checkIfBluetoothIsEnabled(
-                                                                    scaffoldKey,
-                                                                        () {
-                                                                      showBluetoothDialog(context);
-                                                                    });
-      
-                                                                if (isBluetoothEnable !=
-                                                                    null) {
-                                                                  if (isBluetoothEnable) {
-                                                                    if(Platform.isIOS){
-                                                                      showBluetoothListDialog(context);
-                                                                    }
-                                                                    else{
-                                                                      if (await Permission
-                                                                          .location
-                                                                          .isPermanentlyDenied) {
-                                                                        Utils.showSnackBar(
-                                                                            context,
-                                                                            scaffoldKey: scaffoldKey,
-                                                                            message: 'Location permissions are denied without permissions we are unable to start the trip');
-                                                                        Future.delayed(
-                                                                            Duration(seconds: 2),
-                                                                                () async {
-                                                                              await openAppSettings();
-                                                                            });
-                                                                      } else {
-                                                                        if (await Permission
-                                                                            .location
-                                                                            .isGranted) {
-                                                                          showBluetoothListDialog(context);
-                                                                        } else {
-                                                                          await Permission.location.request();
-                                                                        }
-                                                                      }
-                                                                    }
-      
-                                                                  } else {
-                                                                    showBluetoothDialog(
-                                                                        context);
-                                                                  }
-                                                                }
-                                                              } else {
-                                                                bool
-                                                                isNDPermittedOne =
-                                                                await Permission
-                                                                    .bluetoothConnect
-                                                                    .isGranted;
-      
-                                                                if (isNDPermittedOne) {
-                                                                  bool isBluetoothEnable = Platform
-                                                                      .isAndroid
-                                                                      ? await blueIsOn()
-                                                                      : await commonProvider.checkIfBluetoothIsEnabled(
-                                                                      scaffoldKey,
-                                                                          () {
-                                                                        showBluetoothDialog(context);
-                                                                      });
-      
-                                                                  if (isBluetoothEnable) {
-                                                                    if(Platform.isIOS){
-                                                                      showBluetoothListDialog(context);
-                                                                    }
-                                                                    else{
-      
-                                                                      if (await Permission
-                                                                          .location
-                                                                          .isPermanentlyDenied) {
-                                                                        Utils.showSnackBar(
-                                                                            context,
-                                                                            scaffoldKey: scaffoldKey,
-                                                                            message: 'Location permissions are denied without permissions we are unable to start the trip');
-                                                                        Future.delayed(
-                                                                            Duration(seconds: 2),
-                                                                                () async {
-                                                                              await openAppSettings();
-                                                                            });
-                                                                      } else {
-                                                                        print('kkkkkkk: ${await Permission
-                                                                            .location
-                                                                            .isGranted}');
-                                                                        print('kkkkkkk: ${await Permission
-                                                                            .location
-                                                                            .isDenied}');
-                                                                        print('kkkkkkk: ${await Permission
-                                                                            .location
-                                                                            .shouldShowRequestRationale}');
-                                                                        if (await Permission
-                                                                            .location
-                                                                            .isGranted) {
-                                                                          showBluetoothListDialog(context);
-                                                                        } else {
-                                                                          if(!(await Permission
-                                                                              .location
-                                                                              .shouldShowRequestRationale))
-                                                                            {
-                                                                              Utils.showSnackBar(
-                                                                                  context,
-                                                                                  scaffoldKey: scaffoldKey,
-                                                                                  message: 'Location permissions are denied without permissions we are unable to start the trip');
-                                                                              Future.delayed(
-                                                                                  Duration(seconds: 2),
-                                                                                      () async {
-                                                                                    await openAppSettings();
-                                                                                  });
-                                                                            }
-                                                                          else
-                                                                            {
-                                                                              await Permission.location.request();
-                                                                            }
-      
-                                                                        }
-                                                                      }
-                                                                    }
-                                                                  } else {
-                                                                    showBluetoothDialog(
-                                                                        context);
-                                                                  }
-                                                                } else {
-                                                                  await Permission
-                                                                      .bluetoothConnect
-                                                                      .request();
-                                                                  bool isNDPermitted = await Permission
-                                                                      .bluetoothConnect
-                                                                      .isGranted;
-                                                                  if (isNDPermitted) {
-                                                                    bool isBluetoothEnable = Platform
-                                                                        .isAndroid
-                                                                        ? await blueIsOn()
-                                                                        : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey,
-                                                                            () {
-                                                                          showBluetoothDialog(context);
-                                                                        });
-      
-                                                                    if (isBluetoothEnable) {
-                                                                      if(Platform.isIOS){
-                                                                        showBluetoothListDialog(context);
-                                                                      }
-                                                                      else{
-                                                                        if (await Permission
-                                                                            .location
-                                                                            .isPermanentlyDenied) {
-                                                                          Utils.showSnackBar(
-                                                                              context,
-                                                                              scaffoldKey: scaffoldKey,
-                                                                              message: 'Location permissions are denied without permissions we are unable to start the trip');
-                                                                          Future.delayed(
-                                                                              Duration(seconds: 2),
-                                                                                  () async {
-                                                                                await openAppSettings();
-                                                                              });
-                                                                        } else {
-                                                                          if (await Permission
-                                                                              .location
-                                                                              .isGranted) {
-                                                                            showBluetoothListDialog(context);
-                                                                          } else {
-                                                                            await Permission.location.request();
-                                                                          }
-                                                                        }
-                                                                      }
-                                                                    } else {
-                                                                      showBluetoothDialog(
-                                                                          context);
-                                                                    }
-                                                                  } else {
-                                                                    if (await Permission.bluetoothConnect.isDenied ||
-                                                                        await Permission.bluetoothConnect.isPermanentlyDenied) {
-                                                                      showDialog(
-                                                                          context: context,
-                                                                          builder: (BuildContext context) {
-                                                                            return LocationPermissionCustomDialog(
-                                                                              isLocationDialogBox: false,
-                                                                              text: 'Allow nearby devices',
-                                                                              subText: 'Allow nearby devices to connect to the app',
-                                                                              buttonText: 'OK',
-                                                                              buttonOnTap: () async {
-                                                                                Get.back();
-      
-                                                                                await openAppSettings();
-                                                                              },
-                                                                            );
-                                                                          });
-                                                                    }
-                                                                  }
-                                                                }
-                                                              }
-                                                            }
-                                                          },
-                                                          child: Text(
-                                                            'LPR',
-                                                            textAlign: TextAlign.start,
-                                                            textScaleFactor: 1,
-                                                            style: TextStyle(
-                                                                fontSize: displayWidth(
-                                                                    context) *
-                                                                    0.034,
-                                                                color: Colors.black45,
-                                                                fontFamily: outfit,
-                                                                fontWeight: FontWeight.w400),
-                                                            overflow: TextOverflow.ellipsis,
-                                                            softWrap: false,
-                                                          )
+                                                        child: Text(
+                                                          FlutterBluePlus.connectedDevices.isEmpty
+                                                              ? 'LPR'
+                                                              : '${FlutterBluePlus.connectedDevices.first.platformName.isEmpty
+                                                                ? FlutterBluePlus.connectedDevices.first.remoteId.str
+                                                                : FlutterBluePlus.connectedDevices.first.platformName}',
+                                                          textAlign:
+                                                          TextAlign
+                                                              .start,
+                                                          textScaleFactor:
+                                                          1,
+                                                          style: TextStyle(
+                                                              fontSize:
+                                                              displayWidth(context) *
+                                                                  0.034,
+                                                              color: Colors
+                                                                  .black45,
+                                                              fontFamily:
+                                                              outfit,
+                                                              fontWeight:
+                                                              FontWeight
+                                                                  .w400),
+                                                          overflow:
+                                                          TextOverflow
+                                                              .ellipsis,
+                                                          softWrap:
+                                                          false,
                                                         ),
                                                       ),
                                                     ],
                                                   ),
                                                 ),
-                                                commonText(
-                                                  context: context,
-                                                  text: isBluetoothPermitted
-                                                      ? 'Connected'
-                                                      : 'Disconnected',
-                                                  fontWeight:
-                                                  FontWeight.w500,
-                                                  textColor:
-                                                  isBluetoothPermitted
-                                                      ? Colors.green
-                                                      : Colors.red,
-                                                  textSize: displayWidth(
-                                                      context) *
-                                                      0.03,
+                                                Container(
+                                                  // color: Colors.red,
+                                                  child: TextButton(
+                                                    style: TextButton
+                                                        .styleFrom(
+                                                        padding:
+                                                        EdgeInsets
+                                                            .zero),
+                                                    onPressed: () async {
+
+                                                      bool isNDPermDenied =
+                                                      await Permission
+                                                          .bluetoothConnect
+                                                          .isPermanentlyDenied;
+
+                                                      if (isNDPermDenied) {
+                                                        showDialog(
+                                                            context:
+                                                            context,
+                                                            builder:
+                                                                (BuildContext
+                                                            context) {
+                                                              return LocationPermissionCustomDialog(
+                                                                isLocationDialogBox:
+                                                                false,
+                                                                text:
+                                                                'Allow nearby devices',
+                                                                subText:
+                                                                'Allow nearby devices to connect to the app',
+                                                                buttonText:
+                                                                'OK',
+                                                                buttonOnTap:
+                                                                    () async {
+                                                                  Get.back();
+                                                                },
+                                                              );
+                                                            });
+                                                        return;
+                                                      } else {
+                                                        if (Platform
+                                                            .isIOS) {
+                                                          dynamic isBluetoothEnable = Platform
+                                                              .isAndroid
+                                                              ? await blueIsOn()
+                                                              : await commonProvider
+                                                              .checkIfBluetoothIsEnabled(
+                                                              scaffoldKey,
+                                                                  () {
+                                                                showBluetoothDialog(
+                                                                    context);
+                                                              });
+
+                                                          if (isBluetoothEnable !=
+                                                              null) {
+                                                            if (isBluetoothEnable) {
+                                                              if (Platform
+                                                                  .isIOS) {
+                                                                forgetDeviceOrConnectToNewDevice();
+                                                                // checkAndGetLPRList(
+                                                                //     context);
+                                                                // showBluetoothListDialog(context);
+                                                              } else {
+                                                                if (await Permission
+                                                                    .location
+                                                                    .isPermanentlyDenied) {
+                                                                  Utils.showSnackBar(
+                                                                      context,
+                                                                      scaffoldKey:
+                                                                      scaffoldKey,
+                                                                      message:
+                                                                      'Location permissions are denied without permissions we are unable to start the trip');
+                                                                  Future.delayed(
+                                                                      Duration(
+                                                                          seconds: 2),
+                                                                          () async {
+                                                                        await openAppSettings();
+                                                                      });
+                                                                } else {
+                                                                  if (await Permission
+                                                                      .location
+                                                                      .isGranted) {
+                                                                    forgetDeviceOrConnectToNewDevice();
+                                                                    // checkAndGetLPRList(
+                                                                    //     context);
+                                                                    // showBluetoothListDialog(context);
+                                                                  } else {
+                                                                    await Permission
+                                                                        .location
+                                                                        .request();
+                                                                  }
+                                                                }
+                                                              }
+                                                            } else {
+                                                              showBluetoothDialog(
+                                                                  context);
+                                                            }
+                                                          }
+                                                        } else {
+                                                          bool
+                                                          isNDPermittedOne =
+                                                          await Permission
+                                                              .bluetoothConnect
+                                                              .isGranted;
+
+                                                          if (isNDPermittedOne) {
+                                                            bool isBluetoothEnable = Platform
+                                                                .isAndroid
+                                                                ? await blueIsOn()
+                                                                : await commonProvider
+                                                                .checkIfBluetoothIsEnabled(
+                                                                scaffoldKey,
+                                                                    () {
+                                                                  showBluetoothDialog(
+                                                                      context);
+                                                                });
+
+                                                            if (isBluetoothEnable) {
+                                                              if (Platform
+                                                                  .isIOS) {
+                                                                forgetDeviceOrConnectToNewDevice();
+                                                                // checkAndGetLPRList(
+                                                                //     context);
+                                                                // showBluetoothListDialog(context);
+                                                              } else {
+                                                                if (await Permission
+                                                                    .location
+                                                                    .isPermanentlyDenied) {
+                                                                  Utils.showSnackBar(
+                                                                      context,
+                                                                      scaffoldKey:
+                                                                      scaffoldKey,
+                                                                      message:
+                                                                      'Location permissions are denied without permissions we are unable to start the trip');
+                                                                  Future.delayed(
+                                                                      Duration(
+                                                                          seconds: 2),
+                                                                          () async {
+                                                                        await openAppSettings();
+                                                                      });
+                                                                } else {
+
+                                                                  if (await Permission
+                                                                      .location
+                                                                      .isGranted) {
+                                                                    forgetDeviceOrConnectToNewDevice();
+                                                                    // checkAndGetLPRList(
+                                                                    //     context);
+                                                                    // showBluetoothListDialog(context);
+                                                                  } else {
+                                                                    if (!(await Permission
+                                                                        .location
+                                                                        .shouldShowRequestRationale)) {
+                                                                      Utils.showSnackBar(
+                                                                          context,
+                                                                          scaffoldKey: scaffoldKey,
+                                                                          message: 'Location permissions are denied without permissions we are unable to start the trip');
+                                                                      Future.delayed(
+                                                                          Duration(seconds: 2),
+                                                                              () async {
+                                                                            await openAppSettings();
+                                                                          });
+                                                                    } else {
+                                                                      await Permission
+                                                                          .location
+                                                                          .request();
+                                                                    }
+                                                                  }
+                                                                }
+                                                              }
+                                                            } else {
+                                                              showBluetoothDialog(
+                                                                  context);
+                                                            }
+                                                          } else {
+                                                            await Permission
+                                                                .bluetoothConnect
+                                                                .request();
+                                                            bool
+                                                            isNDPermitted =
+                                                            await Permission
+                                                                .bluetoothConnect
+                                                                .isGranted;
+                                                            if (isNDPermitted) {
+                                                              bool isBluetoothEnable = Platform
+                                                                  .isAndroid
+                                                                  ? await blueIsOn()
+                                                                  : await commonProvider.checkIfBluetoothIsEnabled(
+                                                                  scaffoldKey,
+                                                                      () {
+                                                                    showBluetoothDialog(
+                                                                        context);
+                                                                  });
+
+                                                              if (isBluetoothEnable) {
+                                                                if (Platform
+                                                                    .isIOS) {
+                                                                  forgetDeviceOrConnectToNewDevice();
+                                                                  // checkAndGetLPRList(
+                                                                  //     context);
+                                                                  // showBluetoothListDialog(context);
+                                                                } else {
+                                                                  if (await Permission
+                                                                      .location
+                                                                      .isPermanentlyDenied) {
+                                                                    Utils.showSnackBar(
+                                                                        context,
+                                                                        scaffoldKey:
+                                                                        scaffoldKey,
+                                                                        message:
+                                                                        'Location permissions are denied without permissions we are unable to start the trip');
+                                                                    Future.delayed(
+                                                                        Duration(seconds: 2),
+                                                                            () async {
+                                                                          await openAppSettings();
+                                                                        });
+                                                                  } else {
+                                                                    if (await Permission
+                                                                        .location
+                                                                        .isGranted) {
+                                                                      forgetDeviceOrConnectToNewDevice();
+                                                                      // checkAndGetLPRList(
+                                                                      //     context);
+                                                                      // showBluetoothListDialog(context);
+                                                                    } else {
+                                                                      await Permission
+                                                                          .location
+                                                                          .request();
+                                                                    }
+                                                                  }
+                                                                }
+                                                              } else {
+                                                                showBluetoothDialog(
+                                                                    context);
+                                                              }
+                                                            } else {
+                                                              if (await Permission
+                                                                  .bluetoothConnect
+                                                                  .isDenied ||
+                                                                  await Permission
+                                                                      .bluetoothConnect
+                                                                      .isPermanentlyDenied) {
+                                                                showDialog(
+                                                                    context:
+                                                                    context,
+                                                                    builder:
+                                                                        (BuildContext
+                                                                    context) {
+                                                                      return LocationPermissionCustomDialog(
+                                                                        isLocationDialogBox:
+                                                                        false,
+                                                                        text:
+                                                                        'Allow nearby devices',
+                                                                        subText:
+                                                                        'Allow nearby devices to connect to the app',
+                                                                        buttonText:
+                                                                        'OK',
+                                                                        buttonOnTap:
+                                                                            () async {
+                                                                          Get.back();
+
+                                                                          await openAppSettings();
+                                                                        },
+                                                                      );
+                                                                    });
+                                                              }
+                                                            }
+                                                          }
+                                                        }
+                                                      }
+                                                    },
+                                                    child: commonText(
+                                                      context: context,
+                                                      text:
+                                                      FlutterBluePlus.connectedDevices.isEmpty ?  'Connect to Device' : 'Forget Device',
+                                                      fontWeight:
+                                                      FontWeight.w500,
+                                                      textColor: blueColor,
+                                                      textAlign:
+                                                      TextAlign.end,
+                                                      textSize:
+                                                      displayWidth(
+                                                          context) *
+                                                          0.03,
+                                                    ),
+                                                  ),
                                                 ),
+                                                /*commonText(
+                                                context: context,
+                                                text: isBluetoothPermitted
+                                                    ? 'Connected'
+                                                    : 'Disconnected',
+                                                fontWeight:
+                                                FontWeight.w500,
+                                                textColor:
+                                                isBluetoothPermitted
+                                                    ? Colors.green
+                                                    : Colors.red,
+                                                textSize: displayWidth(
+                                                    context) *
+                                                    0.03,
+                                              ),*/
                                               ],
                                             ),
                                             SizedBox(
@@ -1081,40 +1983,23 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                                     borderColor: blueColor,
                                     width: displayWidth(context),
                                     onTap: () async {
-      
-      
-                                    if(vesselData.isEmpty)
+
+
+                                      if(vesselData.isEmpty)
                                       {
                                         addNewVesselDialogBox(context);
                                       }
-      else{
-      
-                                      if (selectedValue == null) {
-                                        Utils.customPrint(
-                                            'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(SnackBar(
-                                          behavior: SnackBarBehavior
-                                              .floating,
-                                          content: Text(
-                                              "Please select vessel"),
-                                          duration:
-                                          Duration(seconds: 1),
-                                          backgroundColor:
-                                          Colors.blue,
-                                        ));
-                                        return;
-                                      }
-                                      if (isCheck) {
-                                        if (textEditingController
-                                            .text.isEmpty || !isOKClick) {
-                                          ScaffoldMessenger.of(
-                                              context)
+                                      else{
+
+                                        if (selectedValue == null) {
+                                          Utils.customPrint(
+                                              'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
+                                          ScaffoldMessenger.of(context)
                                               .showSnackBar(SnackBar(
                                             behavior: SnackBarBehavior
                                                 .floating,
                                             content: Text(
-                                                isOKClick ? "Please Enter Number of Passengers and Submit" : "Please Submit Number of Passengers"),
+                                                "Please select vessel"),
                                             duration:
                                             Duration(seconds: 1),
                                             backgroundColor:
@@ -1122,27 +2007,44 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                                           ));
                                           return;
                                         }
-      
-                                        if (int.parse(
-                                            textEditingController
-                                                .text) >
-                                            11) {
-                                          sliderMinVal = numberOfPassengers.toDouble();
-                                          sliderCount = '$numberOfPassengers+';
-                                          isSliderDisable = false;
-                                        } else {
-                                          sliderMinVal = 11;
-                                          sliderCount = '10+';
-                                          isSliderDisable = false;
+                                        if (isCheck) {
+                                          if (textEditingController
+                                              .text.isEmpty || !isOKClick) {
+                                            ScaffoldMessenger.of(
+                                                context)
+                                                .showSnackBar(SnackBar(
+                                              behavior: SnackBarBehavior
+                                                  .floating,
+                                              content: Text(
+                                                  isOKClick ? "Please Enter Number of Passengers and Submit" : "Please Submit Number of Passengers"),
+                                              duration:
+                                              Duration(seconds: 1),
+                                              backgroundColor:
+                                              Colors.blue,
+                                            ));
+                                            return;
+                                          }
+
+                                          if (int.parse(
+                                              textEditingController
+                                                  .text) >
+                                              11) {
+                                            sliderMinVal = numberOfPassengers.toDouble();
+                                            sliderCount = '$numberOfPassengers+';
+                                            isSliderDisable = false;
+                                          } else {
+                                            sliderMinVal = 11;
+                                            sliderCount = '10+';
+                                            isSliderDisable = false;
+                                          }
                                         }
+
+                                        Utils.customPrint(
+                                            'SELECTED VESSEL WEIGHT $selectedVesselWeight');
+
+                                        checkAllPermission(true);
+
                                       }
-      
-                                      Utils.customPrint(
-                                          'SELECTED VESSEL WEIGHT $selectedVesselWeight');
-      
-                                      checkAllPermission(true);
-      
-      }
                                     },
                                   ),
                                 ),
@@ -1157,9 +2059,9 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                                   onTap: () async {
                                     final image =
                                     await controller.capture();
-                                          await    SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,]);
-      
+                                    await    SystemChrome.setPreferredOrientations([
+                                      DeviceOrientation.portraitUp,]);
+
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
@@ -1231,9 +2133,9 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                       controller: textEditingController,
                       onFieldSubmitted: (String value) {
                         if(int.parse(textEditingController.text.trim().isEmpty ? '1' : textEditingController.text.trim()) != 0 )
-                          {
-                            FocusScope.of(context).requestFocus(FocusNode());
-                          }
+                        {
+                          FocusScope.of(context).requestFocus(FocusNode());
+                        }
                         else
                         {
                           textEditingController.clear();
@@ -1242,65 +2144,65 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                         // popupAnimationController.reset();
                       },
                       onEditingComplete: (){
-                       if(int.parse(textEditingController.text.trim().isEmpty ? '1' : textEditingController.text.trim()) != 0 )
-                         {
-                           // setState(() {
-                           //textEditingController.text.isNotEmpty ? numberOfPassengers = int.parse(textEditingController.text) : numberOfPassengers = passengerValue;
-                           if(textEditingController.text.isEmpty){
-                             setState(() {
-                               numberOfPassengers = passengerValue > 10 ? 10 : passengerValue;
-                               sliderMinVal = 11;
-                               sliderCount = '10+';
-                             });
-                           }else if(int.parse(textEditingController.text) < 11){
-                             numberOfPassengers = int.parse(textEditingController.text);
-                             sliderMinVal = 11;
-                           }else if(int.parse(textEditingController.text) < 1000){
-                             numberOfPassengers = int.parse(textEditingController.text);
+                        if(int.parse(textEditingController.text.trim().isEmpty ? '1' : textEditingController.text.trim()) != 0 )
+                        {
+                          // setState(() {
+                          //textEditingController.text.isNotEmpty ? numberOfPassengers = int.parse(textEditingController.text) : numberOfPassengers = passengerValue;
+                          if(textEditingController.text.isEmpty){
+                            setState(() {
+                              numberOfPassengers = passengerValue > 10 ? 10 : passengerValue;
+                              sliderMinVal = 11;
+                              sliderCount = '10+';
+                            });
+                          }else if(int.parse(textEditingController.text) < 11){
+                            numberOfPassengers = int.parse(textEditingController.text);
+                            sliderMinVal = 11;
+                          }else if(int.parse(textEditingController.text) < 1000){
+                            numberOfPassengers = int.parse(textEditingController.text);
 
-                             if(numberOfPassengers.toString().length == 3)
-                             {
-                               sliderMinVal = (numberOfPassengers.toDouble()) > 999 ? numberOfPassengers.toDouble() : numberOfPassengers.toDouble();
-                             }
-                             else
-                             {
-                               sliderMinVal = numberOfPassengers.toDouble();
-                             }
+                            if(numberOfPassengers.toString().length == 3)
+                            {
+                              sliderMinVal = (numberOfPassengers.toDouble()) > 999 ? numberOfPassengers.toDouble() : numberOfPassengers.toDouble();
+                            }
+                            else
+                            {
+                              sliderMinVal = numberOfPassengers.toDouble();
+                            }
 
-                             //sliderMinVal = 999;
-                             sliderCount = '$numberOfPassengers+';
-                           }
-                           //});
-                         }
-                       else
-                       {
-                         textEditingController.clear();
-                       }
+                            //sliderMinVal = 999;
+                            sliderCount = '$numberOfPassengers+';
+                          }
+                          //});
+                        }
+                        else
+                        {
+                          textEditingController.clear();
+                        }
                       },
                       onChanged: (String value) {
                         print("value is: $value");
                         if (value.length == 3) {
                           if(int.parse(value) != 0)
-                            {
-                              setState(() {
-                                numberOfPassengers =
-                                    int.parse(textEditingController.text);
+                          {
+                            setState(() {
+                              numberOfPassengers =
+                                  int.parse(textEditingController.text);
 
-                                if(numberOfPassengers.toString().length == 3)
-                                {
-                                  sliderMinVal = (numberOfPassengers.toDouble()) > 999 ? numberOfPassengers.toDouble() : numberOfPassengers.toDouble();
-                                }
-                                else
-                                {
-                                  sliderMinVal = numberOfPassengers.toDouble();
-                                }
-                                //sliderMinVal = 999;
-                                sliderCount = '$numberOfPassengers+';
-                              });
-                              FocusScope.of(context).requestFocus(new FocusNode());
-                            }
+                              if(numberOfPassengers.toString().length == 3)
+                              {
+                                sliderMinVal = (numberOfPassengers.toDouble()) > 999 ? numberOfPassengers.toDouble() : numberOfPassengers.toDouble();
+                              }
+                              else
+                              {
+                                sliderMinVal = numberOfPassengers.toDouble();
+                              }
+                              //sliderMinVal = 999;
+                              sliderCount = '$numberOfPassengers+';
+                            });
+                            FocusScope.of(context).requestFocus(new FocusNode());
+                          }
                         }
-                      /*  else if(value.length == 2){
+                        /*  else if(value.length == 2){
                              setState(() {
                                numberOfPassengers = int.parse(textEditingController.text);
                                sliderMinVal = 11;
@@ -1310,7 +2212,7 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                         else if(value.length == 0){
                           setState(() {
                             numberOfPassengers = passengerValue > 10 ? 10 : passengerValue;
-                             /*if(numberOfPassengers.toString().length == 3)
+                            /*if(numberOfPassengers.toString().length == 3)
                              {
                                sliderMinVal = numberOfPassengers.toDouble() + 20;
                              }
@@ -1320,7 +2222,7 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                              }
                              //sliderMinVal = 999;
                              sliderCount = '$numberOfPassengers+';*/
-                           sliderMinVal = 11;
+                            sliderMinVal = 11;
                             sliderCount = '10+';
                           });
                         }
@@ -1332,7 +2234,7 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
               Expanded(
                 flex: 2,
                 child: Container(
-                 //width: displayWidth(context) * 0.08,
+                  //width: displayWidth(context) * 0.08,
                   height: displayHeight(context) * 0.04,
                   padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   child: ElevatedButton(
@@ -1348,56 +2250,56 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                     ),
                     onPressed: () {
                       if(int.parse(textEditingController.text.trim().isEmpty ? '1' : textEditingController.text.trim()) != 0)
-                        {
-                          setState(() {
-                            isOKClick = true;
-                            if (textEditingController.text.isEmpty) {
+                      {
+                        setState(() {
+                          isOKClick = true;
+                          if (textEditingController.text.isEmpty) {
 
-                              sliderMinVal = 11;
+                            sliderMinVal = 11;
 
-                              numberOfPassengers = passengerValue > 10 ? 10 : passengerValue;
+                            numberOfPassengers = passengerValue > 10 ? 10 : passengerValue;
 
-                              sliderCount = '10+';
-                              isSliderDisable = false;
-                              isCheck = false;
+                            sliderCount = '10+';
+                            isSliderDisable = false;
+                            isCheck = false;
 
-                            } else if(textEditingController.text.isNotEmpty && int.parse(textEditingController.text) > 11){
+                          } else if(textEditingController.text.isNotEmpty && int.parse(textEditingController.text) > 11){
 
-                              numberOfPassengers =
-                                  int.parse(textEditingController.text);
+                            numberOfPassengers =
+                                int.parse(textEditingController.text);
 
-                              if (numberOfPassengers.toString().length == 3) {
-                                sliderMinVal = (numberOfPassengers.toDouble()) > 999 ? numberOfPassengers.toDouble() : numberOfPassengers.toDouble();
-                              } else {
-                                sliderMinVal = numberOfPassengers.toDouble();
-                              }
-                              //sliderMinVal = numberOfPassengers.toDouble();
-                              sliderCount = '$numberOfPassengers+';
-                              isSliderDisable = false;
-
-                            } else if (textEditingController.text.isNotEmpty &&
-                                int.parse(textEditingController.text) < 11) {
-
-                              sliderMinVal = 11;
-                              sliderCount = '10+';
-                              isSliderDisable = false;
-                              numberOfPassengers =
-                                  int.parse(textEditingController.text);
+                            if (numberOfPassengers.toString().length == 3) {
+                              sliderMinVal = (numberOfPassengers.toDouble()) > 999 ? numberOfPassengers.toDouble() : numberOfPassengers.toDouble();
+                            } else {
+                              sliderMinVal = numberOfPassengers.toDouble();
                             }
-                          });
-                          FocusScope.of(context).requestFocus(new FocusNode());
+                            //sliderMinVal = numberOfPassengers.toDouble();
+                            sliderCount = '$numberOfPassengers+';
+                            isSliderDisable = false;
 
-                          kReleaseMode
-                              ? null
-                              : debugPrint(
-                              'Number of passengers $numberOfPassengers');
+                          } else if (textEditingController.text.isNotEmpty &&
+                              int.parse(textEditingController.text) < 11) {
 
-                          // popupAnimationController.reset();
-                        }
+                            sliderMinVal = 11;
+                            sliderCount = '10+';
+                            isSliderDisable = false;
+                            numberOfPassengers =
+                                int.parse(textEditingController.text);
+                          }
+                        });
+                        FocusScope.of(context).requestFocus(new FocusNode());
+
+                        kReleaseMode
+                            ? null
+                            : debugPrint(
+                            'Number of passengers $numberOfPassengers');
+
+                        // popupAnimationController.reset();
+                      }
                       else
-                        {
-                          textEditingController.clear();
-                        }
+                      {
+                        textEditingController.clear();
+                      }
                     },
                     child: Image.asset('assets/icons/done_icon.png', height: displayHeight(context) * 0.02,),
                   ),
@@ -1724,16 +2626,16 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                     builder: (BuildContext context) {
                       isLocationDialogBoxOpen = true;
                       return LocationPermissionCustomDialog(
-                        isLocationDialogBox: true,
-                        text: 'Always Allow Access to “Location”',
-                        subText:
-                        "To track your trip while you use other apps we need background access to your location",
-                        buttonText: 'Ok',
-                        buttonOnTap: () async {
-                          Get.back();
-                   await openAppSettings();
-}
-                        
+                          isLocationDialogBox: true,
+                          text: 'Always Allow Access to “Location”',
+                          subText:
+                          "To track your trip while you use other apps we need background access to your location",
+                          buttonText: 'Ok',
+                          buttonOnTap: () async {
+                            Get.back();
+                            await openAppSettings();
+                          }
+
                       );
                     }).then((value) {
                   isLocationDialogBoxOpen = false;
@@ -1750,6 +2652,18 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
   checkTempPermissions() async {
     this.isLocationPermitted = await Permission.locationAlways.isGranted;
     setState(() {});
+  }
+
+  checkIfAlreadyConnectedToLPRDevice(){
+    if(openedSettingsPageForPermission){
+      openedSettingsPageForPermission = false;
+      Utils.customPrint('BLED - BACKGROUND');
+      List<BluetoothDevice> connectedDevices = FlutterBluePlus.connectedDevices;
+      if(connectedDevices.isEmpty){
+        checkPermissionsAndAutoConnectToDevice(context);
+      }
+    }
+
   }
 
   //To get all vessels
@@ -1775,20 +2689,27 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
   }
 
   Future<bool> blueIsOn() async {
-    FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
-    final isOn = await _flutterBlue.isOn;
-    if (isOn) return true;
-
-    await Future.delayed(const Duration(seconds: 1));
-    return await FlutterBluePlus.instance.isOn;
+    // FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
+    BluetoothAdapterState adapterState = await FlutterBluePlus.adapterState.first;
+    final isOn = adapterState == BluetoothAdapterState.on;
+    // if (isOn) return true;
+    //
+    // await Future.delayed(const Duration(seconds: 1));
+    // BluetoothAdapterState tempAdapterState = await FlutterBluePlus.adapterState.first;
+    return isOn;
   }
 
+
   /// To enable Bluetooth
-  Future<void> enableBT() async {
+  Future<void> enableBT(bool autoConnect) async {
     BluetoothEnable.enableBluetooth.then((value) async {
       Utils.customPrint("BLUETOOTH ENABLE $value");
 
       if (value == 'true') {
+        if(autoConnect){
+          await Future.delayed(Duration(milliseconds: 500), (){});
+          autoConnectToDevice();
+        }
         Utils.customPrint(" bluetooth state$value");
       } else {
         bool isNearByDevicePermitted =
@@ -1815,10 +2736,10 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
     geo.Position currentPosition = await geo.Geolocator.getCurrentPosition();
 
     if(currentPosition != null)
-      {
-        latitude = currentPosition.latitude.toString();
-        longitude = currentPosition.longitude.toString();
-      }
+    {
+      latitude = currentPosition.latitude.toString();
+      longitude = currentPosition.longitude.toString();
+    }
 
     await fetchDeviceData();
 
@@ -1826,21 +2747,21 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
 
     try {
       await _databaseService.insertTrip(Trip(
-          id: getTripId,
-          vesselId: vesselId,
-          vesselName: selectedVesselName,
-          currentLoad: 'Empty',
-          numberOfPassengers: numberOfPassengers,
-          filePath: file,
-          isSync: 0,
-          isCloud: 0,
-          tripStatus: 0,
-          createdAt: Utils.getCurrentTZDateTime(),
-          updatedAt: Utils.getCurrentTZDateTime(),
-          startPosition: [latitude, longitude].join(","),
-          endPosition: [latitude, longitude].join(","),
-          deviceInfo: deviceDetails!.toJson().toString(),
-          ));
+        id: getTripId,
+        vesselId: vesselId,
+        vesselName: selectedVesselName,
+        currentLoad: 'Empty',
+        numberOfPassengers: numberOfPassengers,
+        filePath: file,
+        isSync: 0,
+        isCloud: 0,
+        tripStatus: 0,
+        createdAt: Utils.getCurrentTZDateTime(),
+        updatedAt: Utils.getCurrentTZDateTime(),
+        startPosition: [latitude, longitude].join(","),
+        endPosition: [latitude, longitude].join(","),
+        deviceInfo: deviceDetails!.toJson().toString(),
+      ));
     } on Exception catch (e) {
       Utils.customPrint('ON SAVE EXE: $e');
     }
@@ -1944,7 +2865,7 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
 
       print('CALLED FROM: ${widget.calledFrom}');
       await    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,]);
+        DeviceOrientation.portraitUp,]);
 
       var result = Navigator.pushReplacement(
         scaffoldKey.currentContext!,
@@ -2104,7 +3025,7 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                                         Utils.customPrint("Click on GO TO TRIP 2");
 
                                         Navigator.of(dialogContext).pop();
-          
+
 
                                         Navigator.push(
                                           context,
@@ -2116,10 +3037,10 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                                                       vesselName: tripData[2],
                                                       tripIsRunningOrNot:
                                                       runningTrip)),
-                                        ).then((value) => 
-                                        
-                                        SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,])
+                                        ).then((value) =>
+
+                                            SystemChrome.setPreferredOrientations([
+                                              DeviceOrientation.portraitUp,])
                                         );
 
                                         Utils.customPrint("Click on GO TO TRIP 3");
@@ -2171,7 +3092,7 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
         });
   }
 
-  showBluetoothDialog(BuildContext context) {
+  showBluetoothDialog(BuildContext context, {bool autoConnect = false}) {
     return showDialog(
         barrierDismissible: false,
         context: context,
@@ -2251,7 +3172,7 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                             onTap: () async {
                               Utils.customPrint("Tapped on enable Bluetooth");
                               Navigator.pop(context);
-                              enableBT();
+                              enableBT(autoConnect);
                               //showBluetoothListDialog(context);
                             },
                             child: Container(
@@ -2318,11 +3239,145 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
     Utils.customPrint("deviceDetails:${deviceDetails!.toJson().toString()}");
   }
 
-  checkAndGetLPRList() {
-    FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
-    FlutterBluePlus.instance.scanResults.listen((results) async {
+  checkAndGetLPRList(BuildContext context) async {
+    final FlutterSecureStorage storage = FlutterSecureStorage();
+    var lprDeviceId = await storage.read(
+        key: 'lprDeviceId'
+    );
+    Utils.customPrint("LPR DEVICE ID $lprDeviceId");
+
+    /// TODO
+    List<BluetoothDevice> connectedDevicesList = await FlutterBluePlus.connectedDevices;
+    Utils.customPrint("BONDED LIST $connectedDevicesList");
+
+    if(connectedDevicesList.isNotEmpty){
+      showForgetDeviceDialog(
+          context,
+          forgetDeviceBtnClick: () async {
+            Navigator.of(context).pop();
+            EasyLoading.show(
+                status: 'Disconnecting...',
+                maskType: EasyLoadingMaskType.black);
+            for(int i = 0; i < connectedDevicesList.length; i++){
+              await connectedDevicesList[i].disconnect();
+            }
+            EasyLoading.dismiss();
+            setState(() {
+              bluetoothName = 'LPR';
+              isBluetoothPermitted = false;
+            });
+            EasyLoading.show(
+                status: 'Searching for available devices...',
+                maskType: EasyLoadingMaskType.black);
+            Future.delayed(Duration(seconds: 2), () {
+              showBluetoothListDialog(context, null, null);
+              EasyLoading.dismiss();
+            });
+          },
+          onCancelClick: (){
+            Navigator.of(context).pop();
+          }
+      );
+    }
+    else{
+      EasyLoading.show(
+          status: 'Searching for available devices...',
+          maskType: EasyLoadingMaskType.black);
+      String deviceId = '';
+      BluetoothDevice? connectedBluetoothDevice;
+
+      FlutterBluePlus.scanResults.listen((value) async {
+        if(value.isNotEmpty){
+          for (int i = 0; i < value.length; i++) {
+            ScanResult r = value[i];
+
+            if(lprDeviceId != null)
+            {
+              Utils.customPrint('STORED ID: $lprDeviceId - ${r.device.remoteId.str}');
+              if(r.device.remoteId.str == lprDeviceId)
+              {
+                r.device.connect().then((value) {
+                  Utils.customPrint('CONNECTED TO DEVICE BLE');
+                }).catchError((onError){
+                  Utils.customPrint('ERROR BLE: $onError');
+                });
+
+
+                bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+                //await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
+                deviceId = r.device.remoteId.str;
+                connectedBluetoothDevice = r.device;
+                if(mounted){
+                  setState(() {
+                    bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+                    isBluetoothPermitted = true;
+                    progress = 1.0;
+                    lprSensorProgress = 1.0;
+                    isStartButton = true;
+                  });
+                }
+                FlutterBluePlus.stopScan();
+                break;
+              }
+              else
+              {
+                if (r.device.platformName.toLowerCase().contains("lpr")) {
+                  r.device.connect().then((value) {});
+                  bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+                  // await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
+                  deviceId = r.device.remoteId.str;
+                  connectedBluetoothDevice = r.device;
+                  if(mounted){
+                    setState(() {
+                      bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+                      isBluetoothPermitted = true;
+                      progress = 1.0;
+                      lprSensorProgress = 1.0;
+                      isStartButton = true;
+                    });
+                  }
+                  FlutterBluePlus.stopScan();
+                  break;
+                }
+              }
+            }
+            else
+            {
+              if (r.device.platformName.toLowerCase().contains("lpr")) {
+                r.device.connect().then((value) {});
+                bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+                //await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
+                deviceId = r.device.remoteId.str;
+                connectedBluetoothDevice = r.device;
+                if(mounted){
+                  setState(() {
+                    bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+                    isBluetoothPermitted = true;
+                    progress = 1.0;
+                    lprSensorProgress = 1.0;
+                    isStartButton = true;
+                  });
+                }
+                FlutterBluePlus.stopScan();
+                break;
+              }
+            }
+          }
+        }
+      });
+
+      FlutterBluePlus
+          .startScan(timeout: Duration(seconds: 4));
+
+      Future.delayed(Duration(seconds: 4), () {
+        showBluetoothListDialog(context, deviceId, connectedBluetoothDevice);
+        EasyLoading.dismiss();
+      });
+    }
+    return;
+    FlutterBluePlus.scanResults.listen((results) async {
       for (ScanResult r in results) {
-        if (r.device.name.toLowerCase().contains("lpr")) {
+        if (r.device.name.toLowerCase().contains("jbl")) {
           Utils.customPrint('FOUND DEVICE AGAIN');
 
           r.device.connect().catchError((e) {
@@ -2336,7 +3391,8 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                         progress = 1.0;
                         lprSensorProgress = 1.0;
                         isStartButton = true;
-                        debugPrint("BLUETOOTH PERMISSION CODE 4 $isBluetoothPermitted");
+                        debugPrint(
+                            "BLUETOOTH PERMISSION CODE 4 $isBluetoothPermitted");
                       });
                     }
                   });
@@ -2355,7 +3411,7 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
             isStartButton = true;
             debugPrint("BLUETOOTH PERMISSION CODE 5 $isBluetoothPermitted");
           });
-          FlutterBluePlus.instance.stopScan();
+          FlutterBluePlus.stopScan();
           break;
         } else {
           r.device
@@ -2368,48 +3424,60 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
 
   /// Check location permission
   locationPermissions(bool isTripRecordingStarted) async {
+    final FlutterSecureStorage storage = FlutterSecureStorage();
+    var lprDeviceId = await storage.read(
+        key: 'lprDeviceId'
+    );
+
+    Utils.customPrint("LPR DEVICE ID $lprDeviceId");
     if (Platform.isAndroid) {
       bool isLocationPermitted = await Permission.locationAlways.isGranted;
       if (isLocationPermitted) {
-        FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
-        FlutterBluePlus.instance.scanResults.listen((results) async {
+        FlutterBluePlus.startScan(timeout: Duration(seconds: 4));
+        FlutterBluePlus.scanResults.listen((results) async {
           for (ScanResult r in results) {
-            if (r.device.name.toLowerCase().contains("lpr")) {
-              Utils.customPrint('FOUND DEVICE AGAIN');
+            if(lprDeviceId != null)
+            {
+              if(r.device.id.id == lprDeviceId)
+              {
+                Utils.customPrint('FOUND DEVICE AGAIN');
 
-              r.device.connect().catchError((e) {
-                r.device.state.listen((event) {
-                  if (event == BluetoothDeviceState.connected) {
-                    r.device.disconnect().then((value) {
-                      r.device.connect().catchError((e) {
-                        if (mounted) {
-                          setState(() {
-                            isBluetoothPermitted = true;
-                            progress = 1.0;
-                            lprSensorProgress = 1.0;
-                            isStartButton = true;
-                            debugPrint("BLUETOOTH PERMISSION CODE 6 $isBluetoothPermitted");
-                          });
-                        }
+                r.device.connect().catchError((e) {
+                  r.device.state.listen((event) {
+                    if (event == BluetoothDeviceState.connected) {
+                      r.device.disconnect().then((value) {
+                        r.device.connect().catchError((e) {
+                          if (mounted) {
+                            setState(() {
+                              isBluetoothPermitted = true;
+                              progress = 1.0;
+                              lprSensorProgress = 1.0;
+                              isStartButton = true;
+                              debugPrint(
+                                  "BLUETOOTH PERMISSION CODE 6 $isBluetoothPermitted");
+                            });
+                          }
+                        });
                       });
-                    });
-                  }
+                    }
+                  });
                 });
-              });
 
-              bluetoothName = r.device.name;
-              setState(() {
-                isBluetoothPermitted = true;
-                progress = 1.0;
-                lprSensorProgress = 1.0;
-                isStartButton = true;
-                debugPrint("BLUETOOTH PERMISSION CODE 7 $isBluetoothPermitted");
-              });
-              FlutterBluePlus.instance.stopScan();
-              break;
-            } else {
-              r.device.disconnect().then(
-                      (value) => Utils.customPrint("is device disconnected:"));
+                bluetoothName = r.device.name;
+                setState(() {
+                  isBluetoothPermitted = true;
+                  progress = 1.0;
+                  lprSensorProgress = 1.0;
+                  isStartButton = true;
+                  debugPrint("BLUETOOTH PERMISSION CODE 7 $isBluetoothPermitted");
+                });
+                FlutterBluePlus.stopScan();
+                break;
+              }
+            }
+            else
+            {
+
             }
           }
         });
@@ -2582,13 +3650,21 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
           isBluetoothConnected: isBluetoothConnected,
           calledFrom: 'bottom_nav',)));*/
       } else {
+        final FlutterSecureStorage storage = FlutterSecureStorage();
+        var lprDeviceId = await storage.read(
+            key: 'lprDeviceId'
+        );
+
+        Utils.customPrint("LPR DEVICE ID $lprDeviceId");
+
         await Utils.getLocationPermissions(context, scaffoldKey);
         bool isLocationPermitted = await Permission.locationAlways.isGranted;
         if (isLocationPermitted) {
-          FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
-          FlutterBluePlus.instance.scanResults.listen((results) async {
+          FlutterBluePlus.startScan(timeout: Duration(seconds: 4));
+          FlutterBluePlus.scanResults.listen((results) async {
             for (ScanResult r in results) {
-              if (r.device.name.toLowerCase().contains("lpr")) {
+              if(lprDeviceId != null)
+              {
                 r.device.connect().catchError((e) {
                   r.device.state.listen((event) {
                     if (event == BluetoothDeviceState.connected) {
@@ -2600,7 +3676,8 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                               progress = 1.0;
                               lprSensorProgress = 1.0;
                               isStartButton = true;
-                              debugPrint("BLUETOOTH PERMISSION CODE 8 $isBluetoothPermitted");
+                              debugPrint(
+                                  "BLUETOOTH PERMISSION CODE 8 $isBluetoothPermitted");
                             });
                           }
                         });
@@ -2615,13 +3692,52 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                   progress = 1.0;
                   lprSensorProgress = 1.0;
                   isStartButton = true;
-                  debugPrint("BLUETOOTH PERMISSION CODE 9 $isBluetoothPermitted");
+                  debugPrint(
+                      "BLUETOOTH PERMISSION CODE 9 $isBluetoothPermitted");
                 });
-                FlutterBluePlus.instance.stopScan();
+                FlutterBluePlus.stopScan();
                 break;
-              } else {
-                r.device.disconnect().then(
-                        (value) => Utils.customPrint("is device disconnected: "));
+              }
+              else
+              {
+                if (r.device.name.toLowerCase().contains("lpr")) {
+                  r.device.connect().catchError((e) {
+                    r.device.state.listen((event) {
+                      if (event == BluetoothDeviceState.connected) {
+                        r.device.disconnect().then((value) {
+                          r.device.connect().catchError((e) {
+                            if (mounted) {
+                              setState(() {
+                                isBluetoothPermitted = true;
+                                progress = 1.0;
+                                lprSensorProgress = 1.0;
+                                isStartButton = true;
+                                debugPrint(
+                                    "BLUETOOTH PERMISSION CODE 8 $isBluetoothPermitted");
+                              });
+                            }
+                          });
+                        });
+                      }
+                    });
+                  });
+
+                  bluetoothName = r.device.name;
+                  //await storage.write(key: 'lprDeviceId', value: r.device.id.id);
+                  setState(() {
+                    isBluetoothPermitted = true;
+                    progress = 1.0;
+                    lprSensorProgress = 1.0;
+                    isStartButton = true;
+                    debugPrint(
+                        "BLUETOOTH PERMISSION CODE 9 $isBluetoothPermitted");
+                  });
+                  FlutterBluePlus.stopScan();
+                  break;
+                } else {
+                  r.device.disconnect().then(
+                          (value) => Utils.customPrint("is device disconnected: "));
+                }
               }
             }
           });
@@ -2789,50 +3905,109 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
             }
           }
 
+          /*Navigator.push(context, MaterialPageRoute(builder: (context) => StartTripRecordingScreen(
+              isLocationPermitted: isLocationPermitted,
+              isBluetoothConnected: isBluetoothConnected,
+              calledFrom: 'bottom_nav')));*/
         }
       }
     } else {
+      final FlutterSecureStorage storage = FlutterSecureStorage();
+      var lprDeviceId = await storage.read(
+          key: 'lprDeviceId'
+      );
+
+      Utils.customPrint("LPR DEVICE ID $lprDeviceId");
+
       bool isLocationPermitted = await Permission.locationAlways.isGranted;
       if (isLocationPermitted) {
-        FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
-        FlutterBluePlus.instance.scanResults.listen((results) async {
+        FlutterBluePlus.startScan(timeout: Duration(seconds: 4));
+        FlutterBluePlus.scanResults.listen((results) async {
           for (ScanResult r in results) {
-            if (r.device.name.toLowerCase().contains("lpr")) {
-              Utils.customPrint('FOUND DEVICE AGAIN');
+            if(lprDeviceId != null)
+            {
+              if(r.device.id.id == lprDeviceId)
+              {
+                {
+                  Utils.customPrint('FOUND DEVICE AGAIN');
 
-              r.device.connect().catchError((e) {
-                r.device.state.listen((event) {
-                  if (event == BluetoothDeviceState.connected) {
-                    r.device.disconnect().then((value) {
-                      r.device.connect().catchError((e) {
-                        if (mounted) {
-                          setState(() {
-                            isBluetoothPermitted = true;
-                            progress = 1.0;
-                            lprSensorProgress = 1.0;
-                            isStartButton = true;
-                            debugPrint("BLUETOOTH PERMISSION CODE 10 $isBluetoothPermitted");
+                  r.device.connect().catchError((e) {
+                    r.device.state.listen((event) {
+                      if (event == BluetoothDeviceState.connected) {
+                        r.device.disconnect().then((value) {
+                          r.device.connect().catchError((e) {
+                            if (mounted) {
+                              setState(() {
+                                isBluetoothPermitted = true;
+                                progress = 1.0;
+                                lprSensorProgress = 1.0;
+                                isStartButton = true;
+                                debugPrint(
+                                    "BLUETOOTH PERMISSION CODE 10 $isBluetoothPermitted");
+                              });
+                            }
                           });
-                        }
-                      });
+                        });
+                      }
                     });
-                  }
-                });
-              });
+                  });
 
-              bluetoothName = r.device.name;
-              setState(() {
-                isBluetoothPermitted = true;
-                progress = 1.0;
-                lprSensorProgress = 1.0;
-                isStartButton = true;
-                debugPrint("BLUETOOTH PERMISSION CODE 11 $isBluetoothPermitted");
-              });
-              FlutterBluePlus.instance.stopScan();
-              break;
-            } else {
-              r.device.disconnect().then(
-                      (value) => Utils.customPrint("is device disconnected: "));
+                  bluetoothName = r.device.name;
+                  setState(() {
+                    isBluetoothPermitted = true;
+                    progress = 1.0;
+                    lprSensorProgress = 1.0;
+                    isStartButton = true;
+                    debugPrint(
+                        "BLUETOOTH PERMISSION CODE 11 $isBluetoothPermitted");
+                  });
+                  FlutterBluePlus.stopScan();
+                  break;
+                }
+              }
+            }
+            else
+            {
+              if (r.device.name.toLowerCase().contains("lpr")) {
+                Utils.customPrint('FOUND DEVICE AGAIN');
+
+                r.device.connect().catchError((e) {
+                  r.device.state.listen((event) {
+                    if (event == BluetoothDeviceState.connected) {
+                      r.device.disconnect().then((value) {
+                        r.device.connect().catchError((e) {
+                          if (mounted) {
+                            setState(() {
+                              isBluetoothPermitted = true;
+                              progress = 1.0;
+                              lprSensorProgress = 1.0;
+                              isStartButton = true;
+                              debugPrint(
+                                  "BLUETOOTH PERMISSION CODE 10 $isBluetoothPermitted");
+                            });
+                          }
+                        });
+                      });
+                    }
+                  });
+                });
+
+                bluetoothName = r.device.name;
+                //await storage.write(key: 'lprDeviceId', value: r.device.id.id);
+                setState(() {
+                  isBluetoothPermitted = true;
+                  progress = 1.0;
+                  lprSensorProgress = 1.0;
+                  isStartButton = true;
+                  debugPrint(
+                      "BLUETOOTH PERMISSION CODE 11 $isBluetoothPermitted");
+                });
+                FlutterBluePlus.stopScan();
+                break;
+              } else {
+                r.device.disconnect().then(
+                        (value) => Utils.customPrint("is device disconnected: "));
+              }
             }
           }
         });
@@ -3008,8 +4183,8 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
         await Utils.getLocationPermissions(context, scaffoldKey);
         bool isLocationPermitted = await Permission.locationAlways.isGranted;
         if (isLocationPermitted) {
-          FlutterBluePlus.instance.startScan(timeout: Duration(seconds: 4));
-          FlutterBluePlus.instance.scanResults.listen((results) async {
+          FlutterBluePlus.startScan(timeout: Duration(seconds: 4));
+          FlutterBluePlus.scanResults.listen((results) async {
             for (ScanResult r in results) {
               if (r.device.name.toLowerCase().contains("lpr")) {
                 r.device.connect().catchError((e) {
@@ -3023,7 +4198,8 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                               progress = 1.0;
                               lprSensorProgress = 1.0;
                               isStartButton = true;
-                              debugPrint("BLUETOOTH PERMISSION CODE 12 $isBluetoothPermitted");
+                              debugPrint(
+                                  "BLUETOOTH PERMISSION CODE 12 $isBluetoothPermitted");
                             });
                           }
                         });
@@ -3038,9 +4214,10 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                   progress = 1.0;
                   lprSensorProgress = 1.0;
                   isStartButton = true;
-                  debugPrint("BLUETOOTH PERMISSION CODE 13 $isBluetoothPermitted");
+                  debugPrint(
+                      "BLUETOOTH PERMISSION CODE 13 $isBluetoothPermitted");
                 });
-                FlutterBluePlus.instance.stopScan();
+                FlutterBluePlus.stopScan();
                 break;
               } else {
                 r.device.disconnect().then(
@@ -3222,14 +4399,24 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
     }
   }
 
-  showBluetoothListDialog(BuildContext context) {
-    setState(() {
-      progress = 0.9;
-      lprSensorProgress = 0.0;
-      isStartButton = false;
-    });
+  showBluetoothListDialog(BuildContext context, String? connectedDeviceId, BluetoothDevice? connectedBluetoothDevice) {
+    // setState(() {
+    //   progress = 0.9;
+    //   lprSensorProgress = 0.0;
+    //   isStartButton = false;
+    // });
 
-    checkAndGetLPRList();
+    // checkAndGetLPRList();
+
+    if(autoConnectStreamSubscription != null) autoConnectStreamSubscription!.cancel();
+    if(autoConnectIsScanningStreamSubscription != null) autoConnectIsScanningStreamSubscription!.cancel();
+
+    if(!FlutterBluePlus.isScanningNow){
+      FlutterBluePlus
+          .startScan(timeout: Duration(seconds: 4)).onError((error, stackTrace) {
+            Utils.customPrint('EDEDED: $error');
+      });
+    }
 
     return showDialog(
         barrierDismissible: false,
@@ -3254,37 +4441,41 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-
                       SizedBox(
                         height: displayHeight(context) * 0.03,
                       ),
 
-                      Image.asset('assets/icons/web.png',
-                        width: displayWidth(context) * 0.2,
+                      Image.asset(
+                        'assets/icons/web.png',
+                        width: displayWidth(context) * 0.25,
+                      ),
+
+                      SizedBox(
+                        height: displayHeight(context) * 0.02,
                       ),
 
                       Padding(
-                        padding: EdgeInsets.only(top: 10),
-                        child: Text(
-                          "Available Devices",
-                          style: TextStyle(
-                              color: blutoothDialogTitleColor,
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.w600),
-                        ),
-                      ),
+                          padding: EdgeInsets.only(top: 10),
+                          child: commonText(
+                              context: context,
+                              text: 'Available Devices',
+                              fontWeight: FontWeight.w500,
+                              textColor: blutoothDialogTitleColor,
+                              textSize: displayWidth(context) * 0.042,
+                              fontFamily: outfit)),
 
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "Tap to connect with LPR Devices to\n track Trip details",
-                          style: TextStyle(
-                              color: blutoothDialogTxtColor,
-                              fontSize: 13.0,
-                              fontWeight: FontWeight.w400),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20.0, vertical: 8.0),
+                          child: commonText(
+                              context: context,
+                              text:
+                              'Tap to connect with LPR Devices to track Trip Details',
+                              fontWeight: FontWeight.w400,
+                              textColor: Colors.grey[600],
+                              textSize: displayWidth(context) * 0.032,
+                              textAlign: TextAlign.center,
+                              fontFamily: inter)),
 
                       // Implement listView for bluetooth devices
                       Expanded(
@@ -3295,20 +4486,33 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                             child: LPRBluetoothList(
                               dialogContext: dialogContext,
                               setDialogSet: setDialogState,
+                              connectedDeviceId: connectedDeviceId,
+                              connectedBluetoothDevice: connectedBluetoothDevice,
                               onSelected: (value) {
                                 if (mounted) {
                                   setState(() {
                                     bluetoothName = value;
                                   });
                                 }
+                                Future.delayed(Duration(seconds: 1), (){
+                                  setState(() {
+
+                                  });
+                                });
                               },
                               onBluetoothConnection: (value) {
                                 if (mounted) {
                                   setState(() {
                                     isBluetoothPermitted = value;
-                                    debugPrint("BLUETOOTH PERMISSION CODE 1 $isBluetoothPermitted");
+                                    debugPrint(
+                                        "BLUETOOTH PERMISSION CODE 1 $isBluetoothPermitted");
                                   });
                                 }
+                                Future.delayed(Duration(seconds: 1), (){
+                                  setState(() {
+
+                                  });
+                                });
                               },
                             ))
                             : Container(
@@ -3317,131 +4521,254 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                             child: LPRBluetoothList(
                               dialogContext: dialogContext,
                               setDialogSet: setDialogState,
+                              connectedDeviceId: connectedDeviceId,
+                              connectedBluetoothDevice: connectedBluetoothDevice,
                               onSelected: (value) {
                                 if (mounted) {
                                   setState(() {
                                     bluetoothName = value;
                                   });
                                 }
+                                Future.delayed(Duration(seconds: 1), (){
+                                  setState(() {
+
+                                  });
+                                });
                               },
                               onBluetoothConnection: (value) {
                                 if (mounted) {
                                   setState(() {
                                     isBluetoothPermitted = value;
-                                    debugPrint("BLUETOOTH PERMISSION CODE 2 $isBluetoothPermitted");
+                                    debugPrint(
+                                        "BLUETOOTH PERMISSION CODE 2 $isBluetoothPermitted");
                                   });
                                 }
+                                Future.delayed(Duration(seconds: 1), (){
+                                  setState(() {
+
+                                  });
+                                });
                               },
                             )),
                       ),
 
-                      Container(
-                        width: displayWidth(context),
-                        margin:
-                        EdgeInsets.only(left: 15, right: 15, bottom: 15),
-                        child: Column(
-                          //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                Utils.customPrint("Tapped on scan button");
+                     SizedBox(height: displayWidth(context) * 0.04,),
 
-                                if (mounted) {
-                                  setDialogState(() {
-                                    isScanningBluetooth = true;
-                                  });
-                                }
+                     Container(
+                       width: displayWidth(context),
+                       margin:
+                       EdgeInsets.only(left: 15, right: 15, bottom: 15),
+                       child: Column(
+                         //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                         children: [
+                           GestureDetector(
+                             onTap: () {
+                               Utils.customPrint("Tapped on scan button");
 
-                                FlutterBluePlus.instance.startScan(
-                                    timeout: const Duration(seconds: 2));
+                               if (mounted) {
+                                 setDialogState(() {
+                                   isScanningBluetooth = true;
+                                 });
+                               }
 
-                                if (mounted) {
-                                  Future.delayed(Duration(seconds: 2), () {
-                                    setDialogState(() {
-                                      isScanningBluetooth = false;
-                                    });
-                                  });
-                                }
+                               FlutterBluePlus.startScan(
+                                   timeout: const Duration(seconds: 2));
 
-                                if (mounted) {
-                                  setState(() {
-                                    isRefreshList = true;
-                                    progress = 0.9;
-                                    lprSensorProgress = 0.0;
-                                    isStartButton = false;
-                                    bluetoothName = '';
-                                  });
-                                }
-                              },
-                              child: isScanningBluetooth
-                                  ? Center(
-                                child: Container(
-                                    width: displayWidth(context) * 0.34,
-                                    child: Center(
-                                        child:
-                                        CircularProgressIndicator(color: blueColor,))),
-                              )
-                                  : Container(
-                                decoration: BoxDecoration(
-                                  color: blueColor,
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(8)),
-                                ),
-                                height: displayHeight(context) * 0.055,
-                                width : displayWidth(context) / 1.6,
-                                // color: HexColor(AppColors.introButtonColor),
-                                child: Center(
-                                  child: Text(
-                                    "Scan for Devices",
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: bluetoothConnectBtncolor),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                // FlutterBluePlus.instance.
+                               if (mounted) {
+                                 Future.delayed(Duration(seconds: 2), () {
+                                   setDialogState(() {
+                                     isScanningBluetooth = false;
+                                   });
+                                 });
+                               }
 
-                                FlutterBluePlus.instance.stopScan();
+                               if (mounted) {
+                                 setState(() {
+                                   isRefreshList = true;
+                                   progress = 0.9;
+                                   lprSensorProgress = 0.0;
+                                   isStartButton = false;
+                                   bluetoothName = '';
+                                 });
+                               }
+                             },
+                             child: isScanningBluetooth
+                                 ? Center(
+                               child: Container(
+                                 margin: EdgeInsets.only(top: displayWidth(context) * 0.02,),
+                                   width: displayWidth(context) * 0.34,
+                                   child: Center(
+                                       child:
+                                       CircularProgressIndicator(color: blueColor,))),
+                             )
+                                 : Container(
+                               decoration: BoxDecoration(
+                                 color: blueColor,
+                                 borderRadius: BorderRadius.all(
+                                     Radius.circular(8)),
+                               ),
+                               height: displayHeight(context) * 0.055,
+                               width : displayWidth(context) / 1.6,
+                               // color: HexColor(AppColors.introButtonColor),
+                               child: Center(
+                                 child: commonText(
+                                  context: context,
+                                  text: 'Scan for Devices',
+                                  fontWeight: FontWeight.w500,
+                                  textColor: bluetoothConnectBtncolor,
+                                  textSize: displayWidth(context) * 0.04,
+                                  fontFamily: outfit)
+                               ),
+                             ),
+                           ),
+                           GestureDetector(
+                             onTap: () {
+                               // FlutterBluePlus.instance.
 
-                                setDialogState(() {
-                                  isScanningBluetooth = false;
-                                });
-                                Navigator.pop(context);
+                               FlutterBluePlus.stopScan();
 
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.transparent,
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                                ),
-                                height: displayHeight(context) * 0.055,
-                                width : displayWidth(context) / 1.6,
-                                // color: HexColor(AppColors.introButtonColor),
-                                child: Center(
-                                  child: Text(
-                                    "Cancel",
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: blueColor),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                               setDialogState(() {
+                                 isScanningBluetooth = false;
+                               });
+                               Navigator.pop(context);
+                             },
+                             child: Container(
+                               decoration: BoxDecoration(
+                                 color: Colors.transparent,
+                                 borderRadius:
+                                 BorderRadius.all(Radius.circular(10)),
+                               ),
+                               height: displayHeight(context) * 0.055,
+                               width: displayWidth(context) / 1.6,
+                               // color: HexColor(AppColors.introButtonColor),
+                               child: Center(
+                                   child: commonText(
+                                       context: context,
+                                       text: 'Cancel',
+                                       fontWeight: FontWeight.w500,
+                                       textColor: blueColor,
+                                       textSize: displayWidth(context) * 0.038,
+                                       fontFamily: outfit)),
+                             ),
+                           ),
+                         ],
+                       ),
+                     )
                     ],
                   ),
                 );
               }));
         }).then((value) {
-      Utils.customPrint('DIALOG VALUE $value');
+      setState(() {
 
+      });
+      Utils.customPrint('DIALOG VALUE $value');
     });
+  }
+
+  showForgetDeviceDialog(BuildContext context,
+      {VoidCallback? forgetDeviceBtnClick, VoidCallback? onCancelClick}) {
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext dialogContext) {
+          return Dialog(
+            child: StatefulBuilder(
+              builder: (ctx, setDialogState) {
+                return Container(
+                  height: displayHeight(context) * 0.42,
+                  width: MediaQuery.of(context).size.width,
+                  decoration:
+                  BoxDecoration(borderRadius: BorderRadius.circular(20)),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 8.0, right: 8.0, top: 15, bottom: 15),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+                        ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              //color: Color(0xfff2fffb),
+                              child: Image.asset(
+                                'assets/images/boat.gif',
+                                height: displayHeight(ctx) * 0.1,
+                                width: displayWidth(ctx),
+                                fit: BoxFit.contain,
+                              ),
+                            )),
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8),
+                          child: commonText(
+                              context: context,
+                              text:
+                              'Would you like to disconnect from the currently connected Bluetooth device and connect to a new device?',
+                              fontWeight: FontWeight.w500,
+                              textColor: Colors.black87,
+                              textSize: displayWidth(context) * 0.042,
+                              textAlign: TextAlign.center),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.01,
+                        ),
+                        Column(
+                          children: [
+                            Center(
+                              child: CommonButtons.getAcceptButton(
+                                  'Forget Device',
+                                  context,
+                                  endTripBtnColor,
+                                  forgetDeviceBtnClick,
+                                  displayWidth(context) / 1.5,
+                                  displayHeight(context) * 0.055,
+                                  primaryColor,
+                                  Colors.white,
+                                  displayWidth(context) * 0.036,
+                                  endTripBtnColor,
+                                  '',
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                            Center(
+                              child: CommonButtons.getAcceptButton(
+                                  'Cancel',
+                                  context,
+                                  Colors.transparent,
+                                  onCancelClick,
+                                  displayWidth(context) * 0.5,
+                                  displayHeight(context) * 0.05,
+                                  Colors.transparent,
+                                  Theme.of(context).brightness ==
+                                      Brightness.dark
+                                      ? Colors.white
+                                      : blueColor,
+                                  displayHeight(context) * 0.018,
+                                  Colors.transparent,
+                                  '',
+                                  fontWeight: FontWeight.w500),
+                            ),
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        });
   }
 
   addNewVesselDialogBox(BuildContext context) {
@@ -3507,16 +4834,16 @@ StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, conte
                                   child: CommonButtons.getAcceptButton(
                                       'Add Vessel', context, blueColor,
                                           () async {
-                                            Navigator.of(context).pop();
-      await    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,]);
+                                        Navigator.of(context).pop();
+                                        await    SystemChrome.setPreferredOrientations([
+                                          DeviceOrientation.portraitUp,]);
 
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
                                                 builder: (context) =>
-                                                AddNewVesselPage(calledFrom: 'startTripRecording',)));
-                                          },
+                                                    AddNewVesselPage(calledFrom: 'startTripRecording',)));
+                                      },
                                       displayWidth(context) * 0.65,
                                       displayHeight(context) * 0.054,
                                       primaryColor,

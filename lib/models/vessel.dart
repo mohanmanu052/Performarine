@@ -34,6 +34,8 @@ class CreateVessel {
   String? avgSpeed;*/
   int? isCloud;
   List<File?>? selectedImages;
+  //String? displacement;
+  int? hullType;
 
   CreateVessel(
       {this.id,
@@ -66,6 +68,8 @@ class CreateVessel {
       this.isCloud,
       this.imageURLs,
       this.selectedImages,
+        //this.displacement
+        this.hullType
       });
 
   CreateVessel.fromJson(Map<String, dynamic> json) {
@@ -83,7 +87,7 @@ class CreateVessel {
     lengthOverall = json['lengthOverall'];
     beam = json['beam'];
     draft = json['draft'];
-   // displacement = json['displacement'] != null ? json['displacement'] : "";
+    //displacement = json['displacement'] != null ? json['displacement'] : "";
     vesselSize = json['vesselSize'];
     capacity = json['capacity'];
     builtYear = json['builtYear'];
@@ -100,6 +104,7 @@ class CreateVessel {
     speed = json["speed"];
     avgSpeed = json["avgSpeed"];*/
     isCloud = json["isCloud"];
+    hullType = json["hullShape"];
   }
 
   // Convert a CreateVessel into a Map. The keys must correspond to the names of the
@@ -120,7 +125,7 @@ class CreateVessel {
       'lengthOverall': lengthOverall,
       'beam': beam,
       'draft': draft,
-     // 'displacement': displacement,
+      //'displacement': displacement,
       'vesselSize': vesselSize,
       'capacity': capacity,
       'builtYear': builtYear,
@@ -136,6 +141,7 @@ class CreateVessel {
       'speed': speed,
       'avgSpeed': avgSpeed,*/
       'isCloud': isCloud,
+      'hullShape': hullType
     };
   }
 
@@ -155,8 +161,8 @@ class CreateVessel {
       lengthOverall: map['lengthOverall'],
       beam: map['beam'],
       draft: map['draft'],
-      //displacement: map['displacement'] ?? 0.0,
-      vesselSize: double.parse(map['vesselSize'] == null ? '0.0' : map['vesselSize'].toString()),
+//displacement: map['displacement'] ?? "",
+      vesselSize: map['vesselSize'] ?? 0.0,
       capacity: map['capacity'],
       builtYear: map['builtYear'],
       isSync: map['isSync'],
@@ -167,6 +173,7 @@ class CreateVessel {
       updatedBy: map['updatedBy'],
       updatedAt: map['updatedAt'],
       isCloud: map['isCloud'],
+      hullType: map['hullShape']
     );
   }
 
@@ -201,6 +208,7 @@ class CreateVessel {
     data['updatedBy'] = this.updatedBy;
     data['updatedAt'] = this.updatedAt;
     data['isCloud'] = this.isCloud;
+    data['hullShape'] = this.hullType;
     return data;
   }
 }

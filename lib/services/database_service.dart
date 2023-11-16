@@ -81,6 +81,7 @@ class DatabaseService {
       'distance TEXT, '
       'speed TEXT, '
       'avgSpeed TEXT, '
+      'hullShape INTEGER, '
       'isCloud INTEGER  DEFAULT 0'
       ')',
     );

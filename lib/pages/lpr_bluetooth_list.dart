@@ -7,12 +7,16 @@ class LPRBluetoothList extends StatefulWidget {
   final Function(String)? onSelected;
   final Function(bool)? onBluetoothConnection;
   final StateSetter? setDialogSet;
+  final String? connectedDeviceId;
+  final BluetoothDevice? connectedBluetoothDevice;
   LPRBluetoothList(
       {Key? key,
-      this.dialogContext,
-      this.onSelected,
-      this.onBluetoothConnection,
-      this.setDialogSet})
+        this.dialogContext,
+        this.onSelected,
+        this.onBluetoothConnection,
+        this.connectedDeviceId,
+        this.connectedBluetoothDevice,
+        this.setDialogSet})
       : super(key: key);
   @override
   State<LPRBluetoothList> createState() => _LPRBluetoothListState();
@@ -27,24 +31,26 @@ class _LPRBluetoothListState extends State<LPRBluetoothList> {
       child: AbsorbPointer(
         absorbing: isConnectToDevice,
         child: StreamBuilder<List<ScanResult>>(
-          stream: FlutterBluePlus.instance.scanResults,
-          initialData: const [],
+          stream: FlutterBluePlus.scanResults,
+          // initialData: const [],
           builder: (c, snapshot) => Column(
             children: snapshot.data != null
                 ? snapshot.data!
-                    .map((d) => SingleLPRDevice(
-                          device: d.device,
-                          onSelected: widget.onSelected,
-                          onBluetoothConnection: widget.onBluetoothConnection,
-                          dialogContext: widget.dialogContext,
-                          setSetter: widget.setDialogSet,
-                          onSingleDeviceTapped: (bool value) {
-                            widget.setDialogSet!(() {
-                              isConnectToDevice = value;
-                            });
-                          },
-                        ))
-                    .toList()
+                .map((d) => SingleLPRDevice(
+              device: d.device,
+              onSelected: widget.onSelected,
+              onBluetoothConnection: widget.onBluetoothConnection,
+              dialogContext: widget.dialogContext,
+              setSetter: widget.setDialogSet,
+              connectedDeviceId: widget.connectedDeviceId,
+              connectedBluetoothDevice: widget.connectedBluetoothDevice,
+              onSingleDeviceTapped: (bool value) {
+                widget.setDialogSet!(() {
+                  isConnectToDevice = value;
+                });
+              },
+            ))
+                .toList()
                 : [],
           ),
         ),

@@ -1,33 +1,22 @@
 import 'dart:async';
 
-import 'package:background_locator_2/background_locator.dart';
-import 'package:background_locator_2/settings/android_settings.dart';
-import 'package:background_locator_2/settings/ios_settings.dart';
-import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:performarine/analytics/location_callback_handler.dart';
 import 'package:performarine/analytics/start_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
-import 'package:performarine/common_widgets/utils/utils.dart';
-import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
-import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
-import 'package:performarine/old_ui/old_vessel_single_view.dart';
-import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/start_trip/map_screen.dart';
 import 'package:performarine/pages/start_trip/trip_recording_analytics_screen.dart';
-import 'package:performarine/pages/vessel_single_view.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:wakelock/wakelock.dart';
 
-import '../../analytics/end_trip.dart';
 import '../../common_widgets/utils/constants.dart';
 import '../../common_widgets/widgets/user_feed_back.dart';
 import '../bottom_navigation.dart';

@@ -1,32 +1,19 @@
-import 'package:background_locator_2/background_locator.dart';
-import 'package:background_locator_2/settings/android_settings.dart';
-import 'package:background_locator_2/settings/ios_settings.dart';
-import 'package:background_locator_2/settings/locator_settings.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:performarine/old_ui/old_vessel_single_view.dart';
+
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
-import '../../analytics/end_trip.dart';
-import '../../analytics/location_callback_handler.dart';
-import '../../analytics/start_trip.dart';
 import '../../common_widgets/utils/colors.dart';
-import '../../common_widgets/utils/common_size_helper.dart';
 import '../../common_widgets/utils/utils.dart';
 import '../../common_widgets/vessel_builder.dart';
-import '../../common_widgets/widgets/common_buttons.dart';
-import '../../common_widgets/widgets/common_text_search_field.dart';
-import '../../common_widgets/widgets/common_widgets.dart';
 import '../../main.dart';
 import '../../models/vessel.dart';
 import '../../provider/common_provider.dart';
 import '../../services/database_service.dart';
-import 'package:performarine/pages/auth/reset_password.dart';
 import '../vessel_form.dart';
 import '../vessel_single_view.dart';
 
