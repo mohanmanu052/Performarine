@@ -26,6 +26,7 @@ class EndTrip {
     IOStripDistance = "",
     IOSpeed = "",
     IOSAvgSpeed = "",
+    String? lprDeviceId
   }) async {
 
     Utils.customPrint("END TRIP FUNCTIONALITY");
@@ -40,11 +41,17 @@ class EndTrip {
     var connectedDevicesList = FlutterBluePlus.connectedDevices;
     final FlutterSecureStorage storage = FlutterSecureStorage();
     Utils.customPrint('END TRIP CONNECTED DEVICE LIST: ${connectedDevicesList.length}');
-    if(connectedDevicesList.isNotEmpty)
+    if(lprDeviceId != null){
+      await storage.write(key: 'lprDeviceId', value: lprDeviceId);
+    }
+    else{
+      if(connectedDevicesList.isNotEmpty)
       {
         await storage.write(key: 'lprDeviceId', value: connectedDevicesList.first.remoteId.str);
         await connectedDevicesList.first.disconnect();
       }
+    }
+
 
 
     if(currentPosition != null)

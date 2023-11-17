@@ -38,23 +38,39 @@ class MapScreen extends StatefulWidget {
   final bool isAppKilled;
   final GlobalKey<ScaffoldState>? scaffoldKey;
   final BuildContext? context;
-  const MapScreen({super.key, this.scaffoldKey, this.tripIsRunningOrNot, this.vesselId, this.tripId, this.isAppKilled = false, this.context, this.calledFrom = ''});
+
+  const MapScreen(
+      {super.key,
+      this.scaffoldKey,
+      this.tripIsRunningOrNot,
+      this.vesselId,
+      this.tripId,
+      this.isAppKilled = false,
+      this.context,
+      this.calledFrom = ''});
 
   @override
   State<MapScreen> createState() => _MapScreenState();
 }
 
 class _MapScreenState extends State<MapScreen> {
-
   final controller = ScreenshotController();
 
-  String tripDistance = '0.00', tripDuration = '00:00:00', tripSpeed = '0.0', tripAvgSpeed = '0.0';
+  String tripDistance = '0.00',
+      tripDuration = '00:00:00',
+      tripSpeed = '0.0',
+      tripAvgSpeed = '0.0';
 
   Timer? durationTimer;
 
   final DatabaseService _databaseService = DatabaseService();
 
-  bool tripIsRunning = false, isuploadTrip = false, isTripEnded = false, isEndTripBtnClicked = false, isDataUpdated = false, lastTimePopupBtnClicked = false,
+  bool tripIsRunning = false,
+      isuploadTrip = false,
+      isTripEnded = false,
+      isEndTripBtnClicked = false,
+      isDataUpdated = false,
+      lastTimePopupBtnClicked = false,
       locationAccuracy = false;
 
   Trip? tripData;
@@ -82,28 +98,21 @@ class _MapScreenState extends State<MapScreen> {
     if (tripIsRunning) {
       getRealTimeTripDetails();
       Wakelock.enable();
-      if(widget.isAppKilled){
+      if (widget.isAppKilled) {
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-          Future.delayed(Duration(milliseconds: 100), (){
-            bool isOpened = sharedPreferences!.getBool("key_lat_time_dialog_open") ?? false;
-            if(!isOpened)
-              {
-                showEndTripDialogBox(context);
-              }
+          Future.delayed(Duration(milliseconds: 100), () {
+            bool isOpened =
+                sharedPreferences!.getBool("key_lat_time_dialog_open") ?? false;
+            if (!isOpened) {
+              showEndTripDialogBox(context);
+            }
           });
         });
-
       }
     }
   }
 
-
-
-
-
-
   getRealTimeTripDetails() async {
-
     if (mounted) {
       setState(() {
         // getTripDetailsFromNoti = true;
@@ -119,7 +128,8 @@ class _MapScreenState extends State<MapScreen> {
     await sharedPreferences!.reload();
 
     durationTimer = Timer.periodic(Duration(milliseconds: 100), (timer) {
-      Utils.customPrint('##TDATA updated time delay from 1 sec to 400 MS by abhi');
+      Utils.customPrint(
+          '##TDATA updated time delay from 1 sec to 400 MS by abhi');
       tripDistance = sharedPreferences!.getString('tripDistance') ?? "0";
       tripSpeed = sharedPreferences!.getString('tripSpeed') ?? "0.0";
       tripAvgSpeed = sharedPreferences!.getString('tripAvgSpeed') ?? "0.0";
@@ -139,9 +149,6 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
@@ -160,23 +167,22 @@ class _MapScreenState extends State<MapScreen> {
                   children: [
                     FlutterMap(
                       options: MapOptions(
-                        center: LatLng(56.704173, 11.543808),
-                        minZoom: 12,
-                        maxZoom: 14,
-                        bounds: LatLngBounds(
-                          LatLng(56.7378, 11.6644),
-                          LatLng(56.6877, 11.5089),
-                        )
-                      ),
+                          center: LatLng(56.704173, 11.543808),
+                          minZoom: 12,
+                          maxZoom: 14,
+                          bounds: LatLngBounds(
+                            LatLng(56.7378, 11.6644),
+                            LatLng(56.6877, 11.5089),
+                          )),
                       children: [
                         TileLayer(
                           tileProvider: AssetTileProvider(),
                           maxZoom: 14,
-                          urlTemplate: 'assets/map/anholt_osmbright/{z}/{x}/{y}.png',
+                          urlTemplate:
+                              'assets/map/anholt_osmbright/{z}/{x}/{y}.png',
                         ),
                       ],
                     ),
-
                     Positioned(
                       bottom: 0,
                       left: 0,
@@ -187,36 +193,41 @@ class _MapScreenState extends State<MapScreen> {
                             margin: EdgeInsets.symmetric(horizontal: 38),
                             height: displayHeight(context) * 0.12,
                             decoration: BoxDecoration(
-                              color: backgroundColor,
-                              borderRadius: BorderRadius.circular(15)
-                            ),
+                                color: backgroundColor,
+                                borderRadius: BorderRadius.circular(15)),
                             child: Padding(
-                              padding: const EdgeInsets.only(top: 25, left: 25, right: 25),
+                              padding: const EdgeInsets.only(
+                                  top: 25, left: 25, right: 25),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(
                                     child: Column(
                                       children: [
-
                                         commonText(
                                           context: context,
                                           text: 'Distance',
                                           fontWeight: FontWeight.w400,
                                           textColor: Colors.black,
-                                          textSize: displayWidth(context) * 0.026,
+                                          textSize:
+                                              displayWidth(context) * 0.026,
                                         ),
-
-                                        SizedBox(height: displayHeight(context) * 0.003,),
-
+                                        SizedBox(
+                                          height:
+                                              displayHeight(context) * 0.003,
+                                        ),
                                         Text(
                                           tripDistance,
                                           style: TextStyle(
-                                            fontSize: displayWidth(context) * 0.05,
+                                            fontSize:
+                                                displayWidth(context) * 0.05,
                                             fontFamily: outfit,
                                             fontWeight: FontWeight.w700,
                                             color: Colors.black,
-                                            fontFeatures: [FontFeature.tabularFigures()],
+                                            fontFeatures: [
+                                              FontFeature.tabularFigures()
+                                            ],
                                           ),
                                         ),
 
@@ -228,14 +239,17 @@ class _MapScreenState extends State<MapScreen> {
                                           textSize: displayWidth(context) * 0.05,
                                         ),
 */
-                                        SizedBox(height: displayHeight(context) * 0.003,),
-
+                                        SizedBox(
+                                          height:
+                                              displayHeight(context) * 0.003,
+                                        ),
                                         commonText(
                                           context: context,
                                           text: 'Nautical Miles',
                                           fontWeight: FontWeight.w400,
                                           textColor: Colors.black,
-                                          textSize: displayWidth(context) * 0.024,
+                                          textSize:
+                                              displayWidth(context) * 0.024,
                                         ),
                                       ],
                                     ),
@@ -243,25 +257,29 @@ class _MapScreenState extends State<MapScreen> {
                                   Expanded(
                                     child: Column(
                                       children: [
-
                                         commonText(
                                           context: context,
                                           text: 'Speed',
                                           fontWeight: FontWeight.w400,
                                           textColor: Colors.black,
-                                          textSize: displayWidth(context) * 0.026,
+                                          textSize:
+                                              displayWidth(context) * 0.026,
                                         ),
-
-                                        SizedBox(height: displayHeight(context) * 0.003,),
-
+                                        SizedBox(
+                                          height:
+                                              displayHeight(context) * 0.003,
+                                        ),
                                         Text(
                                           tripSpeed,
                                           style: TextStyle(
-                                            fontSize: displayWidth(context) * 0.05,
+                                            fontSize:
+                                                displayWidth(context) * 0.05,
                                             fontFamily: outfit,
                                             fontWeight: FontWeight.w700,
                                             color: Colors.black,
-                                            fontFeatures: [FontFeature.tabularFigures()],
+                                            fontFeatures: [
+                                              FontFeature.tabularFigures()
+                                            ],
                                           ),
                                         ),
 
@@ -273,14 +291,17 @@ class _MapScreenState extends State<MapScreen> {
                                           textSize: displayWidth(context) * 0.05,
                                         ),*/
 
-                                        SizedBox(height: displayHeight(context) * 0.003,),
-
+                                        SizedBox(
+                                          height:
+                                              displayHeight(context) * 0.003,
+                                        ),
                                         commonText(
                                           context: context,
                                           text: speedKnot,
                                           fontWeight: FontWeight.w400,
                                           textColor: Colors.black,
-                                          textSize: displayWidth(context) * 0.024,
+                                          textSize:
+                                              displayWidth(context) * 0.024,
                                         ),
                                       ],
                                     ),
@@ -288,29 +309,33 @@ class _MapScreenState extends State<MapScreen> {
                                   Expanded(
                                     child: Column(
                                       children: [
-
                                         commonText(
                                           context: context,
                                           text: 'Time',
                                           fontWeight: FontWeight.w400,
                                           textColor: Colors.black,
-                                          textSize: displayWidth(context) * 0.026,
+                                          textSize:
+                                              displayWidth(context) * 0.026,
                                         ),
-
-                                        SizedBox(height: displayHeight(context) * 0.003,),
-
+                                        SizedBox(
+                                          height:
+                                              displayHeight(context) * 0.003,
+                                        ),
                                         Text(
                                           tripDuration,
                                           style: TextStyle(
-                                            fontSize: displayWidth(context) * 0.05,
+                                            fontSize:
+                                                displayWidth(context) * 0.05,
                                             fontFamily: outfit,
                                             fontWeight: FontWeight.w700,
                                             color: Colors.black,
-                                            fontFeatures: [FontFeature.tabularFigures()],
+                                            fontFeatures: [
+                                              FontFeature.tabularFigures()
+                                            ],
                                           ),
                                         ),
 
-                                       /* commonText(
+                                        /* commonText(
                                           context: context,
                                           text: tripDuration,
                                           fontWeight: FontWeight.w700,
@@ -318,14 +343,17 @@ class _MapScreenState extends State<MapScreen> {
                                           textSize: displayWidth(context) * 0.05,
                                         ),*/
 
-                                        SizedBox(height: displayHeight(context) * 0.003,),
-
+                                        SizedBox(
+                                          height:
+                                              displayHeight(context) * 0.003,
+                                        ),
                                         commonText(
                                           context: context,
                                           text: 'hh:mm:ss',
                                           fontWeight: FontWeight.w400,
                                           textColor: Colors.black,
-                                          textSize: displayWidth(context) * 0.024,
+                                          textSize:
+                                              displayWidth(context) * 0.024,
                                         ),
                                       ],
                                     ),
@@ -334,7 +362,9 @@ class _MapScreenState extends State<MapScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(height: displayHeight(context) * 0.002,),
+                          SizedBox(
+                            height: displayHeight(context) * 0.002,
+                          ),
                           Container(
                             color: backgroundColor,
                             width: displayWidth(context),
@@ -342,132 +372,175 @@ class _MapScreenState extends State<MapScreen> {
                               children: [
                                 isTripEnded
                                     ? Padding(
-                                      padding: EdgeInsets.only(top: displayHeight(context) * 0.03,
-                                          bottom: displayHeight(context) * 0.04),
-                                      child: Center(
-                                      child:
-                                      CircularProgressIndicator(
-                                        valueColor:
-                                        AlwaysStoppedAnimation<
-                                            Color>(
-                                            blueColor),
-                                      )),
-                                    )
+                                        padding: EdgeInsets.only(
+                                            top: displayHeight(context) * 0.03,
+                                            bottom:
+                                                displayHeight(context) * 0.04),
+                                        child: Center(
+                                            child: CircularProgressIndicator(
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                  blueColor),
+                                        )),
+                                      )
                                     : Padding(
-                                      padding: EdgeInsets.only(
+                                        padding: EdgeInsets.only(
                                           top: displayHeight(context) * 0.03,
                                           bottom: displayHeight(context) * 0.04,
-                                      ),
-                                      child: Container(
-                                        margin: EdgeInsets.symmetric(horizontal: 12),
-                                        child: CommonButtons.getRichTextActionButton(
-                                        icon: Image.asset('assets/icons/end_btn.png',
-                                          height: displayHeight(context) * 0.055,
-                                          width: displayWidth(context) * 0.12,
                                         ),
-                                        title: 'Stop Trip',
-                                        context: context,
-                                        fontSize: displayWidth(context) * 0.042,
-                                        textColor: Colors.white,
-                                        buttonPrimaryColor: endTripBtnColor,
-                                        borderColor: endTripBtnColor,
-                                        width: displayWidth(context) * 0.75,
-                                        onTap: () async
-                                        {
+                                        child: Container(
+                                          margin: EdgeInsets.symmetric(
+                                              horizontal: 12),
+                                          child:
+                                              CommonButtons
+                                                  .getRichTextActionButton(
+                                                      icon: Image.asset(
+                                                        'assets/icons/end_btn.png',
+                                                        height: displayHeight(
+                                                                context) *
+                                                            0.055,
+                                                        width: displayWidth(
+                                                                context) *
+                                                            0.12,
+                                                      ),
+                                                      title: 'Stop Trip',
+                                                      context: context,
+                                                      fontSize: displayWidth(
+                                                              context) *
+                                                          0.042,
+                                                      textColor: Colors.white,
+                                                      buttonPrimaryColor:
+                                                          endTripBtnColor,
+                                                      borderColor:
+                                                          endTripBtnColor,
+                                                      width: displayWidth(
+                                                              context) *
+                                                          0.75,
+                                                      onTap: () async {
+                                                        print(
+                                                            'the stop Trip is clickedd-------------111');
 
-print('the stop Trip is clickedd-------------111');
+                                                        await SystemChrome
+                                                            .setPreferredOrientations([
+                                                          DeviceOrientation
+                                                              .portraitUp,
+                                                        ]);
 
-                                                                               await       SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
+                                                        Utils.customPrint(
+                                                            "END TRIP CURRENT TIME ${DateTime.now()}");
 
+                                                        bool isSmallTrip = Utils()
+                                                            .checkIfTripDurationIsGraterThan10Seconds(
+                                                                tripDuration
+                                                                    .split(
+                                                                        ":"));
 
+                                                        Utils.customPrint(
+                                                            "SMALL TRIPP IDDD bool$isSmallTrip");
 
-                                          Utils.customPrint(
-                                              "END TRIP CURRENT TIME ${DateTime.now()}");
+                                                        if (!isSmallTrip) {
+                                                          Utils()
+                                                              .showDeleteTripDialog(
+                                                                  context,
+                                                                  endTripBtnClick:
+                                                                      () {
+                                                            endTrip(
+                                                                isTripDeleted:
+                                                                    true);
 
-                                          bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
+                                                            Utils.customPrint(
+                                                                "SMALL TRIPP IDDD ${tripData!.id!}");
 
-                                          Utils.customPrint("SMALL TRIPP IDDD bool$isSmallTrip");
+                                                            int value = Platform
+                                                                    .isAndroid
+                                                                ? 1
+                                                                : 0;
 
-                                          if(!isSmallTrip)
-                                          {
-                                            Utils().showDeleteTripDialog(context,
-                                                endTripBtnClick: (){
+                                                            Future.delayed(
+                                                                Duration(
+                                                                    seconds:
+                                                                        value),
+                                                                () {
+                                                              if (!isSmallTrip) {
+                                                                Utils.customPrint(
+                                                                    "SMALL TRIPP IDDD ${tripData!.id!}");
+                                                                DatabaseService()
+                                                                    .deleteTripFromDB(
+                                                                        tripData!
+                                                                            .id!);
 
-                                                  endTrip(isTripDeleted: true);
-
-                                                  Utils.customPrint("SMALL TRIPP IDDD ${tripData!
-                                                      .id!}");
-
-                                                  int value = Platform.isAndroid ? 1 : 0;
-
-                                                  Future.delayed(Duration(seconds: value), (){
-                                                    if(!isSmallTrip)
-                                                    {
-
-                                                      Utils.customPrint("SMALL TRIPP IDDD ${tripData!
-                                                          .id!}");
-                                                      DatabaseService().deleteTripFromDB(tripData!
-                                                          .id!);
-
-                                                      if(widget.calledFrom == 'bottom_nav')
-                                                      {
-                                                        Navigator.pushAndRemoveUntil(
-                                                            context,
-                                                            MaterialPageRoute(builder: (context) => BottomNavigation()),
-                                                            ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,])
-      );;
-                                                      }
-                                                      else if(widget.calledFrom == 'VesselSingleView')
-                                                      {
-                                                        Navigator.of(context).pop(true);
-                                                      }
-                                                      else if(widget.calledFrom == 'tripList')
-                                                      {
-                                                        Navigator.pushAndRemoveUntil(
-                                                            context,
-                                                            MaterialPageRoute(builder: (context) => BottomNavigation(
-                                                              tabIndex: commonProvider.bottomNavIndex,
-                                                            )),
-                                                            ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,])
-      );;
-                                                      }
-                                                      else
-                                                        {
-                                                          Navigator.pushAndRemoveUntil(
-                                                              context,
-                                                              MaterialPageRoute(builder: (context) => BottomNavigation()),
-                                                              ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,])
-      );;
+                                                                if (widget
+                                                                        .calledFrom ==
+                                                                    'bottom_nav') {
+                                                                  Navigator.pushAndRemoveUntil(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) =>
+                                                                                  BottomNavigation()),
+                                                                          ModalRoute.withName(
+                                                                              ""))
+                                                                      .then((value) =>
+                                                                          SystemChrome
+                                                                              .setPreferredOrientations([
+                                                                            DeviceOrientation.portraitUp,
+                                                                          ]));
+                                                                  ;
+                                                                } else if (widget
+                                                                        .calledFrom ==
+                                                                    'VesselSingleView') {
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop(
+                                                                          true);
+                                                                } else if (widget
+                                                                        .calledFrom ==
+                                                                    'tripList') {
+                                                                  Navigator.pushAndRemoveUntil(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) => BottomNavigation(
+                                                                                    tabIndex: commonProvider.bottomNavIndex,
+                                                                                  )),
+                                                                          ModalRoute.withName(""))
+                                                                      .then((value) => SystemChrome.setPreferredOrientations([
+                                                                            DeviceOrientation.portraitUp,
+                                                                          ]));
+                                                                  ;
+                                                                } else {
+                                                                  Navigator.pushAndRemoveUntil(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) =>
+                                                                                  BottomNavigation()),
+                                                                          ModalRoute.withName(
+                                                                              ""))
+                                                                      .then((value) =>
+                                                                          SystemChrome
+                                                                              .setPreferredOrientations([
+                                                                            DeviceOrientation.portraitUp,
+                                                                          ]));
+                                                                  ;
+                                                                }
+                                                              }
+                                                            });
+                                                          }, onCancelClick: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          });
+                                                        } else {
+                                                          Utils()
+                                                              .showEndTripDialog(
+                                                                  context,
+                                                                  () async {
+                                                            endTrip();
+                                                          }, () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          });
                                                         }
-                                                    }
-                                                  });
-                                                },
-                                                onCancelClick: (){
-                                                  Navigator.pop(context);
-                                                }
-                                            );
-                                          }
-                                          else
-                                          {
-                                            Utils().showEndTripDialog(
-                                                context, () async {
-
-
-                                              endTrip();
-
-                                            }, () {
-                                              Navigator.pop(context);
-                                            });
-                                          }
-                                        }
-                                  ),
-                                ),
-                                    ),
+                                                      }),
+                                        ),
+                                      ),
                               ],
                             ),
                           )
@@ -571,13 +644,9 @@ print('the stop Trip is clickedd-------------111');
     );
   }
 
-  endTrip({bool isTripDeleted = false})
-  {
-
-    if (durationTimer !=
-        null) {
-      durationTimer!
-          .cancel();
+  endTrip({bool isTripDeleted = false}) {
+    if (durationTimer != null) {
+      durationTimer!.cancel();
     }
 
     setState(() {
@@ -586,88 +655,72 @@ print('the stop Trip is clickedd-------------111');
 
     Navigator.pop(context);
 
-    Utils.customPrint(
-        "TRIP DURATION WHILE END TRIP $tripDuration");
+    Utils.customPrint("TRIP DURATION WHILE END TRIP $tripDuration");
 
     EndTrip().endTrip(
         context: context,
-        scaffoldKey:
-        widget.scaffoldKey,
-        duration:
-        tripDuration,
-        IOSAvgSpeed:
-        tripAvgSpeed,
+        scaffoldKey: widget.scaffoldKey,
+        duration: tripDuration,
+        IOSAvgSpeed: tripAvgSpeed,
         IOSpeed: tripSpeed,
-        IOStripDistance:
-        tripDistance,
+        IOStripDistance: tripDistance,
         onEnded: () async {
-                                     await       SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
+          await SystemChrome.setPreferredOrientations([
+            DeviceOrientation.portraitUp,
+          ]);
 
-
-          if(mounted)
-          {
+          if (mounted) {
             setState(() {
-              tripIsRunning =
-              false;
-              isTripEnded =
-              false;
+              tripIsRunning = false;
+              isTripEnded = false;
             });
           }
 
-          if(!isTripDeleted)
-          {
-
-            Trip tripDetails =
-            await _databaseService
-                .getTrip(
-                tripData!
-                    .id!);
+          if (!isTripDeleted) {
+            Trip tripDetails = await _databaseService.getTrip(tripData!.id!);
 
             setState(() {
-              tripData =
-                  tripDetails;
+              tripData = tripDetails;
             });
           }
 
-          isDataUpdated =
-          true;
+          isDataUpdated = true;
 
-          if(!isTripDeleted)
-          {
-            if(widget.calledFrom == 'bottom_nav')
-            {
+          if (!isTripDeleted) {
+            if (widget.calledFrom == 'bottom_nav') {
               Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => BottomNavigation()),
-                  ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,])
-      );;
-            }
-            else if(widget.calledFrom == 'VesselSingleView')
-            {
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BottomNavigation()),
+                      ModalRoute.withName(""))
+                  .then((value) => SystemChrome.setPreferredOrientations([
+                        DeviceOrientation.portraitUp,
+                      ]));
+              ;
+            } else if (widget.calledFrom == 'VesselSingleView') {
               Navigator.of(context).pop(true);
-            }
-            else if(widget.calledFrom == 'tripList')
-            {
+            } else if (widget.calledFrom == 'tripList') {
               Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => BottomNavigation(
-                    tabIndex: commonProvider.bottomNavIndex,
-                  )),
-                  ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,])
-      );;
-            }
-            else
-            {
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BottomNavigation(
+                                tabIndex: commonProvider.bottomNavIndex,
+                              )),
+                      ModalRoute.withName(""))
+                  .then((value) => SystemChrome.setPreferredOrientations([
+                        DeviceOrientation.portraitUp,
+                      ]));
+              ;
+            } else {
               Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => BottomNavigation()),
-                  ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,])
-      );;
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BottomNavigation()),
+                      ModalRoute.withName(""))
+                  .then((value) => SystemChrome.setPreferredOrientations([
+                        DeviceOrientation.portraitUp,
+                      ]));
+              ;
             }
           }
         });
@@ -678,7 +731,7 @@ print('the stop Trip is clickedd-------------111');
     final tripDetails = await _databaseService.getTrip(widget.tripId!);
 
     List<CreateVessel> vesselDetails =
-    await _databaseService.getVesselNameByID(widget.vesselId!);
+        await _databaseService.getVesselNameByID(widget.vesselId!);
 
     setState(() {
       tripData = tripDetails;
@@ -692,244 +745,260 @@ print('the stop Trip is clickedd-------------111');
     if (durationTimer != null) {
       durationTimer!.cancel();
     }
-        SystemChrome.setPreferredOrientations([
+    SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-
   }
 
-  showEndTripDialogBox(BuildContext context)async {
-    if(sharedPreferences != null){
+  showEndTripDialogBox(BuildContext context) async {
+    if (sharedPreferences != null) {
       sharedPreferences!.setBool('reset_dialog_opened', true);
       sharedPreferences!.setBool('key_lat_time_dialog_open', true);
     }
 
-
-        await    SystemChrome.setPreferredOrientations([
+    await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
 
-    return 
-    
-    
-    showDialog(
+    return showDialog(
         barrierDismissible: false,
         context: context,
         builder: (BuildContext dialogContext) {
           return WillPopScope(
-            onWillPop: ()async{
+            onWillPop: () async {
               return false;
             },
-            child: OrientationBuilder(
-              builder: (ctx2,orientation) {
-                return Dialog(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: StatefulBuilder(
-                    builder: (ctx, setDialogState) {
-                      return Container(
-                        height: displayHeight(context) * 0.45,
-                        width: MediaQuery.of(context).size.width,
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              left: 8.0, right: 8.0, top: 15, bottom: 15),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(
-                                height: displayHeight(context) * 0.02,
+            child: OrientationBuilder(builder: (ctx2, orientation) {
+              return Dialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: StatefulBuilder(
+                  builder: (ctx, setDialogState) {
+                    return Container(
+                      height: displayHeight(context) * 0.45,
+                      width: MediaQuery.of(context).size.width,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 8.0, right: 8.0, top: 15, bottom: 15),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              height: displayHeight(context) * 0.02,
+                            ),
+                            ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Container(
+                                  //color: Color(0xfff2fffb),
+                                  child: Image.asset(
+                                    'assets/images/boat.gif',
+                                    height: displayHeight(context) * 0.1,
+                                    width: displayWidth(context),
+                                    fit: BoxFit.contain,
+                                  ),
+                                )),
+                            SizedBox(
+                              height: displayHeight(context) * 0.02,
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 8.0, right: 8),
+                              child: Column(
+                                children: [
+                                  commonText(
+                                      context: context,
+                                      text: lastTimeUsedText,
+                                      fontWeight: FontWeight.w500,
+                                      textColor: Colors.black,
+                                      textSize: displayWidth(context) * 0.04,
+                                      textAlign: TextAlign.center),
+                                ],
                               ),
-
-                              ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Container(
-                                    //color: Color(0xfff2fffb),
-                                    child: Image.asset(
-                                      'assets/images/boat.gif',
-                                      height: displayHeight(context) * 0.1,
-                                      width: displayWidth(context),
-                                      fit: BoxFit.contain,
-                                    ),
-                                  )),
-
-                              SizedBox(
-                                height: displayHeight(context) * 0.02,
+                            ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.012,
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(
+                                top: 8.0,
                               ),
-
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8.0, right: 8),
-                                child: Column(
-                                  children: [
-                                    commonText(
-                                        context: context,
-                                        text:
-                                        lastTimeUsedText,
-                                        fontWeight: FontWeight.w500,
-                                        textColor: Colors.black,
-                                        textSize: displayWidth(context) * 0.04,
-                                        textAlign: TextAlign.center),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                height: displayHeight(context) * 0.012,
-                              ),
-                              Container(
-                                padding: EdgeInsets.only(
-                                  top: 8.0,
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Center(
-                                      child: isEndTripBtnClicked
-                                          ? Container(
-                                          padding: const EdgeInsets.symmetric(vertical: 6.0),
-                                          height: displayHeight(context) * 0.054,
-                                          width:  displayWidth(context) * 0.064,
-                                          child: CircularProgressIndicator(color: blueColor,))
-                                          : CommonButtons.getAcceptButton(
-                                          'End Trip', context, Colors.transparent,
-                                              () async {
-                                         await       SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
-
-
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Center(
+                                    child: isEndTripBtnClicked
+                                        ? Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 6.0),
+                                            height:
+                                                displayHeight(context) * 0.054,
+                                            width:
+                                                displayWidth(context) * 0.064,
+                                            child: CircularProgressIndicator(
+                                              color: blueColor,
+                                            ))
+                                        : CommonButtons.getAcceptButton(
+                                            'End Trip',
+                                            context,
+                                            Colors.transparent, () async {
+                                            await SystemChrome
+                                                .setPreferredOrientations([
+                                              DeviceOrientation.portraitUp,
+                                            ]);
 
                                             setState(() {
                                               lastTimePopupBtnClicked = true;
                                             });
 
-                                            bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
+                                            bool isSmallTrip = Utils()
+                                                .checkIfTripDurationIsGraterThan10Seconds(
+                                                    tripDuration.split(":"));
 
-                                            if(!isSmallTrip)
-                                            {
+                                            if (!isSmallTrip) {
                                               Navigator.pop(context);
 
-                                              Utils().showDeleteTripDialog(context,
-                                                  endTripBtnClick: (){
+                                              Utils().showDeleteTripDialog(
+                                                  context, endTripBtnClick: () {
+                                                if (durationTimer != null) {
+                                                  durationTimer!.cancel();
+                                                }
+                                                setState(() {
+                                                  isTripEnded = true;
+                                                });
+                                                Navigator.pop(context);
 
-                                                    if (durationTimer !=
-                                                        null) {
-                                                      durationTimer!
-                                                          .cancel();
-                                                    }
-                                                    setState(() {
-                                                      isTripEnded = true;
-                                                    });
-                                                    Navigator.pop(context);
-
-                                                    EndTrip().endTrip(
-                                                        context: context,
-                                                        scaffoldKey:
+                                                EndTrip().endTrip(
+                                                    context: context,
+                                                    scaffoldKey:
                                                         widget.scaffoldKey,
-                                                        duration:
-                                                        tripDuration,
-                                                        IOSAvgSpeed:
-                                                        tripAvgSpeed,
-                                                        IOSpeed: tripSpeed,
-                                                        IOStripDistance:
+                                                    duration: tripDuration,
+                                                    IOSAvgSpeed: tripAvgSpeed,
+                                                    IOSpeed: tripSpeed,
+                                                    IOStripDistance:
                                                         tripDistance,
-                                                        onEnded: () async {
-                                                          setState(() {
-                                                            tripIsRunning =
-                                                            false;
-                                                            isTripEnded =
-                                                            false;
-                                                          });
-                                                          Trip tripDetails =
+                                                    onEnded: () async {
+                                                      setState(() {
+                                                        tripIsRunning = false;
+                                                        isTripEnded = false;
+                                                      });
+                                                      Trip tripDetails =
                                                           await _databaseService
-                                                              .getTrip(
-                                                              tripData!
+                                                              .getTrip(tripData!
                                                                   .id!);
-                                                          Utils.customPrint(
-                                                              "abhi:${tripDetails.time}");
-                                                          Utils.customPrint(
-                                                              "abhi:${tripDuration}");
-                                                          Utils.customPrint(
-                                                              "abhi:${tripAvgSpeed}");
-                                                          Utils.customPrint(
-                                                              "abhi:${tripSpeed}");
-                                                          setState(() {
-                                                            tripData =
-                                                                tripDetails;
-                                                          });
+                                                      Utils.customPrint(
+                                                          "abhi:${tripDetails.time}");
+                                                      Utils.customPrint(
+                                                          "abhi:${tripDuration}");
+                                                      Utils.customPrint(
+                                                          "abhi:${tripAvgSpeed}");
+                                                      Utils.customPrint(
+                                                          "abhi:${tripSpeed}");
+                                                      setState(() {
+                                                        tripData = tripDetails;
+                                                      });
 
+                                                      Utils.customPrint(
+                                                          'TRIP ENDED DETAILS: ${tripDetails.isSync}');
+                                                      Utils.customPrint(
+                                                          'TRIP ENDED DETAILS: ${tripData!.isSync}');
+
+                                                      isDataUpdated = true;
+
+                                                      Future.delayed(
+                                                          Duration(seconds: 1),
+                                                          () {
+                                                        if (!isSmallTrip) {
+                                                          print('the widget is called from-----' +
+                                                              widget.calledFrom
+                                                                  .toString());
                                                           Utils.customPrint(
-                                                              'TRIP ENDED DETAILS: ${tripDetails.isSync}');
-                                                          Utils.customPrint(
-                                                              'TRIP ENDED DETAILS: ${tripData!.isSync}');
+                                                              "SMALL TRIPP IDDD ${tripData!.id!}");
+                                                          DatabaseService()
+                                                              .deleteTripFromDB(
+                                                                  tripData!
+                                                                      .id!);
 
-                                                          isDataUpdated = true;
-
-                                                          Future.delayed(Duration(seconds: 1), (){
-                                                            if(!isSmallTrip)
-                                                            {
-                                                              print('the widget is called from-----'+widget.calledFrom.toString());
-                                                              Utils.customPrint("SMALL TRIPP IDDD ${tripData!
-                                                                  .id!}");
-                                                              DatabaseService().deleteTripFromDB(tripData!
-                                                                  .id!);
-
-                                                              if(widget.calledFrom == 'bottom_nav')
-                                                              {
-                                                                Navigator.pushAndRemoveUntil(
+                                                          if (widget
+                                                                  .calledFrom ==
+                                                              'bottom_nav') {
+                                                            Navigator.pushAndRemoveUntil(
                                                                     context,
-                                                                    MaterialPageRoute(builder: (context) => BottomNavigation()),
-                                                                    ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,])
-      );;
-                                                              }
-                                                              else if(widget.calledFrom == 'VesselSingleView')
-                                                              {
-                                                                Navigator.of(context).pop(true);
-                                                              }
-                                                              else if(widget.calledFrom == 'tripList')
-                                                              {
-                                                                Navigator.pushAndRemoveUntil(
+                                                                    MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                BottomNavigation()),
+                                                                    ModalRoute
+                                                                        .withName(
+                                                                            ""))
+                                                                .then((value) =>
+                                                                    SystemChrome
+                                                                        .setPreferredOrientations([
+                                                                      DeviceOrientation
+                                                                          .portraitUp,
+                                                                    ]));
+                                                            ;
+                                                          } else if (widget
+                                                                  .calledFrom ==
+                                                              'VesselSingleView') {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop(true);
+                                                          } else if (widget
+                                                                  .calledFrom ==
+                                                              'tripList') {
+                                                            Navigator
+                                                                    .pushAndRemoveUntil(
+                                                                        context,
+                                                                        MaterialPageRoute(
+                                                                            builder: (context) =>
+                                                                                BottomNavigation(
+                                                                                  tabIndex: commonProvider.bottomNavIndex,
+                                                                                )),
+                                                                        ModalRoute.withName(
+                                                                            ""))
+                                                                .then((value) =>
+                                                                    SystemChrome
+                                                                        .setPreferredOrientations([
+                                                                      DeviceOrientation
+                                                                          .portraitUp,
+                                                                    ]));
+                                                            ;
+                                                          } else {
+                                                            Navigator.pushAndRemoveUntil(
                                                                     context,
-                                                                    MaterialPageRoute(builder: (context) => BottomNavigation(
-                                                                      tabIndex: commonProvider.bottomNavIndex,
-                                                                    )),
-                                                                    ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,])
-      );;
-                                                              }
-                                                              else
-                                                              {
-                                                                Navigator.pushAndRemoveUntil(
-                                                                    context,
-                                                                    MaterialPageRoute(builder: (context) => BottomNavigation()),
-                                                                    ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,])
-      );;
-                                                              }
-                                                            }
-                                                          });
-                                                        });
+                                                                    MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                BottomNavigation()),
+                                                                    ModalRoute
+                                                                        .withName(
+                                                                            ""))
+                                                                .then((value) =>
+                                                                    SystemChrome
+                                                                        .setPreferredOrientations([
+                                                                      DeviceOrientation
+                                                                          .portraitUp,
+                                                                    ]));
+                                                            ;
+                                                          }
+                                                        }
+                                                      });
+                                                    });
 
-                                                    Utils.customPrint("SMALL TRIPP IDDD ${tripData!
-                                                        .id!}");
-
-                                                  },
-                                                  onCancelClick: (){
-                                                    Navigator.pop(context);
-                                                  }
-                                              );
-                                            }
-                                            else
-                                            {
+                                                Utils.customPrint(
+                                                    "SMALL TRIPP IDDD ${tripData!.id!}");
+                                              }, onCancelClick: () {
+                                                Navigator.pop(context);
+                                              });
+                                            } else {
                                               setDialogState(() {
                                                 isEndTripBtnClicked = true;
                                               });
 
-                                              if (durationTimer !=
-                                                  null) {
-                                                durationTimer!
-                                                    .cancel();
+                                              if (durationTimer != null) {
+                                                durationTimer!.cancel();
                                               }
                                               setState(() {
                                                 isTripEnded = true;
@@ -939,31 +1008,26 @@ print('the stop Trip is clickedd-------------111');
                                               EndTrip().endTrip(
                                                   context: context,
                                                   scaffoldKey:
-                                                  widget.scaffoldKey,
-                                                  duration:
-                                                  tripDuration,
-                                                  IOSAvgSpeed:
-                                                  tripAvgSpeed,
+                                                      widget.scaffoldKey,
+                                                  duration: tripDuration,
+                                                  IOSAvgSpeed: tripAvgSpeed,
                                                   IOSpeed: tripSpeed,
-                                                  IOStripDistance:
-                                                  tripDistance,
+                                                  IOStripDistance: tripDistance,
                                                   onEnded: () async {
-                                                                                         await       SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
-
+                                                    await SystemChrome
+                                                        .setPreferredOrientations([
+                                                      DeviceOrientation
+                                                          .portraitUp,
+                                                    ]);
 
                                                     setState(() {
-                                                      tripIsRunning =
-                                                      false;
-                                                      isTripEnded =
-                                                      false;
+                                                      tripIsRunning = false;
+                                                      isTripEnded = false;
                                                     });
                                                     Trip tripDetails =
-                                                    await _databaseService
-                                                        .getTrip(
-                                                        tripData!
-                                                            .id!);
+                                                        await _databaseService
+                                                            .getTrip(
+                                                                tripData!.id!);
                                                     Utils.customPrint(
                                                         "abhi:${tripDetails.time}");
                                                     Utils.customPrint(
@@ -973,8 +1037,7 @@ print('the stop Trip is clickedd-------------111');
                                                     Utils.customPrint(
                                                         "abhi:${tripSpeed}");
                                                     setState(() {
-                                                      tripData =
-                                                          tripDetails;
+                                                      tripData = tripDetails;
                                                     });
 
                                                     Utils.customPrint(
@@ -984,106 +1047,136 @@ print('the stop Trip is clickedd-------------111');
 
                                                     isDataUpdated = true;
 
-                                                    if(widget.calledFrom == 'bottom_nav')
-                                                    {
+                                                    if (widget.calledFrom ==
+                                                        'bottom_nav') {
                                                       Navigator.pushAndRemoveUntil(
-                                                          context,
-                                                          MaterialPageRoute(builder: (context) => BottomNavigation()),
-                                                          ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,])
-      );;
-                                                    }
-                                                    else if(widget.calledFrom == 'VesselSingleView')
-                                                    {
-                                                      Navigator.of(context).pop(true);
-                                                    }
-                                                    else if(widget.calledFrom == 'tripList')
-                                                    {
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder:
+                                                                      (context) =>
+                                                                          BottomNavigation()),
+                                                              ModalRoute
+                                                                  .withName(""))
+                                                          .then((value) =>
+                                                              SystemChrome
+                                                                  .setPreferredOrientations([
+                                                                DeviceOrientation
+                                                                    .portraitUp,
+                                                              ]));
+                                                      ;
+                                                    } else if (widget
+                                                            .calledFrom ==
+                                                        'VesselSingleView') {
+                                                      Navigator.of(context)
+                                                          .pop(true);
+                                                    } else if (widget
+                                                            .calledFrom ==
+                                                        'tripList') {
+                                                      Navigator
+                                                              .pushAndRemoveUntil(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                      builder:
+                                                                          (context) =>
+                                                                              BottomNavigation(
+                                                                                tabIndex: commonProvider.bottomNavIndex,
+                                                                              )),
+                                                                  ModalRoute
+                                                                      .withName(
+                                                                          ""))
+                                                          .then((value) =>
+                                                              SystemChrome
+                                                                  .setPreferredOrientations([
+                                                                DeviceOrientation
+                                                                    .portraitUp,
+                                                              ]));
+                                                    } else {
                                                       Navigator.pushAndRemoveUntil(
-                                                          context,
-                                                          MaterialPageRoute(builder: (context) => BottomNavigation(
-                                                            tabIndex: commonProvider.bottomNavIndex,
-                                                          )),
-                                                          ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,])
-      );
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder:
+                                                                      (context) =>
+                                                                          BottomNavigation()),
+                                                              ModalRoute
+                                                                  .withName(""))
+                                                          .then((value) =>
+                                                              SystemChrome
+                                                                  .setPreferredOrientations([
+                                                                DeviceOrientation
+                                                                    .portraitUp,
+                                                              ]));
                                                     }
-                                                    else
-                                                    {
-                                                      Navigator.pushAndRemoveUntil(
-                                                          context,
-                                                          MaterialPageRoute(builder: (context) => BottomNavigation()),
-                                                          ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,])
-      );
-                                                    }
-
-
                                                   });
                                             }
                                           },
-                                          displayWidth(context) * 0.65,
-                                          displayHeight(context) * 0.054,
-                                          primaryColor,
-                                          Colors.white,
-                                          displayHeight(context) * 0.02,
-                                          endTripBtnColor,
-                                          '',
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                    SizedBox(height: 10,),
-                                    Center(
-                                      child: CommonButtons.getAcceptButton(
-                                          'Continue Trip', context, Colors.transparent,
-                                              () async {
+                                            displayWidth(context) * 0.65,
+                                            displayHeight(context) * 0.054,
+                                            primaryColor,
+                                            Colors.white,
+                                            displayHeight(context) * 0.02,
+                                            endTripBtnColor,
+                                            '',
+                                            fontWeight: FontWeight.w700),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Center(
+                                    child: CommonButtons.getAcceptButton(
+                                        'Continue Trip',
+                                        context,
+                                        Colors.transparent, () async {
+                                      setState(() {
+                                        lastTimePopupBtnClicked = true;
+                                      });
 
-                                                setState(() {
-                                                  lastTimePopupBtnClicked = true;
-                                                });
+                                      final _isRunning =
+                                          await BackgroundLocator();
 
-                                            final _isRunning = await BackgroundLocator();
+                                      Utils.customPrint(
+                                          'INTRO TRIP IS RUNNING 1212 $_isRunning');
 
-                                            Utils.customPrint('INTRO TRIP IS RUNNING 1212 $_isRunning');
+                                      List<String>? tripData =
+                                          sharedPreferences!
+                                              .getStringList('trip_data');
 
-                                            List<String>? tripData = sharedPreferences!.getStringList('trip_data');
+                                      reInitializeService();
 
-                                            reInitializeService();
+                                      StartTrip().startBGLocatorTrip(
+                                          tripData![0], DateTime.now(), true);
 
-                                            StartTrip().startBGLocatorTrip(tripData![0], DateTime.now(), true);
+                                      final isRunning2 = await BackgroundLocator
+                                          .isServiceRunning();
 
-                                            final isRunning2 = await BackgroundLocator.isServiceRunning();
-
-                                            Utils.customPrint('INTRO TRIP IS RUNNING 22222 $isRunning2');
-                                            Navigator.of(context).pop();
-                                          },
-                                          displayWidth(context) * 0.65,
-                                          displayHeight(context) * 0.054,
-                                          Colors.transparent,
-                                          blueColor,
-                                          displayHeight(context) * 0.018,
-                                          Colors.transparent,
-                                          '',
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                  ],
-                                ),
+                                      Utils.customPrint(
+                                          'INTRO TRIP IS RUNNING 22222 $isRunning2');
+                                      Navigator.of(context).pop();
+                                    },
+                                        displayWidth(context) * 0.65,
+                                        displayHeight(context) * 0.054,
+                                        Colors.transparent,
+                                        blueColor,
+                                        displayHeight(context) * 0.018,
+                                        Colors.transparent,
+                                        '',
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                ],
                               ),
-                              SizedBox(
-                                height: displayHeight(context) * 0.01,
-                              ),
-                            ],
-                          ),
+                            ),
+                            SizedBox(
+                              height: displayHeight(context) * 0.01,
+                            ),
+                          ],
                         ),
-                      );
-                    },
-                  ),
-                );
-              }
-            ),
+                      ),
+                    );
+                  },
+                ),
+              );
+            }),
           );
-        }).then((value) {
-
-    });
+        }).then((value) {});
   }
 
   /// Reinitialized service after user killed app while trip is running
@@ -1114,8 +1207,6 @@ print('the stop Trip is clickedd-------------111');
                 notificationIconColor: Colors.grey,
                 notificationIcon: '@drawable/noti_logo',
                 notificationTapCallback:
-                LocationCallbackHandler.notificationCallback)));
+                    LocationCallbackHandler.notificationCallback)));
   }
-
-
 }

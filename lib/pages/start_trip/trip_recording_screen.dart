@@ -22,34 +22,47 @@ import '../../common_widgets/widgets/user_feed_back.dart';
 import '../bottom_navigation.dart';
 import '../feedback_report.dart';
 
-
 class TripRecordingScreen extends StatefulWidget {
-  final String? vesselId, tripId,vesselName;
+  final String? vesselId, tripId, vesselName;
   final bool? tripIsRunningOrNot;
   final bool isAppKilled;
   final String? calledFrom;
   final int? bottomNavIndex;
-  const TripRecordingScreen({super.key, this.tripId, this.vesselId, this.tripIsRunningOrNot, this.isAppKilled = false, this.calledFrom = '',this.vesselName,this.bottomNavIndex});
+
+  const TripRecordingScreen(
+      {super.key,
+      this.tripId,
+      this.vesselId,
+      this.tripIsRunningOrNot,
+      this.isAppKilled = false,
+      this.calledFrom = '',
+      this.vesselName,
+      this.bottomNavIndex});
 
   @override
   State<TripRecordingScreen> createState() => _TripRecordingScreenState();
 }
 
-class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerProviderStateMixin, WidgetsBindingObserver {
-
+class _TripRecordingScreenState extends State<TripRecordingScreen>
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   late TabController tabController;
   int currentTabIndex = 0;
   late CommonProvider commonProvider;
   final controller = ScreenshotController();
-  bool isEndTripBtnClicked = false, tripIsRunning = false, isTripEnded = false,isDataUpdated = false;
-  String tripDistance = '0.00', tripDuration = '00:00:00', tripSpeed = '0.0', tripAvgSpeed = '0.0';
+  bool isEndTripBtnClicked = false,
+      tripIsRunning = false,
+      isTripEnded = false,
+      isDataUpdated = false;
+  String tripDistance = '0.00',
+      tripDuration = '00:00:00',
+      tripSpeed = '0.0',
+      tripAvgSpeed = '0.0';
   Timer? durationTimer;
   final DatabaseService _databaseService = DatabaseService();
 
   Trip? tripData;
   CreateVessel? vesselData;
-
 
   @override
   void initState() {
@@ -61,8 +74,7 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
 
     commonProvider = context.read<CommonProvider>();
     Wakelock.enable();
-    tabController =
-        TabController(initialIndex: 0, length: 2, vsync: this);
+    tabController = TabController(initialIndex: 0, length: 2, vsync: this);
     tabController.addListener(() {
       setState(() {
         currentTabIndex = tabController.index;
@@ -70,50 +82,35 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>with TickerPro
     });
 
     tripIsRunning = widget.tripIsRunningOrNot ?? false;
-
   }
 
-@override
+  @override
   void dispose() {
-    
-if(commonProvider.bottomNavIndex==1){
-
-        SystemChrome.setPreferredOrientations([
-
-      DeviceOrientation.landscapeLeft,
-
-      DeviceOrientation.landscapeRight,
-
-      DeviceOrientation.portraitDown,
-
-      DeviceOrientation.portraitUp]);
-
-
-
-}
- 
+    if (commonProvider.bottomNavIndex == 1) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+        DeviceOrientation.portraitDown,
+        DeviceOrientation.portraitUp
+      ]);
+    }
 
 //     ]);
 
 // }else{
 //           SystemChrome.setPreferredOrientations([
 
-
 //       DeviceOrientation.portraitDown,
 
 //       DeviceOrientation.portraitUp
-
- 
 
 //     ]);
 
 // }
 
- 
     // TODO: implement dispose
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -121,35 +118,36 @@ if(commonProvider.bottomNavIndex==1){
     return Screenshot(
       controller: controller,
       child: WillPopScope(
-        onWillPop: ()async {
+        onWillPop: () async {
           print('XXXXXX: ${widget.calledFrom}');
-          Wakelock.disable().then((value) async{
-            if(widget.calledFrom != null)
-            {
-              if(widget.calledFrom!.isNotEmpty)
-              {
-                if(widget.calledFrom == 'bottom_nav' || widget.calledFrom == 'notification')
-                {
-    //               await      SystemChrome.setPreferredOrientations([
+          Wakelock.disable().then((value) async {
+            if (widget.calledFrom != null) {
+              if (widget.calledFrom!.isNotEmpty) {
+                if (widget.calledFrom == 'bottom_nav' ||
+                    widget.calledFrom == 'notification') {
+                  //               await      SystemChrome.setPreferredOrientations([
 
-    //   DeviceOrientation.portraitUp
+                  //   DeviceOrientation.portraitUp
 
- 
-
-    // ]);
+                  // ]);
                   Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => BottomNavigation(
-                        tabIndex: widget.calledFrom == 'notification' ? 0 : commonProvider.bottomNavIndex,
-                      )),
-                      ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,])
-      );;;
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BottomNavigation(
+                                    tabIndex:
+                                        widget.calledFrom == 'notification'
+                                            ? 0
+                                            : commonProvider.bottomNavIndex,
+                                  )),
+                          ModalRoute.withName(""))
+                      .then((value) => SystemChrome.setPreferredOrientations([
+                            DeviceOrientation.portraitUp,
+                          ]));
+                  ;
+                  ;
+                } else {
+                  Navigator.of(context).pop();
                 }
-                else
-                  {
-                    Navigator.of(context).pop();
-                  }
                 /*else if(widget.calledFrom == 'VesselSingleView')
                 {
                   CreateVessel? vesselData = await DatabaseService()
@@ -174,9 +172,7 @@ if(commonProvider.bottomNavIndex==1){
                       )),
                       ModalRoute.withName(""));
                 }*/
-              }
-              else
-              {
+              } else {
                 /*if(mounted){
                   Navigator.pushAndRemoveUntil(
                       context,
@@ -185,12 +181,10 @@ if(commonProvider.bottomNavIndex==1){
                       )),
                       ModalRoute.withName(""));
                 }*/
-                 Navigator.of(context).pop();
+                Navigator.of(context).pop();
               }
               return false;
-            }
-            else
-            {
+            } else {
               Navigator.of(context).pop();
               return false;
             }
@@ -206,30 +200,24 @@ if(commonProvider.bottomNavIndex==1){
             leading: IconButton(
               onPressed: () async {
                 debugPrint('CALLED FROM ${widget.calledFrom}');
-                Wakelock.disable().then((value) async{
-                  if(widget.calledFrom != null)
-                  {
-                    if(widget.calledFrom!.isNotEmpty)
-                    {
-
-
-                      if(widget.calledFrom == 'bottom_nav'|| widget.calledFrom == 'notification')
-                      {
-
-
-
+                Wakelock.disable().then((value) async {
+                  if (widget.calledFrom != null) {
+                    if (widget.calledFrom!.isNotEmpty) {
+                      if (widget.calledFrom == 'bottom_nav' ||
+                          widget.calledFrom == 'notification') {
                         Navigator.pushAndRemoveUntil(
                             context,
-                            MaterialPageRoute(builder: (context) => BottomNavigation(
-                              tabIndex: widget.calledFrom == 'notification' ? 0 : commonProvider.bottomNavIndex,
-                            )),
+                            MaterialPageRoute(
+                                builder: (context) => BottomNavigation(
+                                      tabIndex:
+                                          widget.calledFrom == 'notification'
+                                              ? 0
+                                              : commonProvider.bottomNavIndex,
+                                    )),
                             ModalRoute.withName(""));
+                      } else {
+                        Navigator.of(context).pop();
                       }
-                      else
-                        {
-
-                          Navigator.of(context).pop();
-                        }
                       /*else if(widget.calledFrom == 'VesselSingleView')
                       {
                         CreateVessel? vesselData = await DatabaseService()
@@ -242,9 +230,7 @@ if(commonProvider.bottomNavIndex==1){
                             isCalledFromSuccessScreen: true,
                           )),);
                       }*/
-                    }
-                    else
-                    {
+                    } else {
                       // if(mounted){
                       //   Navigator.pushAndRemoveUntil(
                       //       context,
@@ -254,12 +240,9 @@ if(commonProvider.bottomNavIndex==1){
                       //       ModalRoute.withName(""));
                       // }
 
-                      
                       Navigator.of(context).pop();
                     }
-                  }
-                  else
-                  {
+                  } else {
                     Navigator.of(context).pop();
                   }
                 });
@@ -273,8 +256,10 @@ if(commonProvider.bottomNavIndex==1){
             ),
             title: Container(
               child: Text(
-                widget.vesselName != null ? widget.vesselName! : 'Trip Recording',
-                  //widget.vesselName != null ? widget.vesselName :'Trip Recording',
+                widget.vesselName != null
+                    ? widget.vesselName!
+                    : 'Trip Recording',
+                //widget.vesselName != null ? widget.vesselName :'Trip Recording',
                 textAlign: TextAlign.start,
                 style: TextStyle(
                   fontSize: displayWidth(context) * 0.045,
@@ -284,10 +269,9 @@ if(commonProvider.bottomNavIndex==1){
                 ),
                 overflow: TextOverflow.ellipsis,
                 softWrap: true,
-
               ),
 
-             /* commonText(
+              /* commonText(
                 context: context,
                 text: widget.vesselName != null ? widget.vesselName :'Trip Recording',
                 fontWeight: FontWeight.w600,
@@ -315,8 +299,7 @@ if(commonProvider.bottomNavIndex==1){
                           ? Color(0xff2663DB)
                           : backgroundColor,
                       border: Border.all(color: Color(0xff2663DB)),
-                      borderRadius: BorderRadius.all(
-                          Radius.circular(10))),
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 9.0),
                     child: commonText(
@@ -324,7 +307,7 @@ if(commonProvider.bottomNavIndex==1){
                       text: 'Map View',
                       fontWeight: FontWeight.w400,
                       textColor:
-                      currentTabIndex == 0 ? Colors.white : Colors.black,
+                          currentTabIndex == 0 ? Colors.white : Colors.black,
                       textSize: displayWidth(context) * 0.034,
                     ),
                     // Text('Vessels'),
@@ -338,17 +321,15 @@ if(commonProvider.bottomNavIndex==1){
                           ? Color(0xff2663DB)
                           : backgroundColor,
                       border: Border.all(color: Color(0xff2663DB)),
-                      borderRadius: BorderRadius.all(
-                          Radius.circular(10))),
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 9.0),
                     child: commonText(
                       context: context,
-                      text:
-                      'Analytics',
+                      text: 'Analytics',
                       fontWeight: FontWeight.w400,
                       textColor:
-                      currentTabIndex == 1 ? Colors.white : Colors.black,
+                          currentTabIndex == 1 ? Colors.white : Colors.black,
                       textSize: displayWidth(context) * 0.034,
                     ),
                   ),
@@ -359,22 +340,22 @@ if(commonProvider.bottomNavIndex==1){
               Container(
                 margin: EdgeInsets.only(right: 8),
                 child: IconButton(
-                  onPressed: ()async {
-                    await      SystemChrome.setPreferredOrientations([
-
-      DeviceOrientation.portraitUp
-
- 
-
-    ]);
+                  onPressed: () async {
+                    await SystemChrome.setPreferredOrientations(
+                        [DeviceOrientation.portraitUp]);
                     Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => BottomNavigation()),
-                        ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,])
-      );;;
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => BottomNavigation()),
+                            ModalRoute.withName(""))
+                        .then((value) => SystemChrome.setPreferredOrientations([
+                              DeviceOrientation.portraitUp,
+                            ]));
+                    ;
+                    ;
                   },
-                  icon: Image.asset('assets/icons/performarine_appbar_icon.png'),
+                  icon:
+                      Image.asset('assets/icons/performarine_appbar_icon.png'),
                   color: Theme.of(context).brightness == Brightness.dark
                       ? Colors.white
                       : Colors.black,
@@ -388,14 +369,13 @@ if(commonProvider.bottomNavIndex==1){
                 controller: tabController,
                 children: [
                   MapScreen(
-                    calledFrom: widget.calledFrom,
-                    scaffoldKey: scaffoldKey,
-                    tripId: widget.tripId,
-                    vesselId: widget.vesselId,
-                    tripIsRunningOrNot: widget.tripIsRunningOrNot,
-                    context: context,
-                    isAppKilled: widget.isAppKilled
-                  ),
+                      calledFrom: widget.calledFrom,
+                      scaffoldKey: scaffoldKey,
+                      tripId: widget.tripId,
+                      vesselId: widget.vesselId,
+                      tripIsRunningOrNot: widget.tripIsRunningOrNot,
+                      context: context,
+                      isAppKilled: widget.isAppKilled),
                   TripRecordingAnalyticsScreen(
                       calledFrom: widget.calledFrom,
                       scaffoldKey: scaffoldKey,
@@ -406,26 +386,23 @@ if(commonProvider.bottomNavIndex==1){
                       isAppKilled: widget.isAppKilled),
                 ],
               ),
-
               Positioned(
-                bottom: 5,
+                  bottom: 5,
                   child: GestureDetector(
-                      onTap: ()async{
+                      onTap: () async {
                         final image = await controller.capture();
-                          await      SystemChrome.setPreferredOrientations([
+                        await SystemChrome.setPreferredOrientations(
+                            [DeviceOrientation.portraitUp]);
 
-      DeviceOrientation.portraitUp
-
- 
-
-    ]);
-
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
-                          imagePath: image.toString(),
-                          uIntList: image,)));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => FeedbackReport(
+                                      imagePath: image.toString(),
+                                      uIntList: image,
+                                    )));
                       },
-                      child: UserFeedback().getUserFeedback(context)
-                  ))
+                      child: UserFeedback().getUserFeedback(context)))
             ],
           ),
         ),

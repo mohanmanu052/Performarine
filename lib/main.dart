@@ -27,6 +27,7 @@ import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/lpr_device_handler.dart';
 import 'package:performarine/pages/new_splash_screen.dart';
 import 'package:performarine/new_trip_analytics_screen.dart';
 import 'package:performarine/pages/auth/reset_password.dart';
@@ -281,6 +282,8 @@ Future<void> initializeService() async {
       DarwinInitializationSettings(
           requestAlertPermission: false,
           requestBadgePermission: false,
+          requestSoundPermission: false,
+          requestCriticalPermission: false,
           onDidReceiveLocalNotification: onDidReceiveLocalNotification);
   final InitializationSettings initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
@@ -577,6 +580,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         debugShowCheckedModeBanner: false,
         initialRoute: "/",
         builder: EasyLoading.init(),
+        // builder: EasyLoading.init(),
         getPages: [
           GetPage(name: '/', page: () => NewSplashScreen()),
           GetPage(name: '/BottomNavigation', page: () => BottomNavigation()),

@@ -29,6 +29,7 @@ import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/location_permission_dialog.dart';
 import 'package:performarine/common_widgets/widgets/log_level.dart';
+import 'package:performarine/lpr_device_handler.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
@@ -206,8 +207,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
         dynamic isBluetoothEnable = Platform
             .isAndroid
             ? await blueIsOn()
-            : await commonProvider
-            .checkIfBluetoothIsEnabled(
+            : await checkIfBluetoothIsEnabled(
             scaffoldKey,
                 () {
               showBluetoothDialog(
@@ -293,8 +293,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                   bool isBluetoothEnable = Platform
                       .isAndroid
                       ? await blueIsOn()
-                      : await commonProvider
-                      .checkIfBluetoothIsEnabled(
+                      : await checkIfBluetoothIsEnabled(
                       scaffoldKey,
                           () {
                         showBluetoothDialog(
@@ -350,8 +349,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                 bool isBluetoothEnable = Platform
                     .isAndroid
                     ? await blueIsOn()
-                    : await commonProvider
-                    .checkIfBluetoothIsEnabled(
+                    : await checkIfBluetoothIsEnabled(
                     scaffoldKey,
                         () {
                       showBluetoothDialog(
@@ -393,8 +391,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                     bool isBluetoothEnable = Platform
                         .isAndroid
                         ? await blueIsOn()
-                        : await commonProvider
-                        .checkIfBluetoothIsEnabled(
+                        : await checkIfBluetoothIsEnabled(
                         scaffoldKey,
                             () {
                           showBluetoothDialog(
@@ -744,6 +741,14 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                 ScanResult r = storedDeviceIdResultList.first;
                 r.device.connect().then((value) {
                   Utils.customPrint('CONNECTED TO DEVICE BLE');
+                  LPRDeviceHandler().setLPRDevice(r.device);
+                  LPRDeviceHandler().setDeviceDisconnectCallback(() {
+                    if(mounted){
+                      setState(() {
+
+                      });
+                    }
+                  });
                   setState(() {
 
                   });
@@ -770,6 +775,14 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                 if(lprNameResultList.isNotEmpty){
                   ScanResult r = lprNameResultList.first;
                   r.device.connect().then((value) {
+                    LPRDeviceHandler().setLPRDevice(r.device);
+                    LPRDeviceHandler().setDeviceDisconnectCallback(() {
+                      if(mounted){
+                        setState(() {
+
+                        });
+                      }
+                    });
                     setState(() {
 
                     });
@@ -803,6 +816,14 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
               if(lprNameResultList.isNotEmpty){
                 ScanResult r = lprNameResultList.first;
                 r.device.connect().then((value) {
+                  LPRDeviceHandler().setLPRDevice(r.device);
+                  LPRDeviceHandler().setDeviceDisconnectCallback(() {
+                    if(mounted){
+                      setState(() {
+
+                      });
+                    }
+                  });
                   setState(() {
 
                   });
@@ -945,6 +966,14 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
       setState(() {
         bluetoothName = connectedDevicesList.first.platformName.isNotEmpty ? connectedDevicesList.first.platformName : connectedDevicesList.first.remoteId.str;
       });
+      LPRDeviceHandler().setLPRDevice(connectedDevicesList.first);
+      LPRDeviceHandler().setDeviceDisconnectCallback(() {
+        if(mounted){
+          setState(() {
+
+          });
+        }
+      });
     }
   }
 
@@ -958,12 +987,15 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
       showForgetDeviceDialog(
           context,
           forgetDeviceBtnClick: () async {
+            LPRDeviceHandler().isSelfDisconnected = true;
             Navigator.of(context).pop();
             EasyLoading.show(
                 status: 'Disconnecting...',
                 maskType: EasyLoadingMaskType.black);
             for(int i = 0; i < FlutterBluePlus.connectedDevices.length; i++){
-              await FlutterBluePlus.connectedDevices[i].disconnect();
+              await FlutterBluePlus.connectedDevices[i].disconnect().then((value) {
+                LPRDeviceHandler().isSelfDisconnected = false;
+              });
             }
             EasyLoading.dismiss();
             setState(() {
@@ -1637,8 +1669,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                           dynamic isBluetoothEnable = Platform
                                                               .isAndroid
                                                               ? await blueIsOn()
-                                                              : await commonProvider
-                                                              .checkIfBluetoothIsEnabled(
+                                                              : await checkIfBluetoothIsEnabled(
                                                               scaffoldKey,
                                                                   () {
                                                                 showBluetoothDialog(
@@ -1701,8 +1732,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                             bool isBluetoothEnable = Platform
                                                                 .isAndroid
                                                                 ? await blueIsOn()
-                                                                : await commonProvider
-                                                                .checkIfBluetoothIsEnabled(
+                                                                : await checkIfBluetoothIsEnabled(
                                                                 scaffoldKey,
                                                                     () {
                                                                   showBluetoothDialog(
@@ -1779,7 +1809,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                               bool isBluetoothEnable = Platform
                                                                   .isAndroid
                                                                   ? await blueIsOn()
-                                                                  : await commonProvider.checkIfBluetoothIsEnabled(
+                                                                  : await checkIfBluetoothIsEnabled(
                                                                   scaffoldKey,
                                                                       () {
                                                                     showBluetoothDialog(
@@ -1983,7 +2013,6 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                     borderColor: blueColor,
                                     width: displayWidth(context),
                                     onTap: () async {
-
 
                                       if(vesselData.isEmpty)
                                       {
@@ -2354,7 +2383,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
           if (Platform.isIOS) {
             dynamic isBluetoothEnable = Platform.isAndroid
                 ? await blueIsOn()
-                : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey,
+                : await checkIfBluetoothIsEnabled(scaffoldKey,
                     () {
                   showBluetoothDialog(context);
                 });
@@ -2373,7 +2402,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
             if (isNDPermittedOne) {
               bool isBluetoothEnable = Platform.isAndroid
                   ? await blueIsOn()
-                  : await commonProvider.checkIfBluetoothIsEnabled(scaffoldKey,
+                  : await checkIfBluetoothIsEnabled(scaffoldKey,
                       () {
                     showBluetoothDialog(context);
                   });
@@ -2390,8 +2419,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
               if (isNDPermitted) {
                 bool isBluetoothEnable = Platform.isAndroid
                     ? await blueIsOn()
-                    : await commonProvider
-                    .checkIfBluetoothIsEnabled(scaffoldKey, () {
+                    : await checkIfBluetoothIsEnabled(scaffoldKey, () {
                   showBluetoothDialog(context);
                 });
 
@@ -2507,8 +2535,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
               if (isNDPermitted) {
                 bool isBluetoothEnable = Platform.isAndroid
                     ? await blueIsOn()
-                    : await commonProvider
-                    .checkIfBluetoothIsEnabled(scaffoldKey, () {
+                    : await checkIfBluetoothIsEnabled(scaffoldKey, () {
                   showBluetoothDialog(context);
                 });
 
@@ -2525,8 +2552,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                 if (isNDPermitted) {
                   bool isBluetoothEnable = Platform.isAndroid
                       ? await blueIsOn()
-                      : await commonProvider
-                      .checkIfBluetoothIsEnabled(scaffoldKey, () {
+                      : await checkIfBluetoothIsEnabled(scaffoldKey, () {
                     showBluetoothDialog(context);
                   });
 
@@ -2702,6 +2728,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
   /// To enable Bluetooth
   Future<void> enableBT(bool autoConnect) async {
+    if(Platform.isIOS) openedSettingsPageForPermission = true;
     BluetoothEnable.enableBluetooth.then((value) async {
       Utils.customPrint("BLUETOOTH ENABLE $value");
 
@@ -2723,6 +2750,104 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     }).catchError((e) {
       Utils.customPrint("ENABLE BT$e");
     });
+  }
+
+  Future<dynamic> checkIfBluetoothIsEnabled(GlobalKey<ScaffoldState> scaffoldKey, VoidCallback showBluetoothDialog) async{
+
+    bool isBluetoothEnabled = false;
+    BluetoothAdapterState adapterState = await FlutterBluePlus.adapterState.first;
+    bool isBLEEnabled = adapterState == BluetoothAdapterState.on;
+    // bool isBLEEnabled = await flutterBluePlus!.isOn;
+    Utils.customPrint('isBLEEnabled: $isBLEEnabled');
+
+    if(isBLEEnabled){
+      bool isGranted = await Permission.bluetooth.isGranted;
+      Utils.customPrint('isGranted: $isGranted');
+      if(!isGranted){
+        await Permission.bluetooth.request();
+        bool isPermGranted = await Permission.bluetooth.isGranted;
+
+        if(isPermGranted){
+
+          // FlutterBluePlus _flutterBlue = FlutterBluePlus();
+          BluetoothAdapterState adapterState = await FlutterBluePlus.adapterState.first;
+          final isOn = adapterState == BluetoothAdapterState.on;
+          if(isOn) isBluetoothEnabled =  true;
+
+          await Future.delayed(const Duration(seconds: 1));
+          BluetoothAdapterState tempAdapterState = await FlutterBluePlus.adapterState.first;
+          isBluetoothEnabled = adapterState == BluetoothAdapterState.on;
+          // isBluetoothEnabled = await FlutterBluePlus.isOn;
+          if(!isBluetoothEnabled) openedSettingsPageForPermission = true;
+          return isBluetoothEnabled;
+        }
+        else{
+          Utils.showSnackBar(scaffoldKey.currentContext!,
+              scaffoldKey: scaffoldKey,
+              message:
+              'Bluetooth permission is needed. Please enable bluetooth permission from app\'s settings.');
+
+          Future.delayed(Duration(seconds: 3),
+                  () async {
+                    openedSettingsPageForPermission = true;
+                await openAppSettings();
+              });
+          return null;
+        }
+      }
+      else{
+
+        // FlutterBluePlus _flutterBlue = FlutterBluePlus();
+        BluetoothAdapterState adapterState = await FlutterBluePlus.adapterState.first;
+        final isOn = adapterState == BluetoothAdapterState.on;
+        // final isOn = await _flutterBlue.isOn;
+        if(isOn) isBluetoothEnabled =  true;
+
+        await Future.delayed(const Duration(seconds: 1));
+        BluetoothAdapterState tempAdapterState = await FlutterBluePlus.adapterState.first;
+        isBluetoothEnabled = tempAdapterState == BluetoothAdapterState.on;
+        // isBluetoothEnabled = await FlutterBluePlus.instance.isOn;
+        if(!isBluetoothEnabled) openedSettingsPageForPermission = true;
+        return isBluetoothEnabled;
+      }
+    }
+    else{
+      bool isGranted = await Permission.bluetooth.isGranted;
+      Utils.customPrint('isGranted: $isGranted');
+      if(!isGranted){
+        if(await Permission.bluetooth.isPermanentlyDenied){
+          Utils.showSnackBar(scaffoldKey.currentContext!,
+              scaffoldKey: scaffoldKey,
+              message:
+              'Bluetooth permission is needed. Please enable bluetooth permission from app\'s settings.');
+
+          Future.delayed(Duration(seconds: 3),
+                  () async {
+                    openedSettingsPageForPermission = true;
+                await openAppSettings();
+              });
+          return null;
+        }
+        else{
+          openedSettingsPageForPermission = true;
+          await Permission.bluetooth.request();
+        }
+      }
+      else{
+        // FlutterBluePlus _flutterBlue = FlutterBluePlus();
+        BluetoothAdapterState adapterState = await FlutterBluePlus.adapterState.first;
+        final isOn = adapterState == BluetoothAdapterState.on;
+        // final isOn = await _flutterBlue.isOn;
+        if(isOn) isBluetoothEnabled =  true;
+
+        await Future.delayed(const Duration(seconds: 1));
+        BluetoothAdapterState tempAdapterState = await FlutterBluePlus.adapterState.first;
+        isBluetoothEnabled = tempAdapterState == BluetoothAdapterState.on;
+        // isBluetoothEnabled = await FlutterBluePlus.instance.isOn;
+        if(!isBluetoothEnabled) openedSettingsPageForPermission = true;
+        return isBluetoothEnabled;
+      }
+    }
   }
 
   /// It will save data to local database when trip is start
@@ -2828,6 +2953,8 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     await sharedPreferences!.setBool('trip_started', true);
     await sharedPreferences!.setStringList('trip_data',
         [getTripId, vesselId!, selectedVesselName!, selectedVesselWeight]);
+
+    LPRDeviceHandler().listenToDeviceConnectionState();
 
     // if(!await loc.Location().serviceEnabled()){
     //   loc.Location().requestService();
@@ -3297,6 +3424,14 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
               if(r.device.remoteId.str == lprDeviceId)
               {
                 r.device.connect().then((value) {
+                  LPRDeviceHandler().setLPRDevice(connectedDevicesList.first);
+                  LPRDeviceHandler().setDeviceDisconnectCallback(() {
+                    if(mounted){
+                      setState(() {
+
+                      });
+                    }
+                  });
                   Utils.customPrint('CONNECTED TO DEVICE BLE');
                 }).catchError((onError){
                   Utils.customPrint('ERROR BLE: $onError');
@@ -3322,7 +3457,16 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
               else
               {
                 if (r.device.platformName.toLowerCase().contains("lpr")) {
-                  r.device.connect().then((value) {});
+                  r.device.connect().then((value) {
+                    LPRDeviceHandler().setLPRDevice(connectedDevicesList.first);
+                    LPRDeviceHandler().setDeviceDisconnectCallback(() {
+                      if(mounted){
+                        setState(() {
+
+                        });
+                      }
+                    });
+                  });
                   bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
                   // await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
                   deviceId = r.device.remoteId.str;
@@ -3344,7 +3488,16 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
             else
             {
               if (r.device.platformName.toLowerCase().contains("lpr")) {
-                r.device.connect().then((value) {});
+                r.device.connect().then((value) {
+                  LPRDeviceHandler().setLPRDevice(connectedDevicesList.first);
+                  LPRDeviceHandler().setDeviceDisconnectCallback(() {
+                    if(mounted){
+                      setState(() {
+
+                      });
+                    }
+                  });
+                });
                 bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
                 //await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
                 deviceId = r.device.remoteId.str;
@@ -3464,13 +3617,15 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                 });
 
                 bluetoothName = r.device.name;
-                setState(() {
-                  isBluetoothPermitted = true;
-                  progress = 1.0;
-                  lprSensorProgress = 1.0;
-                  isStartButton = true;
-                  debugPrint("BLUETOOTH PERMISSION CODE 7 $isBluetoothPermitted");
-                });
+                if(mounted){
+                  setState(() {
+                    isBluetoothPermitted = true;
+                    progress = 1.0;
+                    lprSensorProgress = 1.0;
+                    isStartButton = true;
+                    debugPrint("BLUETOOTH PERMISSION CODE 7 $isBluetoothPermitted");
+                  });
+                }
                 FlutterBluePlus.stopScan();
                 break;
               }
@@ -4499,6 +4654,13 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
                                   });
                                 });
+                                LPRDeviceHandler().setDeviceDisconnectCallback((){
+                                  if(mounted){
+                                    setState(() {
+
+                                    });
+                                  }
+                                });
                               },
                               onBluetoothConnection: (value) {
                                 if (mounted) {
@@ -4512,6 +4674,13 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                   setState(() {
 
                                   });
+                                });
+                                LPRDeviceHandler().setDeviceDisconnectCallback((){
+                                  if(mounted){
+                                    setState(() {
+
+                                    });
+                                  }
                                 });
                               },
                             ))
@@ -4534,6 +4703,13 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
                                   });
                                 });
+                                LPRDeviceHandler().setDeviceDisconnectCallback((){
+                                  if(mounted){
+                                    setState(() {
+
+                                    });
+                                  }
+                                });
                               },
                               onBluetoothConnection: (value) {
                                 if (mounted) {
@@ -4547,6 +4723,13 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                   setState(() {
 
                                   });
+                                });
+                                LPRDeviceHandler().setDeviceDisconnectCallback((){
+                                  if(mounted){
+                                    setState(() {
+
+                                    });
+                                  }
                                 });
                               },
                             )),
@@ -4566,9 +4749,9 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                Utils.customPrint("Tapped on scan button");
 
                                if (mounted) {
-                                 setDialogState(() {
+                                 /*setDialogState(() {
                                    isScanningBluetooth = true;
-                                 });
+                                 });*/
                                }
 
                                FlutterBluePlus.startScan(
@@ -4576,9 +4759,9 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
                                if (mounted) {
                                  Future.delayed(Duration(seconds: 2), () {
-                                   setDialogState(() {
+                                  /* setDialogState(() {
                                      isScanningBluetooth = false;
-                                   });
+                                   });*/
                                  });
                                }
 

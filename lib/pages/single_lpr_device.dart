@@ -7,6 +7,7 @@ import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/lpr_device_handler.dart';
 
 import '../common_widgets/utils/common_size_helper.dart';
 import '../common_widgets/utils/constants.dart';
@@ -129,7 +130,10 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
           });
         //  await storage.write(key: 'lprDeviceId', value: widget.device!.remoteId.str);
           debugPrint("SINGLE SELECTED BLE ID ${widget.device!.remoteId.str}");
-          widget.device!.connect().then((value) {}).catchError((onError){
+          widget.device!.connect().then((value) {
+            LPRDeviceHandler().setLPRDevice(widget.device!);
+
+          }).catchError((onError){
             Utils.customPrint('CONNECT ERROR: $onError');
             EasyLoading.dismiss();
           });
