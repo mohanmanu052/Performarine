@@ -6,6 +6,7 @@ import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:performarine/analytics/end_trip.dart';
@@ -1087,27 +1088,38 @@ class _BottomNavigationState extends State<BottomNavigation>
                                   child: CommonButtons.getAcceptButton(
                                       'Continue Trip',
                                       context,
-                                      Colors.transparent, () async {
-                                    final _isRunning =
+                                      Colors.transparent, () async
+                                  {
+                                    List<BluetoothDevice> connectedDeviceList = FlutterBluePlus.connectedDevices;
+                                    if(connectedDeviceList.isNotEmpty)
+                                      {
+                                        LPRDeviceHandler().setLPRDevice(connectedDeviceList.first);
+                                        final _isRunning =
                                         await BackgroundLocator();
 
-                                    Utils.customPrint(
-                                        'INTRO TRIP IS RUNNING 1212 $_isRunning');
+                                        Utils.customPrint(
+                                            'INTRO TRIP IS RUNNING 1212 $_isRunning');
 
-                                    List<String>? tripData = sharedPreferences!
-                                        .getStringList('trip_data');
+                                        List<String>? tripData = sharedPreferences!
+                                            .getStringList('trip_data');
 
-                                    reInitializeService();
+                                        reInitializeService();
 
-                                    StartTrip().startBGLocatorTrip(
-                                        tripData![0], DateTime.now(), true);
+                                        StartTrip().startBGLocatorTrip(
+                                            tripData![0], DateTime.now(), true);
 
-                                    final isRunning2 = await BackgroundLocator
-                                        .isServiceRunning();
+                                        final isRunning2 = await BackgroundLocator
+                                            .isServiceRunning();
 
-                                    Utils.customPrint(
-                                        'INTRO TRIP IS RUNNING 22222 $isRunning2');
-                                    Navigator.of(context).pop();
+                                        Utils.customPrint(
+                                            'INTRO TRIP IS RUNNING 22222 $isRunning2');
+                                        Navigator.of(context).pop();
+                                      }
+                                    else
+                                      {
+                                        Navigator.of(context).pop();
+                                        LPRDeviceHandler().showDeviceDisconnectedDialog(null);
+                                      }
                                   },
                                       displayWidth(context) * 0.65,
                                       displayHeight(context) * 0.054,

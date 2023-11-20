@@ -7,14 +7,14 @@ import 'package:background_locator_2/settings/ios_settings.dart';
 import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/lpr_device_handler.dart';
 import 'package:performarine/models/trip.dart';
-import 'package:performarine/pages/feedback_report.dart';
-import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
@@ -26,7 +26,6 @@ import '../../common_widgets/utils/constants.dart';
 import '../../common_widgets/utils/utils.dart';
 import '../../common_widgets/widgets/common_buttons.dart';
 import '../../common_widgets/widgets/common_widgets.dart';
-import '../../common_widgets/widgets/user_feed_back.dart';
 import '../../main.dart';
 import '../../models/vessel.dart';
 import '../../services/database_service.dart';
@@ -444,6 +443,7 @@ class _MapScreenState extends State<MapScreen> {
                                                                   context,
                                                                   endTripBtnClick:
                                                                       () {
+                                                          LPRDeviceHandler().isSelfDisconnected = true;
                                                             endTrip(
                                                                 isTripDeleted:
                                                                     true);
@@ -527,11 +527,13 @@ class _MapScreenState extends State<MapScreen> {
                                                             Navigator.pop(
                                                                 context);
                                                           });
-                                                        } else {
+                                                        }
+                                                        else {
                                                           Utils()
                                                               .showEndTripDialog(
                                                                   context,
                                                                   () async {
+                                                                    LPRDeviceHandler().isSelfDisconnected = true;
                                                             endTrip();
                                                           }, () {
                                                             Navigator.pop(
@@ -723,6 +725,7 @@ class _MapScreenState extends State<MapScreen> {
               ;
             }
           }
+          LPRDeviceHandler().isSelfDisconnected = false;
         });
   }
 
@@ -1130,27 +1133,39 @@ class _MapScreenState extends State<MapScreen> {
                                         lastTimePopupBtnClicked = true;
                                       });
 
-                                      final _isRunning =
+                                      List<BluetoothDevice> connectedDeviceList = FlutterBluePlus.connectedDevices;
+
+                                      if(connectedDeviceList.isNotEmpty)
+                                        {
+                                          LPRDeviceHandler().setLPRDevice(connectedDeviceList.first);
+                                          final _isRunning =
                                           await BackgroundLocator();
 
-                                      Utils.customPrint(
-                                          'INTRO TRIP IS RUNNING 1212 $_isRunning');
+                                          Utils.customPrint(
+                                              'INTRO TRIP IS RUNNING 1212 $_isRunning');
 
-                                      List<String>? tripData =
+                                          List<String>? tripData =
                                           sharedPreferences!
                                               .getStringList('trip_data');
 
-                                      reInitializeService();
+                                          reInitializeService();
 
-                                      StartTrip().startBGLocatorTrip(
-                                          tripData![0], DateTime.now(), true);
+                                          StartTrip().startBGLocatorTrip(
+                                              tripData![0], DateTime.now(), true);
 
-                                      final isRunning2 = await BackgroundLocator
-                                          .isServiceRunning();
+                                          final isRunning2 = await BackgroundLocator
+                                              .isServiceRunning();
 
-                                      Utils.customPrint(
-                                          'INTRO TRIP IS RUNNING 22222 $isRunning2');
-                                      Navigator.of(context).pop();
+                                          Utils.customPrint(
+                                              'INTRO TRIP IS RUNNING 22222 $isRunning2');
+                                          Navigator.of(context).pop();
+                                        }
+                                      else
+                                        {
+                                          Navigator.of(context).pop();
+                                          LPRDeviceHandler().showDeviceDisconnectedDialog(null);
+                                        }
+
                                     },
                                         displayWidth(context) * 0.65,
                                         displayHeight(context) * 0.054,

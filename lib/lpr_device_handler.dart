@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
@@ -24,7 +25,9 @@ class LPRDeviceHandler {
 
   factory LPRDeviceHandler() => _instance;
 
-  LPRDeviceHandler._internal();
+  LPRDeviceHandler._internal(){
+    this.context = Get.context;
+  }
 
   LPRDeviceHandler get instance => _instance;
 
@@ -132,8 +135,7 @@ class LPRDeviceHandler {
                             EasyLoading.show(
                                 status: 'Connecting...',
                                 maskType: EasyLoadingMaskType.black);
-                            Utils.customPrint(
-                                'BLE - PREVIOUSLY CONNECTED DEVICE: ${previouslyConnectedDevice!.remoteId.str}');
+                            Utils.customPrint('BLE - PREVIOUSLY CONNECTED DEVICE: ${previouslyConnectedDevice?.remoteId.str}');
                             if (previouslyConnectedDevice != null) {
                               previouslyConnectedDevice
                                   .connect()
@@ -169,7 +171,6 @@ class LPRDeviceHandler {
                               Get.context!,
                               Colors.transparent,
                               () {
-
                                 endTrip();
                               },
                               displayWidth(Get.context!) * 0.5,
@@ -242,6 +243,15 @@ class LPRDeviceHandler {
               if (storedDeviceIdResultList.isNotEmpty) {
                 ScanResult r = storedDeviceIdResultList.first;
                 r.device.connect().then((value) {
+                  Fluttertoast.showToast(
+                      msg: "Connected to ${r.device.platformName}",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.CENTER,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.black,
+                      textColor: Colors.white,
+                      fontSize: 16.0
+                  );
                   Utils.customPrint('CONNECTED TO DEVICE BLE');
                   LPRDeviceHandler().setLPRDevice(r.device);
                   deviceId = r.device.remoteId.str;
@@ -261,6 +271,15 @@ class LPRDeviceHandler {
                 if (lprNameResultList.isNotEmpty) {
                   ScanResult r = lprNameResultList.first;
                   r.device.connect().then((value) {
+                    Fluttertoast.showToast(
+                        msg: "Connected to ${r.device.platformName}",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.black,
+                        textColor: Colors.white,
+                        fontSize: 16.0
+                    );
                     LPRDeviceHandler().setLPRDevice(r.device);
                     deviceId = r.device.remoteId.str;
                     connectedBluetoothDevice = r.device;
@@ -283,6 +302,15 @@ class LPRDeviceHandler {
               if (lprNameResultList.isNotEmpty) {
                 ScanResult r = lprNameResultList.first;
                 r.device.connect().then((value) {
+                  Fluttertoast.showToast(
+                      msg: "Connected to ${r.device.platformName}",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.CENTER,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Colors.black,
+                      textColor: Colors.white,
+                      fontSize: 16.0
+                  );
                   LPRDeviceHandler().setLPRDevice(r.device);
                   deviceId = r.device.remoteId.str;
                   connectedBluetoothDevice = r.device;
@@ -470,8 +498,30 @@ class LPRDeviceHandler {
                             ),
                             GestureDetector(
                               onTap: () {
-                                FlutterBluePlus.stopScan();
-                                Navigator.pop(context);
+
+                                List<BluetoothDevice> connectedDeviceList = FlutterBluePlus.connectedDevices;
+                                if(connectedDeviceList.isNotEmpty)
+                                  {
+                                    Fluttertoast.showToast(
+                                        msg: "Connected to ${connectedDeviceList.first.platformName}",
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.CENTER,
+                                        timeInSecForIosWeb: 1,
+                                        backgroundColor: Colors.black,
+                                        textColor: Colors.white,
+                                        fontSize: 16.0
+                                    );
+
+                                    FlutterBluePlus.stopScan();
+                                    Navigator.pop(context);
+                                  }
+                                else
+                                  {
+                                    Navigator.pop(context);
+                                    showDeviceDisconnectedDialog(null);
+                                  }
+
+
                               },
                               child: Container(
                                 decoration: BoxDecoration(
@@ -603,7 +653,7 @@ EasyLoading.dismiss();
         context: context,
         scaffoldKey: null,
         duration: tripDuration,
-        lprDeviceId: connectedDevice!.remoteId.str,
+        lprDeviceId: connectedDevice == null ? null : connectedDevice!.remoteId.str,
         onEnded: () async {
           connectedDevice = null;
           isSelfDisconnected = false;
