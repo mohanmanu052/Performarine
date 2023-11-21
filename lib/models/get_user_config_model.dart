@@ -79,6 +79,7 @@ class Vessels {
   String? syncCreatedAt;
   String? syncUpdatedAt;
   String? id;
+  int? hullType;
 
   Vessels(
       {this.name,
@@ -105,7 +106,7 @@ class Vessels {
       this.updatedAt,
       this.syncCreatedAt,
       this.syncUpdatedAt,
-      this.id});
+      this.id, this.hullType});
 
   Vessels.fromJson(Map<String, dynamic> json) {
     name = json['name'];
@@ -138,6 +139,7 @@ class Vessels {
     syncCreatedAt = json['syncCreatedAt'];
     syncUpdatedAt = json['syncUpdatedAt'];
     id = json['id'];
+    hullType = json['hullShape'];
   }
 
   Map<String, dynamic> toJson() {
@@ -169,6 +171,7 @@ class Vessels {
     data['syncCreatedAt'] = this.syncCreatedAt;
     data['syncUpdatedAt'] = this.syncUpdatedAt;
     data['id'] = this.id;
+    data['hullShape'] = this.hullType;
     return data;
   }
 }

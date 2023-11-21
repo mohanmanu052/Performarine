@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
@@ -44,6 +45,10 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
   @override
   void initState() {
     super.initState();
+            SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
     pageController = PageController();
   }
 
@@ -135,7 +140,7 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
                         Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            AddVesselStepOne(
+                            AddNewVesselStepOne(
                               pageController: pageController,
                               scaffoldKey: scaffoldKey,
                               addVesselData:

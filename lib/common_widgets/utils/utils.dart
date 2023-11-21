@@ -261,35 +261,43 @@ class Utils {
 
   // Check user is connected to internet or not
   Future<bool> check(GlobalKey<ScaffoldState> scaffoldKey,
-      {bool userConfig = false, VoidCallback? onRetryTap}) async {
+      {bool userConfig = false, VoidCallback? onRetryTap, bool showDialogBox = true}) async {
     try {
       final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         return true;
       }
+      else
+        {
+          return false;
+        }
     } on SocketException catch (_) {
       Utils.customPrint('No Internet');
       CustomLogger().logWithFile(Level.error, "No Internet -> $page");
       CustomLogger().logWithFile(Level.warning, "No Internet -> $page");
-      showDialog(
-          context: scaffoldKey.currentContext!,
-          builder: (BuildContext context) {
-            return CustomDialog(
-              text: 'No Internet',
-              subText: 'Please enable your data connection to continue.',
-              positiveBtn: userConfig ? 'Cancel' : 'Okay',
-              cancelBtn: userConfig ? 'Don\'t Sync' : '',
-              positiveBtnOnTap: () {
-                Navigator.of(scaffoldKey.currentContext!).pop();
-                //check(scaffoldKey);
-              },
-              userConfig: userConfig,
-              isError: false,
-            );
-          });
+      if(showDialogBox)
+        {
+          showDialog(
+              context: scaffoldKey.currentContext!,
+              builder: (BuildContext context) {
+                return CustomDialog(
+                  text: 'No Internet',
+                  subText: 'Please enable your data connection to continue.',
+                  positiveBtn: userConfig ? 'Cancel' : 'Okay',
+                  cancelBtn: userConfig ? 'Don\'t Sync' : '',
+                  positiveBtnOnTap: () {
+                    Navigator.of(scaffoldKey.currentContext!).pop();
+                    //check(scaffoldKey);
+                  },
+                  userConfig: userConfig,
+                  isError: false,
+                );
+              });
+        }
+
       return false;
     }
-    return false;
+   // return false;
   }
 
   //To get user notification permission
@@ -328,7 +336,12 @@ class Utils {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
-            child: StatefulBuilder(
+            child: OrientationBuilder(
+  builder: (context, orientation){
+
+            
+            
+        return    StatefulBuilder(
               builder: (ctx, setDialogState) {
                 return Container(
                   height: displayHeight(context) * 0.45,
@@ -364,7 +377,7 @@ class Utils {
                               text: endTripSubText,
                               fontWeight: FontWeight.w400,
                               textColor: Colors.black,
-                              textSize: displayWidth(context) * 0.042,
+                              textSize:orientation==Orientation.portrait? displayWidth(context) * 0.042: displayWidth(context) * 0.022,
                               textAlign: TextAlign.center,
                               fontFamily: outfit),
                         ),
@@ -422,7 +435,9 @@ class Utils {
                   ),
                 );
               },
-            ),
+  
+            );
+  })
           );
         });
   }

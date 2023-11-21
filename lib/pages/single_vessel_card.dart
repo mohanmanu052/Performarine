@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/services/database_service.dart';
@@ -22,6 +23,10 @@ class _SingleVesselCardState extends State<SingleVesselCard> {
 
   @override
   void initState() {
+        SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
     // TODO: implement initState
     super.initState();
 

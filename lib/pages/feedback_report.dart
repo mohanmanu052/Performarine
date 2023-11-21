@@ -66,7 +66,6 @@ class _FeedbackReportState extends State<FeedbackReport> {
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp,
   ]);
-
     commonProvider = context.read<CommonProvider>();
     commonProvider.init();
     nameController  = TextEditingController();
@@ -77,12 +76,12 @@ class _FeedbackReportState extends State<FeedbackReport> {
 
   @override
   void dispose() {
-      SystemChrome.setPreferredOrientations([
-    DeviceOrientation.landscapeRight,
-    DeviceOrientation.landscapeLeft,
-    DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
-  ]);
+  //     SystemChrome.setPreferredOrientations([
+  //   DeviceOrientation.landscapeRight,
+  //   ,
+  //   DeviceOrientation.portraitUp,
+  //   DeviceOrientation.portraitDown,
+  // ]);
 
     // TODO: implement dispose
     super.dispose();

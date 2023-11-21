@@ -68,7 +68,6 @@ class DatabaseService {
       ' lengthOverall DOUBLE,'
       ' beam DOUBLE, '
       'draft DOUBLE, '
-      //'displacement TEXT, '
       'vesselSize INTEGER, '
       'capacity INTEGER,'
       'builtYear TEXT ,'
@@ -82,6 +81,7 @@ class DatabaseService {
       'distance TEXT, '
       'speed TEXT, '
       'avgSpeed TEXT, '
+      'hullShape INTEGER, '
       'isCloud INTEGER  DEFAULT 0'
       ')',
     );

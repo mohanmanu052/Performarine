@@ -26,7 +26,9 @@ import 'bottom_navigation.dart';
 import 'feedback_report.dart';
 
 class SyncDataCloudToMobileScreen extends StatefulWidget {
-  const SyncDataCloudToMobileScreen({Key? key}) : super(key: key);
+  int?bottomNavIndex;
+
+   SyncDataCloudToMobileScreen({Key? key,this.bottomNavIndex}) : super(key: key);
 
   @override
   State<SyncDataCloudToMobileScreen> createState() =>
@@ -61,12 +63,28 @@ class _SyncDataCloudToMobileScreenState
   void initState() {
     // TODO: implement initState
     super.initState();
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
     commonProvider = context.read<CommonProvider>();
 
     commonProvider.init();
 
     getUserData();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+if(widget.bottomNavIndex==1){
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp
+    ]);
+
+}
   }
 
   /// To get user data from api if internet connection is on
@@ -118,7 +136,7 @@ class _SyncDataCloudToMobileScreenState
                     width: displayWidth(context) * 0.36,
                     height: displayHeight(context) * 0.12,
                     child: Image.asset(
-                      'assets/images/performarine_logo.png',
+                      'assets/icons/performarine_appbar_icon.png',
                     ),
                   ),
                   SizedBox(
@@ -189,14 +207,16 @@ class _SyncDataCloudToMobileScreenState
                                 buttonPrimaryColor: skipAndContinueBtnColor,
                                 borderColor: skipAndContinueBtnColor,
                                 width: displayWidth(context) / 1.28,
-                                onTap: () {
+                                onTap: ()async {
                                   FocusScope.of(context)
                                       .requestFocus(new FocusNode());
 
                                   sharedPreferences!
                                       .setBool('isFirstTimeUser', true);
+                                       await   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-                                  Navigator.pushAndRemoveUntil(
+
+                                 await Navigator.pushAndRemoveUntil(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => BottomNavigation()),
@@ -218,12 +238,13 @@ class _SyncDataCloudToMobileScreenState
                                       buttonPrimaryColor: Color(0xff889BAB),
                                       borderColor: Color(0xff889BAB),
                                       width: displayWidth(context),
-                                      onTap: () {
+                                      onTap: () async{
                                         FocusScope.of(context)
                                             .requestFocus(new FocusNode());
 
                                         sharedPreferences!
                                             .setBool('isFirstTimeUser', true);
+ await   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
                                         Navigator.pushAndRemoveUntil(
                                             context,
@@ -276,7 +297,10 @@ class _SyncDataCloudToMobileScreenState
                     ),
                     child: GestureDetector(
                         onTap: ()async{
-                          final image = await controller.capture();
+                          final image = await controller.capture();   
+                          await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+
                           Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
                             imagePath: image.toString(),
                             uIntList: image,)));
@@ -526,13 +550,13 @@ class _SyncDataCloudToMobileScreenState
                 mMSI: value.vessels![i].mMSI,
                 engineType: value.vessels![i].engineType,
                 fuelCapacity: value.vessels![i].fuelCapacity.toString(),
-                batteryCapacity: value.vessels![i].batteryCapacity.toString(),
+                batteryCapacity:value.vessels![i].batteryCapacity.toString(),
                 weight: value.vessels![i].weight,
                 freeBoard: value.vessels![i].freeBoard!,
                 lengthOverall: value.vessels![i].lengthOverall!,
                 beam: value.vessels![i].beam!,
                 draft: value.vessels![i].depth!,
-                vesselSize: value.vessels![i].vesselSize!,
+                vesselSize: value.vessels![i].vesselSize.toString(),
                 capacity: int.parse(value.vessels![i].capacity ?? '0'),
                 builtYear: int.parse(value.vessels![i].builtYear.toString()),
                 vesselStatus: value.vessels![i].vesselStatus == 2
@@ -544,7 +568,9 @@ class _SyncDataCloudToMobileScreenState
                 updatedAt: value.vessels![i].updatedAt.toString(),
                 isSync: 1,
                 updatedBy: value.vessels![i].updatedBy.toString(),
-                isCloud: 1);
+                isCloud: 1,
+              hullType: int.parse(value.vessels![i].hullType.toString())
+            );
 
             var vesselExist = await _databaseService
                 .vesselsExistInCloud(value.vessels![i].id!);
@@ -605,8 +631,9 @@ class _SyncDataCloudToMobileScreenState
             });
           });
 
-          Future.delayed(Duration(seconds: 2), () {
+          Future.delayed(Duration(seconds: 2), () async{
             sharedPreferences!.setBool('isFirstTimeUser', true);
+  await  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
             Navigator.pushAndRemoveUntil(
                 context,

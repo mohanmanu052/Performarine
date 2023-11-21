@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -82,6 +83,10 @@ class _TripWidgetNewState extends State<TripWidgetNew> {
 
   @override
   void initState() {
+        SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
     // TODO: implement initState
     super.initState();
 
@@ -901,6 +906,8 @@ class _TripWidgetNewState extends State<TripWidgetNew> {
           vesselData.vesselStatus;
       commonProvider.addVesselRequestModel!.batteryCapacity =
           vesselData.batteryCapacity;
+      /*commonProvider.addVesselRequestModel!.displacement =
+          vesselData.displacement;*/
 
       if (vesselData.imageURLs != null && vesselData.imageURLs!.isNotEmpty) {
         if (vesselData.imageURLs!.startsWith("https")) {

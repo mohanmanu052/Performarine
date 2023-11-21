@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
+import 'package:performarine/lpr_device_handler.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/add_vessel_model.dart';
 import 'package:performarine/models/common_model.dart';
@@ -76,7 +77,9 @@ class CommonProvider with ChangeNotifier {
   /// to check if bluetooth is enabled or not
   Future<dynamic> checkIfBluetoothIsEnabled(GlobalKey<ScaffoldState> scaffoldKey, VoidCallback showBluetoothDialog) async{
 
-    bool isBLEEnabled = await flutterBluePlus!.isOn;
+    BluetoothAdapterState adapterState = await FlutterBluePlus.adapterState.first;
+    bool isBLEEnabled = adapterState == BluetoothAdapterState.on;
+    // bool isBLEEnabled = await flutterBluePlus!.isOn;
     Utils.customPrint('isBLEEnabled: $isBLEEnabled');
 
     if(isBLEEnabled){
@@ -88,12 +91,15 @@ class CommonProvider with ChangeNotifier {
 
         if(isPermGranted){
 
-          FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
-          final isOn = await _flutterBlue.isOn;
+          // FlutterBluePlus _flutterBlue = FlutterBluePlus();
+          BluetoothAdapterState adapterState = await FlutterBluePlus.adapterState.first;
+          final isOn = adapterState == BluetoothAdapterState.on;
           if(isOn) isBluetoothEnabled =  true;
 
           await Future.delayed(const Duration(seconds: 1));
-          isBluetoothEnabled = await FlutterBluePlus.instance.isOn;
+          BluetoothAdapterState tempAdapterState = await FlutterBluePlus.adapterState.first;
+          isBluetoothEnabled = adapterState == BluetoothAdapterState.on;
+          // isBluetoothEnabled = await FlutterBluePlus.isOn;
           notifyListeners();
           return isBluetoothEnabled;
         }
@@ -112,12 +118,16 @@ class CommonProvider with ChangeNotifier {
       }
       else{
 
-        FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
-        final isOn = await _flutterBlue.isOn;
+        // FlutterBluePlus _flutterBlue = FlutterBluePlus();
+        BluetoothAdapterState adapterState = await FlutterBluePlus.adapterState.first;
+        final isOn = adapterState == BluetoothAdapterState.on;
+        // final isOn = await _flutterBlue.isOn;
         if(isOn) isBluetoothEnabled =  true;
 
         await Future.delayed(const Duration(seconds: 1));
-        isBluetoothEnabled = await FlutterBluePlus.instance.isOn;
+        BluetoothAdapterState tempAdapterState = await FlutterBluePlus.adapterState.first;
+        isBluetoothEnabled = tempAdapterState == BluetoothAdapterState.on;
+        // isBluetoothEnabled = await FlutterBluePlus.instance.isOn;
         notifyListeners();
         return isBluetoothEnabled;
       }
@@ -143,12 +153,16 @@ class CommonProvider with ChangeNotifier {
         }
       }
       else{
-        FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
-        final isOn = await _flutterBlue.isOn;
+        // FlutterBluePlus _flutterBlue = FlutterBluePlus();
+        BluetoothAdapterState adapterState = await FlutterBluePlus.adapterState.first;
+        final isOn = adapterState == BluetoothAdapterState.on;
+        // final isOn = await _flutterBlue.isOn;
         if(isOn) isBluetoothEnabled =  true;
 
         await Future.delayed(const Duration(seconds: 1));
-        isBluetoothEnabled = await FlutterBluePlus.instance.isOn;
+        BluetoothAdapterState tempAdapterState = await FlutterBluePlus.adapterState.first;
+        isBluetoothEnabled = tempAdapterState == BluetoothAdapterState.on;
+        // isBluetoothEnabled = await FlutterBluePlus.instance.isOn;
         notifyListeners();
         return isBluetoothEnabled;
       }

@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
-import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/log_level.dart';
-import 'package:performarine/common_widgets/widgets/user_feed_back.dart';
 import 'package:performarine/models/vessel.dart';
-import 'package:performarine/pages/feedback_report.dart';
 import 'package:performarine/pages/single_vessel_card.dart';
 import 'package:screenshot/screenshot.dart';
-import 'package:performarine/pages/add_vessel/add_new_vessel_screen.dart';
 
 import '../pages/add_vessel_new/add_new_vessel_screen.dart';
-
-// import '../pages/add_vessel_new/add_new_vessel_screen.dart';
 
 //To show all vessels in home page
 class VesselBuilder extends StatefulWidget {
@@ -37,9 +32,30 @@ class VesselBuilder extends StatefulWidget {
   State<VesselBuilder> createState() => _VesselBuilderState();
 }
 
+
+
 class _VesselBuilderState extends State<VesselBuilder> {
+
+
+  
+
+
+
   String page = "vessel_builder";
   final controller = ScreenshotController();
+
+
+    @override
+  void initState() {
+    super.initState();
+
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Screenshot(

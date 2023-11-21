@@ -35,6 +35,7 @@ class CreateVessel {
   int? isCloud;
   List<File?>? selectedImages;
   //String? displacement;
+  int? hullType;
 
   CreateVessel(
       {this.id,
@@ -68,6 +69,7 @@ class CreateVessel {
       this.imageURLs,
       this.selectedImages,
         //this.displacement
+        this.hullType
       });
 
   CreateVessel.fromJson(Map<String, dynamic> json) {
@@ -102,6 +104,7 @@ class CreateVessel {
     speed = json["speed"];
     avgSpeed = json["avgSpeed"];*/
     isCloud = json["isCloud"];
+    hullType = json["hullShape"];
   }
 
   // Convert a CreateVessel into a Map. The keys must correspond to the names of the
@@ -138,6 +141,7 @@ class CreateVessel {
       'speed': speed,
       'avgSpeed': avgSpeed,*/
       'isCloud': isCloud,
+      'hullShape': hullType
     };
   }
 
@@ -157,7 +161,7 @@ class CreateVessel {
       lengthOverall: map['lengthOverall'],
       beam: map['beam'],
       draft: map['draft'],
-      //displacement: map['displacement'] ?? "",
+//displacement: map['displacement'] ?? "",
       vesselSize: map['vesselSize'] ?? 0.0,
       capacity: map['capacity'],
       builtYear: map['builtYear'],
@@ -169,6 +173,7 @@ class CreateVessel {
       updatedBy: map['updatedBy'],
       updatedAt: map['updatedAt'],
       isCloud: map['isCloud'],
+      hullType: map['hullShape']
     );
   }
 
@@ -203,6 +208,7 @@ class CreateVessel {
     data['updatedBy'] = this.updatedBy;
     data['updatedAt'] = this.updatedAt;
     data['isCloud'] = this.isCloud;
+    data['hullShape'] = this.hullType;
     return data;
   }
 }

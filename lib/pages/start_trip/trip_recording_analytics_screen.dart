@@ -7,6 +7,7 @@ import 'package:background_locator_2/settings/android_settings.dart';
 import 'package:background_locator_2/settings/ios_settings.dart';
 import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
@@ -60,6 +61,10 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
 
   @override
   void initState() {
+        SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
     // TODO: implement initState
     super.initState();
 
@@ -470,6 +475,14 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
                     width: displayWidth(context),
                     onTap: () async
                     {
+                      print('the stop Trip is clickedd-------------222');
+
+
+               await       SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
+
                       Utils.customPrint(
                           "END TRIP CURRENT TIME ${DateTime.now()}");
 
@@ -503,7 +516,9 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
                                     Navigator.pushAndRemoveUntil(
                                         context,
                                         MaterialPageRoute(builder: (context) => BottomNavigation()),
-                                        ModalRoute.withName(""));
+                                        ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,])
+      );;
                                   }
                                   else if(widget.calledFrom == 'VesselSingleView')
                                   {
@@ -516,14 +531,18 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
                                         MaterialPageRoute(builder: (context) => BottomNavigation(
                                           tabIndex: commonProvider.bottomNavIndex,
                                         )),
-                                        ModalRoute.withName(""));
+                                        ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,])
+      );;
                                   }
                                   else
                                   {
                                     Navigator.pushAndRemoveUntil(
                                         context,
                                         MaterialPageRoute(builder: (context) => BottomNavigation()),
-                                        ModalRoute.withName(""));
+                                        ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,])
+      );;
                                   }
 
                                 }
@@ -590,6 +609,11 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
 
           if(mounted)
           {
+                                                 await       SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
+
             setState(() {
               tripIsRunning =
               false;
@@ -622,7 +646,9 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
               Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => BottomNavigation()),
-                  ModalRoute.withName(""));
+                  ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,])
+      );;
             }
             else if(widget.calledFrom == 'VesselSingleView')
             {
@@ -635,14 +661,18 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
                   MaterialPageRoute(builder: (context) => BottomNavigation(
                     tabIndex: commonProvider.bottomNavIndex,
                   )),
-                  ModalRoute.withName(""));
+                  ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,])
+      );;
             }
             else
             {
               Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => BottomNavigation()),
-                  ModalRoute.withName(""));
+                  ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,])
+      );;
             }
           }
 
@@ -656,12 +686,21 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
     if (durationTimer != null) {
       durationTimer!.cancel();
     }
+        SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
   }
 
   showEndTripDialogBox(BuildContext context) {
     if(sharedPreferences != null){
       sharedPreferences!.setBool('reset_dialog_opened', true);
     }
+
+            SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
     return showDialog(
         barrierDismissible: false,
         context: context,
@@ -765,6 +804,11 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
                                                   IOStripDistance:
                                                   tripDistance,
                                                   onEnded: () async {
+                                                                                         await       SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
+
                                                     setState(() {
                                                       tripIsRunning =
                                                       false;
@@ -809,7 +853,9 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
                                                           Navigator.pushAndRemoveUntil(
                                                               context,
                                                               MaterialPageRoute(builder: (context) => BottomNavigation()),
-                                                              ModalRoute.withName(""));
+                                                              ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,])
+      );;
                                                         }
                                                         else if(widget.calledFrom == 'VesselSingleView')
                                                         {
@@ -822,14 +868,19 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
                                                               MaterialPageRoute(builder: (context) => BottomNavigation(
                                                                 tabIndex: commonProvider.bottomNavIndex,
                                                               )),
-                                                              ModalRoute.withName(""));
+                                                              ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,])
+      );;
                                                         }
                                                         else
                                                         {
+
                                                           Navigator.pushAndRemoveUntil(
                                                               context,
                                                               MaterialPageRoute(builder: (context) => BottomNavigation()),
-                                                              ModalRoute.withName(""));
+                                                              ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,])
+      );;
                                                         }
                                                       }
                                                     });

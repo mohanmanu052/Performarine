@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/pages/add_vessel_new/add_new_vessel_step_two.dart';
 import 'package:screenshot/screenshot.dart';
@@ -19,7 +20,8 @@ class AddNewVesselPage extends StatefulWidget {
   final bool? isEdit;
   final CreateVessel? createVessel;
   final String? calledFrom;
-  AddNewVesselPage({Key? key, this.isEdit = false, this.createVessel, this.calledFrom}) : super(key: key);
+  final int? bottomNavIndex;
+  AddNewVesselPage({Key? key, this.isEdit = false, this.createVessel, this.calledFrom,this.bottomNavIndex}) : super(key: key);
 
   @override
   State<AddNewVesselPage> createState() => _AddNewVesselPageState();
@@ -36,8 +38,27 @@ class _AddNewVesselPageState extends State<AddNewVesselPage> {
 
   @override
   void initState() {
+
     super.initState();
+    print('the called from is -----'+widget.bottomNavIndex.toString());
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
     pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+if(widget.bottomNavIndex==1){
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp
+    ]);
+
+}
   }
 
   @override
@@ -45,6 +66,8 @@ class _AddNewVesselPageState extends State<AddNewVesselPage> {
     return WillPopScope(
       onWillPop: () async {
         if (widget.calledFrom == 'SuccessFullScreen') {
+                                        await  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
@@ -74,7 +97,9 @@ class _AddNewVesselPageState extends State<AddNewVesselPage> {
             elevation: 0.0,
             backgroundColor: backgroundColor,
             leading: IconButton(
-              onPressed: () {
+              onPressed: () async{
+                                              await  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
                 if (widget.calledFrom == 'SuccessFullScreen') {
                   CustomLogger().logWithFile(Level.info, "User navigating to Home page -> $page");
                   Navigator.pushAndRemoveUntil(
@@ -108,7 +133,9 @@ class _AddNewVesselPageState extends State<AddNewVesselPage> {
               Container(
                 margin: EdgeInsets.only(right: 8),
                 child: IconButton(
-                  onPressed: () {
+                  onPressed: ()async {
+                                                  await  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
                     Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (context) => BottomNavigation()),
@@ -155,6 +182,8 @@ class _AddNewVesselPageState extends State<AddNewVesselPage> {
                       child: GestureDetector(
                           onTap: ()async{
                             final image = await controller.capture();
+                                                          await  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
                             Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
                               imagePath: image.toString(),
                               uIntList: image,)));
@@ -181,7 +210,10 @@ class _AddNewVesselPageState extends State<AddNewVesselPage> {
                       ),
                       child: GestureDetector(
                           onTap: ()async{
+
                             final image = await controller.capture();
+                              await  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
                             Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
                               imagePath: image.toString(),
                               uIntList: image,)));

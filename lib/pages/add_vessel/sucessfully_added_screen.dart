@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 
 import 'package:lottie/lottie.dart';
@@ -12,7 +13,6 @@ import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
 
 import '../../common_widgets/widgets/log_level.dart';
-import '../../old_ui/old_vessel_single_view.dart';
 import '../bottom_navigation.dart';
 
 //Successfully added screen
@@ -30,6 +30,20 @@ class SuccessfullyAddedScreen extends StatefulWidget {
 class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   String page = "Successfully_added_screen";
+
+
+        @override
+  void initState() {
+                     SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      
+      ]);
+
+    // TODO: implement initState
+    super.initState();
+  }
+
+
 
   @override
   Widget build(BuildContext context) {

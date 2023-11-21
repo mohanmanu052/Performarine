@@ -199,6 +199,7 @@ Widget vesselSingleViewRichText(
 
   return Row(
     mainAxisAlignment: MainAxisAlignment.start,
+
     children: [
       // Flexible(
       //   child: Column(
@@ -243,10 +244,12 @@ Widget vesselSingleViewRichText(
       //   width: displayWidth(context) * 0.0045,
       // ),
       SizedBox(
-        width: displayWidth(context!) * 0.025,
+        width: displayWidth(context!) * 0.0,
       ),
       Flexible(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Text(
               built!,
@@ -278,8 +281,8 @@ Widget vesselSingleViewRichText(
         ),
       ),
 
-       regNo != null && regNo != ''
-          ? Row(
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           SizedBox(
@@ -294,14 +297,17 @@ Widget vesselSingleViewRichText(
             width: displayWidth(context) * 0.02,
           ),
         ],
-      )
-          : SizedBox(),
+      ),
 
-      regNo != null && regNo != ''
-          ? Column(
+       /*regNo != null && regNo != ''
+          ?
+          : SizedBox(),*/
+
+     /* regNo != null && regNo != ''
+          ? */ Column(
             children: [
               Text(
-                regNo,
+                regNo != null && regNo != '' ? regNo : '-',
                 textAlign: TextAlign.start,
                 style: TextStyle(
                   fontSize: displayWidth(context) * 0.038,
@@ -329,7 +335,7 @@ Widget vesselSingleViewRichText(
               ),
             ],
           )
-          : SizedBox(),
+         /* : SizedBox(),*/
     ],
   );
 }

@@ -115,6 +115,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
 
 @override
   void dispose() {
+    if(widget.calledFrom=='Report'){
         SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
@@ -122,6 +123,10 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
       DeviceOrientation.portraitUp
 
     ]);
+
+    }else{
+
+    }
 
     // TODO: implement dispose
     super.dispose();
@@ -189,7 +194,9 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
             Container(
               margin: EdgeInsets.only(right: 8),
               child: IconButton(
-                onPressed: () {
+                onPressed: () async{
+                 await   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(builder: (context) => BottomNavigation()),

@@ -1,10 +1,15 @@
+import 'dart:convert';
+
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:logger/logger.dart';
 import 'package:objectid/objectid.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
+import 'package:performarine/common_widgets/widgets/common_dropdown.dart';
 import 'package:performarine/pages/add_vessel_new/successfully_added_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -47,10 +52,11 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
   GlobalKey<FormState> lengthFormKey = GlobalKey<FormState>();
   GlobalKey<FormState> beamFormKey = GlobalKey<FormState>();
   GlobalKey<FormState> draftFormKey = GlobalKey<FormState>();
-  GlobalKey<FormState> displacementKey = GlobalKey<FormState>();
+  //GlobalKey<FormState> displacementKey = GlobalKey<FormState>();
   GlobalKey<FormState> sizeFormKey = GlobalKey<FormState>();
   GlobalKey<FormState> capacityFormKey = GlobalKey<FormState>();
   GlobalKey<FormState> builtYearFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> selectedHullFormKey = GlobalKey<FormState>();
   final DatabaseService _databaseService = DatabaseService();
 
   AutovalidateMode _autoValidate = AutovalidateMode.onUserInteraction;
@@ -59,7 +65,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
   TextEditingController lengthOverallController = TextEditingController();
   TextEditingController moldedBeamController = TextEditingController();
   TextEditingController moldedDepthController = TextEditingController();
-  TextEditingController displacementController = TextEditingController();
+  //TextEditingController displacementController = TextEditingController();
   TextEditingController sizeController = TextEditingController();
   TextEditingController capacityController = TextEditingController();
   TextEditingController builtYearController = TextEditingController();
@@ -68,7 +74,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
   FocusNode lengthOverallFocusNode = FocusNode();
   FocusNode moldedBeamFocusNode = FocusNode();
   FocusNode moldedDepthFocusNode = FocusNode();
-  FocusNode displcementFocusNode = FocusNode();
+  FocusNode displacementFocusNode = FocusNode();
   FocusNode sizeFocusNode = FocusNode();
   FocusNode capacityFocusNode = FocusNode();
   FocusNode builtYearFocusNode = FocusNode();
@@ -89,6 +95,9 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
   List<File?> pickFilePath = [];
   List<File?> finalSelectedFiles = [];
 
+  String? selectedHullType;
+  List<Map<String, dynamic>> hullTypesList = [];
+
   String appendAsInt(double value) {
     int intValue = value.toInt();
     return intValue.toString();
@@ -104,26 +113,39 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
     }
   }
 
+
+
   @override
   void initState() {
     super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
     setState(() {
       scaffoldKey = widget.scaffoldKey!;
     });
+    getHullTypes();
 
     commonProvider = context.read<CommonProvider>();
 
     if (widget.isEdit!) {
       //debugPrint("IMAGE 1212 ${widget.addVesselData!.imageURLs!}");
       if (widget.addVesselData != null) {
-        freeBoardController.text = appendAsInt(widget.addVesselData!.freeBoard!);
-        lengthOverallController.text = appendAsInt(widget.addVesselData!.lengthOverall!);
-        moldedBeamController.text = appendAsInt(widget.addVesselData!.beam!);
-        moldedDepthController.text = appendAsInt(widget.addVesselData!.draft!);
-        //displacementController.text = widget.addVesselData!.displacement ?? "";
+        freeBoardController.text = widget.addVesselData!.freeBoard!.toString();
+        lengthOverallController.text = widget.addVesselData!.lengthOverall!.toString();
+        moldedBeamController.text = widget.addVesselData!.beam!.toString();
+        moldedDepthController.text = widget.addVesselData!.draft!.toString();
+        //displacementController.text = widget.addVesselData!.displacement.toString();
         sizeController.text = widget.addVesselData!.vesselSize!.toString();
-      //  capacityController.text = widget.addVesselData!.capacity!.toString();
+        //  capacityController.text = widget.addVesselData!.capacity!.toString();s
         builtYearController.text = widget.addVesselData!.builtYear!.toString();
+        if(widget.addVesselData!.hullType != null)
+          {
+            selectedHullType = widget.addVesselData!.hullType.toString();
+            Utils.customPrint('HHHHH HULL TYPE: ${selectedHullType is String}');
+          }
+
 
       }
     }
@@ -132,6 +154,36 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
       finalSelectedFiles = commonProvider.selectedImageFiles;
     } else{
       isDeleted = true;
+    }
+  }
+
+  @override
+  void dispose() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp,
+    ]);
+
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  getHullTypes() async {
+    FlutterSecureStorage storage = FlutterSecureStorage();
+    String? hullTypes = await storage.read(
+        key: 'hullTypes'
+    );
+
+    if(hullTypes != null){
+      Map<String, dynamic> mapOfHullTypes = jsonDecode(hullTypes);
+      Utils.customPrint('HHHHH MAP: ${mapOfHullTypes}');
+      hullTypesList.clear();
+      mapOfHullTypes.forEach((key, value) {
+        hullTypesList.add({"key": key, "value": value});
+      });
+      setState(() {
+
+      });
     }
   }
 
@@ -186,7 +238,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                   SizedBox(height: displayHeight(context) * 0.03),
                   commonText(
                       context: context,
-                      text: 'Size of the boat ',
+                      text: 'Size of the boat *',
                       fontWeight: FontWeight.w500,
                       textColor: blutoothDialogTxtColor,
                       textSize: displayWidth(context) * 0.035,
@@ -200,22 +252,22 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                     child: CommonTextField(
                         controller: freeBoardController,
                         focusNode: freeBoardFocusNode,
-                        labelText: 'Freeboard ($feet)',
+                        labelText: 'Freeboard ($feet) *',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
-                        textInputType:
-                        TextInputType.number,
+                        textInputType: TextInputType.numberWithOptions(decimal: true),
                         textCapitalization: TextCapitalization.words,
                         maxLength: 6,
                         prefixIcon: null,
                         requestFocusNode: lengthOverallFocusNode,
                         obscureText: false,
+                        isForDecimal: true,
                         onTap: () {},
                         onChanged: (String value) {
                         },
                         validator: (value) {
-                          if (value!.trim().isEmpty) {
+                          if (value!.trim().isEmpty||value!.trim()=='.') {
                             return 'Enter Vessel Freeboard';
                           }
 
@@ -224,7 +276,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         onSaved: (String value) {
                           Utils.customPrint(value);
                           CustomLogger().logWithFile(Level.info, "Vessel Freeboard $value -> $page");
-                        }),
+                        },),
                   ),
                   SizedBox(height: displayHeight(context) * 0.015),
                   Form(
@@ -233,21 +285,22 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                     child: CommonTextField(
                         controller: lengthOverallController,
                         focusNode: lengthOverallFocusNode,
-                        labelText: 'Length Overall ($feet)',
+                        labelText: 'Length Overall ($feet) *',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
-                        textInputType: TextInputType.number,
+                        textInputType: TextInputType.numberWithOptions(decimal: true),
                         textCapitalization: TextCapitalization.words,
                         maxLength: 6,
                         prefixIcon: null,
                         requestFocusNode: moldedBeamFocusNode,
                         obscureText: false,
+                        isForDecimal: true,
                         onTap: () {},
                         onChanged: (String value) {
                         },
                         validator: (value) {
-                          if (value!.trim().isEmpty) {
+                          if (value!.trim().isEmpty||value!.trim()=='.') {
                             return 'Enter Vessel Length Overall';
                           }
                           return null;
@@ -264,21 +317,22 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                     child: CommonTextField(
                         controller: moldedBeamController,
                         focusNode: moldedBeamFocusNode,
-                        labelText: 'Beam ($feet)',
+                        labelText: 'Beam ($feet) *',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
-                        textInputType: TextInputType.number,
+                        textInputType: TextInputType.numberWithOptions(decimal: true),
                         textCapitalization: TextCapitalization.words,
                         maxLength: 6,
                         prefixIcon: null,
                         requestFocusNode: moldedDepthFocusNode,
                         obscureText: false,
+                        isForDecimal: true,
                         onTap: () {},
                         onChanged: (String value) {
                         },
                         validator: (value) {
-                          if (value!.trim().isEmpty) {
+                          if (value!.trim().isEmpty||value!.trim()=='.') {
                             return 'Enter Vessel Beam';
                           }
 
@@ -296,21 +350,23 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                     child: CommonTextField(
                         controller: moldedDepthController,
                         focusNode: moldedDepthFocusNode,
-                        labelText: 'Draft ($feet)',
+                        labelText: 'Draft ($feet) *',
                         hintText: '',
                         suffixText: null,
+                        isForDecimal: true,
                         textInputAction: TextInputAction.next,
-                        textInputType: TextInputType.number,
+                        textInputType: TextInputType.numberWithOptions(decimal: true),
                         textCapitalization: TextCapitalization.words,
                         maxLength: 6,
                         prefixIcon: null,
-                        requestFocusNode: displcementFocusNode,
+                        //why this focused to displacementFocusNode?
+                        requestFocusNode: displacementFocusNode,
                         obscureText: false,
                         onTap: () {},
                         onChanged: (String value) {
                         },
                         validator: (value) {
-                          if (value!.trim().isEmpty) {
+                          if (value!.trim().isEmpty||value!.trim()=='.') {
                             return 'Enter Vessel Draft';
                           }
 
@@ -321,42 +377,45 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                           CustomLogger().logWithFile(Level.info, "Vessel Draft $value -> $page");
                         }),
                   ),
+
                   SizedBox(height: displayHeight(context) * 0.015),
                   Form(
-                    key: displacementKey,
+                    key: selectedHullFormKey,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    child: CommonTextField(
-                        controller: displacementController,
-                        focusNode: displcementFocusNode,
-                        labelText: 'Displacement ($pound)',
-                        hintText: '',
-                        suffixText: null,
-                        textInputAction: TextInputAction.next,
-                        textInputType: TextInputType.number,
-                        textCapitalization: TextCapitalization.words,
-                        maxLength: 5,
-                        prefixIcon: null,
-                        requestFocusNode: sizeFocusNode,
-                        obscureText: false,
-                        onTap: () {},
+                    child: Container(
+                      margin: EdgeInsets.only(top: 2.0),
+                      child: CommonMapDropDownFormField(
+                        context: context,
+                        value: selectedHullType,
+                        hintText: 'Hull Type',
+                        labelText: '',
                         onChanged: (String value) {
+                          setState(() {
+                            selectedHullType = value;
+                            Utils.customPrint('SELECTED HULL TYPE $selectedHullType');
+                            CustomLogger().logWithFile(Level.info, "hull $selectedHullType -> $page");
+                          });
                         },
+                        dataSource: hullTypesList,
+                        borderRadius: 10,
+                        padding: 6,
+                        textColor: Colors.black,
+                        textField: 'value',
+                        valueField: 'key',
                         validator: (value) {
-                          if (value!.trim().isEmpty) {
-                            return 'Enter Displacement';
+                          if (value == null) {
+                            return 'Select Hull Type';
                           }
-
                           return null;
                         },
-                        onSaved: (String value) {
-                          Utils.customPrint(value);
-                          CustomLogger().logWithFile(Level.info, "Displacement $value -> $page");
-                        }),
+                      ),
+                    ),
                   ),
+
                   SizedBox(height: displayHeight(context) * 0.02),
                   commonText(
                       context: context,
-                      text: 'Engine characteristics',
+                      text: 'Engine characteristics *',
                       fontWeight: FontWeight.w500,
                       textColor: blutoothDialogTxtColor,
                       textSize: displayWidth(context) * 0.035,
@@ -370,11 +429,12 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                     child: CommonTextField(
                         controller: sizeController,
                         focusNode: sizeFocusNode,
-                        labelText: 'Size ($hp)',
+                        labelText: 'Size ($hp) *',
+                        isForDecimal: true,
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.next,
-                        textInputType: TextInputType.number,
+                        textInputType: TextInputType.numberWithOptions(decimal: true),
                         textCapitalization: TextCapitalization.words,
                         maxLength: 6,
                         prefixIcon: null,
@@ -384,7 +444,24 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         onChanged: (String value) {
                         },
                         validator: (value) {
-                          if (value!.trim().isEmpty) {
+int dotCount = value!.split('.').length - 1;
+
+if (dotCount > 1) {
+  
+
+  // Return an error or handle the case where the value contains more than one dot
+                          //  return 'Enter Valid Vessel Size';
+} else {
+  // The value is valid, you can proceed with it
+  print("Value is valid");
+}
+
+
+
+
+
+
+                          if (value!.trim().isEmpty||value!.trim()=='.') {
                             return 'Enter Vessel Size';
                           }
 
@@ -395,7 +472,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                           CustomLogger().logWithFile(Level.info, "Vessel Size $value -> $page");
                         }),
                   ),
-              /*    SizedBox(height: displayHeight(context) * 0.015),
+                  /*    SizedBox(height: displayHeight(context) * 0.015),
                   Form(
                     key: capacityFormKey,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -434,7 +511,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                     child: CommonTextField(
                         controller: builtYearController,
                         focusNode: builtYearFocusNode,
-                        labelText: 'Built Year ($year)',
+                        labelText: 'Built Year ($year) *',
                         hintText: '',
                         suffixText: null,
                         textInputAction: TextInputAction.done,
@@ -489,10 +566,12 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                           width: displayWidth(context),
                           onTap: () async {
                             if (freeBoardFormKey.currentState!.validate() && lengthFormKey.currentState!.validate() && beamFormKey.currentState!.validate()
-                                && draftFormKey.currentState!.validate() && sizeFormKey.currentState!.validate() && builtYearFormKey.currentState!.validate()) {
+                                && draftFormKey.currentState!.validate() && sizeFormKey.currentState!.validate() && builtYearFormKey.currentState!.validate()
+                                && selectedHullFormKey.currentState!.validate()) {
                               setState(() {
                                 isBtnClicked = true;
                               });
+
 
                               FocusScope.of(context)
                                   .requestFocus(new FocusNode());
@@ -500,21 +579,26 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                                 commonProvider
                                     .addVesselRequestModel!.imageURLs = '';
                               }
-
                               commonProvider.addVesselRequestModel!.freeBoard =
-                                  double.parse(freeBoardController.text);
+                              freeBoardController.text.length >= 6 ? num.parse(double.parse(freeBoardController.text).toStringAsFixed(4)).toDouble()
+                                  : double.parse(freeBoardController.text);
                               commonProvider
-                                  .addVesselRequestModel!.lengthOverall =
-                                  double.parse(lengthOverallController.text);
-                              commonProvider.addVesselRequestModel!.beam =
-                                  double.parse(moldedBeamController.text);
-                              commonProvider.addVesselRequestModel!.draft =
-                                  double.parse(moldedDepthController.text);
-                              //commonProvider.addVesselRequestModel!.displacement = displacementController.text;
+                                  .addVesselRequestModel!.lengthOverall = lengthOverallController.text.length >=6
+                                  ? num.parse(double.parse(lengthOverallController.text).toStringAsFixed(4)).toDouble()
+                                  : double.parse(lengthOverallController.text);
+                              commonProvider.addVesselRequestModel!.beam = moldedBeamController.text.length >= 6
+                                  ? num.parse(double.parse(moldedBeamController.text).toStringAsFixed(4)).toDouble()
+                                  : double.parse(moldedBeamController.text);
+                              commonProvider.addVesselRequestModel!.draft = moldedDepthController.text.length >= 6
+                                  ? num.parse(double.parse(moldedDepthController.text).toStringAsFixed(4)).toDouble()
+                                  : double.parse(moldedDepthController.text);
+                              /*commonProvider.addVesselRequestModel!.displacement = displacementController.text.length >= 7
+                                  ? num.parse(double.parse(displacementController.text).toStringAsFixed(5)).toDouble()
+                                  : double.parse(displacementController.text);*/
                               commonProvider.addVesselRequestModel!.vesselSize =
-                                  double.parse(sizeController.text);
+                                  sizeController.text;
                               commonProvider.addVesselRequestModel!.capacity = 0;
-                                //  int.parse(capacityController.text);
+                              //  int.parse(capacityController.text);
                               commonProvider.addVesselRequestModel!.builtYear =
                                   builtYearController.text;
                               commonProvider.addVesselRequestModel!.id =
@@ -536,6 +620,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                                   commonProvider.loginModel!.userId.toString();
                               commonProvider.addVesselRequestModel!.updatedBy =
                                   commonProvider.loginModel!.userId.toString();
+                              commonProvider.addVesselRequestModel!.hullType = int.parse(selectedHullType!);
 
                               if (commonProvider.addVesselRequestModel!
                                   .selectedImages!.isNotEmpty) {
@@ -604,7 +689,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                                 await _databaseService
                                     .updateVessel(
                                     commonProvider.addVesselRequestModel!)
-                                    .then((value) {
+                                    .then((value) async {
                                   setState(() {
                                     isBtnClicked = false;
                                   });
@@ -626,6 +711,10 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                                     commonProvider.selectedImageFiles = [];
 
                                     CustomLogger().logWithFile(Level.info, "User Navigating to SuccessfullyAddedScreen -> $page");
+                            await SystemChrome.setPreferredOrientations([
+                                      DeviceOrientation.portraitDown,
+                                      DeviceOrientation.portraitUp,
+                                    ]);
 
                                     Navigator.pushReplacement(
                                       context,
@@ -646,7 +735,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                                 await _databaseService
                                     .insertVessel(
                                     commonProvider.addVesselRequestModel!)
-                                    .then((value) {
+                                    .then((value) async{
                                   setState(() {
                                     isBtnClicked = false;
                                   });
@@ -654,6 +743,12 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                                       scaffoldKey: scaffoldKey,
                                       message: "Vessel Created Successfully");
                                   commonProvider.selectedImageFiles = [];
+
+                                  await  SystemChrome.setPreferredOrientations([
+                                    DeviceOrientation.portraitDown,
+                                    DeviceOrientation.portraitUp,
+                                  ]);
+
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(

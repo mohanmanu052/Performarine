@@ -183,7 +183,10 @@ class StartTrip {
             speed: 0.0,
             speedAccuracy: 0.0,
             heading: 0.0,
-            altitude: 0.0);
+            altitude: 0.0,
+          altitudeAccuracy: 0.0,
+          headingAccuracy: 0.0
+            );
 
         /// Adding current position into the list to store in shared preferences
         String currentPosStr =
@@ -206,7 +209,10 @@ class StartTrip {
               speed: 0.0,
               speedAccuracy: 0.0,
               heading: 0.0,
-              altitude: 0.0);
+              altitude: 0.0,
+              altitudeAccuracy: 0.0,
+              headingAccuracy: 0.0
+          );
 
           /// Calculation of distance between current and previous position
           var _distanceBetweenLastTwoLocations = Geolocator.distanceBetween(

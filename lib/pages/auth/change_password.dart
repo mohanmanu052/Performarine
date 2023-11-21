@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logger/logger.dart';
-import 'package:performarine/pages/authentication/sign_in_screen.dart';
+import 'package:performarine/pages/auth_new/sign_in_screen.dart';
 
 import 'package:provider/provider.dart';
 
@@ -50,6 +51,9 @@ class _ChangePasswordState extends State<ChangePassword> {
   @override
   void initState() {
     super.initState();
+        SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
 
     commonProvider = context.read<CommonProvider>();
     currentPasswordController = TextEditingController();

@@ -8,6 +8,7 @@ import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -96,6 +97,10 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
   @override
   void initState() {
+        SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
     // TODO: implement initState
     super.initState();
 
@@ -1973,6 +1978,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
           vesselData.vesselStatus;
       commonProvider.addVesselRequestModel!.batteryCapacity =
           vesselData.batteryCapacity;
+      /*commonProvider.addVesselRequestModel!.displacement =
+          vesselData.displacement;*/
 
       if (vesselData.imageURLs != null && vesselData.imageURLs!.isNotEmpty) {
         finalSelectedFiles.add(File(vesselData.imageURLs!));
@@ -2072,6 +2079,11 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     if(sharedPreferences != null){
       sharedPreferences!.setBool('reset_dialog_opened', true);
     }
+
+            SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
     return showDialog(
         barrierDismissible: false,
         context: context,

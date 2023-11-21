@@ -2,8 +2,10 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:ui';
 import 'package:background_locator_2/background_locator.dart';
-import 'package:background_locator_2/location_dto.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/analytics/create_zip.dart';
 import 'package:performarine/analytics/location_service_repository.dart';
@@ -24,6 +26,7 @@ class EndTrip {
     IOStripDistance = "",
     IOSpeed = "",
     IOSAvgSpeed = "",
+    String? lprDeviceId
   }) async {
 
     Utils.customPrint("END TRIP FUNCTIONALITY");
@@ -35,6 +38,21 @@ class EndTrip {
     ReceivePort port = ReceivePort();
     String? latitude, longitude;
     geo.Position currentPosition = await geo.Geolocator.getCurrentPosition();
+    var connectedDevicesList = FlutterBluePlus.connectedDevices;
+    final FlutterSecureStorage storage = FlutterSecureStorage();
+    Utils.customPrint('END TRIP CONNECTED DEVICE LIST: ${connectedDevicesList.length}');
+    if(lprDeviceId != null){
+      await storage.write(key: 'lprDeviceId', value: lprDeviceId);
+    }
+    else{
+      if(connectedDevicesList.isNotEmpty)
+      {
+        await storage.write(key: 'lprDeviceId', value: connectedDevicesList.first.remoteId.str);
+        await connectedDevicesList.first.disconnect();
+      }
+    }
+
+
 
     if(currentPosition != null)
     {
