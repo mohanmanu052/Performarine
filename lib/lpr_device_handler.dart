@@ -200,7 +200,9 @@ class LPRDeviceHandler {
   autoConnectToDevice() async {
     connectedDevice = null;
     final FlutterSecureStorage storage = FlutterSecureStorage();
-    var lprDeviceId = await storage.read(key: 'lprDeviceId');
+    var lprDeviceId = sharedPreferences!.getString('lprDeviceId');
+    // var lprDeviceId = await storage.read(key: 'lprDeviceId');
+
 
     Utils.customPrint("LPR DEVICE ID $lprDeviceId");
 

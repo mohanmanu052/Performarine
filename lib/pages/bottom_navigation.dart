@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
@@ -76,6 +77,7 @@ class _BottomNavigationState extends State<BottomNavigation>
       isEndTripBtnClicked = false;
   double progress = 0.9, lprSensorProgress = 1.0;
   String bluetoothName = '';
+  String? isLPRDeviceConnected;
 
   late CommonProvider commonProvider;
   late Future<List<CreateVessel>> getVesselFuture;
@@ -195,6 +197,18 @@ class _BottomNavigationState extends State<BottomNavigation>
         });
       }
     }
+
+    getLPRData();
+  }
+
+  getLPRData() async
+  {
+    FlutterSecureStorage storage = FlutterSecureStorage();
+     isLPRDeviceConnected = await storage.read(
+        key: 'onStartTripLPRDeviceConnected'
+    );
+
+    debugPrint('IS LPR DEVICE CONNECTED OR NOT $isLPRDeviceConnected');
   }
 
   @override
@@ -1090,12 +1104,15 @@ class _BottomNavigationState extends State<BottomNavigation>
                                       context,
                                       Colors.transparent, () async
                                   {
-                                    List<BluetoothDevice> connectedDeviceList = FlutterBluePlus.connectedDevices;
-                                    if(connectedDeviceList.isNotEmpty)
+
+                                    bool onStartTripLPRDeviceConnected = sharedPreferences!.getBool('onStartTripLPRDeviceConnected') ?? false;
+
+                                    if(onStartTripLPRDeviceConnected){
+                                      List<BluetoothDevice> connectedDeviceList = FlutterBluePlus.connectedDevices;
+                                      if(connectedDeviceList.isNotEmpty)
                                       {
-                                        LPRDeviceHandler().setLPRDevice(connectedDeviceList.first);
-                                        final _isRunning =
-                                        await BackgroundLocator();
+
+                                        final _isRunning = await BackgroundLocator();
 
                                         Utils.customPrint(
                                             'INTRO TRIP IS RUNNING 1212 $_isRunning');
@@ -1105,7 +1122,30 @@ class _BottomNavigationState extends State<BottomNavigation>
 
                                         reInitializeService();
 
-                                        StartTrip().startBGLocatorTrip(
+                                        await StartTrip().startBGLocatorTrip(
+                                            tripData![0], DateTime.now(), true);
+
+                                        final isRunning2 = await BackgroundLocator
+                                            .isServiceRunning();
+
+                                        Utils.customPrint(
+                                            'INTRO TRIP IS RUNNING 22222 $isRunning2');
+                                        LPRDeviceHandler().setLPRDevice(connectedDeviceList.first);
+                                        Navigator.of(context).pop();
+                                      }
+                                      else
+                                      {
+                                        final _isRunning = await BackgroundLocator();
+
+                                        Utils.customPrint(
+                                            'INTRO TRIP IS RUNNING 1212 $_isRunning');
+
+                                        List<String>? tripData = sharedPreferences!
+                                            .getStringList('trip_data');
+
+                                        reInitializeService();
+
+                                        await StartTrip().startBGLocatorTrip(
                                             tripData![0], DateTime.now(), true);
 
                                         final isRunning2 = await BackgroundLocator
@@ -1114,12 +1154,31 @@ class _BottomNavigationState extends State<BottomNavigation>
                                         Utils.customPrint(
                                             'INTRO TRIP IS RUNNING 22222 $isRunning2');
                                         Navigator.of(context).pop();
-                                      }
-                                    else
-                                      {
-                                        Navigator.of(context).pop();
                                         LPRDeviceHandler().showDeviceDisconnectedDialog(null);
                                       }
+                                    }
+                                    else{
+                                      final _isRunning =
+                                      await BackgroundLocator();
+
+                                      Utils.customPrint(
+                                          'INTRO TRIP IS RUNNING 1212 $_isRunning');
+
+                                      List<String>? tripData = sharedPreferences!
+                                          .getStringList('trip_data');
+
+                                      reInitializeService();
+
+                                      StartTrip().startBGLocatorTrip(
+                                          tripData![0], DateTime.now(), true);
+
+                                      final isRunning2 = await BackgroundLocator
+                                          .isServiceRunning();
+
+                                      Utils.customPrint(
+                                          'INTRO TRIP IS RUNNING 22222 $isRunning2');
+                                      Navigator.of(context).pop();
+                                    }
                                   },
                                       displayWidth(context) * 0.65,
                                       displayHeight(context) * 0.054,

@@ -27,14 +27,14 @@ class SingleLPRDevice extends StatefulWidget {
 
   SingleLPRDevice(
       {Key? key,
-        this.device,
-        this.dialogContext,
-        this.onSelected,
-        this.onBluetoothConnection,
-        this.setSetter,
-        this.connectedDeviceId,
-        this.connectedBluetoothDevice,
-        this.onSingleDeviceTapped})
+      this.device,
+      this.dialogContext,
+      this.onSelected,
+      this.onBluetoothConnection,
+      this.setSetter,
+      this.connectedDeviceId,
+      this.connectedBluetoothDevice,
+      this.onSingleDeviceTapped})
       : super(key: key);
 
   @override
@@ -49,7 +49,7 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
 
   @override
   void initState() {
-            SystemChrome.setPreferredOrientations([
+    SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
 
@@ -63,24 +63,14 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
       visualDensity: VisualDensity(horizontal: 0, vertical: -4),
       onTap: () async {
         List<BluetoothDevice> connectedDevicesList =
-        await FlutterBluePlus.connectedDevices;
+            await FlutterBluePlus.connectedDevices;
         Utils.customPrint("BONDED LIST $connectedDevicesList");
 
-        if (connectedDevicesList.isNotEmpty) {
-          showForgetDeviceDialog(context, forgetDeviceBtnClick: () async {
-            Navigator.of(context).pop();
-            EasyLoading.show(
-                status: 'Disconnecting...',
-                maskType: EasyLoadingMaskType.black);
-            for (int i = 0; i < connectedDevicesList.length; i++) {
-              await connectedDevicesList[i].disconnect();
-            }
-            EasyLoading.dismiss();
-            EasyLoading.show(
-                status: 'Searching for available devices...',
-                maskType: EasyLoadingMaskType.black);
-            Future.delayed(Duration(seconds: 2), () async {
-              EasyLoading.dismiss();
+        if(widget.connectedDeviceId == widget.device!.remoteId.str){
+          if (widget.connectedBluetoothDevice != null) {
+            widget.connectedBluetoothDevice!.disconnect().then((value) {
+              EasyLoading.show(
+                  status: 'Connecting...', maskType: EasyLoadingMaskType.black);
               if (widget.connectedBluetoothDevice != null) {
                 widget.connectedBluetoothDevice!.disconnect();
               }
@@ -89,17 +79,21 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
                 widget.connectedDeviceId = widget.device!.remoteId.str;
                 widget.onSingleDeviceTapped!(true);
               });
-              //await storage.write(key: 'lprDeviceId', value: widget.device!.remoteId.str);
+              //  await storage.write(key: 'lprDeviceId', value: widget.device!.remoteId.str);
               debugPrint("SINGLE SELECTED BLE ID ${widget.device!.remoteId.str}");
-
-              widget.device!.connect().then((value) {});
+              widget.device!.connect().then((value) {
+                LPRDeviceHandler().setLPRDevice(widget.device!);
+              }).catchError((onError) {
+                Utils.customPrint('CONNECT ERROR: $onError');
+                EasyLoading.dismiss();
+              });
 
               widget.setSetter!(() {
                 widget.onBluetoothConnection!(true);
-                widget.onSelected!(
-                    widget.device!.platformName == null || widget.device!.platformName.isEmpty
-                        ? widget.device!.remoteId.str
-                        : widget.device!.platformName);
+                widget.onSelected!(widget.device!.platformName == null ||
+                    widget.device!.platformName.isEmpty
+                    ? widget.device!.remoteId.str
+                    : widget.device!.platformName);
               });
 
               Future.delayed(Duration(seconds: 1), () {
@@ -109,17 +103,15 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
                     widget.onSingleDeviceTapped!(false);
                   });
                 }
+                EasyLoading.dismiss();
                 Navigator.pop(widget.dialogContext!);
               });
             });
-          }, onCancelClick: () {
-            Navigator.of(context).pop();
-          });
+          }
         }
-        else {
+        else{
           EasyLoading.show(
-              status: 'Connecting...',
-              maskType: EasyLoadingMaskType.black);
+              status: 'Connecting...', maskType: EasyLoadingMaskType.black);
           if (widget.connectedBluetoothDevice != null) {
             widget.connectedBluetoothDevice!.disconnect();
           }
@@ -128,22 +120,21 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
             widget.connectedDeviceId = widget.device!.remoteId.str;
             widget.onSingleDeviceTapped!(true);
           });
-        //  await storage.write(key: 'lprDeviceId', value: widget.device!.remoteId.str);
+          //  await storage.write(key: 'lprDeviceId', value: widget.device!.remoteId.str);
           debugPrint("SINGLE SELECTED BLE ID ${widget.device!.remoteId.str}");
           widget.device!.connect().then((value) {
             LPRDeviceHandler().setLPRDevice(widget.device!);
-
-          }).catchError((onError){
+          }).catchError((onError) {
             Utils.customPrint('CONNECT ERROR: $onError');
             EasyLoading.dismiss();
           });
 
           widget.setSetter!(() {
             widget.onBluetoothConnection!(true);
-            widget.onSelected!(
-                widget.device!.platformName == null || widget.device!.platformName.isEmpty
-                    ? widget.device!.remoteId.str
-                    : widget.device!.platformName);
+            widget.onSelected!(widget.device!.platformName == null ||
+                widget.device!.platformName.isEmpty
+                ? widget.device!.remoteId.str
+                : widget.device!.platformName);
           });
 
           Future.delayed(Duration(seconds: 1), () {
@@ -157,6 +148,97 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
             Navigator.pop(widget.dialogContext!);
           });
         }
+
+        // if (connectedDevicesList.isNotEmpty) {
+        //   showForgetDeviceDialog(context, forgetDeviceBtnClick: () async {
+        //     Navigator.of(context).pop();
+        //     EasyLoading.show(
+        //         status: 'Disconnecting...',
+        //         maskType: EasyLoadingMaskType.black);
+        //     for (int i = 0; i < connectedDevicesList.length; i++) {
+        //       await connectedDevicesList[i].disconnect();
+        //     }
+        //     EasyLoading.dismiss();
+        //     EasyLoading.show(
+        //         status: 'Searching for available devices...',
+        //         maskType: EasyLoadingMaskType.black);
+        //     Future.delayed(Duration(seconds: 2), () async {
+        //       EasyLoading.dismiss();
+        //       if (widget.connectedBluetoothDevice != null) {
+        //         widget.connectedBluetoothDevice!.disconnect();
+        //       }
+        //       widget.setSetter!(() {
+        //         isConnect = true;
+        //         widget.connectedDeviceId = widget.device!.remoteId.str;
+        //         widget.onSingleDeviceTapped!(true);
+        //       });
+        //       //await storage.write(key: 'lprDeviceId', value: widget.device!.remoteId.str);
+        //       debugPrint(
+        //           "SINGLE SELECTED BLE ID ${widget.device!.remoteId.str}");
+        //
+        //       widget.device!.connect().then((value) {});
+        //
+        //       widget.setSetter!(() {
+        //         widget.onBluetoothConnection!(true);
+        //         widget.onSelected!(widget.device!.platformName == null ||
+        //                 widget.device!.platformName.isEmpty
+        //             ? widget.device!.remoteId.str
+        //             : widget.device!.platformName);
+        //       });
+        //
+        //       Future.delayed(Duration(seconds: 1), () {
+        //         if (mounted) {
+        //           widget.setSetter!(() {
+        //             isConnect = false;
+        //             widget.onSingleDeviceTapped!(false);
+        //           });
+        //         }
+        //         Navigator.pop(widget.dialogContext!);
+        //       });
+        //     });
+        //   }, onCancelClick: () {
+        //     Navigator.of(context).pop();
+        //   });
+        // }
+        // else {
+        //   EasyLoading.show(
+        //       status: 'Connecting...', maskType: EasyLoadingMaskType.black);
+        //   if (widget.connectedBluetoothDevice != null) {
+        //     widget.connectedBluetoothDevice!.disconnect();
+        //   }
+        //   widget.setSetter!(() {
+        //     isConnect = true;
+        //     widget.connectedDeviceId = widget.device!.remoteId.str;
+        //     widget.onSingleDeviceTapped!(true);
+        //   });
+        //   //  await storage.write(key: 'lprDeviceId', value: widget.device!.remoteId.str);
+        //   debugPrint("SINGLE SELECTED BLE ID ${widget.device!.remoteId.str}");
+        //   widget.device!.connect().then((value) {
+        //     LPRDeviceHandler().setLPRDevice(widget.device!);
+        //   }).catchError((onError) {
+        //     Utils.customPrint('CONNECT ERROR: $onError');
+        //     EasyLoading.dismiss();
+        //   });
+        //
+        //   widget.setSetter!(() {
+        //     widget.onBluetoothConnection!(true);
+        //     widget.onSelected!(widget.device!.platformName == null ||
+        //         widget.device!.platformName.isEmpty
+        //         ? widget.device!.remoteId.str
+        //         : widget.device!.platformName);
+        //   });
+        //
+        //   Future.delayed(Duration(seconds: 1), () {
+        //     if (mounted) {
+        //       widget.setSetter!(() {
+        //         isConnect = false;
+        //         widget.onSingleDeviceTapped!(false);
+        //       });
+        //     }
+        //     EasyLoading.dismiss();
+        //     Navigator.pop(widget.dialogContext!);
+        //   });
+        // }
       },
       title: Padding(
         padding: const EdgeInsets.only(bottom: 2.0),
@@ -185,30 +267,30 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
           //     BluetoothDeviceState.connected) {
           return widget.connectedDeviceId != null
               ? widget.connectedDeviceId == widget.device!.remoteId.str
-              ? commonText(
-              context: context,
-              text: 'Connected',
-              fontWeight: FontWeight.w400,
-              textColor: Colors.green,
-              textSize: displayWidth(context) * 0.032,
-              textAlign: TextAlign.start,
-              fontFamily: inter)
+                  ? commonText(
+                      context: context,
+                      text: 'Connected',
+                      fontWeight: FontWeight.w400,
+                      textColor: Colors.green,
+                      textSize: displayWidth(context) * 0.032,
+                      textAlign: TextAlign.start,
+                      fontFamily: inter)
+                  : commonText(
+                      context: context,
+                      text: 'Tap to connect',
+                      fontWeight: FontWeight.w400,
+                      textColor: blueColor,
+                      textSize: displayWidth(context) * 0.032,
+                      textAlign: TextAlign.start,
+                      fontFamily: inter)
               : commonText(
-              context: context,
-              text: 'Tap to connect',
-              fontWeight: FontWeight.w400,
-              textColor: blueColor,
-              textSize: displayWidth(context) * 0.032,
-              textAlign: TextAlign.start,
-              fontFamily: inter)
-              : commonText(
-              context: context,
-              text: 'Tap to connect',
-              fontWeight: FontWeight.w400,
-              textColor: blueColor,
-              textSize: displayWidth(context) * 0.032,
-              textAlign: TextAlign.start,
-              fontFamily: inter);
+                  context: context,
+                  text: 'Tap to connect',
+                  fontWeight: FontWeight.w400,
+                  textColor: blueColor,
+                  textSize: displayWidth(context) * 0.032,
+                  textAlign: TextAlign.start,
+                  fontFamily: inter);
         },
       ),
     );
@@ -227,7 +309,7 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
                   height: displayHeight(context) * 0.42,
                   width: MediaQuery.of(context).size.width,
                   decoration:
-                  BoxDecoration(borderRadius: BorderRadius.circular(20)),
+                      BoxDecoration(borderRadius: BorderRadius.circular(20)),
                   child: Padding(
                     padding: const EdgeInsets.only(
                         left: 8.0, right: 8.0, top: 15, bottom: 15),
@@ -257,7 +339,7 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
                           child: commonText(
                               context: context,
                               text:
-                              'Would you like to disconnect from the currently connected Bluetooth device and connect to a new device?',
+                                  'Would you like to disconnect from the currently connected Bluetooth device and connect to a new device?',
                               fontWeight: FontWeight.w500,
                               textColor: Colors.black87,
                               textSize: displayWidth(context) * 0.042,
@@ -296,7 +378,7 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
                                   displayHeight(context) * 0.05,
                                   Colors.transparent,
                                   Theme.of(context).brightness ==
-                                      Brightness.dark
+                                          Brightness.dark
                                       ? Colors.white
                                       : blueColor,
                                   displayHeight(context) * 0.018,

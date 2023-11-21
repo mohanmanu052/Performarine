@@ -1133,11 +1133,38 @@ class _MapScreenState extends State<MapScreen> {
                                         lastTimePopupBtnClicked = true;
                                       });
 
-                                      List<BluetoothDevice> connectedDeviceList = FlutterBluePlus.connectedDevices;
+                                      bool onStartTripLPRDeviceConnected = sharedPreferences!.getBool('onStartTripLPRDeviceConnected') ?? false;
 
-                                      if(connectedDeviceList.isNotEmpty)
+                                      if(onStartTripLPRDeviceConnected){
+                                        List<BluetoothDevice> connectedDeviceList = FlutterBluePlus.connectedDevices;
+                                        if(connectedDeviceList.isNotEmpty)
                                         {
+
+                                          final _isRunning =
+                                          await BackgroundLocator();
+
+                                          Utils.customPrint(
+                                              'INTRO TRIP IS RUNNING 1212 $_isRunning');
+
+                                          List<String>? tripData =
+                                          sharedPreferences!
+                                              .getStringList('trip_data');
+
+                                          reInitializeService();
+
+                                          StartTrip().startBGLocatorTrip(
+                                              tripData![0], DateTime.now(), true);
+
+                                          final isRunning2 = await BackgroundLocator
+                                              .isServiceRunning();
+
+                                          Utils.customPrint(
+                                              'INTRO TRIP IS RUNNING 22222 $isRunning2');
                                           LPRDeviceHandler().setLPRDevice(connectedDeviceList.first);
+                                          Navigator.of(context).pop();
+                                        }
+                                        else
+                                        {
                                           final _isRunning =
                                           await BackgroundLocator();
 
@@ -1159,13 +1186,32 @@ class _MapScreenState extends State<MapScreen> {
                                           Utils.customPrint(
                                               'INTRO TRIP IS RUNNING 22222 $isRunning2');
                                           Navigator.of(context).pop();
-                                        }
-                                      else
-                                        {
-                                          Navigator.of(context).pop();
                                           LPRDeviceHandler().showDeviceDisconnectedDialog(null);
                                         }
+                                      }
+                                      else{
+                                        final _isRunning =
+                                        await BackgroundLocator();
 
+                                        Utils.customPrint(
+                                            'INTRO TRIP IS RUNNING 1212 $_isRunning');
+
+                                        List<String>? tripData =
+                                        sharedPreferences!
+                                            .getStringList('trip_data');
+
+                                        reInitializeService();
+
+                                        StartTrip().startBGLocatorTrip(
+                                            tripData![0], DateTime.now(), true);
+
+                                        final isRunning2 = await BackgroundLocator
+                                            .isServiceRunning();
+
+                                        Utils.customPrint(
+                                            'INTRO TRIP IS RUNNING 22222 $isRunning2');
+                                        Navigator.of(context).pop();
+                                      }
                                     },
                                         displayWidth(context) * 0.65,
                                         displayHeight(context) * 0.054,
