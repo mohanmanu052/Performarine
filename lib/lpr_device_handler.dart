@@ -44,9 +44,12 @@ class LPRDeviceHandler {
   setLPRDevice(BluetoothDevice device) async {
     this.connectedDevice = device;
     this.context = Get.context;
+    var pref = await Utils.initSharedPreferences();
+
+                             pref.setBool('device_forget',false);
+
     Utils.customPrint(
         'BLE - CONNECTED DEVICE: ${connectedDevice!.remoteId.str}');
-    var pref = await Utils.initSharedPreferences();
     bool? isTripStarted = pref.getBool('trip_started') ?? false;
     if(isTripStarted){
       listenToDeviceConnectionState();
@@ -57,16 +60,27 @@ class LPRDeviceHandler {
     this.onDeviceDisconnectCallback = callback;
   }
 
-  void listenToDeviceConnectionState() {
+  void listenToDeviceConnectionState()async {
+
     if (connectedDevice != null) {
-      bluetoothConnectionStateListener = connectedDevice!.connectionState.listen((event) {
+
+      bluetoothConnectionStateListener = connectedDevice!.connectionState.listen((event) async {
         if (event == BluetoothConnectionState.disconnected) {
+
           Utils.customPrint(
               'BLE - DEVICE GOT DISCONNECTED: ${connectedDevice!.remoteId.str} - $event');
 
           if(bluetoothConnectionStateListener != null) bluetoothConnectionStateListener!.cancel();
           if(!isSelfDisconnected) {
+                                          var pref = await Utils.initSharedPreferences();
+
+bool getForgotStatus=pref.getBool('device_forget')??false;
+bool getLprStatus= pref!.getBool('onStartTripLPRDeviceConnected')??false;
+if(!getForgotStatus&&getLprStatus){
             showDeviceDisconnectedDialog(connectedDevice);
+
+}
+
             if(onDeviceDisconnectCallback != null) onDeviceDisconnectCallback!.call();
           }
         } else if (event == BluetoothConnectionState.connected) {
@@ -141,6 +155,17 @@ class LPRDeviceHandler {
                                   .connect()
                               .then((value) {
                                 connectedDevice = previouslyConnectedDevice;
+                                            Fluttertoast.showToast(
+                msg: 'Device Connected ${connectedDevice?.advName.toString()}',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.black,
+                textColor: Colors.white,
+                fontSize: 16.0
+            );
+
+
                                 EasyLoading.dismiss();
                               })
                                   .catchError((onError) {

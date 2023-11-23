@@ -33,6 +33,8 @@ class EndTrip {
     CustomLogger().logWithFile(Level.info, "END TRIP FUNCTIONALITY -> -> $page");
     WidgetsFlutterBinding.ensureInitialized();
     await sharedPreferences!.reload();
+    await     sharedPreferences!.remove('onStartTripLPRDeviceConnected');
+
     Utils.customPrint("abhi$duration,$IOSAvgSpeed,$IOSpeed,$IOStripDistance");
     CustomLogger().logWithFile(Level.info, "abhi$duration,$IOSAvgSpeed,$IOSpeed,$IOStripDistance -> $page");
     ReceivePort port = ReceivePort();
@@ -53,7 +55,6 @@ class EndTrip {
         await connectedDevicesList.first.disconnect();
       }
     }
-    sharedPreferences!.remove('onStartTripLPRDeviceConnected');
 
     if(currentPosition != null)
     {

@@ -993,6 +993,8 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
       showForgetDeviceDialog(
           context,
           forgetDeviceBtnClick: () async {
+                var pref = await Utils.initSharedPreferences();
+
             isClickedOnForgetDevice = true;
             LPRDeviceHandler().isSelfDisconnected = true;
             Navigator.of(context).pop();
@@ -1002,6 +1004,8 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
             for(int i = 0; i < FlutterBluePlus.connectedDevices.length; i++){
               await FlutterBluePlus.connectedDevices[i].disconnect().then((value) {
                 LPRDeviceHandler().isSelfDisconnected = false;
+                                   pref.setBool('device_forget',true);
+
               });
             }
             EasyLoading.dismiss();
@@ -3400,13 +3404,18 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
       showForgetDeviceDialog(
           context,
           forgetDeviceBtnClick: () async {
+    var pref = await Utils.initSharedPreferences();
             isClickedOnForgetDevice = true;
             Navigator.of(context).pop();
             EasyLoading.show(
                 status: 'Disconnecting...',
                 maskType: EasyLoadingMaskType.black);
             for(int i = 0; i < connectedDevicesList.length; i++){
+              
               await connectedDevicesList[i].disconnect();
+                   pref.setBool('device_forget',true);
+
+              
             }
             EasyLoading.dismiss();
             setState(() {

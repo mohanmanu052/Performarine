@@ -146,6 +146,9 @@ class _MapScreenState extends State<MapScreen> {
         });
       }
     });
+
+          LPRDeviceHandler().listenToDeviceConnectionState();
+
   }
 
   @override
