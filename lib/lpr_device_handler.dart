@@ -169,7 +169,8 @@ if(!getForgotStatus&&getLprStatus){
 
 
                                 EasyLoading.dismiss();
-                                                                                                    Navigator.pop(context!);
+                                Get.back();
+                                                                                                    //Navigator.pop(context!);
 
                               })
                                   .catchError((onError) {
