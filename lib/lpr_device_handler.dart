@@ -30,6 +30,7 @@ class LPRDeviceHandler {
   }
 
   LPRDeviceHandler get instance => _instance;
+  bool isLPRReconnectPopupshowing=false;
 
   BluetoothDevice? connectedDevice;
   BuildContext? context;
@@ -78,6 +79,7 @@ bool getForgotStatus=pref.getBool('device_forget')??false;
 bool getLprStatus= pref!.getBool('onStartTripLPRDeviceConnected')??false;
 if(!getForgotStatus&&getLprStatus){
             showDeviceDisconnectedDialog(connectedDevice);
+            isLPRReconnectPopupshowing=true;
 
 }
 
@@ -167,12 +169,16 @@ if(!getForgotStatus&&getLprStatus){
 
 
                                 EasyLoading.dismiss();
+                                                                                                    Navigator.pop(context!);
+
                               })
                                   .catchError((onError) {
                                 Utils.customPrint(
                                     'BLE - CAUGHT ERROR WHILE CONNECTING TO PREVIOUSLY CONNECTED DEVICE: ${previouslyConnectedDevice.remoteId.str}');
                                 EasyLoading.dismiss();
                                 autoConnectToDevice();
+                                //                                  Navigator.pop(context!);
+
                               });
                             } else {
                               autoConnectToDevice();
