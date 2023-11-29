@@ -13,6 +13,7 @@ import 'package:get/get.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/lpr_device_handler.dart';
+import 'package:performarine/new_trip_analytics_screen.dart';
 import 'package:performarine/pages/add_vessel_new/add_new_vessel_screen.dart';
 import 'package:performarine/pages/auth/reset_password.dart';
 import 'package:performarine/pages/custom_drawer.dart';
@@ -1263,10 +1264,22 @@ class _BottomNavigationState extends State<BottomNavigation>
         onEnded: () async {
           Future.delayed(Duration(seconds: 1), () {
             EasyLoading.dismiss();
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => BottomNavigation()),
-                ModalRoute.withName(""));
+                                                                                            Navigator.push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) =>
+                                                                                  NewTripAnalyticsScreen(
+                                                                                    tripId: currentTrip.id,
+                                                                                    //tripData: tripData,
+                                                                                    vesselId: currentTrip.vesselId,
+                                                                                                                                                                        calledFrom: 'End Trip',
+
+                                                                                  )));
+
+            // Navigator.pushAndRemoveUntil(
+            //     context,
+            //     MaterialPageRoute(builder: (context) => BottomNavigation()),
+            //     ModalRoute.withName(""));
             //Navigator.of(context).pop();
           });
 

@@ -85,6 +85,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
   bool? isGpsOn, isLPRConnected, isBleOn;
   bool addingDataToDB = false,
+  isBluetoothSearching=false,
       isServiceRunning = false,
       isLocationDialogBoxOpen = false,
       isStartButton = false,
@@ -703,10 +704,13 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     // );
 
     Utils.customPrint("LPR DEVICE ID $lprDeviceId");
-
-    EasyLoading.show(
-        status: 'Searching for available devices...',
-        maskType: EasyLoadingMaskType.black);
+isBluetoothSearching=true;
+setState(() {
+  
+});
+    // EasyLoading.show(
+    //     status: 'Searching for available devices...',
+    //     maskType: EasyLoadingMaskType.black);
 
     /// Check for already connected device.
     List<BluetoothDevice> connectedDevicesList = FlutterBluePlus.connectedDevices;
@@ -769,6 +773,8 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                   progress = 1.0;
                   lprSensorProgress = 1.0;
                   isStartButton = true;
+                  isBluetoothSearching=false;
+
                 });
                 FlutterBluePlus.stopScan();
                 EasyLoading.dismiss();
@@ -800,6 +806,8 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                     progress = 1.0;
                     lprSensorProgress = 1.0;
                     isStartButton = true;
+                    isBluetoothSearching=false;
+
                   });
                   FlutterBluePlus.stopScan();
                   EasyLoading.dismiss();
@@ -808,6 +816,8 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                   if (mounted){
                     Future.delayed(Duration(seconds: 2), (){
                       EasyLoading.dismiss();
+                                          isBluetoothSearching=false;
+
                       showBluetoothListDialog(context, null, null);
                     });
                   }
@@ -841,6 +851,8 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                   progress = 1.0;
                   lprSensorProgress = 1.0;
                   isStartButton = true;
+                                      isBluetoothSearching=false;
+
                 });
                 FlutterBluePlus.stopScan();
                 EasyLoading.dismiss();
@@ -849,6 +861,8 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                 if (mounted){
                   Future.delayed(Duration(seconds: 2), (){
                     EasyLoading.dismiss();
+                                        isBluetoothSearching=false;
+
                     showBluetoothListDialog(context, null, null);
                   });
                 }
@@ -1074,6 +1088,17 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
             ]);
 
           }
+
+      bool? isTripStarted = sharedPreferences!.getBool('trip_started')??false;
+if(!isTripStarted??false){
+                      for(int i = 0; i < FlutterBluePlus.connectedDevices.length; i++){
+              await FlutterBluePlus.connectedDevices[i].disconnect().then((value) {
+
+              });
+                      }
+}
+
+
 
 
           return true;
@@ -1904,7 +1929,13 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                         }
                                                       }
                                                     },
-                                                    child: commonText(
+                                                    child:                    isBluetoothSearching?
+                                                    
+                                                    SizedBox(
+                                                      height: 30,
+                                                      width: 30,
+                                                    child:CircularProgressIndicator()):
+ commonText(
                                                       context: context,
                                                       text:
                                                       FlutterBluePlus.connectedDevices.isEmpty ?  'Connect to Device' : 'Forget Device',

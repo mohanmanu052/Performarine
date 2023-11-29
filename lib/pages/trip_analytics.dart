@@ -26,6 +26,7 @@ import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
+import 'package:performarine/new_trip_analytics_screen.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
@@ -2225,11 +2226,22 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                                             .id!}");
                                                         DatabaseService().deleteTripFromDB(tripData!
                                                             .id!);
+                                                                                            Navigator.push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) =>
+                                                                                  NewTripAnalyticsScreen(
+                                                                                    tripId: tripData?.id,
+                                                                                    //tripData: tripData,
+                                                                                    vesselId: tripData?.vesselId,
+                                                                                                                                                                        calledFrom: 'End Trip',
 
-                                                        Navigator.pushAndRemoveUntil(
-                                                            context,
-                                                            MaterialPageRoute(builder: (context) => BottomNavigation()),
-                                                            ModalRoute.withName(""));
+                                                                                  )));
+
+                                                        // Navigator.pushAndRemoveUntil(
+                                                        //     context,
+                                                        //     MaterialPageRoute(builder: (context) => BottomNavigation()),
+                                                        //     ModalRoute.withName(""));
                                                       }
                                                     });
                                                   });

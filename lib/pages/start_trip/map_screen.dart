@@ -15,6 +15,7 @@ import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/lpr_device_handler.dart';
 import 'package:performarine/models/trip.dart';
+import 'package:performarine/new_trip_analytics_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
@@ -419,8 +420,6 @@ class _MapScreenState extends State<MapScreen> {
                                                               context) *
                                                           0.75,
                                                       onTap: () async {
-                                                        print(
-                                                            'the stop Trip is clickedd-------------111');
 
                                                         await SystemChrome
                                                             .setPreferredOrientations([
@@ -693,11 +692,18 @@ class _MapScreenState extends State<MapScreen> {
 
           if (!isTripDeleted) {
             if (widget.calledFrom == 'bottom_nav') {
-              Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => BottomNavigation()),
-                      ModalRoute.withName(""))
+                                                                  Navigator.push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) =>
+                                                                                  NewTripAnalyticsScreen(
+                                                                                    tripId:tripData!.id ,
+                                                                                    vesselId: vesselData?.id,
+                                                                                    tripData: tripData,
+                                                                                    calledFrom: 'End Trip',
+                                                                                                                                                                        vessel: vesselData,
+
+                                                                                  )))
                   .then((value) => SystemChrome.setPreferredOrientations([
                         DeviceOrientation.portraitUp,
                       ]));
@@ -705,23 +711,40 @@ class _MapScreenState extends State<MapScreen> {
             } else if (widget.calledFrom == 'VesselSingleView') {
               Navigator.of(context).pop(true);
             } else if (widget.calledFrom == 'tripList') {
-              Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => BottomNavigation(
-                                tabIndex: commonProvider.bottomNavIndex,
-                              )),
-                      ModalRoute.withName(""))
+                                                                                Navigator.push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) =>
+                                                                                  NewTripAnalyticsScreen(
+                                                                                    tripId: tripData?.id,
+                                                                                    tripData: tripData,
+                                                                                                                                                                        vesselId: tripData?.vesselId,
+
+                                                                                                                                                                        calledFrom: 'End Trip',
+
+                                                                                                                                                                        vessel: vesselData,
+
+
+                                                                                  )))
+
                   .then((value) => SystemChrome.setPreferredOrientations([
                         DeviceOrientation.portraitUp,
                       ]));
               ;
             } else {
-              Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => BottomNavigation()),
-                      ModalRoute.withName(""))
+                                                                                Navigator.push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) =>
+                                                                                  NewTripAnalyticsScreen(
+                                                                                    tripId: tripData?.id,
+                                                                                    tripData: tripData,
+                                                                                    vessel: vesselData,
+                                                                                    vesselId: tripData?.vesselId,
+                                                                                                                                                                        calledFrom: 'End Trip',
+
+                                                                                  )))
+
                   .then((value) => SystemChrome.setPreferredOrientations([
                         DeviceOrientation.portraitUp,
                       ]));
@@ -1055,20 +1078,32 @@ class _MapScreenState extends State<MapScreen> {
 
                                                     if (widget.calledFrom ==
                                                         'bottom_nav') {
-                                                      Navigator.pushAndRemoveUntil(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) =>
-                                                                          BottomNavigation()),
-                                                              ModalRoute
-                                                                  .withName(""))
-                                                          .then((value) =>
-                                                              SystemChrome
-                                                                  .setPreferredOrientations([
-                                                                DeviceOrientation
-                                                                    .portraitUp,
-                                                              ]));
+                                                                                                                                                      Navigator.push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) =>
+                                                                                  NewTripAnalyticsScreen(
+                                                                                    tripId: tripData?.id,
+                                                                                    //tripData: tripData,
+                                                                                    vesselId: tripData?.vesselId,
+                                                                                                                                                                        calledFrom: 'End Trip',
+
+                                                                                  )));
+
+                                                      // Navigator.pushAndRemoveUntil(
+                                                      //         context,
+                                                      //         MaterialPageRoute(
+                                                      //             builder:
+                                                      //                 (context) =>
+                                                      //                     BottomNavigation()),
+                                                      //         ModalRoute
+                                                      //             .withName(""))
+                                                      //     .then((value) =>
+                                                      //         SystemChrome
+                                                      //             .setPreferredOrientations([
+                                                      //           DeviceOrientation
+                                                      //               .portraitUp,
+                                                      //         ]));
                                                       ;
                                                     } else if (widget
                                                             .calledFrom ==
@@ -1078,39 +1113,63 @@ class _MapScreenState extends State<MapScreen> {
                                                     } else if (widget
                                                             .calledFrom ==
                                                         'tripList') {
-                                                      Navigator
-                                                              .pushAndRemoveUntil(
-                                                                  context,
-                                                                  MaterialPageRoute(
-                                                                      builder:
-                                                                          (context) =>
-                                                                              BottomNavigation(
-                                                                                tabIndex: commonProvider.bottomNavIndex,
-                                                                              )),
-                                                                  ModalRoute
-                                                                      .withName(
-                                                                          ""))
-                                                          .then((value) =>
-                                                              SystemChrome
-                                                                  .setPreferredOrientations([
-                                                                DeviceOrientation
-                                                                    .portraitUp,
-                                                              ]));
+                                                                                                                                                      Navigator.push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) =>
+                                                                                  NewTripAnalyticsScreen(
+                                                                                    tripId: tripData?.id,
+                                                                                    //tripData: tripData,
+                                                                                    vesselId: tripData?.vesselId,
+                                                                                                                                                                        calledFrom: 'End Trip',
+
+                                                                                  )));
+
+                                                      // Navigator
+                                                      //         .pushAndRemoveUntil(
+                                                      //             context,
+                                                      //             MaterialPageRoute(
+                                                      //                 builder:
+                                                      //                     (context) =>
+                                                      //                         BottomNavigation(
+                                                      //                           tabIndex: commonProvider.bottomNavIndex,
+                                                      //                         )),
+                                                      //             ModalRoute
+                                                      //                 .withName(
+                                                      //                     ""))
+                                                      //     .then((value) =>
+                                                      //         SystemChrome
+                                                      //             .setPreferredOrientations([
+                                                      //           DeviceOrientation
+                                                      //               .portraitUp,
+                                                      //         ]));
                                                     } else {
-                                                      Navigator.pushAndRemoveUntil(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) =>
-                                                                          BottomNavigation()),
-                                                              ModalRoute
-                                                                  .withName(""))
-                                                          .then((value) =>
-                                                              SystemChrome
-                                                                  .setPreferredOrientations([
-                                                                DeviceOrientation
-                                                                    .portraitUp,
-                                                              ]));
+                                                                                                                                                  Navigator.push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) =>
+                                                                                  NewTripAnalyticsScreen(
+                                                                                    tripId: tripData?.id,
+                                                                                    //tripData: tripData,
+                                                                                    vesselId: tripData?.vesselId,
+                                                                                                                                                                        calledFrom: 'End Trip',
+
+                                                                                  )));
+
+                                                      // Navigator.pushAndRemoveUntil(
+                                                      //         context,
+                                                      //         MaterialPageRoute(
+                                                      //             builder:
+                                                      //                 (context) =>
+                                                      //                     BottomNavigation()),
+                                                      //         ModalRoute
+                                                      //             .withName(""))
+                                                      //     .then((value) =>
+                                                      //         SystemChrome
+                                                      //             .setPreferredOrientations([
+                                                      //           DeviceOrientation
+                                                      //               .portraitUp,
+                                                      //         ]));
                                                     }
                                                   });
                                             }

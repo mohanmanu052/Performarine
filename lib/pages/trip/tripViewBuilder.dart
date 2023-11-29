@@ -10,6 +10,7 @@ import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/models/trip.dart';
+import 'package:performarine/new_trip_analytics_screen.dart';
 import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
 import 'package:performarine/pages/trip/trip_widget.dart';
 import 'package:performarine/provider/common_provider.dart';
@@ -463,8 +464,10 @@ if(mounted){
 
   endTripMethod(String tripDuration, Trip trip,)async
   {
+    Navigator.pop(context);
 
-    Navigator.of(context).pop();
+
+    //Navigator.of(context).pop();
 
     await commonProvider
         .updateTripStatus(true);
@@ -506,6 +509,17 @@ if(mounted){
 
           await commonProvider
               .updateTripStatus(false);
+                                                                                                                                                  Navigator.push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) =>
+                                                                                  NewTripAnalyticsScreen(
+                                                                                    tripId: trip.id,
+                                                                                    //tripData: tripData,
+                                                                                    vesselId: trip.vesselId,
+                                                                                                                                                                        //calledFrom: 'End Trip',
+
+                                                                                  )));
 
           if (widget.onTripEnded != null) {
             widget.onTripEnded!.call();

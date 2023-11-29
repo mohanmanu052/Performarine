@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
+import 'package:performarine/new_trip_analytics_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
@@ -643,12 +644,25 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
           {
             if(widget.calledFrom == 'bottom_nav')
             {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => BottomNavigation()),
-                  ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,])
-      );;
+
+                                                                                                                                                                Navigator.push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) =>
+                                                                                  NewTripAnalyticsScreen(
+                                                                                    tripId: tripData?.id,
+                                                                                    //tripData: tripData,
+                                                                                    vesselId: tripData?.vesselId,
+                                                                                                                                                                        calledFrom: 'End Trip',
+
+                                                                                  )));
+
+      //         Navigator.pushAndRemoveUntil(
+      //             context,
+      //             MaterialPageRoute(builder: (context) => BottomNavigation()),
+      //             ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
+      // DeviceOrientation.portraitUp,])
+      // );;
             }
             else if(widget.calledFrom == 'VesselSingleView')
             {
@@ -656,23 +670,47 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
             }
             else if(widget.calledFrom == 'tripList')
             {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => BottomNavigation(
-                    tabIndex: commonProvider.bottomNavIndex,
-                  )),
-                  ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,])
-      );;
+                                                                                                                                                                Navigator.push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) =>
+                                                                                  NewTripAnalyticsScreen(
+                                                                                    tripId: tripData?.id,
+                                                                                    //tripData: tripData,
+                                                                                    vesselId: tripData?.vesselId,
+                                                                                                                                                                        calledFrom: 'End Trip',
+
+                                                                                  )));
+
+      //         Navigator.pushAndRemoveUntil(
+      //             context,
+      //             MaterialPageRoute(builder: (context) => BottomNavigation(
+      //               tabIndex: commonProvider.bottomNavIndex,
+      //             )),
+      //             ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
+      // DeviceOrientation.portraitUp,])
+      // );;
             }
             else
             {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => BottomNavigation()),
-                  ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,])
-      );;
+                                                                                                                                                                Navigator.push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) =>
+                                                                                  NewTripAnalyticsScreen(
+                                                                                    tripId: tripData?.id,
+                                                                                    //tripData: tripData,
+                                                                                    vesselId: tripData?.vesselId,
+                                                                                                                                                                        calledFrom: 'End Trip',
+
+                                                                                  )));
+
+      //         Navigator.pushAndRemoveUntil(
+      //             context,
+      //             MaterialPageRoute(builder: (context) => BottomNavigation()),
+      //             ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
+      // DeviceOrientation.portraitUp,])
+      // );;
             }
           }
 
@@ -850,12 +888,17 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
 
                                                         if(widget.calledFrom == 'bottom_nav')
                                                         {
-                                                          Navigator.pushAndRemoveUntil(
-                                                              context,
-                                                              MaterialPageRoute(builder: (context) => BottomNavigation()),
-                                                              ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,])
-      );;
+                                                                                            Navigator.push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) =>
+                                                                                  NewTripAnalyticsScreen(
+                                                                                    tripId: tripData?.id,
+                                                                                    //tripData: tripData,
+                                                                                    vesselId: tripData?.vesselId,
+                                                                                                                                                                        calledFrom: 'End Trip',
+
+                                                                                  )));
                                                         }
                                                         else if(widget.calledFrom == 'VesselSingleView')
                                                         {
@@ -863,24 +906,48 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
                                                         }
                                                         else if(widget.calledFrom == 'tripList')
                                                         {
-                                                          Navigator.pushAndRemoveUntil(
-                                                              context,
-                                                              MaterialPageRoute(builder: (context) => BottomNavigation(
-                                                                tabIndex: commonProvider.bottomNavIndex,
-                                                              )),
-                                                              ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,])
-      );;
+                                                                                                                                                      Navigator.push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) =>
+                                                                                  NewTripAnalyticsScreen(
+                                                                                    tripId: tripData?.id,
+                                                                                    //tripData: tripData,
+                                                                                    vesselId: tripData?.vesselId,
+                                                                                                                                                                        calledFrom: 'End Trip',
+
+                                                                                  )));
+
+      //                                                     Navigator.pushAndRemoveUntil(
+      //                                                         context,
+      //                                                         MaterialPageRoute(builder: (context) => BottomNavigation(
+      //                                                           tabIndex: commonProvider.bottomNavIndex,
+      //                                                         )),
+      //                                                         ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
+      // DeviceOrientation.portraitUp,])
+      // );;
                                                         }
                                                         else
                                                         {
+                                                                                                                                                      Navigator.push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) =>
+                                                                                  NewTripAnalyticsScreen(
+                                                                                    tripId: tripData?.id,
+                                                                                    //tripData: tripData,
+                                                                                    vesselId: tripData?.vesselId,
+                                                                                                                                                                        calledFrom: 'End Trip',
 
-                                                          Navigator.pushAndRemoveUntil(
-                                                              context,
-                                                              MaterialPageRoute(builder: (context) => BottomNavigation()),
-                                                              ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,])
-      );;
+                                                                                  )));
+
+
+      //                                                     Navigator.pushAndRemoveUntil(
+      //                                                         context,
+      //                                                         MaterialPageRoute(builder: (context) => BottomNavigation()),
+      //                                                         ModalRoute.withName("")).then((value) =>                                         SystemChrome.setPreferredOrientations([
+      // DeviceOrientation.portraitUp,])
+      // );;
                                                         }
                                                       }
                                                     });

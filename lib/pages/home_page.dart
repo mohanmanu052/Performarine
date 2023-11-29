@@ -21,6 +21,7 @@ import 'package:performarine/main.dart';
 import 'package:performarine/models/device_model.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
+import 'package:performarine/new_trip_analytics_screen.dart';
 import 'package:performarine/pages/auth/reset_password.dart';
 import 'package:performarine/pages/custom_drawer.dart';
 import 'package:performarine/pages/trip/tripViewBuilder.dart';
@@ -805,7 +806,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
 
             EasyLoading.dismiss();
 
-            Navigator.of(context).pop();
+                                                                                            Navigator.push(
+                                                                          context,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) =>
+                                                                                  NewTripAnalyticsScreen(
+                                                                                    tripId: currentTrip.id,
+                                                                                    //tripData: tripData,
+                                                                                    vesselId: currentTrip.vesselId,
+                                                                                                                                                                        calledFrom: 'End Trip',
+
+                                                                                  )));
           });
 
           Utils.customPrint('TRIPPPPPP ENDEDDD:');
