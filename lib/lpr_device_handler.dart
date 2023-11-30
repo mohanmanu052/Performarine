@@ -12,6 +12,7 @@ import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/main.dart';
+import 'package:performarine/new_trip_analytics_screen.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
 import 'package:performarine/pages/lpr_bluetooth_list.dart';
 import 'package:performarine/pages/start_trip/start_trip_recording_screen.dart';
@@ -95,6 +96,7 @@ if(!getForgotStatus&&getLprStatus){
 
   void showDeviceDisconnectedDialog(BluetoothDevice? previouslyConnectedDevice) {
     isSelfDisconnected = false;
+    bool isDailogShowing=true;
     Get.dialog(
         barrierDismissible: false,
         Dialog(
@@ -146,7 +148,8 @@ if(!getForgotStatus&&getLprStatus){
                       children: [
                         Center(
                           child: CommonButtons.getAcceptButton(
-                              'Re-connect', Get.context!, endTripBtnColor, () {
+                              'Re-connect', Get.context!, endTripBtnColor, () async{
+                                isDailogShowing=false;
                             Get.back();
                             EasyLoading.show(
                                 status: 'Connecting...',
@@ -177,12 +180,13 @@ if(!getForgotStatus&&getLprStatus){
                                 Utils.customPrint(
                                     'BLE - CAUGHT ERROR WHILE CONNECTING TO PREVIOUSLY CONNECTED DEVICE: ${previouslyConnectedDevice.remoteId.str}');
                                 EasyLoading.dismiss();
-                                autoConnectToDevice();
-                                //                                  Navigator.pop(context!);
+                                autoConnectToDevice(isDailogShowing);
+                               // Get.back();
 
                               });
                             } else {
-                              autoConnectToDevice();
+
+                              autoConnectToDevice(isDailogShowing);
                             }
                           },
                               displayWidth(Get.context!) / 1.5,
@@ -229,12 +233,14 @@ if(!getForgotStatus&&getLprStatus){
         ));
   }
 
-  autoConnectToDevice() async {
+  autoConnectToDevice(bool isDailogShowing) async {
     connectedDevice = null;
     final FlutterSecureStorage storage = FlutterSecureStorage();
     var lprDeviceId = sharedPreferences!.getString('lprDeviceId');
     // var lprDeviceId = await storage.read(key: 'lprDeviceId');
-
+if(isDailogShowing){
+  Get.back();
+}
 
     Utils.customPrint("LPR DEVICE ID $lprDeviceId");
 
@@ -693,10 +699,23 @@ EasyLoading.dismiss();
           isSelfDisconnected = false;
           Future.delayed(Duration(seconds: 1), () {
             EasyLoading.dismiss();
-            Navigator.pushAndRemoveUntil(
-                context!,
-                MaterialPageRoute(builder: (context) => BottomNavigation()),
-                ModalRoute.withName(""));
+
+
+                                                                              Navigator.push(
+                                                                          context!,
+                                                                          MaterialPageRoute(
+                                                                              builder: (context) =>
+                                                                                  NewTripAnalyticsScreen(
+                                                                                    tripId:currentTrip!.id ,
+                                                                                    vesselId: currentTrip?.vesselId,
+                                                                                    calledFrom: 'End Trip',
+
+                                                                                  )));
+
+            // Navigator.pushAndRemoveUntil(
+            //     context!,
+            //     MaterialPageRoute(builder: (context) => BottomNavigation()),
+            //     ModalRoute.withName(""));
             //Navigator.of(context).pop();
           });
 

@@ -1027,11 +1027,19 @@ setState(() {
               bluetoothName = 'LPR';
               isBluetoothPermitted = false;
             });
-            EasyLoading.show(
-                status: 'Searching for available devices...',
-                maskType: EasyLoadingMaskType.black);
+            isBluetoothSearching=true;
+            setState(() {
+              
+            });
+            // EasyLoading.show(
+            //     status: 'Searching for available devices...',
+            //     maskType: EasyLoadingMaskType.black);
             Future.delayed(Duration(seconds: 2), () {
               showBluetoothListDialog(context, null, null);
+              isBluetoothSearching=false;
+              setState(() {
+                
+              });
               EasyLoading.dismiss();
             });
           },
@@ -3467,9 +3475,14 @@ if(!isTripStarted??false){
       );
     }
     else{
-      EasyLoading.show(
-          status: 'Searching for available devices...',
-          maskType: EasyLoadingMaskType.black);
+      // EasyLoading.show(
+      //     status: 'Searching for available devices...',
+      //     maskType: EasyLoadingMaskType.black);
+
+      isBluetoothSearching=true;
+      setState(() {
+        
+      });
       String deviceId = '';
       BluetoothDevice? connectedBluetoothDevice;
 
@@ -3584,6 +3597,10 @@ if(!isTripStarted??false){
 
       Future.delayed(Duration(seconds: 4), () {
         showBluetoothListDialog(context, deviceId, connectedBluetoothDevice);
+        isBluetoothSearching=false;
+        setState(() {
+          
+        });
         EasyLoading.dismiss();
       });
     }

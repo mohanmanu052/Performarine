@@ -217,7 +217,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                           {
                                             Utils().showDeleteTripDialog(context,
                                                 endTripBtnClick: (){
-                                                  endTripMethod(tripDuration, snapshot.data![index]);
+                                                  endTripMethod(tripDuration, snapshot.data![index],isSmallTrip);
                                                   debugPrint("SMALL TRIPP IDDD ${snapshot.data![index].id!}");
 
                                                   Future.delayed(Duration(seconds: 1), (){
@@ -255,7 +255,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                                           .toInt());
                                                   debugPrint("DURATION !!!!!! $tripDuration");
 
-                                                  endTripMethod(tripDuration, snapshot.data![index]);
+                                                  endTripMethod(tripDuration, snapshot.data![index],isSmallTrip);
 
                                                   return;
                                                 }, () {
@@ -330,7 +330,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                           {
                                             Utils().showDeleteTripDialog(context,
                                                 endTripBtnClick: (){
-                                                  endTripMethod(tripDuration, snapshot.data![index]);
+                                                  endTripMethod(tripDuration, snapshot.data![index],isSmallTrip);
                                                   debugPrint("SMALL TRIPP IDDD ${snapshot.data![index].id!}");
 
                                                   Future.delayed(Duration(seconds: 1), (){
@@ -368,7 +368,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                                           .toInt());
                                                   debugPrint("DURATION !!!!!! $tripDuration");
 
-                                                  endTripMethod(tripDuration, snapshot.data![index]);
+                                                  endTripMethod(tripDuration, snapshot.data![index],isSmallTrip);
 
                                                   return;
                                                 }, () {
@@ -462,7 +462,7 @@ if(mounted){
     return result;
   }
 
-  endTripMethod(String tripDuration, Trip trip,)async
+  endTripMethod(String tripDuration, Trip trip,bool isSamllTrip)async
   {
     Navigator.pop(context);
 
@@ -509,6 +509,11 @@ if(mounted){
 
           await commonProvider
               .updateTripStatus(false);
+
+
+if(!isSamllTrip){
+
+}else{
                                                                                                                                                   Navigator.push(
                                                                           context,
                                                                           MaterialPageRoute(
@@ -520,6 +525,9 @@ if(mounted){
                                                                                                                                                                         //calledFrom: 'End Trip',
 
                                                                                   )));
+
+
+}
 
           if (widget.onTripEnded != null) {
             widget.onTripEnded!.call();
