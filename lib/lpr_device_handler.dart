@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -6,6 +7,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:performarine/analytics/download_trip.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
@@ -42,6 +44,10 @@ class LPRDeviceHandler {
 
   bool isRefreshList = false;
   bool isSelfDisconnected = false;
+    final Guid _lprUartTX = Guid("49535343-1E4D-4BD9-BA61-23C647249616");
+  // RX Characteristic, Write and Write without response
+  final Guid _lprUartRX = Guid("49535343-8841-43F4-A8D4-ECBE34729BB3");
+
 
   setLPRDevice(BluetoothDevice device) async {
     this.connectedDevice = device;
@@ -87,6 +93,63 @@ if(!getForgotStatus&&getLprStatus){
             if(onDeviceDisconnectCallback != null) onDeviceDisconnectCallback!.call();
           }
         } else if (event == BluetoothConnectionState.connected) {
+List<BluetoothService> services =await  connectedDevice!.discoverServices();
+services.forEach((service) async {
+  var characteristics = service.characteristics;
+  String uuid=connectedDevice!.servicesList![0].uuid.toString();
+String?       dataLine;
+for(BluetoothCharacteristic c in characteristics) {
+ // if(c.serviceUuid==uuid){
+
+  if(c.serviceUuid==_lprUartTX||c.serviceUuid==_lprUartRX){
+    if (c.properties.read) {
+        List<int> value = await c.read();
+
+       dataLine = utf8.decode(value);
+
+
+
+    }
+    DownloadTrip().saveLPRData(dataLine??'');
+
+ // }
+  }
+}
+
+
+    // do something with service
+});
+
+// BluetoothService deviecService=services[0];
+// String uuid=connectedDevice!.servicesList![0].uuid.toString();
+
+//     var dataCharacteristic = deviecService.characteristics[0];
+
+//    dataCharacteristic.setNotifyValue(true);
+//     dataCharacteristic.value.listen((value) {
+//       if(value.isEmpty) {
+//         return;
+//       }
+//       else{
+//         print('the values was----------------'+value.toString());
+//       }
+//     });
+
+//     dataCharacteristic.setNotifyValue(true);
+//     dataCharacteristic.value.listen((value) {
+//       if(value.isEmpty) {
+//         return;
+//       }
+
+//       dataLine = utf8.decode(value);
+//      // DataRecorder().writeLineToLprLog(dataLine);
+//       // setState((){
+//       //      lprDataText = dataLine;
+//       // });
+//     });
+
+
+
           Utils.customPrint(
               'BLE - DEVICE GOT CONNECTED: ${connectedDevice!.remoteId.str} - $event');
         }

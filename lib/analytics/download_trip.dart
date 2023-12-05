@@ -4,6 +4,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:performarine/analytics/get_file.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/provider/common_provider.dart';
@@ -462,4 +463,60 @@ class DownloadTrip {
     }
     return cloudTripPath;
   }
+
+  Future<void> saveLPRData(String data,)async{
+        String tripId = '';
+
+        int fileIndex = 0;
+            List<String>? tripData =
+    sharedPreferences!
+        .getStringList('trip_data');
+    if (tripData != null) {
+      tripId = tripData[0];
+    }
+
+
+
+    String lprFileName = 'lpr_$fileIndex.csv';
+        String lprFilePath = await GetFile().getFile(tripId, lprFileName);
+      //  File file = File(filePath);
+        File lprFile = File(lprFilePath);
+       // int fileSize = await GetFile().checkFileSize(file);
+        int lprFileSize = await GetFile().checkFileSize(lprFile);
+
+        /// CHECK FOR ONLY 10 KB FOR Testing PURPOSE
+        /// Now File Size is 200000
+        if (lprFileSize >= 200000) {
+          Utils.customPrint('STOPPED WRITING');
+          Utils.customPrint('CREATING NEW FILE');
+
+          CustomLogger().logWithFile(Level.info, "STOPPED WRITING -> $page");
+          CustomLogger().logWithFile(Level.info, "CREATING NEW FILE -> $page");
+          fileIndex = fileIndex + 1;
+          lprFileName = 'lpr_$fileIndex.csv';
+
+          /// STOP WRITING & CREATE NEW FILE
+        } else {
+          Utils.customPrint('WRITING');
+
+          String finalString = '';
+
+          /// Creating csv file Strings by combining all the values
+          finalString = data;
+
+          /// Writing into a csv file
+          lprFile.writeAsString('$finalString\n', mode: FileMode.append);
+
+          Utils.customPrint('LPR Data $data');
+                    Utils.customPrint('LPR Path Wsa '+lprFile.path);
+
+
+        }
+      }
+
+// Future<void> downloadLPRData()async{
+
+
+// }
+  
 }
