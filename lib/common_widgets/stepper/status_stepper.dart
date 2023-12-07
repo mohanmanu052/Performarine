@@ -33,8 +33,10 @@ class StatusStepper extends StatelessWidget {
 
   final double value;
 
+  final bool? isCallingFromAddVessel;
+
   const StatusStepper({
-    required this.value,
+    // required this.value,
     required this.children,
     this.animationDuration = const Duration(milliseconds: 200),
     this.lastActiveIndex = -1,
@@ -45,6 +47,8 @@ class StatusStepper extends StatelessWidget {
     this.connectorThickness = 2,
     this.activeColor,
     this.disabledColor,
+    this.value = 0,
+    this.isCallingFromAddVessel,
     Key? key,
   }) : super(key: key);
 
@@ -69,18 +73,20 @@ class StatusStepper extends StatelessWidget {
               curve: connectorCurve,
               connectorThickness: connectorThickness,
               value: value,
+              isCallingFromAddVessel: isCallingFromAddVessel,
             ),
           StepperItem(
-            animationDuration: animationDuration,
-            child: children[index],
-            isPassed: index <= currentIndex,
-            shouldRedraw: index > lastActiveIndex,
-            //delayFactor: 1,
-            delayFactor: delayFactor * 2.0 + (isNotCurrentIndex ? 1.0 : 0.0),
-            animationAwaitDuration: animationDelayDuration,
-            activeColor: activeColor,
-            disabledColor: disabledColor,
-            curve: itemCurve,
+              animationDuration: animationDuration,
+              child: children[index],
+              isPassed: index <= currentIndex,
+              shouldRedraw: index > lastActiveIndex,
+              //delayFactor: 1,
+              delayFactor: delayFactor * 2.0 + (isNotCurrentIndex ? 1.0 : 0.0),
+              animationAwaitDuration: animationDelayDuration,
+              activeColor: activeColor,
+              disabledColor: disabledColor,
+              curve: itemCurve,
+              isCallingFromAddVessel: isCallingFromAddVessel
           ),
         ],
       );

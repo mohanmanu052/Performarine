@@ -13,6 +13,7 @@ class StepperConnector extends StatelessWidget {
   final Curve curve;
   final double connectorThickness;
   final double value;
+  final bool? isCallingFromAddVessel;
 
   const StepperConnector({
     Key? key,
@@ -25,18 +26,46 @@ class StepperConnector extends StatelessWidget {
     this.animationAwaitDuration = Duration.zero,
     this.activeColor,
     this.disabledColor,
-    required this.value
+    required this.value,
+    this.isCallingFromAddVessel
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return isCallingFromAddVessel! ?
+    Expanded(
+      child: LinearProgressIndicator(
+        backgroundColor: dropDownBackgroundColor,
+        valueColor: new AlwaysStoppedAnimation<Color>(blueColor),
+        value: value,
+      ),
+    )
+        : Expanded(
       child: Stack(
         children: [
-          LinearProgressIndicator(
-            backgroundColor: dropDownBackgroundColor,
-            valueColor: new AlwaysStoppedAnimation<Color>(blueColor),
-            value: value,
+          Divider(
+            thickness: connectorThickness,
+            color: disabledColor ?? Theme.of(context).colorScheme.secondaryContainer,
+          ),
+          FutureBuilder(
+            future: Future.delayed(
+              animationDuration * delayFactor + animationAwaitDuration,
+            ),
+            builder: (context, snapshot) => AnimatedSwitcher(
+              switchInCurve: curve,
+              transitionBuilder: (child, animation) => SizeTransition(
+                sizeFactor: animation,
+                child: child,
+                axis: Axis.horizontal,
+              ),
+              duration: animationDuration,
+              child: isPassed && snapshot.connectionState == ConnectionState.done || !shouldRedraw
+                  ? Divider(
+                thickness: connectorThickness,
+                color: activeColor ?? Theme.of(context).primaryColor,
+              )
+                  : const SizedBox(),
+            ),
           ),
         ],
       ),

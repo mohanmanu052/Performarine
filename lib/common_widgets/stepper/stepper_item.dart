@@ -10,6 +10,7 @@ class StepperItem extends StatelessWidget {
   final Color? activeColor;
   final Color? disabledColor;
   final Curve curve;
+  final bool? isCallingFromAddVessel;
 
   const StepperItem({
     Key? key,
@@ -22,17 +23,19 @@ class StepperItem extends StatelessWidget {
     this.animationAwaitDuration = Duration.zero,
     this.activeColor,
     this.disabledColor,
+    this.isCallingFromAddVessel
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ClipOval(
       child: Container(
-        color: disabledColor ?? Theme.of(context).colorScheme.secondaryVariant,
+        color: disabledColor ?? Theme.of(context).colorScheme.secondaryContainer,
         child: Stack(
           children: [
             FutureBuilder(
-              future: Future.delayed(Duration(seconds: 0),),
+              future: isCallingFromAddVessel! ? Future.delayed(Duration(seconds: 0),): Future.delayed(
+                animationDuration * delayFactor + animationAwaitDuration,),
               builder: (context, snapshot) => AnimatedSwitcher(
                 transitionBuilder: (child, animation) => SizeTransition(
                   sizeFactor: animation,

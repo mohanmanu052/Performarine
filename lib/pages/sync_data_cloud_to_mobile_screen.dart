@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/analytics/download_trip.dart';
+import '../common_widgets/stepper/status_stepper.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
@@ -18,7 +19,6 @@ import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
-import 'package:status_stepper/status_stepper.dart';
 
 import '../common_widgets/widgets/log_level.dart';
 import '../common_widgets/widgets/user_feed_back.dart';
@@ -28,7 +28,7 @@ import 'feedback_report.dart';
 class SyncDataCloudToMobileScreen extends StatefulWidget {
   int?bottomNavIndex;
 
-   SyncDataCloudToMobileScreen({Key? key,this.bottomNavIndex}) : super(key: key);
+  SyncDataCloudToMobileScreen({Key? key,this.bottomNavIndex}) : super(key: key);
 
   @override
   State<SyncDataCloudToMobileScreen> createState() =>
@@ -43,14 +43,14 @@ class _SyncDataCloudToMobileScreenState
 
   final statuses = List.generate(
     3,
-    (index) => SizedBox.square(
+        (index) => SizedBox.square(
       dimension: 14,
       child: Center(child: Text('')),
     ),
   );
 
-  int curIndex = -1;
-  int lastIndex = -1;
+  double curIndex = -1;
+  double lastIndex = -1;
 
   late CommonProvider commonProvider;
 
@@ -76,15 +76,15 @@ class _SyncDataCloudToMobileScreenState
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-if(widget.bottomNavIndex==1){
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.portraitUp
-    ]);
+    if(widget.bottomNavIndex==1){
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+        DeviceOrientation.portraitDown,
+        DeviceOrientation.portraitUp
+      ]);
 
-}
+    }
   }
 
   /// To get user data from api if internet connection is on
@@ -141,13 +141,13 @@ if(widget.bottomNavIndex==1){
                   ),
                   SizedBox(
                     height:Platform.isAndroid? MediaQuery.of(context).size.height/24:MediaQuery.of(context).size.height/28,
-                   // height: displayHeight(context) * 0.04,
+                    // height: displayHeight(context) * 0.04,
                   ),
-                  
+
                   Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: reportTripsListColor
+                        borderRadius: BorderRadius.circular(30),
+                        color: reportTripsListColor
                     ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 15),
@@ -191,8 +191,8 @@ if(widget.bottomNavIndex==1){
                             ),
                           ),
                           SizedBox(
-                            height: displayHeight(context) * 0.03
-                            
+                              height: displayHeight(context) * 0.03
+
                           ),
                           !commonProvider.exceptionOccurred
                               ? Container(
@@ -213,10 +213,10 @@ if(widget.bottomNavIndex==1){
 
                                   sharedPreferences!
                                       .setBool('isFirstTimeUser', true);
-                                       await   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                  await   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
 
-                                 await Navigator.pushAndRemoveUntil(
+                                  await Navigator.pushAndRemoveUntil(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => BottomNavigation()),
@@ -244,7 +244,7 @@ if(widget.bottomNavIndex==1){
 
                                         sharedPreferences!
                                             .setBool('isFirstTimeUser', true);
- await   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                        await   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
                                         Navigator.pushAndRemoveUntil(
                                             context,
@@ -289,15 +289,15 @@ if(widget.bottomNavIndex==1){
                   ),
 
                   commonProvider.exceptionOccurred
-                  ? 
-                  
+                      ?
+
                   Padding(
                     padding: EdgeInsets.only(
                       top: displayWidth(context) * 0.03,
                     ),
                     child: GestureDetector(
                         onTap: ()async{
-                          final image = await controller.capture();   
+                          final image = await controller.capture();
                           await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
 
@@ -308,7 +308,7 @@ if(widget.bottomNavIndex==1){
                         child: UserFeedback().getUserFeedback(context)
                     ),
                   )
-                  : Container(),
+                      : Container(),
 
                   // SizedBox(
                   //   height: displayWidth(context) * 0.02,
@@ -338,6 +338,7 @@ if(widget.bottomNavIndex==1){
             lastActiveIndex: lastIndex,
             currentIndex: curIndex,
             connectorThickness: 5,
+            isCallingFromAddVessel: false,
           ),
           SizedBox(
             height: 14,
@@ -360,13 +361,13 @@ if(widget.bottomNavIndex==1){
               Expanded(
                   child: Center(
                       child: commonText(
-                text: 'Importing data\nin application',
-                context: context,
-                textSize: displayWidth(context) * 0.025,
-                textColor: Colors.black,
-                fontWeight: FontWeight.w500,
-                textAlign: TextAlign.center,
-              ))),
+                        text: 'Importing data\nin application',
+                        context: context,
+                        textSize: displayWidth(context) * 0.025,
+                        textColor: Colors.black,
+                        fontWeight: FontWeight.w500,
+                        textAlign: TextAlign.center,
+                      ))),
               Expanded(
                   child: Align(
                       alignment: Alignment.centerRight,
@@ -397,7 +398,7 @@ if(widget.bottomNavIndex==1){
 
     commonProvider
         .getUserConfigData(context, commonProvider.loginModel!.userId!,
-            commonProvider.loginModel!.token!, scaffoldKey)
+        commonProvider.loginModel!.token!, scaffoldKey)
         .then((value) async {
       if (value != null) {
         if (value.status!) {
@@ -406,11 +407,11 @@ if(widget.bottomNavIndex==1){
             lastIndex = 0;
           });
 
-      Utils.customPrint('LENGTH: ${value.vessels!.length}');
+          Utils.customPrint('LENGTH: ${value.vessels!.length}');
           CustomLogger().logWithFile(Level.info, "LENGTH: ${value.vessels!.length} -> $page");
           for (int i = 0; i < value.vessels!.length; i++) {
             if (value.vessels![i].name == 'rrrrr 12') {
-      Utils.customPrint('RRRRR 12 VESSEL DATA: ${value.vessels![i].toJson()}');
+              Utils.customPrint('RRRRR 12 VESSEL DATA: ${value.vessels![i].toJson()}');
               CustomLogger().logWithFile(Level.info, "RRRRR 12 VESSEL DATA: ${value.vessels![i].toJson()} -> $page");
 
             }
@@ -425,9 +426,9 @@ if(widget.bottomNavIndex==1){
               cloudImage = value.vessels![i].imageURLs == []
                   ? ''
                   : value.vessels![i].imageURLs
-                      .toString()
-                      .replaceAll("[", "")
-                      .replaceAll("]", "");
+                  .toString()
+                  .replaceAll("[", "")
+                  .replaceAll("]", "");
 
               Utils.customPrint(
                   'USER CONFIG DATA CLOUD IMAGE 1212 $cloudImage');
@@ -569,7 +570,7 @@ if(widget.bottomNavIndex==1){
                 isSync: 1,
                 updatedBy: value.vessels![i].updatedBy.toString(),
                 isCloud: 1,
-              hullType: int.parse(value.vessels![i].hullType.toString())
+                hullType: int.parse(value.vessels![i].hullType.toString())
             );
 
             var vesselExist = await _databaseService
@@ -633,7 +634,7 @@ if(widget.bottomNavIndex==1){
 
           Future.delayed(Duration(seconds: 2), () async{
             sharedPreferences!.setBool('isFirstTimeUser', true);
-  await  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+            await  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
             Navigator.pushAndRemoveUntil(
                 context,
