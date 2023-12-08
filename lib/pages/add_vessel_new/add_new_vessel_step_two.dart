@@ -789,6 +789,7 @@ if (dotCount > 1) {
             connectorThickness: 5,
             children: statuses,
             value: 1,
+            isCallingFromAddVessel: true,
           ),
           SizedBox(
             height: 14,

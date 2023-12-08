@@ -831,6 +831,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
             connectorThickness: 5,
             children: statuses,
             value: 0.5,
+            isCallingFromAddVessel: true
           ),
           SizedBox(
             height: 14,
