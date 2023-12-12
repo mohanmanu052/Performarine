@@ -576,6 +576,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         ChangeNotifierProvider(create: (_) => CommonProvider()),
       ],
       child: GetMaterialApp(
+        theme: ThemeData(useMaterial3: false),
+
         title: 'PerforMarine',
         debugShowCheckedModeBanner: false,
         initialRoute: "/",
@@ -739,6 +741,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     FirebaseRemoteConfig data = await setupRemoteConfig();
     String vinValidation = data.getString('version');
     String hullTypes = data.getString('HullType');
+    String lprConfigaration=data.getString('LprConfigaration');
 
     Utils.customPrint('VINNNNNNNNNNNNNNN ${hullTypes}');
 
@@ -746,6 +749,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
     await storage.write(key: 'baseUrl', value: vinValidation);
     await storage.write(key: 'hullTypes', value: hullTypes);
+    await storage.write(key:'lprConfig' ,value: lprConfigaration);
 
     readData();
 

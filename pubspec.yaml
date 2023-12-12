@@ -95,7 +95,7 @@ dependencies:
   flutter_xlider: ^3.5.0
   animated_bottom_navigation_bar: ^1.2.0
   dropdown_button2: ^2.0.0
-  fluttertoast: ^8.2.2
+  fluttertoast: ^8.2.4
   #syncfusion_flutter_core: ^23.1.36
   # intl: ^0.18.0
 

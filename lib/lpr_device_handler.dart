@@ -44,17 +44,35 @@ class LPRDeviceHandler {
 
   bool isRefreshList = false;
   bool isSelfDisconnected = false;
-    final Guid _lprUartTX = Guid("49535343-1E4D-4BD9-BA61-23C647249616");
-  // RX Characteristic, Write and Write without response
-  final Guid _lprUartRX = Guid("49535343-8841-43F4-A8D4-ECBE34729BB3");
+
+
+
+Future<Map<String,dynamic>>  getLPRConfigartion()async  {
+    FlutterSecureStorage storage = FlutterSecureStorage();
+    String? lprConfig = await storage.read(
+        key: 'lprConfig'
+    );
+
+    if(lprConfig != null){
+      Map<String, dynamic> mapOfConfig = jsonDecode(lprConfig);
+      Utils.customPrint('the config map was: ${mapOfConfig}');
+    return  Future.value(mapOfConfig);
+      
+  }else{
+    return Future.value({});
+  }
+  
+  }
 
 
   setLPRDevice(BluetoothDevice device) async {
     this.connectedDevice = device;
     this.context = Get.context;
     var pref = await Utils.initSharedPreferences();
+     pref.setBool('device_forget',false);
 
-                             pref.setBool('device_forget',false);
+
+
 
     Utils.customPrint(
         'BLE - CONNECTED DEVICE: ${connectedDevice!.remoteId.str}');
@@ -69,6 +87,15 @@ class LPRDeviceHandler {
   }
 
   void listenToDeviceConnectionState()async {
+        Map<String,dynamic> lpConfigValues= await    getLPRConfigartion();
+final Guid? _lprUartTX;
+final Guid? _lprUartRX;
+
+         _lprUartTX = Guid( lpConfigValues['lprUartTX']?? "49535343-1E4D-4BD9-BA61-23C647249616");
+  // RX Characteristic, Write and Write without response
+  _lprUartRX = Guid(lpConfigValues['lprUartRX'] ??  "49535343-8841-43F4-A8D4-ECBE34729BB3");
+
+
 
     if (connectedDevice != null) {
 
@@ -99,24 +126,20 @@ services.forEach((service) async {
   String uuid=connectedDevice!.servicesList![0].uuid.toString();
 String?       dataLine;
 for(BluetoothCharacteristic c in characteristics) {
- // if(c.serviceUuid==uuid){
+  // if(c.serviceUuid==uuid){
 
-  if(c.serviceUuid==_lprUartTX||c.serviceUuid==_lprUartRX){
+  if (c.serviceUuid == _lprUartTX || c.serviceUuid == _lprUartRX) {
     if (c.properties.read) {
-        List<int> value = await c.read();
+      List<int> value = await c.read();
 
-       dataLine = utf8.decode(value);
-
-
-
+      dataLine = utf8.decode(value);
     }
-    DownloadTrip().saveLPRData(dataLine??'');
+    DownloadTrip().saveLPRData(dataLine ?? '');
 
- // }
+    // }
+    // }
   }
 }
-
-
     // do something with service
 });
 
@@ -235,7 +258,7 @@ for(BluetoothCharacteristic c in characteristics) {
 
 
                                 EasyLoading.dismiss();
-                                Get.back();
+                             //   Get.back();
                                                                                                     //Navigator.pop(context!);
 
                               })
