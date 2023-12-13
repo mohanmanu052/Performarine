@@ -109,6 +109,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
     });
 
     Utils.customPrint('CURRENT TIME TIME ${tripDuration}');
+    
     //Utils.customPrint('CURRENT TIME TIME ${tripData!.time}');
 
   }

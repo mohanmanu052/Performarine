@@ -125,21 +125,21 @@ services.forEach((service) async {
   var characteristics = service.characteristics;
   String uuid=connectedDevice!.servicesList![0].uuid.toString();
 String?       dataLine;
-for(BluetoothCharacteristic c in characteristics) {
-  // if(c.serviceUuid==uuid){
+// for(BluetoothCharacteristic c in characteristics) {
+//   if(c.serviceUuid==uuid){
 
-  if (c.serviceUuid == _lprUartTX || c.serviceUuid == _lprUartRX) {
-    if (c.properties.read) {
-      List<int> value = await c.read();
+// //  if (c.serviceUuid == _lprUartTX || c.serviceUuid == _lprUartRX) {
+//     if (c.properties.read) {
+//       List<int> value = await c.read();
 
-      dataLine = utf8.decode(value);
-    }
-    DownloadTrip().saveLPRData(dataLine ?? '');
+//       dataLine = utf8.decode(value);
+//    // }
+//     DownloadTrip().saveLPRData(dataLine ?? '');
 
-    // }
-    // }
-  }
-}
+//      }
+//     // }
+// }
+//}
     // do something with service
 });
 
@@ -180,21 +180,27 @@ for(BluetoothCharacteristic c in characteristics) {
     }
   }
 
-  void showDeviceDisconnectedDialog(BluetoothDevice? previouslyConnectedDevice) {
+  void showDeviceDisconnectedDialog(BluetoothDevice? previouslyConnectedDevice,{int bottomNavIndex=0}) {
     isSelfDisconnected = false;
     bool isDailogShowing=true;
     Get.dialog(
         barrierDismissible: false,
         Dialog(
-          child: WillPopScope(
+          child:OrientationBuilder(
+  builder: (context, orientation) {
+    return 
+          
+          
+          
+           WillPopScope(
             onWillPop: () async => false,
             child: Container(
-              height: displayHeight(Get.context!) * 0.42,
-              width: MediaQuery.of(Get.context!).size.width,
+              height:orientation==Orientation.portrait? displayHeight(Get.context!) * 0.42:displayHeight(Get.context!) * 0.70,
+              width:orientation==Orientation.portrait? MediaQuery.of(Get.context!).size.width:MediaQuery.of(Get.context!).size.width/1.5,
               decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
               child: Padding(
-                padding: const EdgeInsets.only(
-                    left: 8.0, right: 8.0, top: 15, bottom: 15),
+                padding:  EdgeInsets.only(
+                    left: 8.0, right: 8.0, top:orientation==Orientation.portrait? 15.0:0.0, bottom:orientation==Orientation.portrait? 15.0:0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -208,7 +214,7 @@ for(BluetoothCharacteristic c in characteristics) {
                           //color: Color(0xfff2fffb),
                           child: Image.asset(
                             'assets/images/boat.gif',
-                            height: displayHeight(Get.context!) * 0.1,
+                            height:orientation==Orientation.portrait?   displayHeight(Get.context!) * 0.1:displayHeight(Get.context!) * 0.2,
                             width: displayWidth(Get.context!),
                             fit: BoxFit.contain,
                           ),
@@ -224,7 +230,7 @@ for(BluetoothCharacteristic c in characteristics) {
                               'It seems like, LPR device is disconnected. Please connect again and ensure that it is connected.',
                           fontWeight: FontWeight.w500,
                           textColor: Colors.black87,
-                          textSize: displayWidth(Get.context!) * 0.042,
+                          textSize:orientation==Orientation.portrait?  displayWidth(Get.context!) * 0.042:displayWidth(Get.context!) * 0.023,
                           textAlign: TextAlign.center),
                     ),
                     SizedBox(
@@ -246,6 +252,7 @@ for(BluetoothCharacteristic c in characteristics) {
                                   .connect()
                               .then((value) {
                                 connectedDevice = previouslyConnectedDevice;
+                                LPRDeviceHandler().setLPRDevice(connectedDevice!);
                                             Fluttertoast.showToast(
                 msg: 'Device Connected ${connectedDevice?.advName.toString()}',
                 toastLength: Toast.LENGTH_SHORT,
@@ -275,11 +282,11 @@ for(BluetoothCharacteristic c in characteristics) {
                               autoConnectToDevice(isDailogShowing);
                             }
                           },
-                              displayWidth(Get.context!) / 1.5,
-                              displayHeight(Get.context!) * 0.055,
+                             orientation==Orientation.portrait? displayWidth(Get.context!) / 1.5:displayWidth(Get.context!) / 3,
+                          orientation==Orientation.portrait?    displayHeight(Get.context!) * 0.055:displayHeight(Get.context!) * 0.095,
                               primaryColor,
                               Colors.white,
-                              displayWidth(Get.context!) * 0.036,
+                             orientation==Orientation.portrait?   displayWidth(Get.context!) * 0.036:displayWidth(Get.context!) * 0.023,
                               endTripBtnColor,
                               '',
                               fontWeight: FontWeight.w500),
@@ -296,12 +303,12 @@ for(BluetoothCharacteristic c in characteristics) {
                                 endTrip();
                               },
                               displayWidth(Get.context!) * 0.5,
-                              displayHeight(Get.context!) * 0.05,
+                         orientation==Orientation.portrait?     displayHeight(Get.context!) * 0.05:displayHeight(Get.context!) * 0.10,
                               Colors.transparent,
                               Theme.of(Get.context!).brightness == Brightness.dark
                                   ? Colors.white
                                   : blueColor,
-                              displayHeight(Get.context!) * 0.018,
+                             orientation==Orientation.portrait?   displayHeight(Get.context!) * 0.018:displayHeight(Get.context!) * 0.038,
                               Colors.transparent,
                               '',
                               fontWeight: FontWeight.w500),
@@ -314,7 +321,8 @@ for(BluetoothCharacteristic c in characteristics) {
                   ],
                 ),
               ),
-            ),
+            ));
+  }
           ),
         ));
   }
@@ -324,9 +332,9 @@ for(BluetoothCharacteristic c in characteristics) {
     final FlutterSecureStorage storage = FlutterSecureStorage();
     var lprDeviceId = sharedPreferences!.getString('lprDeviceId');
     // var lprDeviceId = await storage.read(key: 'lprDeviceId');
-if(isDailogShowing){
-  Get.back();
-}
+// if(isDailogShowing){
+//   Get.back();
+// }
 
     Utils.customPrint("LPR DEVICE ID $lprDeviceId");
 
@@ -369,6 +377,7 @@ if(isDailogShowing){
               if (storedDeviceIdResultList.isNotEmpty) {
                 ScanResult r = storedDeviceIdResultList.first;
                 r.device.connect().then((value) {
+
                   Fluttertoast.showToast(
                       msg: "Connected to ${r.device.platformName}",
                       toastLength: Toast.LENGTH_SHORT,

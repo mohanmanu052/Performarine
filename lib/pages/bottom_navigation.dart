@@ -1155,7 +1155,7 @@ class _BottomNavigationState extends State<BottomNavigation>
                                         Utils.customPrint(
                                             'INTRO TRIP IS RUNNING 22222 $isRunning2');
                                         Navigator.of(context).pop();
-                                        LPRDeviceHandler().showDeviceDisconnectedDialog(null);
+                                        LPRDeviceHandler().showDeviceDisconnectedDialog(null,bottomNavIndex:_bottomNavIndex );
                                       }
                                     }
                                     else{
