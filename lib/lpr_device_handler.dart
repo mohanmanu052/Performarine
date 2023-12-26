@@ -41,6 +41,7 @@ class LPRDeviceHandler {
   StreamSubscription<List<ScanResult>>? autoConnectStreamSubscription;
   StreamSubscription<bool>? autoConnectIsScanningStreamSubscription;
   StreamSubscription<BluetoothConnectionState>? bluetoothConnectionStateListener;
+  BluetoothService? lprService;
 
   bool isRefreshList = false;
   bool isSelfDisconnected = false;
@@ -90,6 +91,7 @@ Future<Map<String,dynamic>>  getLPRConfigartion()async  {
         Map<String,dynamic> lpConfigValues= await    getLPRConfigartion();
 final Guid? _lprUartTX;
 final Guid? _lprUartRX;
+  final Guid _lprTransparentServiceUUID = Guid("49535343-FE7D-4AE5-8FA9-9FAFD205E455");
 
          _lprUartTX = Guid( lpConfigValues['lprUartTX']?? "49535343-1E4D-4BD9-BA61-23C647249616");
   // RX Characteristic, Write and Write without response
@@ -121,14 +123,71 @@ if(!getForgotStatus&&getLprStatus){
           }
         } else if (event == BluetoothConnectionState.connected) {
 List<BluetoothService> services =await  connectedDevice!.discoverServices();
-services.forEach((service) async {
-  var characteristics = service.characteristics;
-  String uuid=connectedDevice!.servicesList![0].uuid.toString();
-String?       dataLine;
-// for(BluetoothCharacteristic c in characteristics) {
-//   if(c.serviceUuid==uuid){
+    try {
+      lprService = services?.singleWhere((element) =>
+      element.uuid ==
+          _lprTransparentServiceUUID);
+    }
+    //If we selected the wrong device (i.e. not the LPR) or if the service
+    //is disabled for some reason....
+    catch (ex){
+      Utils.customPrint(
+              'LPR Streaming Data Error: connected Device remote Str ${connectedDevice!.remoteId.str}  err : ${ex.toString()}')
+      ;
+    }
+    //return true;
+  
 
-// //  if (c.serviceUuid == _lprUartTX || c.serviceUuid == _lprUartRX) {
+  // bool listenToLPRUpdates() {
+  //   if(lprService == null) {
+  //     return true;
+  //   }
+
+  //   if(_isListeningToLPRStream){
+  //     return false;
+  //   }
+
+  //   _isListeningToLPRStream = true;
+
+    // String dataLine = "No Data";
+    // Timer.periodic(Duration(seconds: 1), (timer) {
+    //   setState((){
+    //     lprDataText = dataLine;
+    //   });
+    // });
+
+
+    // Timer.periodic(Duration(seconds: 1),(){
+    //   setState((){
+    //        lprDataText = dataLine;
+    //   });
+    // });
+
+
+
+
+    var dataCharacteristic = lprService!.characteristics.singleWhere((element) => element.uuid == _lprUartTX);
+
+    dataCharacteristic.setNotifyValue(true);
+    dataCharacteristic.lastValueStream.listen((value) {
+      print('the data characterstics was----------'+dataCharacteristic.toString());
+      if(value.isEmpty) {
+        return;
+      }
+
+    String  dataLine = utf8.decode(value);
+       DownloadTrip().saveLPRData(dataLine ?? '');
+    });
+      
+
+// services.forEach((service) async {
+//   var characteristics = service.characteristics;
+//   String uuid=connectedDevice!.servicesList![0].uuid.toString();
+// String?       dataLine;
+// for(BluetoothCharacteristic c in characteristics) {
+//   //if(c.serviceUuid==uuid){
+
+//   //if (c.serviceUuid == _lprUartTX || c.serviceUuid == _lprUartRX) {
 //     if (c.properties.read) {
 //       List<int> value = await c.read();
 
@@ -136,12 +195,12 @@ String?       dataLine;
 //    // }
 //     DownloadTrip().saveLPRData(dataLine ?? '');
 
-//      }
+//    //  }
 //     // }
 // }
-//}
-    // do something with service
-});
+// }
+//     // do something with service
+// });
 
 // BluetoothService deviecService=services[0];
 // String uuid=connectedDevice!.servicesList![0].uuid.toString();
