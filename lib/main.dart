@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -44,6 +45,7 @@ import 'package:wakelock/wakelock.dart';
 import 'package:workmanager/workmanager.dart';
 
 import 'analytics/get_or_create_folder.dart';
+import 'common_widgets/controller/location_controller.dart';
 import 'common_widgets/widgets/log_level.dart';
 import 'pages/new_intro_screen.dart';
 
@@ -80,8 +82,17 @@ void main() async {
 
   tz.initializeTimeZones();
 
+  await FlutterMapTileCaching.initialise();
+
   //Firebase.initializeApp
   await Firebase.initializeApp();
+
+  try{
+    FMTC.instance('mapStore').manage.createAsync();
+
+  }catch(error){
+    print('the FMTC Initialization error was ${error.toString()}');
+  }
 
   bool wakelockEnabled = await Wakelock.enabled;
 
@@ -574,6 +585,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => CommonProvider()),
+        ChangeNotifierProvider(create: (_) => LocationController()),
       ],
       child: GetMaterialApp(
         theme: ThemeData(useMaterial3: false),

@@ -14,7 +14,7 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_map/plugin_api.dart';
-// import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
+import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_xlider/flutter_xlider.dart';
 import 'package:geolocator/geolocator.dart' as geo;
@@ -22,6 +22,7 @@ import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:logger/logger.dart';
 import 'package:objectid/objectid.dart';
+import 'package:performarine/common_widgets/controller/location_controller.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
@@ -130,6 +131,8 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
   StreamSubscription<List<ScanResult>>? autoConnectStreamSubscription;
   StreamSubscription<bool>? autoConnectIsScanningStreamSubscription;
 
+  LocationController? locationController;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -157,6 +160,8 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     commonProvider = context.read<CommonProvider>();
     getVesselAndTripsData();
 
+    locationController = Provider.of<LocationController>(context, listen: false);
+
     checkTempPermissions();
     textEditingController = TextEditingController();
 
@@ -174,6 +179,8 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     Future.delayed(Duration(milliseconds: 500), () {
       checkPermissionsAndAutoConnectToDevice(context);
     });
+
+    locationController?.getUserCurrentLocation(context);
   }
 
   checkPermissionsAndAutoConnectToDevice(BuildContext context) async {
@@ -1102,24 +1109,46 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(30),
-                          child: FlutterMap(
-                            options: MapOptions(
-                                center: LatLng(56.704173, 11.543808),
-                                minZoom: 12,
-                                maxZoom: 14,
-                                bounds: LatLngBounds(
-                                  LatLng(56.7378, 11.6644),
-                                  LatLng(56.6877, 11.5089),
-                                )
-                            ),
-                            children: [
-                              TileLayer(
-                                tileProvider: AssetTileProvider(),
-                                maxZoom: 14,
-                                urlTemplate: 'assets/map/anholt_osmbright/{z}/{x}/{y}.png',
-                              ),
-                            ],
-                          ),
+                          child:  Consumer<LocationController>(
+                              builder: (context, LocationController controler, child) {
+                                return controler.lattitude == null && controler.longitude == null
+                                    ? const Center(child: CircularProgressIndicator())
+                                    : FlutterMap(
+                                        options: MapOptions(
+                                          //By Default Coordinates Setted To Delhi
+                                          center: LatLng(controler.lattitude ?? 28.6139,
+                                              controler.longitude ?? 77.2090),
+                                          zoom: 13,
+                                          maxZoom: 16,
+                                        ),
+                                        children: [
+                                          TileLayer(
+                                            urlTemplate:
+                                            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                            userAgentPackageName: 'com.example.app',
+                                            tileProvider:
+                                            FMTC.instance('mapStore').getTileProvider(),
+                                          ),
+
+                                          MarkerLayer(
+                                            markers: [
+                                              Marker(
+                                                rotate: false,
+                                                point: LatLng(controler.lattitude ?? 14.2002691,
+                                                    controler.longitude ?? 75.8869918),
+                                                width: 250,
+                                                height: 250,
+                                                builder: (context) => const Icon(
+                                                  Icons.location_on_sharp,
+                                                  color: Colors.red,
+                                                  size: 40,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+
+                                        ]);
+                              }),
 
                         ),
                       ),
