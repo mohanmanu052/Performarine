@@ -497,12 +497,13 @@ class DownloadTrip {
 
           /// STOP WRITING & CREATE NEW FILE
         } else {
-          Utils.customPrint('WRITING');
+          Utils.customPrint('LPR WRITING');
 
           String finalString = '';
 
           /// Creating csv file Strings by combining all the values
-          finalString = data;
+           var todayDate = DateTime.now().toUtc();
+          finalString = '${data} ${todayDate}';
 
           /// Writing into a csv file
           lprFile.writeAsString('$finalString\n', mode: FileMode.append);
