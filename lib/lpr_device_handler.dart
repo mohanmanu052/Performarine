@@ -112,7 +112,7 @@ bool isLoadLocalLprFile=false
         Map<String,dynamic> lpConfigValues= await    getLPRConfigartion();
 final Guid? _lprUartTX;
 final Guid? _lprUartRX; 
-  final Guid _lprTransparentServiceUUID = Guid("49535343-FE7D-4AE5-8FA9-9FAFD205E455");
+  final Guid _lprTransparentServiceUUID = Guid(lpConfigValues['lprTransparentServiceUUID']??"49535343-FE7D-4AE5-8FA9-9FAFD205E455");
 
          _lprUartTX = Guid( lpConfigValues['lprUartTX']?? "49535343-1E4D-4BD9-BA61-23C647249616");
   // RX Characteristic, Write and Write without response

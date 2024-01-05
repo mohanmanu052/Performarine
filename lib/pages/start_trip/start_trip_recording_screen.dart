@@ -1120,6 +1120,8 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                               controler.longitude ?? 77.2090),
                                           zoom: 13,
                                           maxZoom: 16,
+                                          minZoom: 3
+                                          
                                         ),
                                         children: [
                                           TileLayer(
