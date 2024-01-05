@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -24,6 +25,12 @@ import 'common_widgets/utils/common_size_helper.dart';
 import 'common_widgets/utils/utils.dart';
 
 class LPRDeviceHandler {
+  Function(String lprTransperntServiceId)? getLprServiceId; 
+Function (bool lprServiceIdStatus )? getLprServiceIdStatus;
+Function(String lprUartTX)? getLPRUartTxId;
+Function(bool lprUartTX)? getLPRUartTxIdStatus;
+
+
   static final LPRDeviceHandler _instance = LPRDeviceHandler._internal();
 
   factory LPRDeviceHandler() => _instance;
@@ -45,6 +52,7 @@ class LPRDeviceHandler {
 
   bool isRefreshList = false;
   bool isSelfDisconnected = false;
+
 
 
 
@@ -87,15 +95,43 @@ Future<Map<String,dynamic>>  getLPRConfigartion()async  {
     this.onDeviceDisconnectCallback = callback;
   }
 
-  void listenToDeviceConnectionState()async {
+  void listenToDeviceConnectionState({
+    //Call back Functions to return the status and info related Ids And Other Things on MapScreen
+    Function(String lprTransperntServiceId, String lprUartTX)?callBackLprTanspernetserviecId,
+    Function(String status)?callBackLprTanspernetserviecIdStatus,
+        Function(String status)?callBackLprUartTxStatus,
+Function(String bluetoothDeviceName)? callBackconnectedDeviceName,
+Function(String lprSteamingData)? callBackLprStreamingData,
+bool isLoadLocalLprFile=true
+    
+     }
+    
+    
+    
+    )async {
         Map<String,dynamic> lpConfigValues= await    getLPRConfigartion();
 final Guid? _lprUartTX;
-final Guid? _lprUartRX;
+final Guid? _lprUartRX; 
   final Guid _lprTransparentServiceUUID = Guid("49535343-FE7D-4AE5-8FA9-9FAFD205E455");
 
          _lprUartTX = Guid( lpConfigValues['lprUartTX']?? "49535343-1E4D-4BD9-BA61-23C647249616");
   // RX Characteristic, Write and Write without response
   _lprUartRX = Guid(lpConfigValues['lprUartRX'] ??  "49535343-8841-43F4-A8D4-ECBE34729BB3");
+//Asigning default callback methods to aviod null check issue while calling the function and assign the values  
+  callBackLprTanspernetserviecId ??= (String lprTransperntServiceId, String lprUartTx) {
+  };
+    callBackLprStreamingData ??= (String lprTransperntServiceId) {
+  };
+callBackLprUartTxStatus ??= ( String status) {
+  };
+callBackconnectedDeviceName??=(String name){
+
+};
+  callBackLprTanspernetserviecIdStatus ??= (String transperntStats) {
+  };
+
+//This Function will return the LPR Transpernt ServiceId LPR UARTX ID In The Maps Screen To Show IDs Info
+  callBackLprTanspernetserviecId(_lprTransparentServiceUUID.toString(),_lprUartTX.toString());
 
 
 
@@ -123,62 +159,67 @@ if(!getForgotStatus&&getLprStatus){
           }
         } else if (event == BluetoothConnectionState.connected) {
 List<BluetoothService> services =await  connectedDevice!.discoverServices();
+//This Function Will Return The Connected BlueTooth Name On Map Screen
+callBackconnectedDeviceName!(connectedDevice!.platformName);
+
     try {
-      lprService = services?.singleWhere((element) =>
+    //This Will Check LprService element UUID Matches With LPRTransparentServiceUUID 
+      lprService = services.singleWhere((element) =>
       element.uuid ==
           _lprTransparentServiceUUID);
+          //If The Service UUID Match This Function Return The Call Back As Connected In The Maps Screen
+
+          callBackLprTanspernetserviecIdStatus!('Connected');
     }
     //If we selected the wrong device (i.e. not the LPR) or if the service
     //is disabled for some reason....
     catch (ex){
+      //Callback it will return the exception to Map Screen
+      callBackLprTanspernetserviecIdStatus!(ex.toString());
       Utils.customPrint(
               'LPR Streaming Data Error: connected Device remote Str ${connectedDevice!.remoteId.str}  err : ${ex.toString()}')
       ;
     }
-    //return true;
-  
+    //By Default LPRUARTX is setting as not connected
+      callBackLprUartTxStatus!('Not Connected');
+//Check is LPRUARTX value matches with the LPRService Element UUID This Will Execute only IF LPRTransparentServiceUUID Matches In The Beginig Step
+    var dataCharacteristic = lprService?.characteristics.singleWhere((element) => element.uuid == _lprUartTX);
 
-  // bool listenToLPRUpdates() {
-  //   if(lprService == null) {
-  //     return true;
-  //   }
-
-  //   if(_isListeningToLPRStream){
-  //     return false;
-  //   }
-
-  //   _isListeningToLPRStream = true;
-
-    // String dataLine = "No Data";
-    // Timer.periodic(Duration(seconds: 1), (timer) {
-    //   setState((){
-    //     lprDataText = dataLine;
-    //   });
-    // });
-
-
-    // Timer.periodic(Duration(seconds: 1),(){
-    //   setState((){
-    //        lprDataText = dataLine;
-    //   });
-    // });
-
-
-
-
-    var dataCharacteristic = lprService!.characteristics.singleWhere((element) => element.uuid == _lprUartTX);
-
-    dataCharacteristic.setNotifyValue(true);
-    dataCharacteristic.lastValueStream.listen((value) {
-      print('the data characterstics was----------'+dataCharacteristic.toString());
+    dataCharacteristic?.setNotifyValue(true);
+    //This Will Listen The LPR The LPR Streaming Data
+    dataCharacteristic?.value.listen((value) {
+    //If All The Above Condition SucessFull This CallBack Will Return As LPRUARTX Status as Connected In Maps Screen
+      callBackLprUartTxStatus!('Connected');
       if(value.isEmpty) {
         return;
       }
-
+//Decoding The Values We Are Reciving From The LPR Device
     String  dataLine = utf8.decode(value);
+    //Saving Decoded Data On The XL
        DownloadTrip().saveLPRData(dataLine ?? '');
+       //This Call Back Will Return Decoded Data On Maps Screen Were We can See That In Dailog 
+       callBackLprStreamingData!(dataLine);
     });
       
+
+  //       bool updateLprTime(){
+  //   if(lprService == null) {
+  //     return false;
+  //   }
+
+  //   var controlCharacteristic = lprService!.characteristics.singleWhere((element) => element.uuid == _lprUartRX);
+
+  //   var timeNow = DateTime.now().toUtc();
+
+  //   String dateTime = "T${timeNow.month.toString().padLeft(2, '0')}/${timeNow.day.toString().padLeft(2, '0')}/${timeNow.year} "
+  //       "${timeNow.hour.toString().padLeft(2, '0')}:${timeNow.minute.toString().padLeft(2, '0')}:${timeNow.second.toString().padLeft(2, '0')}\n";
+
+  //   controlCharacteristic.write(utf8.encode(dateTime),withoutResponse: true);
+  //  // showToast('LPR Time Set!');
+
+  //   return true;
+
+  // }
 
 // services.forEach((service) async {
 //   var characteristics = service.characteristics;
@@ -186,19 +227,20 @@ List<BluetoothService> services =await  connectedDevice!.discoverServices();
 // String?       dataLine;
 // for(BluetoothCharacteristic c in characteristics) {
 //   //if(c.serviceUuid==uuid){
-
 //   //if (c.serviceUuid == _lprUartTX || c.serviceUuid == _lprUartRX) {
+
 //     if (c.properties.read) {
 //       List<int> value = await c.read();
 
 //       dataLine = utf8.decode(value);
 //    // }
 //     DownloadTrip().saveLPRData(dataLine ?? '');
+//         callBackLprStreamingData!(dataLine);
 
 //    //  }
 //     // }
 // }
-// }
+//  }
 //     // do something with service
 // });
 
@@ -229,7 +271,12 @@ List<BluetoothService> services =await  connectedDevice!.discoverServices();
 //       //      lprDataText = dataLine;
 //       // });
 //     });
+//Testing Purpose This Will Load Data From Sample LPRData File From Assets Production Time It will be removed
+// if(isLoadLocalLprFile){
+//       String fileContent = await rootBundle.loadString('assets/map/lpr_dummy_data.txt');
+//        callBackLprStreamingData!(fileContent);
 
+// }
 
 
           Utils.customPrint(

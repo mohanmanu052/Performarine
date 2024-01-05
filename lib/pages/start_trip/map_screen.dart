@@ -19,6 +19,7 @@ import 'package:performarine/new_trip_analytics_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 import 'package:wakelock/wakelock.dart';
 
 import '../../analytics/location_callback_handler.dart';
@@ -39,7 +40,7 @@ class MapScreen extends StatefulWidget {
   final GlobalKey<ScaffoldState>? scaffoldKey;
   final BuildContext? context;
 
-  const MapScreen(
+   MapScreen(
       {super.key,
       this.scaffoldKey,
       this.tripIsRunningOrNot,
@@ -77,6 +78,16 @@ class _MapScreenState extends State<MapScreen> {
   CreateVessel? vesselData;
 
   late CommonProvider commonProvider;
+  // List<double>? _accelerometerValues;
+  // List<double>? _userAccelerometerValues;
+  // List<double>? _gyroscopeValues;
+  // List<double>? _magnetometerValues;
+String? lprTransperntServiceId;
+String? lprTransperntServiceIdStatus;
+String? lprUartTX;
+String? lprUartTxStatus;
+String? connectedBluetoothDeviceName;
+String? lprStreamingData='No Lpr Streaming Data Found';
 
   @override
   void initState() {
@@ -147,8 +158,28 @@ class _MapScreenState extends State<MapScreen> {
         });
       }
     });
+          LPRDeviceHandler().listenToDeviceConnectionState(
+            callBackLprTanspernetserviecId: (String lprTransperntServiceId1,String lprUartTX1){
+lprTransperntServiceId=lprTransperntServiceId1;
+lprUartTX=lprUartTX1;
 
-          LPRDeviceHandler().listenToDeviceConnectionState();
+            },
+            callBackconnectedDeviceName: (bluetoothDeviceName1) {
+              connectedBluetoothDeviceName=bluetoothDeviceName1;
+            },
+            callBackLprTanspernetserviecIdStatus: (String status ){
+lprTransperntServiceIdStatus=status;
+            },
+
+            callBackLprUartTxStatus: (status) {
+              lprUartTxStatus=status;
+            },
+            callBackLprStreamingData: (lprSteamingData1) {
+              
+              lprStreamingData=lprSteamingData1;
+            },
+          );
+        
 
   }
 
@@ -550,7 +581,10 @@ class _MapScreenState extends State<MapScreen> {
                           )
                         ],
                       ),
-                    )
+                    ),
+//Todo Showing The LpR Stream Status And Info Remove once testing is completed
+                                        sensorDailog(),
+
                   ],
                 ),
               ),
@@ -1299,7 +1333,9 @@ class _MapScreenState extends State<MapScreen> {
               );
             }),
           );
-        }).then((value) {});
+        }).then((value) {
+
+        });
   }
 
   /// Reinitialized service after user killed app while trip is running
@@ -1332,4 +1368,139 @@ class _MapScreenState extends State<MapScreen> {
                 notificationTapCallback:
                     LocationCallbackHandler.notificationCallback)));
   }
+
+Widget sensorDailog(){
+  return Container(
+    decoration: BoxDecoration(
+      color: Colors.white.withOpacity(0.2)
+    ),
+    height: displayHeight(context)/2,
+    padding: EdgeInsets.all(8),
+child: SingleChildScrollView(
+  child: Column(
+    mainAxisAlignment: MainAxisAlignment.start,
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+
+                              lprinfoText('Connected Bluetooth Name: ',connectedBluetoothDeviceName.toString()??'',TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w700,
+        color: Colors.black
+      ),TextStyle(
+        fontSize: 17,
+        fontWeight: FontWeight.w400,
+        color: Colors.orange
+
+
+      ) ),
+
+
+                        lprinfoText('LPR UartTX  Status: ',lprUartTxStatus.toString()??'',TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w700,
+        color: Colors.black
+      ),TextStyle(
+        fontSize: 17,
+        fontWeight: FontWeight.w800,
+        color: Colors.green
+
+
+      ) ),
+
+
+
+
+                        lprinfoText('LPR Transparent Service Id Status: ',lprTransperntServiceIdStatus.toString()??'',TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w700,
+        color: Colors.black
+      ),TextStyle(
+        fontSize: 17,
+        fontWeight: FontWeight.w800,
+        color: Colors.green
+
+
+      ) ),
+
+
+                  lprinfoText('LPR Transparent Service Id:',lprTransperntServiceId??'',TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w700,
+        color: Colors.black
+      ),TextStyle(
+        fontSize: 17,
+        fontWeight: FontWeight.w800,
+        color: Colors.deepPurple
+
+
+      ) ),
+
+
+            lprinfoText('LPR UartTX Id: ',lprUartTX??'',TextStyle(
+        fontSize: 15,
+        fontWeight: FontWeight.w700,
+        color: Colors.black
+      ),TextStyle(
+        fontSize: 17,
+        fontWeight: FontWeight.w800,
+        color: Colors.deepPurple
+
+
+      ) ),
+
+  
+      lprinfoText('Lpr Streaming data:',lprStreamingData??'',TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w700,
+        color: Colors.black
+      ),TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        color: Colors.teal
+
+
+      ) )
+      //     Padding(
+      //   padding: const EdgeInsets.all(8.0),
+      //   child: Text('Lpr Streaming data:  $lprStreamingData',
+      //                           style: TextStyle(
+      //     color: Colors.black,
+      //     fontSize: 16,
+      //     fontWeight: FontWeight.w900
+      //   ),
+
+        
+      //   ),
+      // ),
+  
+    ],
+  ),
+),
+
+  );
+}
+
+Widget lprinfoText(String title,String description,TextStyle titleTextStyle,TextStyle descriptionTextStyle){
+  return Padding(
+          padding: const EdgeInsets.all(8.0),
+
+  
+child:RichText(
+      text: TextSpan(
+        text: '',
+        style: DefaultTextStyle.of(context).style,
+        children: <TextSpan>[
+          TextSpan(
+              text: title,
+              style: titleTextStyle),
+          TextSpan(text: description,
+          
+          style: descriptionTextStyle
+          ),
+        ],
+      ),
+    ));
+
+}
+
 }

@@ -128,6 +128,8 @@ flutter:
     - assets/images/
     - assets/lottie/
     - assets/icons/
+    - assets/map/
+    - assets/map/anholt_osmbright/12/2177/
     - assets/map/anholt_osmbright/12/2177/
     - assets/map/anholt_osmbright/12/2178/
     - assets/map/anholt_osmbright/12/2179/

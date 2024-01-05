@@ -44,7 +44,7 @@ class StartTrip {
 
   /// In this function we start to listen to the data coming from background locator port
   /// From sensor we are getting values of x,y & z in double format
-  Future<void> startBGLocatorTrip(String tripId, DateTime dateTime, [bool isReinitialize = false]) async {
+  Future<dynamic> startBGLocatorTrip(String tripId, DateTime dateTime, [bool isReinitialize = false]) async {
 
     // checkGPS();
 
@@ -371,10 +371,12 @@ class StartTrip {
           /// Creating csv file Strings by combining all the values
           finalString = '$acc\n$uacc\n$gyro\n$mag\n$gps';
 
+print('the data was---------------------'+finalString);
           /// Writing into a csv file
           file.writeAsString('$finalString\n', mode: FileMode.append);
-
           Utils.customPrint('GPS $gps');
+          return Future.value(finalString);
+
         }
       }
     }).
