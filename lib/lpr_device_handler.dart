@@ -82,9 +82,9 @@ class LPRDeviceHandler {
     Map<String, dynamic> lpConfigValues = await getLPRConfigartion();
     final Guid? _lprUartTX;
     final Guid? _lprUartRX;
-    final Guid _lprTransparentServiceUUID =
-        Guid("49535343-FE7D-4AE5-8FA9-9FAFD205E455");
+    final Guid _lprTransparentServiceUUID = lpConfigValues['lprTransparentServiceUUID'] ?? Guid("49535343-FE7D-4AE5-8FA9-9FAFD205E455");
 
+    debugPrint("_lprTransparentServiceUUID DDDDD ${_lprTransparentServiceUUID}");
     _lprUartTX = Guid(
         lpConfigValues['lprUartTX'] ?? "49535343-1E4D-4BD9-BA61-23C647249616");
     // RX Characteristic, Write and Write without response
@@ -117,7 +117,8 @@ class LPRDeviceHandler {
         } else if (event == BluetoothConnectionState.connected) {
           List<BluetoothService> services =
               await connectedDevice!.discoverServices();
-          /*try {
+          Utils.customPrint('SERVICES: ${services.length}');
+          try {
       lprService = services?.singleWhere((element) =>
       element.uuid ==
           _lprTransparentServiceUUID);
@@ -171,9 +172,9 @@ class LPRDeviceHandler {
 
     String  dataLine = utf8.decode(value);
        DownloadTrip().saveLPRData(dataLine ?? '');
-    });*/
+    });
 
-          services.forEach((service) async {
+        /*  services.forEach((service) async {
             var characteristics = service.characteristics;
             String uuid = connectedDevice!.servicesList![0].uuid.toString();
             String? dataLine;
@@ -188,13 +189,14 @@ class LPRDeviceHandler {
                 debugPrint("LPR DATA WRITING CODE EVENT $event ");
 
                 dataLine = utf8.decode(value);
-                debugPrint("LPR DATA WRITING CODE $dataLine ");
+                debugPrint("LPR DATA WRITING CODE DATA LINE $dataLine ");
+                debugPrint("LPR DATA WRITING CODE VALUE $value ");
 
                 // }
                 DownloadTrip().saveLPRData(dataLine ?? '');
               });
 
-              /*if (c.properties.read) {
+              *//*if (c.properties.read) {
       List<int> value = await c.read();
 
       dataLine = utf8.decode(value);
@@ -204,10 +206,10 @@ class LPRDeviceHandler {
 
    //  }
     // }
-}*/
+}*//*
             }
             // do something with service
-          });
+          });*/
 
 // BluetoothService deviecService=services[0];
 // String uuid=connectedDevice!.servicesList![0].uuid.toString();
