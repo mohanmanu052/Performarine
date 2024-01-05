@@ -102,7 +102,7 @@ Future<Map<String,dynamic>>  getLPRConfigartion()async  {
         Function(String status)?callBackLprUartTxStatus,
 Function(String bluetoothDeviceName)? callBackconnectedDeviceName,
 Function(String lprSteamingData)? callBackLprStreamingData,
-bool isLoadLocalLprFile=true
+bool isLoadLocalLprFile=false
     
      }
     
@@ -202,81 +202,12 @@ callBackconnectedDeviceName!(connectedDevice!.platformName);
     });
       
 
-  //       bool updateLprTime(){
-  //   if(lprService == null) {
-  //     return false;
-  //   }
-
-  //   var controlCharacteristic = lprService!.characteristics.singleWhere((element) => element.uuid == _lprUartRX);
-
-  //   var timeNow = DateTime.now().toUtc();
-
-  //   String dateTime = "T${timeNow.month.toString().padLeft(2, '0')}/${timeNow.day.toString().padLeft(2, '0')}/${timeNow.year} "
-  //       "${timeNow.hour.toString().padLeft(2, '0')}:${timeNow.minute.toString().padLeft(2, '0')}:${timeNow.second.toString().padLeft(2, '0')}\n";
-
-  //   controlCharacteristic.write(utf8.encode(dateTime),withoutResponse: true);
-  //  // showToast('LPR Time Set!');
-
-  //   return true;
-
-  // }
-
-// services.forEach((service) async {
-//   var characteristics = service.characteristics;
-//   String uuid=connectedDevice!.servicesList![0].uuid.toString();
-// String?       dataLine;
-// for(BluetoothCharacteristic c in characteristics) {
-//   //if(c.serviceUuid==uuid){
-//   //if (c.serviceUuid == _lprUartTX || c.serviceUuid == _lprUartRX) {
-
-//     if (c.properties.read) {
-//       List<int> value = await c.read();
-
-//       dataLine = utf8.decode(value);
-//    // }
-//     DownloadTrip().saveLPRData(dataLine ?? '');
-//         callBackLprStreamingData!(dataLine);
-
-//    //  }
-//     // }
-// }
-//  }
-//     // do something with service
-// });
-
-// BluetoothService deviecService=services[0];
-// String uuid=connectedDevice!.servicesList![0].uuid.toString();
-
-//     var dataCharacteristic = deviecService.characteristics[0];
-
-//    dataCharacteristic.setNotifyValue(true);
-//     dataCharacteristic.value.listen((value) {
-//       if(value.isEmpty) {
-//         return;
-//       }
-//       else{
-//         print('the values was----------------'+value.toString());
-//       }
-//     });
-
-//     dataCharacteristic.setNotifyValue(true);
-//     dataCharacteristic.value.listen((value) {
-//       if(value.isEmpty) {
-//         return;
-//       }
-
-//       dataLine = utf8.decode(value);
-//      // DataRecorder().writeLineToLprLog(dataLine);
-//       // setState((){
-//       //      lprDataText = dataLine;
-//       // });
-//     });
 //Testing Purpose This Will Load Data From Sample LPRData File From Assets Production Time It will be removed
-// if(isLoadLocalLprFile){
-//       String fileContent = await rootBundle.loadString('assets/map/lpr_dummy_data.txt');
-//        callBackLprStreamingData!(fileContent);
+if(isLoadLocalLprFile){
+      String fileContent = await rootBundle.loadString('assets/map/lpr_dummy_data.txt');
+       callBackLprStreamingData!(fileContent);
 
-// }
+}
 
 
           Utils.customPrint(
