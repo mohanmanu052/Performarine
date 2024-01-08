@@ -15,7 +15,6 @@ import '../common_widgets/widgets/log_level.dart';
 class DownloadTrip {
   String page = "Download_trip";
   /// To Download trip
-  File? lprFile;
   IOSink? lprFileSink;
   int fileIndex = 0;
 
@@ -468,34 +467,9 @@ class DownloadTrip {
     return cloudTripPath;
   }
 
-  Future<void> saveLPRData(String data,)async{
-        String tripId = '';
-
-        int fileIndex = 0;
-            List<String>? tripData =
-    sharedPreferences!
-        .getStringList('trip_data');
-    if (tripData != null) {
-      tripId = tripData[0];
-    }
-
+  Future<void> saveLPRData(String data,File lprFile,IOSink lprFileSink)async{
 String? lprFileName;
-String? lprFilePath;
-    if (lprFile == null) {
-       lprFileName = 'lpr_$fileIndex.csv';
-       lprFilePath = await GetFile().getFile(tripId, lprFileName);
-      lprFile = File(lprFilePath);
-      lprFileSink = lprFile!.openWrite(mode: FileMode.append);
-      //lprFileSink!.write(data);
-    }
-
-
-    // String lprFileName = 'lpr_$fileIndex.csv';
-    //     String lprFilePath = await GetFile().getFile(tripId, lprFileName);
-    //   //  File file = File(filePath);
-    //     File lprFile = File(lprFilePath);
-    //    // int fileSize = await GetFile().checkFileSize(file);
-        int lprFileSize = await GetFile().checkFileSize(lprFile!);
+        int lprFileSize = await GetFile().checkFileSize(lprFile);
 
         /// CHECK FOR ONLY 10 KB FOR Testing PURPOSE
         /// Now File Size is 200000
@@ -509,9 +483,11 @@ String? lprFilePath;
       lprFileName = 'lpr_$fileIndex.csv';
 
       // Close the existing file and open a new one
-      lprFileSink!.close();
-      lprFile = null;
-      lprFileSink = null;
+      lprFileSink.close();
+      lprFile=File(lprFileName);
+      lprFileSink=lprFile.openWrite(mode: FileMode.append);
+      
+     // lprFileSink = null;
 
           /// STOP WRITING & CREATE NEW FILE
         } else {
@@ -523,19 +499,19 @@ String? lprFilePath;
           finalString = data;
 
           /// Writing into a csv file
-      lprFileSink!.write('$finalString');
+      lprFileSink.write('$finalString');
       Utils.customPrint('LPR Data $data');
-      Utils.customPrint('LPR Path Was ' + lprFile!.path);
+      Utils.customPrint('LPR Path Was ' + lprFile.path);
 
 
         }
       }
-      Future<void> closeLprFile()async{
-        if(lprFileSink!=null){
-          lprFileSink?.flush();
-          lprFileSink?.close();
-        }
-      }
+      // Future<void> closeLprFile()async{
+      //   if(lprFileSink!=null){
+      //     //lprFileSink?.flush();
+      //     lprFileSink?.close();
+      //   }
+      // }
 
 // Future<void> downloadLPRData()async{
 

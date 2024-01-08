@@ -22,6 +22,7 @@ import 'package:performarine/pages/lpr_bluetooth_list.dart';
 import 'package:performarine/pages/start_trip/start_trip_recording_screen.dart';
 import 'package:performarine/services/database_service.dart';
 
+import 'analytics/get_file.dart';
 import 'common_widgets/utils/common_size_helper.dart';
 import 'common_widgets/utils/utils.dart';
 
@@ -138,14 +139,26 @@ callBackconnectedDeviceName??=(String name){
 //This Function will return the LPR Transpernt ServiceId LPR UARTX ID In The Maps Screen To Show IDs Info
   callBackLprTanspernetserviecId(_lprTransparentServiceUUID.toString(),_lprUartTX.toString());
 
+String? lprFileName;
+IOSink?
+       lprFileSink;
+               String tripId = '';
 
+            List<String>? tripData =
+    sharedPreferences!
+        .getStringList('trip_data');
+    if (tripData != null) {
+      tripId = tripData[0];
+    }
 
     if (connectedDevice != null) {
 
       bluetoothConnectionStateListener = connectedDevice!.connectionState.listen((event) async {
         if (event == BluetoothConnectionState.disconnected) {
+          // if(lprFileSink!=null){
+          //   lprFileSink?.close();
+          // }
           
-DownloadTrip().closeLprFile();
           Utils.customPrint(
               'BLE - DEVICE GOT DISCONNECTED: ${connectedDevice!.remoteId.str} - $event');
 
@@ -164,19 +177,52 @@ if(!getForgotStatus&&getLprStatus){
             if(onDeviceDisconnectCallback != null) onDeviceDisconnectCallback!.call();
           }
         } else if (event == BluetoothConnectionState.connected) {
+//Setting the lprfile name
+       lprFileName = 'lpr_$fileIndex.csv';
+       //Getting The Path Of the File
+      String lprFilePath = await GetFile().getFile(tripId, lprFileName!);
+      //Creating the file
+lprFile=new File(lprFilePath);
+  //Opening the stream to push data (Opening the file)
+lprFileSink = lprFile?.openWrite(mode: FileMode.append);
+
+
 
 List<BluetoothService> services =await  connectedDevice!.discoverServices();
 //This Function Will Return The Connected BlueTooth Name On Map Screen
 callBackconnectedDeviceName!(connectedDevice!.platformName);
+      callBackLprUartTxStatus!('Not Connected');
 
     try {
     //This Will Check LprService element UUID Matches With LPRTransparentServiceUUID 
-      lprService = services.singleWhere((element) =>
-      element.uuid ==
-          Guid('eed6d5cc-c3b2-4d7b-8c6b-7acbf7965bb6'));
+  services.forEach((element) {
+                  if (element.uuid == _lprTransparentServiceUUID) {
+                    lprService=element;
+                              callBackLprTanspernetserviecIdStatus!('Connected');
+
+              lprService!.characteristics.forEach((dataCharacteristic) {
+                if (dataCharacteristic.uuid == _lprUartTX) {
+      callBackLprUartTxStatus!('Connected');
+dataCharacteristic.setNotifyValue(true);
+                  //Start listening to the incoming data
+                  dataCharacteristic.value.listen((event) {
+                    if (!event.isEmpty) {
+                      String dataLine = utf8.decode(event);
+                      debugPrint("LPR DATA WRITING CODE $dataLine ");
+                DownloadTrip().saveLPRData(dataLine??"" ,lprFile!,lprFileSink!);
+                    }
+                  });
+                }
+              });
+                  
+                  }
+      
+    });
+      // lprService = services.singleWhere((element) =>
+      // element.uuid ==
+      //     Guid('eed6d5cc-c3b2-4d7b-8c6b-7acbf7965bb6'));
           //If The Service UUID Match This Function Return The Call Back As Connected In The Maps Screen
 
-          callBackLprTanspernetserviecIdStatus!('Connected');
     }
     //If we selected the wrong device (i.e. not the LPR) or if the service
     //is disabled for some reason....
@@ -187,54 +233,6 @@ callBackconnectedDeviceName!(connectedDevice!.platformName);
               'LPR Streaming Data Error: connected Device remote Str ${connectedDevice!.remoteId.str}  err : ${ex.toString()}')
       ;
     }
-    //By Default LPRUARTX is setting as not connected
-      callBackLprUartTxStatus!('Not Connected');
-//Check is LPRUARTX value matches with the LPRService Element UUID This Will Execute only IF LPRTransparentServiceUUID Matches In The Beginig Step
-//     var dataCharacteristic = lprService?.characteristics.singleWhere((element) => element.uuid == _lprUartTX);
-
-//     dataCharacteristic?.setNotifyValue(true);
-//     //This Will Listen The LPR The LPR Streaming Data
-//     dataCharacteristic?.value.listen((value) {
-//     //If All The Above Condition SucessFull This CallBack Will Return As LPRUARTX Status as Connected In Maps Screen
-//       callBackLprUartTxStatus!('Connected');
-//       if(value.isEmpty) {
-//         return;
-//       }
-// //Decoding The Values We Are Reciving From The LPR Device
-//     String  dataLine = utf8.decode(value);
-//     //Saving Decoded Data On The XL
-//        DownloadTrip().saveLPRData(dataLine);
-//        //This Call Back Will Return Decoded Data On Maps Screen Were We can See That In Dailog 
-//        callBackLprStreamingData!(dataLine);
-//     });
-      
-        services.forEach((service) async {
-            var characteristics = service.characteristics;
-            String uuid = connectedDevice!.servicesList![0].uuid.toString();
-            String? dataLine;
-            for (BluetoothCharacteristic c in characteristics) {
-              //if(c.serviceUuid==uuid){
-
-              //if (c.serviceUuid == _lprUartTX || c.serviceUuid == _lprUartRX) {
-
-              c.lastValueStream.listen((event) async {
-                try{
-                List<int> value = await c.read();
-
-                debugPrint("LPR DATA WRITING CODE EVENT $event ");
-
-                dataLine = utf8.decode(value);
-                debugPrint("LPR DATA WRITING CODE DATA LINE $dataLine ");
-                debugPrint("LPR DATA WRITING CODE VALUE $value ");
-
-                // }
-                DownloadTrip().saveLPRData(dataLine ?? '');
-                }catch(err){
-
-                }
-              });
-            
-            }});
 
 //Testing Purpose This Will Load Data From Sample LPRData File From Assets Production Time It will be removed
 if(isLoadLocalLprFile){
