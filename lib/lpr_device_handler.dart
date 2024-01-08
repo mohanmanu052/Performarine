@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -109,6 +110,10 @@ bool isLoadLocalLprFile=false
     
     
     )async {
+                  File? lprFile;
+  int fileIndex = 0;
+
+
         Map<String,dynamic> lpConfigValues= await    getLPRConfigartion();
 final Guid? _lprUartTX;
 final Guid? _lprUartRX; 
@@ -139,7 +144,8 @@ callBackconnectedDeviceName??=(String name){
 
       bluetoothConnectionStateListener = connectedDevice!.connectionState.listen((event) async {
         if (event == BluetoothConnectionState.disconnected) {
-
+          
+DownloadTrip().closeLprFile();
           Utils.customPrint(
               'BLE - DEVICE GOT DISCONNECTED: ${connectedDevice!.remoteId.str} - $event');
 
@@ -158,6 +164,7 @@ if(!getForgotStatus&&getLprStatus){
             if(onDeviceDisconnectCallback != null) onDeviceDisconnectCallback!.call();
           }
         } else if (event == BluetoothConnectionState.connected) {
+
 List<BluetoothService> services =await  connectedDevice!.discoverServices();
 //This Function Will Return The Connected BlueTooth Name On Map Screen
 callBackconnectedDeviceName!(connectedDevice!.platformName);
@@ -166,7 +173,7 @@ callBackconnectedDeviceName!(connectedDevice!.platformName);
     //This Will Check LprService element UUID Matches With LPRTransparentServiceUUID 
       lprService = services.singleWhere((element) =>
       element.uuid ==
-          _lprTransparentServiceUUID);
+          Guid('eed6d5cc-c3b2-4d7b-8c6b-7acbf7965bb6'));
           //If The Service UUID Match This Function Return The Call Back As Connected In The Maps Screen
 
           callBackLprTanspernetserviecIdStatus!('Connected');
@@ -183,24 +190,51 @@ callBackconnectedDeviceName!(connectedDevice!.platformName);
     //By Default LPRUARTX is setting as not connected
       callBackLprUartTxStatus!('Not Connected');
 //Check is LPRUARTX value matches with the LPRService Element UUID This Will Execute only IF LPRTransparentServiceUUID Matches In The Beginig Step
-    var dataCharacteristic = lprService?.characteristics.singleWhere((element) => element.uuid == _lprUartTX);
+//     var dataCharacteristic = lprService?.characteristics.singleWhere((element) => element.uuid == _lprUartTX);
 
-    dataCharacteristic?.setNotifyValue(true);
-    //This Will Listen The LPR The LPR Streaming Data
-    dataCharacteristic?.value.listen((value) {
-    //If All The Above Condition SucessFull This CallBack Will Return As LPRUARTX Status as Connected In Maps Screen
-      callBackLprUartTxStatus!('Connected');
-      if(value.isEmpty) {
-        return;
-      }
-//Decoding The Values We Are Reciving From The LPR Device
-    String  dataLine = utf8.decode(value);
-    //Saving Decoded Data On The XL
-       DownloadTrip().saveLPRData(dataLine ?? '');
-       //This Call Back Will Return Decoded Data On Maps Screen Were We can See That In Dailog 
-       callBackLprStreamingData!(dataLine);
-    });
+//     dataCharacteristic?.setNotifyValue(true);
+//     //This Will Listen The LPR The LPR Streaming Data
+//     dataCharacteristic?.value.listen((value) {
+//     //If All The Above Condition SucessFull This CallBack Will Return As LPRUARTX Status as Connected In Maps Screen
+//       callBackLprUartTxStatus!('Connected');
+//       if(value.isEmpty) {
+//         return;
+//       }
+// //Decoding The Values We Are Reciving From The LPR Device
+//     String  dataLine = utf8.decode(value);
+//     //Saving Decoded Data On The XL
+//        DownloadTrip().saveLPRData(dataLine);
+//        //This Call Back Will Return Decoded Data On Maps Screen Were We can See That In Dailog 
+//        callBackLprStreamingData!(dataLine);
+//     });
       
+        services.forEach((service) async {
+            var characteristics = service.characteristics;
+            String uuid = connectedDevice!.servicesList![0].uuid.toString();
+            String? dataLine;
+            for (BluetoothCharacteristic c in characteristics) {
+              //if(c.serviceUuid==uuid){
+
+              //if (c.serviceUuid == _lprUartTX || c.serviceUuid == _lprUartRX) {
+
+              c.lastValueStream.listen((event) async {
+                try{
+                List<int> value = await c.read();
+
+                debugPrint("LPR DATA WRITING CODE EVENT $event ");
+
+                dataLine = utf8.decode(value);
+                debugPrint("LPR DATA WRITING CODE DATA LINE $dataLine ");
+                debugPrint("LPR DATA WRITING CODE VALUE $value ");
+
+                // }
+                DownloadTrip().saveLPRData(dataLine ?? '');
+                }catch(err){
+
+                }
+              });
+            
+            }});
 
 //Testing Purpose This Will Load Data From Sample LPRData File From Assets Production Time It will be removed
 if(isLoadLocalLprFile){

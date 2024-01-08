@@ -15,6 +15,10 @@ import '../common_widgets/widgets/log_level.dart';
 class DownloadTrip {
   String page = "Download_trip";
   /// To Download trip
+  File? lprFile;
+  IOSink? lprFileSink;
+  int fileIndex = 0;
+
   Future<String> downloadTrip(BuildContext context,
       GlobalKey<ScaffoldState> scaffoldKey, String tripId) async {
 
@@ -475,14 +479,23 @@ class DownloadTrip {
       tripId = tripData[0];
     }
 
+String? lprFileName;
+String? lprFilePath;
+    if (lprFile == null) {
+       lprFileName = 'lpr_$fileIndex.csv';
+       lprFilePath = await GetFile().getFile(tripId, lprFileName);
+      lprFile = File(lprFilePath);
+      lprFileSink = lprFile!.openWrite(mode: FileMode.append);
+      //lprFileSink!.write(data);
+    }
 
 
-    String lprFileName = 'lpr_$fileIndex.csv';
-        String lprFilePath = await GetFile().getFile(tripId, lprFileName);
-      //  File file = File(filePath);
-        File lprFile = File(lprFilePath);
-       // int fileSize = await GetFile().checkFileSize(file);
-        int lprFileSize = await GetFile().checkFileSize(lprFile);
+    // String lprFileName = 'lpr_$fileIndex.csv';
+    //     String lprFilePath = await GetFile().getFile(tripId, lprFileName);
+    //   //  File file = File(filePath);
+    //     File lprFile = File(lprFilePath);
+    //    // int fileSize = await GetFile().checkFileSize(file);
+        int lprFileSize = await GetFile().checkFileSize(lprFile!);
 
         /// CHECK FOR ONLY 10 KB FOR Testing PURPOSE
         /// Now File Size is 200000
@@ -492,8 +505,13 @@ class DownloadTrip {
 
           CustomLogger().logWithFile(Level.info, "STOPPED WRITING -> $page");
           CustomLogger().logWithFile(Level.info, "CREATING NEW FILE -> $page");
-          fileIndex = fileIndex + 1;
-          lprFileName = 'lpr_$fileIndex.csv';
+      fileIndex = fileIndex + 1;
+      lprFileName = 'lpr_$fileIndex.csv';
+
+      // Close the existing file and open a new one
+      lprFileSink!.close();
+      lprFile = null;
+      lprFileSink = null;
 
           /// STOP WRITING & CREATE NEW FILE
         } else {
@@ -505,12 +523,17 @@ class DownloadTrip {
           finalString = data;
 
           /// Writing into a csv file
-          lprFile.writeAsString('$finalString', mode: FileMode.append);
+      lprFileSink!.write('$finalString');
+      Utils.customPrint('LPR Data $data');
+      Utils.customPrint('LPR Path Was ' + lprFile!.path);
 
-          Utils.customPrint('LPR Data $data');
-                    Utils.customPrint('LPR Path Wsa '+lprFile.path);
 
-
+        }
+      }
+      Future<void> closeLprFile()async{
+        if(lprFileSink!=null){
+          lprFileSink?.flush();
+          lprFileSink?.close();
         }
       }
 
