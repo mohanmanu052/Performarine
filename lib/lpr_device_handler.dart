@@ -208,8 +208,12 @@ dataCharacteristic.setNotifyValue(true);
                   dataCharacteristic.value.listen((event) {
                     if (!event.isEmpty) {
                       String dataLine = utf8.decode(event);
-                      debugPrint("LPR DATA WRITING CODE $dataLine ");
+                             callBackLprStreamingData!(dataLine);
+
+                     // debugPrint("LPR DATA WRITING CODE $dataLine ");
+
                 DownloadTrip().saveLPRData(dataLine??"" ,lprFile!,lprFileSink!);
+
                     }
                   });
                 }
