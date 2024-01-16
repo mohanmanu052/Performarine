@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path_provider/path_provider.dart';
+
 import 'package:geolocator/geolocator.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:permission_handler/permission_handler.dart' as perm;
 
 abstract class IUserCurrentLocation {
   Future<dynamic> startTracking(BuildContext context);
@@ -17,6 +20,40 @@ class LocationServices implements IUserCurrentLocation {
   //Location location = Location();
   Timer? timer;
 
+  checkGPS(BuildContext context) {
+    StreamSubscription<ServiceStatus> serviceStatusStream =
+    Geolocator.getServiceStatusStream().listen((ServiceStatus status) {
+      print(status);
+
+      if (status == ServiceStatus.disabled) {
+        Fluttertoast.showToast(
+            msg: "Please enable GPS",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.black,
+            textColor: Colors.white,
+            fontSize: 16.0);
+
+        Future.delayed(Duration(seconds: 1), () async {
+          AppSettings.openAppSettings(type: AppSettingsType.location);
+
+          if (!(await Geolocator.isLocationServiceEnabled())) {
+            checkGPS(context);
+          } else {
+            getUserCurrentLocation(context);
+          }
+        });
+      }
+      else{
+        Future.delayed(Duration(seconds: 2), () {
+          getUserCurrentLocation(context);
+        });
+
+      }
+    });
+  }
+
   Future<Position> getUserCurrentLocation(BuildContext context) async {
     // TODO: implement getUserCurrentLocation
     bool serviceEnabled;
@@ -28,21 +65,23 @@ class LocationServices implements IUserCurrentLocation {
       // Location services are not enabled don't continue
       // accessing the position and request users of the
       // App to enable the location services.
+
       return Future.error('Location services are disabled.');
     }
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
-
       permission = await Geolocator.requestPermission();
       // if(Platform.isIOS){
-        if(permission!=LocationPermission.always){
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please allow always location tracking permission')));
+      if (permission != LocationPermission.always) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Please allow always location tracking permission')));
         //  Geolocator.openLocationSettings();
-        openAppSettings();
+        perm.openAppSettings();
 
         // }
       }
+
       if (permission == LocationPermission.denied) {
         return Future.error('Location permissions are denied');
       }
@@ -72,7 +111,6 @@ class LocationServices implements IUserCurrentLocation {
       csvData.add([postion.latitude, postion.longitude]);
       writeToCsv();
     });
-
   }
 
   Future<void> writeToCsv() async {
