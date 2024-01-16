@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -44,8 +43,6 @@ class LocationServices implements IUserCurrentLocation {
 
         // }
       }
-
-
       if (permission == LocationPermission.denied) {
         return Future.error('Location permissions are denied');
       }
