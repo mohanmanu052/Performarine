@@ -28,6 +28,7 @@ import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/new_trip_analytics_screen.dart';
 import 'package:performarine/pages/home_page.dart';
+import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
@@ -2330,6 +2331,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
                                 child: CommonButtons.getAcceptButton(
                                     'Continue Trip', context, Colors.transparent,
                                         () async {
+bool? runningTrip = sharedPreferences!
+                                            .getBool("trip_started");
 
                                       final _isRunning = await BackgroundLocator();
 
@@ -2345,6 +2348,20 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
                                       Utils.customPrint('INTRO TRIP IS RUNNING 22222 $isRunning2');
                                       Navigator.of(context).pop();
+                                        Navigator.push(
+                                            dialogContext,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    TripRecordingScreen(
+                                                      //bottomNavIndex: _bottomNavIndex,
+                                                        tripId: tripData[0],
+                                                        vesselId: tripData![1],
+                                                        vesselName: tripData[2],
+                                                        tripIsRunningOrNot:
+                                                            runningTrip)));
+
+
+
                                     },
                                     displayWidth(context) * 0.65,
                                     displayHeight(context) * 0.054,

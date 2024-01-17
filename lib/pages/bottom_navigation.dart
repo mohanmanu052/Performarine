@@ -1107,6 +1107,9 @@ class _BottomNavigationState extends State<BottomNavigation>
                                   {
 
                                     bool onStartTripLPRDeviceConnected = sharedPreferences!.getBool('onStartTripLPRDeviceConnected') ?? false;
+                                                                            bool? runningTrip = sharedPreferences!
+                                            .getBool("trip_started");
+
 
                                     if(onStartTripLPRDeviceConnected){
                                       List<BluetoothDevice> connectedDeviceList = FlutterBluePlus.connectedDevices;
@@ -1131,8 +1134,24 @@ class _BottomNavigationState extends State<BottomNavigation>
 
                                         Utils.customPrint(
                                             'INTRO TRIP IS RUNNING 22222 $isRunning2');
+
                                         LPRDeviceHandler().setLPRDevice(connectedDeviceList.first);
                                         Navigator.of(context).pop();
+                                                                           
+                                                                           Navigator.push(
+                                            dialogContext,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    TripRecordingScreen(
+                                                      bottomNavIndex: _bottomNavIndex,
+                                                        tripId: tripData[0],
+                                                        vesselId: tripData![1],
+                                                        vesselName: tripData[2],
+                                                        tripIsRunningOrNot:
+                                                            runningTrip)),
+                                          );
+
+                                        
                                       }
                                       else
                                       {
@@ -1154,8 +1173,19 @@ class _BottomNavigationState extends State<BottomNavigation>
 
                                         Utils.customPrint(
                                             'INTRO TRIP IS RUNNING 22222 $isRunning2');
-                                        Navigator.of(context).pop();
-                                        LPRDeviceHandler().showDeviceDisconnectedDialog(null,bottomNavIndex:_bottomNavIndex );
+                                            
+                                                                                                                       Navigator.push(
+                                            dialogContext,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    TripRecordingScreen(
+                                                      bottomNavIndex: _bottomNavIndex,
+                                                        tripId: tripData[0],
+                                                        vesselId: tripData![1],
+                                                        vesselName: tripData[2],
+                                                        tripIsRunningOrNot:
+                                                            runningTrip)));
+
                                       }
                                     }
                                     else{
@@ -1178,7 +1208,24 @@ class _BottomNavigationState extends State<BottomNavigation>
 
                                       Utils.customPrint(
                                           'INTRO TRIP IS RUNNING 22222 $isRunning2');
-                                      Navigator.of(context).pop();
+                                                                                Navigator.of(context).pop();
+
+                                                                                                                                                                 Navigator.push(
+                                            dialogContext,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    TripRecordingScreen(
+                                                      bottomNavIndex: _bottomNavIndex,
+                                                        tripId: tripData[0],
+                                                        vesselId: tripData[1],
+                                                        vesselName: tripData[2],
+                                                        tripIsRunningOrNot:
+                                                            runningTrip)));
+
+
+
+
+                                      
                                     }
                                   },
                                       displayWidth(context) * 0.65,

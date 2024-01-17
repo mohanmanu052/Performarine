@@ -82,7 +82,7 @@ class LPRDeviceHandler {
     Map<String, dynamic> lpConfigValues = await getLPRConfigartion();
     final Guid? _lprUartTX;
     final Guid? _lprUartRX;
-    final Guid _lprTransparentServiceUUID = lpConfigValues['lprTransparentServiceUUID'] ?? Guid("49535343-FE7D-4AE5-8FA9-9FAFD205E455");
+    final Guid _lprTransparentServiceUUID =Guid( lpConfigValues['lprTransparentServiceUUID'] ?? "49535343-FE7D-4AE5-8FA9-9FAFD205E455");
 
     debugPrint("_lprTransparentServiceUUID DDDDD ${_lprTransparentServiceUUID}");
     _lprUartTX = Guid(

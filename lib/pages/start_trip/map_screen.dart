@@ -16,6 +16,7 @@ import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/lpr_device_handler.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/new_trip_analytics_screen.dart';
+import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
@@ -741,7 +742,7 @@ class _MapScreenState extends State<MapScreen> {
                                                                                     tripData: tripData,
                                                                                     vessel: vesselData,
                                                                                     vesselId: tripData?.vesselId,
-                                                                                                                                                                        calledFrom: 'End Trip',
+                                                                                     calledFrom: 'End Trip',
 
                                                                                   )))
 
@@ -1191,6 +1192,9 @@ class _MapScreenState extends State<MapScreen> {
                                         'Continue Trip',
                                         context,
                                         Colors.transparent, () async {
+                                          bool? runningTrip = sharedPreferences!
+                                            .getBool("trip_started");
+
                                       setState(() {
                                         lastTimePopupBtnClicked = true;
                                       });
@@ -1224,6 +1228,18 @@ class _MapScreenState extends State<MapScreen> {
                                               'INTRO TRIP IS RUNNING 22222 $isRunning2');
                                           LPRDeviceHandler().setLPRDevice(connectedDeviceList.first);
                                           Navigator.of(context).pop();
+                                            Navigator.push(
+                                            dialogContext,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    TripRecordingScreen(
+                                                      //bottomNavIndex: _bottomNavIndex,
+                                                        tripId: tripData[0],
+                                                        vesselId: tripData![1],
+                                                        vesselName: tripData[2],
+                                                        tripIsRunningOrNot:
+                                                            runningTrip)));
+
                                         }
                                         else
                                         {
