@@ -584,7 +584,7 @@ lprTransperntServiceIdStatus=status;
                       ),
                     ),
 //Todo Showing The LpR Stream Status And Info Remove once testing is completed
-                                        sensorDailog(),
+                                //        sensorDailog(),
 
                   ],
                 ),

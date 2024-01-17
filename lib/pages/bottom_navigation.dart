@@ -1132,11 +1132,12 @@ class _BottomNavigationState extends State<BottomNavigation>
                                         final isRunning2 = await BackgroundLocator
                                             .isServiceRunning();
 
+                                        Navigator.of(context).pop();
+
+
                                         Utils.customPrint(
                                             'INTRO TRIP IS RUNNING 22222 $isRunning2');
 
-                                        LPRDeviceHandler().setLPRDevice(connectedDeviceList.first);
-                                        Navigator.of(context).pop();
                                                                            
                                                                            Navigator.push(
                                             dialogContext,
@@ -1151,7 +1152,8 @@ class _BottomNavigationState extends State<BottomNavigation>
                                                             runningTrip)),
                                           );
 
-                                        
+                                                                                                                                                                      LPRDeviceHandler().setLPRDevice(connectedDeviceList.first);
+
                                       }
                                       else
                                       {
@@ -1174,17 +1176,13 @@ class _BottomNavigationState extends State<BottomNavigation>
                                         Utils.customPrint(
                                             'INTRO TRIP IS RUNNING 22222 $isRunning2');
                                             
-                                                                                                                       Navigator.push(
-                                            dialogContext,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    TripRecordingScreen(
-                                                      bottomNavIndex: _bottomNavIndex,
-                                                        tripId: tripData[0],
-                                                        vesselId: tripData![1],
-                                                        vesselName: tripData[2],
-                                                        tripIsRunningOrNot:
-                                                            runningTrip)));
+                                                                                                                     Navigator.of(context).pop();
+
+
+                                                                                                                                               LPRDeviceHandler().showDeviceDisconnectedDialog(null,bottomNavIndex:_bottomNavIndex,isNavigateToMaps: true );
+
+
+
 
                                       }
                                     }
