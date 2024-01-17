@@ -253,7 +253,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
           }
         }
 
-        if (await Permission.location.isPermanentlyDenied) {
+        if (await Permission.locationWhenInUse.isPermanentlyDenied) {
           Utils.showSnackBar(context,
               scaffoldKey: scaffoldKey,
               message:
@@ -262,8 +262,9 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
             openedSettingsPageForPermission = true;
             await openAppSettings();
           });
-        } else {
-          if (await Permission.location.isGranted) {
+        }
+        else {
+          if (await Permission.locationWhenInUse.isGranted) {
             if (await Permission.locationAlways.isGranted) {
               if (!(await geo.Geolocator.isLocationServiceEnabled())) {
                 Fluttertoast.showToast(
@@ -282,7 +283,8 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
               } else {
                 locationController?.getUserCurrentLocation(context);
               }
-            } else if (await Permission.locationAlways.isPermanentlyDenied) {
+            }
+            else if (await Permission.locationAlways.isPermanentlyDenied) {
               ///
               Utils.showSnackBar(context,
                   scaffoldKey: scaffoldKey,
@@ -291,7 +293,8 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
               Future.delayed(Duration(seconds: 2), () async {
                 await openAppSettings();
               });
-            } else {
+            }
+            else {
               await Permission.locationAlways.request();
               if (await Permission.locationAlways.isGranted) {
                 if (!(await geo.Geolocator.isLocationServiceEnabled())) {
@@ -322,8 +325,9 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                 });
               }
             }
-          } else {
-            if ((await Permission.location.shouldShowRequestRationale)) {
+          }
+          else {
+            if ((await Permission.locationWhenInUse.shouldShowRequestRationale)) {
               Utils.showSnackBar(context,
                   scaffoldKey: scaffoldKey,
                   message:
@@ -332,10 +336,13 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                 openedSettingsPageForPermission = true;
                 await openAppSettings();
               });
-            } else {
-              await Permission.location.request();
-              if (await Permission.location.isGranted) {
+            }
+            else {
+              await Permission.locationWhenInUse.request();
+              if (await Permission.locationWhenInUse.isGranted) {
+                print('LOC AAAAAAa');
                 if (await Permission.locationAlways.isGranted) {
+                  print('LOC AAAAAAa 2');
                   if (!(await geo.Geolocator.isLocationServiceEnabled())) {
                     Fluttertoast.showToast(
                         msg: "Please enable GPS",
@@ -353,9 +360,11 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                   } else {
                     locationController?.getUserCurrentLocation(context);
                   }
-                } else if (await Permission
+                }
+                else if (await Permission
                     .locationAlways.isPermanentlyDenied) {
                   ///
+                  print('LOC AAAAAAa 3');
                   Utils.showSnackBar(context,
                       scaffoldKey: scaffoldKey,
                       message:
@@ -363,7 +372,9 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                   Future.delayed(Duration(seconds: 2), () async {
                     await openAppSettings();
                   });
-                } else {
+                }
+                else {
+                  print('LOC AAAAAAa 3');
                   await Permission.locationAlways.request();
                   if (await Permission.locationAlways.isGranted) {
                     if (!(await geo.Geolocator.isLocationServiceEnabled())) {
@@ -404,7 +415,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
         bool isNDPermittedOne = await Permission.bluetoothConnect.isGranted;
 
         if (isNDPermittedOne) {
-          if (await Permission.location.isPermanentlyDenied) {
+          if (await Permission.locationWhenInUse.isPermanentlyDenied) {
             Utils.showSnackBar(context,
                 scaffoldKey: scaffoldKey,
                 message:
@@ -413,8 +424,9 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
               openedSettingsPageForPermission = true;
               await openAppSettings();
             });
-          } else {
-            if (await Permission.location.isGranted) {
+          }
+          else {
+            if (await Permission.locationWhenInUse.isGranted) {
               if (await Permission.locationAlways.isGranted) {
                 if (!(await geo.Geolocator.isLocationServiceEnabled())) {
                   Fluttertoast.showToast(
@@ -444,7 +456,8 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                   Utils.customPrint('BLED - SHOWN FIFTH');
                   showBluetoothDialog(context, autoConnect: true);
                 }
-              } else if (await Permission.locationAlways.isPermanentlyDenied) {
+              }
+              else if (await Permission.locationAlways.isPermanentlyDenied) {
                 ///
                 Utils.showSnackBar(context,
                     scaffoldKey: scaffoldKey,
@@ -453,7 +466,8 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                 Future.delayed(Duration(seconds: 2), () async {
                   await openAppSettings();
                 });
-              } else {
+              }
+              else {
                 await Permission.locationAlways.request();
                 if (await Permission.locationAlways.isGranted) {
                   if (!(await geo.Geolocator.isLocationServiceEnabled())) {
@@ -496,7 +510,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                 }
               }
             } else {
-              if ((await Permission.location.shouldShowRequestRationale)) {
+              if ((await Permission.locationWhenInUse.shouldShowRequestRationale)) {
                 Utils.showSnackBar(context,
                     scaffoldKey: scaffoldKey,
                     message:
@@ -506,8 +520,8 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                   await openAppSettings();
                 });
               } else {
-                await Permission.location.request();
-                if (await Permission.location.isGranted) {
+                await Permission.locationWhenInUse.request();
+                if (await Permission.locationWhenInUse.isGranted) {
                   if (await Permission.locationAlways.isGranted) {
                     if (!(await geo.Geolocator.isLocationServiceEnabled())) {
                       Fluttertoast.showToast(
@@ -600,7 +614,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
           bool isNDPermitted = await Permission.bluetoothConnect.isGranted;
 
           if (isNDPermitted) {
-            if (await Permission.location.isPermanentlyDenied) {
+            if (await Permission.locationWhenInUse.isPermanentlyDenied) {
               Utils.showSnackBar(context,
                   scaffoldKey: scaffoldKey,
                   message:
@@ -609,8 +623,9 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                 openedSettingsPageForPermission = true;
                 await openAppSettings();
               });
-            } else {
-              if (await Permission.location.isGranted) {
+            }
+            else {
+              if (await Permission.locationWhenInUse.isGranted) {
                 if (await Permission.locationAlways.isGranted) {
                   if (!(await geo.Geolocator.isLocationServiceEnabled())) {
                     Fluttertoast.showToast(
@@ -693,7 +708,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                   }
                 }
               } else {
-                if ((await Permission.location.shouldShowRequestRationale)) {
+                if ((await Permission.locationWhenInUse.shouldShowRequestRationale)) {
                   Utils.showSnackBar(context,
                       scaffoldKey: scaffoldKey,
                       message:
@@ -703,8 +718,8 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                     await openAppSettings();
                   });
                 } else {
-                  await Permission.location.request();
-                  if (await Permission.location.isGranted) {
+                  await Permission.locationWhenInUse.request();
+                  if (await Permission.locationWhenInUse.isGranted) {
                     if (await Permission.locationAlways.isGranted) {
                       if (!(await geo.Geolocator.isLocationServiceEnabled())) {
                         Fluttertoast.showToast(

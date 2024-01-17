@@ -739,10 +739,10 @@ packages:
     dependency: transitive
     description:
       name: http2
-      sha256: "38db0c4aa9f1cd238a5d2e86aa0cc7cc91c77e0c6c94ba64bbe85e4ff732a952"
+      sha256: "58805ebc6513eed3b98ee0a455a8357e61d187bf2e0fdc1e53120770f78de258"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.0"
+    version: "2.0.1"
   http_parser:
     dependency: "direct main"
     description:
@@ -1051,10 +1051,10 @@ packages:
     dependency: "direct main"
     description:
       name: permission_handler
-      sha256: "1b6b3e73f0bcbc856548bbdfb1c33084a401c4f143e220629a9055233d76c331"
+      sha256: ae51809c535fd765061c7384a67bc24d304d24cfc455c59e2f6a5cec9a37fc9c
       url: "https://pub.dev"
     source: hosted
-    version: "10.3.0"
+    version: "10.0.0"
   permission_handler_android:
     dependency: transitive
     description:
