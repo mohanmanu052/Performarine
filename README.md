@@ -69,3 +69,10 @@
   - User kills the application and reopens - need to show a popup containing "Last time you used performarine. there is a trip in progress. do you want to end the trip or continue? ("End trip", "continue trip")
   - Firebase crash analytics Implemented
   - User feedback is added in all screens. Uploading image files.
+
+
+  # Flutter Version Using
+  3.16.3
+   Engine • revision 54a7145303
+   Tools • Dart 3.2.3 
+    DevTools 2.28.4   
