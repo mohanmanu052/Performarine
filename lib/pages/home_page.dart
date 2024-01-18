@@ -24,6 +24,7 @@ import 'package:performarine/models/vessel.dart';
 import 'package:performarine/new_trip_analytics_screen.dart';
 import 'package:performarine/pages/auth/reset_password.dart';
 import 'package:performarine/pages/custom_drawer.dart';
+import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
 import 'package:performarine/pages/trip/tripViewBuilder.dart';
 import 'package:performarine/pages/vessel_form.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
@@ -693,6 +694,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                 child: CommonButtons.getAcceptButton(
                                     'Continue Trip', context, Colors.transparent,
                                         () async {
+                                          bool? runningTrip = sharedPreferences!
+                                            .getBool("trip_started");
                                       final _isRunning = await BackgroundLocator();
 
                                       Utils.customPrint('INTRO TRIP IS RUNNING 1212 $_isRunning');
@@ -708,6 +711,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
 
                                       Utils.customPrint('INTRO TRIP IS RUNNING 22222 $isRunning2');
                                       Navigator.of(context).pop();
+
+                                            Navigator.push(
+                                            dialogContext,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    TripRecordingScreen(
+                                                      //bottomNavIndex: _bottomNavIndex,
+                                                        tripId: tripData[0],
+                                                        vesselId: tripData![1],
+                                                        vesselName: tripData[2],
+                                                        tripIsRunningOrNot:
+                                                            runningTrip)));
+
                                     },
                                     displayWidth(context) * 0.65,
                                     displayHeight(context) * 0.054,
