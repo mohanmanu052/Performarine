@@ -261,7 +261,10 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
               'Location permissions are denied without permissions we are unable to start the trip');
           Future.delayed(Duration(seconds: 2), () async {
             openedSettingsPageForPermission = true;
-            await openAppSettings();
+            if(!isLocationDialogBoxOpen){
+              showLocationDailog();
+            }
+            //await openAppSettings();
           });
         }
         else {
@@ -304,7 +307,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
               });
             }
             else {
-              await Permission.locationAlways.request();
+           //   await Permission.locationAlways.request();
               if (await Permission.locationAlways.isGranted) {
                 if (!(await geo.Geolocator.isLocationServiceEnabled())) {
                   Fluttertoast.showToast(
@@ -391,7 +394,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                 }
                 else {
                   print('LOC AAAAAAa 4');
-                  await Permission.locationAlways.request();
+               //   await Permission.locationAlways.request();
                   if (await Permission.locationAlways.isGranted) {
                     if (!(await geo.Geolocator.isLocationServiceEnabled())) {
                       Fluttertoast.showToast(
@@ -485,7 +488,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                 });
               }
               else {
-                await Permission.locationAlways.request();
+             //   await Permission.locationAlways.request();
                 if (await Permission.locationAlways.isGranted) {
                   if (!(await geo.Geolocator.isLocationServiceEnabled())) {
                     Fluttertoast.showToast(
@@ -515,6 +518,16 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                     Utils.customPrint('BLED - SHOWN FIFTH');
                     showBluetoothDialog(context, autoConnect: true);
                   }
+                }else if(await Permission.locationWhenInUse.isGranted||await Permission.locationWhenInUse.isLimited){
+locationController?.getUserCurrentLocation(context);
+
+                                   Future.delayed(Duration(seconds: 2), () async {
+
+                    if(!isLocationDialogBoxOpen){
+                                                  showLocationDailog();
+
+                    }});                  
+ 
                 } else {
                   ///
                   Utils.showSnackBar(context,
@@ -522,7 +535,16 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                       message:
                       'Location permissions are denied without permissions we are unable to start the trip');
                   Future.delayed(Duration(seconds: 2), () async {
-                    await openAppSettings();
+
+                    if(!isLocationDialogBoxOpen){
+                                                  showLocationDailog();
+
+                    }                  
+                    
+
+                //  await openAppSettings();
+                 
+                 
                   });
                 }
               }
@@ -534,7 +556,12 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                     'Location permissions are denied without permissions we are unable to start the trip');
                 Future.delayed(Duration(seconds: 2), () async {
                   openedSettingsPageForPermission = true;
-                  await openAppSettings();
+                  if(!isLocationDialogBoxOpen){
+                                                showLocationDailog();
+
+                  }
+
+                 // await openAppSettings();
                 });
               } else {
                 await Permission.locationWhenInUse.request();
@@ -579,7 +606,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                       await openAppSettings();
                     });
                   } else {
-                    await Permission.locationAlways.request();
+                 //   await Permission.locationAlways.request();
                     if (await Permission.locationAlways.isGranted) {
                       if (!(await geo.Geolocator.isLocationServiceEnabled())) {
                         Fluttertoast.showToast(
@@ -683,7 +710,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                     await openAppSettings();
                   });
                 } else {
-                  await Permission.locationAlways.request();
+           //       await Permission.locationAlways.request();
                   if (await Permission.locationAlways.isGranted) {
                     if (!(await geo.Geolocator.isLocationServiceEnabled())) {
                       Fluttertoast.showToast(
@@ -732,7 +759,10 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                       'Location permissions are denied without permissions we are unable to start the trip');
                   Future.delayed(Duration(seconds: 2), () async {
                     openedSettingsPageForPermission = true;
-                    await openAppSettings();
+                    if(!isLocationDialogBoxOpen){
+                      showLocationDailog();
+                    }
+                  //  await openAppSettings();
                   });
                 } else {
                   await Permission.locationWhenInUse.request();
@@ -777,7 +807,9 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                         await openAppSettings();
                       });
                     } else {
-                      await Permission.locationAlways.request();
+                      if(!isLocationDialogBoxOpen){
+                        showLocationDailog();
+                      }
                       if (await Permission.locationAlways.isGranted) {
                         if (!(await geo.Geolocator.isLocationServiceEnabled())) {
                           Fluttertoast.showToast(
@@ -807,15 +839,32 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                           Utils.customPrint('BLED - SHOWN FIFTH');
                           showBluetoothDialog(context, autoConnect: true);
                         }
-                      } else {
+                      }else if(await Permission.locationWhenInUse.isGranted||await Permission.locationWhenInUse.isLimited){
+                                                locationController?.getUserCurrentLocation(context);
+                                                
+                                                  if(!isLocationDialogBoxOpen){
+                          showLocationDailog();
+
+                          }
+
+                      }
+                      
+                      
+                       else {
+
                         ///
                         Utils.showSnackBar(context,
                             scaffoldKey: scaffoldKey,
                             message:
                             'Location permissions are denied without permissions we are unable to start the trip');
                         Future.delayed(Duration(seconds: 2), () async {
-                          await openAppSettings();
-                        });
+                          if(!isLocationDialogBoxOpen){
+                          showLocationDailog();
+
+                          }
+                         // await openAppSettings();
+                        }
+                        );
                       }
                     }
                   } else {
@@ -2806,7 +2855,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
               });
             }
           } else {
-            await Permission.locationAlways.request();
+       //     await Permission.locationAlways.request();
 
             bool isGranted = await Permission.locationAlways.isGranted;
 
@@ -5390,7 +5439,45 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
           );
         });
   }
-}
+
+  void showLocationDailog(){
+                    showDialog(
+                    context: scaffoldKey.currentContext!,
+                    builder: (BuildContext context) {
+                      isLocationDialogBoxOpen = true;
+                      return LocationPermissionCustomDialog(
+                          isLocationDialogBox: true,
+                          text: 'Always Allow Access to “Location”',
+                          subText:
+                          "To track your trip while you use other apps we need background access to your location",
+                          buttonText: 'Ok',
+                          buttonOnTap: () async {
+                            if(Platform.isAndroid){
+                              var permission=                      await Permission.locationAlways.request();
+                              if(permission.isGranted){
+
+                              }else{
+                            await openAppSettings();
+
+                              }
+
+                            }else{
+                                                          await openAppSettings();
+
+                            }
+                            Get.back();
+
+                          });
+                    }).then((value) {
+                  isLocationDialogBoxOpen = false;
+                });
+              }
+            }
+          
+        
+
+  
+
 
 class VesselDropdownItem {
   final String? id;
