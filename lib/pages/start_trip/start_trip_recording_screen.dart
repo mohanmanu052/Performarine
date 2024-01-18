@@ -234,25 +234,10 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
             );
           });
       return;
-    }
-    else {
+    } else {
       /// START
       if (Platform.isIOS) {
         // locationController?.getUserCurrentLocation(context);
-        dynamic isBluetoothEnable = Platform.isAndroid
-            ? await blueIsOn()
-            : await checkIfBluetoothIsEnabled(scaffoldKey, () {
-          showBluetoothDialog(context, autoConnect: true);
-        });
-
-        if (isBluetoothEnable != null) {
-          if (isBluetoothEnable) {
-            autoConnectToDevice();
-          } else {
-            Utils.customPrint('BLED - SHOWN FIRST');
-            showBluetoothDialog(context, autoConnect: true);
-          }
-        }
 
         if (await Permission.locationWhenInUse.isPermanentlyDenied) {
           Utils.showSnackBar(context,
@@ -263,11 +248,24 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
             openedSettingsPageForPermission = true;
             await openAppSettings();
           });
-        }
-        else {
+        } else {
           if (await Permission.locationWhenInUse.isGranted) {
             locationController!.getUserCurrentLocation(context);
             if (await Permission.locationAlways.isGranted) {
+              dynamic isBluetoothEnable = Platform.isAndroid
+                  ? await blueIsOn()
+                  : await checkIfBluetoothIsEnabled(scaffoldKey, () {
+                showBluetoothDialog(context, autoConnect: true);
+              });
+
+              if (isBluetoothEnable != null) {
+                if (isBluetoothEnable) {
+                  autoConnectToDevice();
+                } else {
+                  Utils.customPrint('BLED - SHOWN FIRST');
+                  showBluetoothDialog(context, autoConnect: true);
+                }
+              }
               if (!(await geo.Geolocator.isLocationServiceEnabled())) {
                 Fluttertoast.showToast(
                     msg: "Please enable GPS",
@@ -285,10 +283,23 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
               } else {
                 locationController?.getUserCurrentLocation(context);
               }
-            }
-            else if (await Permission.locationAlways.isPermanentlyDenied) {
-              await Permission.locationAlways.request().then((value) {
-                if(value == PermissionStatus.granted){
+            } else if (await Permission.locationAlways.isPermanentlyDenied) {
+              await Permission.locationAlways.request().then((value) async {
+                dynamic isBluetoothEnable = Platform.isAndroid
+                    ? await blueIsOn()
+                    : await checkIfBluetoothIsEnabled(scaffoldKey, () {
+                  showBluetoothDialog(context, autoConnect: true);
+                });
+
+                if (isBluetoothEnable != null) {
+                  if (isBluetoothEnable) {
+                    autoConnectToDevice();
+                  } else {
+                    Utils.customPrint('BLED - SHOWN FIRST');
+                    showBluetoothDialog(context, autoConnect: true);
+                  }
+                }
+                if (value == PermissionStatus.granted) {
                   locationController!.getUserCurrentLocation(context);
                 }
                 // else{
@@ -302,10 +313,23 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                 //   });
                 // }
               });
-            }
-            else {
+            } else {
               await Permission.locationAlways.request();
               if (await Permission.locationAlways.isGranted) {
+                dynamic isBluetoothEnable = Platform.isAndroid
+                    ? await blueIsOn()
+                    : await checkIfBluetoothIsEnabled(scaffoldKey, () {
+                  showBluetoothDialog(context, autoConnect: true);
+                });
+
+                if (isBluetoothEnable != null) {
+                  if (isBluetoothEnable) {
+                    autoConnectToDevice();
+                  } else {
+                    Utils.customPrint('BLED - SHOWN FIRST');
+                    showBluetoothDialog(context, autoConnect: true);
+                  }
+                }
                 if (!(await geo.Geolocator.isLocationServiceEnabled())) {
                   Fluttertoast.showToast(
                       msg: "Please enable GPS",
@@ -334,9 +358,9 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                 });
               }
             }
-          }
-          else {
-            if ((await Permission.locationWhenInUse.shouldShowRequestRationale)) {
+          } else {
+            if ((await Permission
+                .locationWhenInUse.shouldShowRequestRationale)) {
               Utils.showSnackBar(context,
                   scaffoldKey: scaffoldKey,
                   message:
@@ -345,13 +369,26 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                 openedSettingsPageForPermission = true;
                 await openAppSettings();
               });
-            }
-            else {
+            } else {
               await Permission.locationWhenInUse.request();
               if (await Permission.locationWhenInUse.isGranted) {
                 locationController!.getUserCurrentLocation(context);
                 print('LOC AAAAAAa');
                 if (await Permission.locationAlways.isGranted) {
+                  dynamic isBluetoothEnable = Platform.isAndroid
+                      ? await blueIsOn()
+                      : await checkIfBluetoothIsEnabled(scaffoldKey, () {
+                    showBluetoothDialog(context, autoConnect: true);
+                  });
+
+                  if (isBluetoothEnable != null) {
+                    if (isBluetoothEnable) {
+                      autoConnectToDevice();
+                    } else {
+                      Utils.customPrint('BLED - SHOWN FIRST');
+                      showBluetoothDialog(context, autoConnect: true);
+                    }
+                  }
                   print('LOC AAAAAAa 2');
                   if (!(await geo.Geolocator.isLocationServiceEnabled())) {
                     Fluttertoast.showToast(
@@ -364,16 +401,31 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                         fontSize: 16.0);
 
                     Future.delayed(Duration(seconds: 1), () async {
-                      AppSettings.openAppSettings(type: AppSettingsType.location);
+                      AppSettings.openAppSettings(
+                          type: AppSettingsType.location);
                       checkGPS(context);
                     });
                   } else {
                     locationController?.getUserCurrentLocation(context);
                   }
-                }
-                else if (await Permission.locationAlways.isPermanentlyDenied) {
-                  await Permission.locationAlways.request().then((value) {
-                    if(value == PermissionStatus.granted){
+                } else if (await Permission
+                    .locationAlways.isPermanentlyDenied) {
+                  await Permission.locationAlways.request().then((value) async {
+                    dynamic isBluetoothEnable = Platform.isAndroid
+                        ? await blueIsOn()
+                        : await checkIfBluetoothIsEnabled(scaffoldKey, () {
+                      showBluetoothDialog(context, autoConnect: true);
+                    });
+
+                    if (isBluetoothEnable != null) {
+                      if (isBluetoothEnable) {
+                        autoConnectToDevice();
+                      } else {
+                        Utils.customPrint('BLED - SHOWN FIRST');
+                        showBluetoothDialog(context, autoConnect: true);
+                      }
+                    }
+                    if (value == PermissionStatus.granted) {
                       locationController!.getUserCurrentLocation(context);
                     }
                     // else{
@@ -387,12 +439,24 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                     //   });
                     // }
                   });
-
-                }
-                else {
+                } else {
                   print('LOC AAAAAAa 4');
                   await Permission.locationAlways.request();
                   if (await Permission.locationAlways.isGranted) {
+                    dynamic isBluetoothEnable = Platform.isAndroid
+                        ? await blueIsOn()
+                        : await checkIfBluetoothIsEnabled(scaffoldKey, () {
+                      showBluetoothDialog(context, autoConnect: true);
+                    });
+
+                    if (isBluetoothEnable != null) {
+                      if (isBluetoothEnable) {
+                        autoConnectToDevice();
+                      } else {
+                        Utils.customPrint('BLED - SHOWN FIRST');
+                        showBluetoothDialog(context, autoConnect: true);
+                      }
+                    }
                     if (!(await geo.Geolocator.isLocationServiceEnabled())) {
                       Fluttertoast.showToast(
                           msg: "Please enable GPS",
@@ -404,7 +468,8 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                           fontSize: 16.0);
 
                       Future.delayed(Duration(seconds: 1), () async {
-                        AppSettings.openAppSettings(type: AppSettingsType.location);
+                        AppSettings.openAppSettings(
+                            type: AppSettingsType.location);
                         checkGPS(context);
                       });
                     } else {
@@ -427,8 +492,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
             }
           }
         }
-      }
-      else {
+      } else {
         bool isNDPermittedOne = await Permission.bluetoothConnect.isGranted;
 
         if (isNDPermittedOne) {
@@ -441,10 +505,101 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
               openedSettingsPageForPermission = true;
               await openAppSettings();
             });
-          }
-          else {
+          } else {
             if (await Permission.locationWhenInUse.isGranted) {
-              if (await Permission.locationAlways.isGranted) {
+              if (!(await geo.Geolocator.isLocationServiceEnabled())) {
+                Fluttertoast.showToast(
+                    msg: "Please enable GPS",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: Colors.black,
+                    textColor: Colors.white,
+                    fontSize: 16.0);
+
+                Future.delayed(Duration(seconds: 1), () async {
+                  AppSettings.openAppSettings(type: AppSettingsType.location);
+                  checkGPS(context);
+                });
+              } else {
+                locationController?.getUserCurrentLocation(context);
+              }
+              bool isBluetoothEnable = Platform.isAndroid
+                  ? await blueIsOn()
+                  : await checkIfBluetoothIsEnabled(scaffoldKey, () {
+                showBluetoothDialog(context, autoConnect: true);
+              });
+              if (isBluetoothEnable) {
+                autoConnectToDevice();
+              } else {
+                Utils.customPrint('BLED - SHOWN FIFTH');
+                showBluetoothDialog(context, autoConnect: true);
+              }
+            } else {
+              if ((await Permission
+                  .locationWhenInUse.shouldShowRequestRationale)) {
+                Utils.showSnackBar(context,
+                    scaffoldKey: scaffoldKey,
+                    message:
+                    'Location permissions are denied without permissions we are unable to start the trip');
+                Future.delayed(Duration(seconds: 2), () async {
+                  openedSettingsPageForPermission = true;
+                  await openAppSettings();
+                });
+              } else {
+                await Permission.locationWhenInUse.request();
+                if (await Permission.locationWhenInUse.isGranted) {
+                  if (!(await geo.Geolocator.isLocationServiceEnabled())) {
+                    Fluttertoast.showToast(
+                        msg: "Please enable GPS",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.black,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
+
+                    Future.delayed(Duration(seconds: 1), () async {
+                      AppSettings.openAppSettings(
+                          type: AppSettingsType.location);
+                      checkGPS(context);
+                    });
+                  } else {
+                    locationController?.getUserCurrentLocation(context);
+                  }
+                  bool isBluetoothEnable = Platform.isAndroid
+                      ? await blueIsOn()
+                      : await checkIfBluetoothIsEnabled(scaffoldKey, () {
+                    showBluetoothDialog(context, autoConnect: true);
+                  });
+                  if (isBluetoothEnable) {
+                    autoConnectToDevice();
+                  } else {
+                    Utils.customPrint('BLED - SHOWN FIFTH');
+                    showBluetoothDialog(context, autoConnect: true);
+                  }
+                } else {
+                  checkPermissionsAndAutoConnectToDevice(context);
+                }
+              }
+            }
+          }
+        } else {
+          await Permission.bluetoothConnect.request();
+          bool isNDPermitted = await Permission.bluetoothConnect.isGranted;
+
+          if (isNDPermitted) {
+            if (await Permission.locationWhenInUse.isPermanentlyDenied) {
+              Utils.showSnackBar(context,
+                  scaffoldKey: scaffoldKey,
+                  message:
+                  'Location permissions are denied without permissions we are unable to start the trip');
+              Future.delayed(Duration(seconds: 2), () async {
+                openedSettingsPageForPermission = true;
+                await openAppSettings();
+              });
+            } else {
+              if (await Permission.locationWhenInUse.isGranted) {
                 if (!(await geo.Geolocator.isLocationServiceEnabled())) {
                   Fluttertoast.showToast(
                       msg: "Please enable GPS",
@@ -473,259 +628,9 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                   Utils.customPrint('BLED - SHOWN FIFTH');
                   showBluetoothDialog(context, autoConnect: true);
                 }
-              }
-              else if (await Permission.locationAlways.isPermanentlyDenied) {
-                ///
-                Utils.showSnackBar(context,
-                    scaffoldKey: scaffoldKey,
-                    message:
-                    'Location permissions are denied without permissions we are unable to start the trip');
-                Future.delayed(Duration(seconds: 2), () async {
-                  await openAppSettings();
-                });
-              }
-              else {
-                await Permission.locationAlways.request();
-                if (await Permission.locationAlways.isGranted) {
-                  if (!(await geo.Geolocator.isLocationServiceEnabled())) {
-                    Fluttertoast.showToast(
-                        msg: "Please enable GPS",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.CENTER,
-                        timeInSecForIosWeb: 1,
-                        backgroundColor: Colors.black,
-                        textColor: Colors.white,
-                        fontSize: 16.0);
-
-                    Future.delayed(Duration(seconds: 1), () async {
-                      AppSettings.openAppSettings(type: AppSettingsType.location);
-                      checkGPS(context);
-                    });
-                  } else {
-                    locationController?.getUserCurrentLocation(context);
-                  }
-                  bool isBluetoothEnable = Platform.isAndroid
-                      ? await blueIsOn()
-                      : await checkIfBluetoothIsEnabled(scaffoldKey, () {
-                    showBluetoothDialog(context, autoConnect: true);
-                  });
-                  if (isBluetoothEnable) {
-                    autoConnectToDevice();
-                  } else {
-                    Utils.customPrint('BLED - SHOWN FIFTH');
-                    showBluetoothDialog(context, autoConnect: true);
-                  }
-                } else {
-                  ///
-                  Utils.showSnackBar(context,
-                      scaffoldKey: scaffoldKey,
-                      message:
-                      'Location permissions are denied without permissions we are unable to start the trip');
-                  Future.delayed(Duration(seconds: 2), () async {
-                    await openAppSettings();
-                  });
-                }
-              }
-            } else {
-              if ((await Permission.locationWhenInUse.shouldShowRequestRationale)) {
-                Utils.showSnackBar(context,
-                    scaffoldKey: scaffoldKey,
-                    message:
-                    'Location permissions are denied without permissions we are unable to start the trip');
-                Future.delayed(Duration(seconds: 2), () async {
-                  openedSettingsPageForPermission = true;
-                  await openAppSettings();
-                });
               } else {
-                await Permission.locationWhenInUse.request();
-                if (await Permission.locationWhenInUse.isGranted) {
-                  if (await Permission.locationAlways.isGranted) {
-                    if (!(await geo.Geolocator.isLocationServiceEnabled())) {
-                      Fluttertoast.showToast(
-                          msg: "Please enable GPS",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.CENTER,
-                          timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.black,
-                          textColor: Colors.white,
-                          fontSize: 16.0);
-
-                      Future.delayed(Duration(seconds: 1), () async {
-                        AppSettings.openAppSettings(type: AppSettingsType.location);
-                        checkGPS(context);
-                      });
-                    } else {
-                      locationController?.getUserCurrentLocation(context);
-                    }
-                    bool isBluetoothEnable = Platform.isAndroid
-                        ? await blueIsOn()
-                        : await checkIfBluetoothIsEnabled(scaffoldKey, () {
-                      showBluetoothDialog(context, autoConnect: true);
-                    });
-                    if (isBluetoothEnable) {
-                      autoConnectToDevice();
-                    } else {
-                      Utils.customPrint('BLED - SHOWN FIFTH');
-                      showBluetoothDialog(context, autoConnect: true);
-                    }
-                  } else if (await Permission
-                      .locationAlways.isPermanentlyDenied) {
-                    ///
-                    Utils.showSnackBar(context,
-                        scaffoldKey: scaffoldKey,
-                        message:
-                        'Location permissions are denied without permissions we are unable to start the trip');
-                    Future.delayed(Duration(seconds: 2), () async {
-                      await openAppSettings();
-                    });
-                  } else {
-                    await Permission.locationAlways.request();
-                    if (await Permission.locationAlways.isGranted) {
-                      if (!(await geo.Geolocator.isLocationServiceEnabled())) {
-                        Fluttertoast.showToast(
-                            msg: "Please enable GPS",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.CENTER,
-                            timeInSecForIosWeb: 1,
-                            backgroundColor: Colors.black,
-                            textColor: Colors.white,
-                            fontSize: 16.0);
-
-                        Future.delayed(Duration(seconds: 1), () async {
-                          AppSettings.openAppSettings(type: AppSettingsType.location);
-                          checkGPS(context);
-                        });
-                      } else {
-                        locationController?.getUserCurrentLocation(context);
-                      }
-                      bool isBluetoothEnable = Platform.isAndroid
-                          ? await blueIsOn()
-                          : await checkIfBluetoothIsEnabled(scaffoldKey, () {
-                        showBluetoothDialog(context, autoConnect: true);
-                      });
-                      if (isBluetoothEnable) {
-                        autoConnectToDevice();
-                      } else {
-                        Utils.customPrint('BLED - SHOWN FIFTH');
-                        showBluetoothDialog(context, autoConnect: true);
-                      }
-                    } else {
-                      ///
-                      Utils.showSnackBar(context,
-                          scaffoldKey: scaffoldKey,
-                          message:
-                          'Location permissions are denied without permissions we are unable to start the trip');
-                      Future.delayed(Duration(seconds: 2), () async {
-                        await openAppSettings();
-                      });
-                    }
-                  }
-                } else {
-                  checkPermissionsAndAutoConnectToDevice(context);
-                }
-              }
-            }
-          }
-        } else {
-          await Permission.bluetoothConnect.request();
-          bool isNDPermitted = await Permission.bluetoothConnect.isGranted;
-
-          if (isNDPermitted) {
-            if (await Permission.locationWhenInUse.isPermanentlyDenied) {
-              Utils.showSnackBar(context,
-                  scaffoldKey: scaffoldKey,
-                  message:
-                  'Location permissions are denied without permissions we are unable to start the trip');
-              Future.delayed(Duration(seconds: 2), () async {
-                openedSettingsPageForPermission = true;
-                await openAppSettings();
-              });
-            }
-            else {
-              if (await Permission.locationWhenInUse.isGranted) {
-                if (await Permission.locationAlways.isGranted) {
-                  if (!(await geo.Geolocator.isLocationServiceEnabled())) {
-                    Fluttertoast.showToast(
-                        msg: "Please enable GPS",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.CENTER,
-                        timeInSecForIosWeb: 1,
-                        backgroundColor: Colors.black,
-                        textColor: Colors.white,
-                        fontSize: 16.0);
-
-                    Future.delayed(Duration(seconds: 1), () async {
-                      AppSettings.openAppSettings(type: AppSettingsType.location);
-                      checkGPS(context);
-                    });
-                  } else {
-                    locationController?.getUserCurrentLocation(context);
-                  }
-                  bool isBluetoothEnable = Platform.isAndroid
-                      ? await blueIsOn()
-                      : await checkIfBluetoothIsEnabled(scaffoldKey, () {
-                    showBluetoothDialog(context, autoConnect: true);
-                  });
-                  if (isBluetoothEnable) {
-                    autoConnectToDevice();
-                  } else {
-                    Utils.customPrint('BLED - SHOWN FIFTH');
-                    showBluetoothDialog(context, autoConnect: true);
-                  }
-                } else if (await Permission
-                    .locationAlways.isPermanentlyDenied) {
-                  ///
-                  Utils.showSnackBar(context,
-                      scaffoldKey: scaffoldKey,
-                      message:
-                      'Location permissions are denied without permissions we are unable to start the trip');
-                  Future.delayed(Duration(seconds: 2), () async {
-                    await openAppSettings();
-                  });
-                } else {
-                  await Permission.locationAlways.request();
-                  if (await Permission.locationAlways.isGranted) {
-                    if (!(await geo.Geolocator.isLocationServiceEnabled())) {
-                      Fluttertoast.showToast(
-                          msg: "Please enable GPS",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.CENTER,
-                          timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.black,
-                          textColor: Colors.white,
-                          fontSize: 16.0);
-
-                      Future.delayed(Duration(seconds: 1), () async {
-                        AppSettings.openAppSettings(type: AppSettingsType.location);
-                        checkGPS(context);
-                      });
-                    } else {
-                      locationController?.getUserCurrentLocation(context);
-                    }
-                    bool isBluetoothEnable = Platform.isAndroid
-                        ? await blueIsOn()
-                        : await checkIfBluetoothIsEnabled(scaffoldKey, () {
-                      showBluetoothDialog(context, autoConnect: true);
-                    });
-                    if (isBluetoothEnable) {
-                      autoConnectToDevice();
-                    } else {
-                      Utils.customPrint('BLED - SHOWN FIFTH');
-                      showBluetoothDialog(context, autoConnect: true);
-                    }
-                  } else {
-                    ///
-                    Utils.showSnackBar(context,
-                        scaffoldKey: scaffoldKey,
-                        message:
-                        'Location permissions are denied without permissions we are unable to start the trip');
-                    Future.delayed(Duration(seconds: 2), () async {
-                      await openAppSettings();
-                    });
-                  }
-                }
-              } else {
-                if ((await Permission.locationWhenInUse.shouldShowRequestRationale)) {
+                if ((await Permission
+                    .locationWhenInUse.shouldShowRequestRationale)) {
                   Utils.showSnackBar(context,
                       scaffoldKey: scaffoldKey,
                       message:
@@ -737,86 +642,34 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                 } else {
                   await Permission.locationWhenInUse.request();
                   if (await Permission.locationWhenInUse.isGranted) {
-                    if (await Permission.locationAlways.isGranted) {
-                      if (!(await geo.Geolocator.isLocationServiceEnabled())) {
-                        Fluttertoast.showToast(
-                            msg: "Please enable GPS",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.CENTER,
-                            timeInSecForIosWeb: 1,
-                            backgroundColor: Colors.black,
-                            textColor: Colors.white,
-                            fontSize: 16.0);
+                    if (!(await geo.Geolocator.isLocationServiceEnabled())) {
+                      Fluttertoast.showToast(
+                          msg: "Please enable GPS",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.black,
+                          textColor: Colors.white,
+                          fontSize: 16.0);
 
-                        Future.delayed(Duration(seconds: 1), () async {
-                          AppSettings.openAppSettings(type: AppSettingsType.location);
-                          checkGPS(context);
-                        });
-                      } else {
-                        locationController?.getUserCurrentLocation(context);
-                      }
-                      bool isBluetoothEnable = Platform.isAndroid
-                          ? await blueIsOn()
-                          : await checkIfBluetoothIsEnabled(scaffoldKey, () {
-                        showBluetoothDialog(context, autoConnect: true);
-                      });
-                      if (isBluetoothEnable) {
-                        autoConnectToDevice();
-                      } else {
-                        Utils.customPrint('BLED - SHOWN FIFTH');
-                        showBluetoothDialog(context, autoConnect: true);
-                      }
-                    } else if (await Permission
-                        .locationAlways.isPermanentlyDenied) {
-                      ///
-                      Utils.showSnackBar(context,
-                          scaffoldKey: scaffoldKey,
-                          message:
-                          'Location permissions are denied without permissions we are unable to start the trip');
-                      Future.delayed(Duration(seconds: 2), () async {
-                        await openAppSettings();
+                      Future.delayed(Duration(seconds: 1), () async {
+                        AppSettings.openAppSettings(
+                            type: AppSettingsType.location);
+                        checkGPS(context);
                       });
                     } else {
-                      await Permission.locationAlways.request();
-                      if (await Permission.locationAlways.isGranted) {
-                        if (!(await geo.Geolocator.isLocationServiceEnabled())) {
-                          Fluttertoast.showToast(
-                              msg: "Please enable GPS",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.CENTER,
-                              timeInSecForIosWeb: 1,
-                              backgroundColor: Colors.black,
-                              textColor: Colors.white,
-                              fontSize: 16.0);
-
-                          Future.delayed(Duration(seconds: 1), () async {
-                            AppSettings.openAppSettings(type: AppSettingsType.location);
-                            checkGPS(context);
-                          });
-                        } else {
-                          locationController?.getUserCurrentLocation(context);
-                        }
-                        bool isBluetoothEnable = Platform.isAndroid
-                            ? await blueIsOn()
-                            : await checkIfBluetoothIsEnabled(scaffoldKey, () {
-                          showBluetoothDialog(context, autoConnect: true);
-                        });
-                        if (isBluetoothEnable) {
-                          autoConnectToDevice();
-                        } else {
-                          Utils.customPrint('BLED - SHOWN FIFTH');
-                          showBluetoothDialog(context, autoConnect: true);
-                        }
-                      } else {
-                        ///
-                        Utils.showSnackBar(context,
-                            scaffoldKey: scaffoldKey,
-                            message:
-                            'Location permissions are denied without permissions we are unable to start the trip');
-                        Future.delayed(Duration(seconds: 2), () async {
-                          await openAppSettings();
-                        });
-                      }
+                      locationController?.getUserCurrentLocation(context);
+                    }
+                    bool isBluetoothEnable = Platform.isAndroid
+                        ? await blueIsOn()
+                        : await checkIfBluetoothIsEnabled(scaffoldKey, () {
+                      showBluetoothDialog(context, autoConnect: true);
+                    });
+                    if (isBluetoothEnable) {
+                      autoConnectToDevice();
+                    } else {
+                      Utils.customPrint('BLED - SHOWN FIFTH');
+                      showBluetoothDialog(context, autoConnect: true);
                     }
                   } else {
                     checkPermissionsAndAutoConnectToDevice(context);
@@ -2298,29 +2151,11 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                         addNewVesselDialogBox(
                                             context);
                                       } else {
-                                        if (selectedValue == null) {
-                                          Utils.customPrint(
-                                              'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
-                                          ScaffoldMessenger.of(
-                                              context)
-                                              .showSnackBar(
-                                              SnackBar(
-                                                behavior:
-                                                SnackBarBehavior
-                                                    .floating,
-                                                content: Text(
-                                                    "Please select vessel"),
-                                                duration: Duration(
-                                                    seconds: 1),
-                                                backgroundColor:
-                                                Colors.blue,
-                                              ));
-                                          return;
-                                        }
-                                        if (isCheck) {
-                                          if (textEditingController
-                                              .text.isEmpty ||
-                                              !isOKClick) {
+                                        if (Platform.isIOS) {
+                                          if (selectedValue ==
+                                              null) {
+                                            Utils.customPrint(
+                                                'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
                                             ScaffoldMessenger.of(
                                                 context)
                                                 .showSnackBar(
@@ -2328,9 +2163,8 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                   behavior:
                                                   SnackBarBehavior
                                                       .floating,
-                                                  content: Text(isOKClick
-                                                      ? "Please Enter Number of Passengers and Submit"
-                                                      : "Please Submit Number of Passengers"),
+                                                  content: Text(
+                                                      "Please select vessel"),
                                                   duration: Duration(
                                                       seconds: 1),
                                                   backgroundColor:
@@ -2339,27 +2173,52 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                             return;
                                           }
 
-                                          if (int.parse(
-                                              textEditingController
-                                                  .text) >
-                                              11) {
-                                            sliderMinVal =
-                                                numberOfPassengers
-                                                    .toDouble();
-                                            sliderCount =
-                                            '$numberOfPassengers+';
-                                            isSliderDisable = false;
-                                          } else {
-                                            sliderMinVal = 11;
-                                            sliderCount = '10+';
-                                            isSliderDisable = false;
+                                          if (isCheck) {
+                                            if (textEditingController
+                                                .text.isEmpty ||
+                                                !isOKClick) {
+                                              ScaffoldMessenger.of(
+                                                  context)
+                                                  .showSnackBar(
+                                                  SnackBar(
+                                                    behavior:
+                                                    SnackBarBehavior
+                                                        .floating,
+                                                    content: Text(isOKClick
+                                                        ? "Please Enter Number of Passengers and Submit"
+                                                        : "Please Submit Number of Passengers"),
+                                                    duration: Duration(
+                                                        seconds: 1),
+                                                    backgroundColor:
+                                                    Colors.blue,
+                                                  ));
+                                              return;
+                                            }
+
+                                            if (int.parse(
+                                                textEditingController
+                                                    .text) >
+                                                11) {
+                                              sliderMinVal =
+                                                  numberOfPassengers
+                                                      .toDouble();
+                                              sliderCount =
+                                              '$numberOfPassengers+';
+                                              isSliderDisable =
+                                              false;
+                                            } else {
+                                              sliderMinVal = 11;
+                                              sliderCount = '10+';
+                                              isSliderDisable =
+                                              false;
+                                            }
                                           }
                                         }
 
+                                        checkAllPermission(true);
+
                                         Utils.customPrint(
                                             'SELECTED VESSEL WEIGHT $selectedVesselWeight');
-
-                                        checkAllPermission(true);
                                       }
 
                                       List<BluetoothDevice>
@@ -2723,6 +2582,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
               if (isBluetoothEnable) {
                 // vessel!.add(widget.vessel!);
+
                 await locationPermissions(tripRecordingStarted);
               } else {
                 showBluetoothDialog(context);
@@ -2876,8 +2736,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                 }
               }
             }
-          }
-          else if (await Permission.locationAlways.isPermanentlyDenied) {
+          } else if (await Permission.locationAlways.isPermanentlyDenied) {
             if (Platform.isIOS) {
               Permission.locationAlways.request();
 
@@ -2971,7 +2830,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                           buttonText: 'Ok',
                           buttonOnTap: () async {
                             Get.back();
-                            await openAppSettings();
+                            openAppSettings();
                           });
                     }).then((value) {
                   isLocationDialogBoxOpen = false;
@@ -3886,6 +3745,43 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
   /// Check location permission
   locationPermissions(bool isTripRecordingStarted) async {
+    if (Platform.isAndroid) {
+      if (selectedValue == null) {
+        Utils.customPrint('SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: Text("Please select vessel"),
+          duration: Duration(seconds: 1),
+          backgroundColor: Colors.blue,
+        ));
+        return;
+      }
+
+      if (isCheck) {
+        if (textEditingController.text.isEmpty || !isOKClick) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: Text(isOKClick
+                ? "Please Enter Number of Passengers and Submit"
+                : "Please Submit Number of Passengers"),
+            duration: Duration(seconds: 1),
+            backgroundColor: Colors.blue,
+          ));
+          return;
+        }
+
+        if (int.parse(textEditingController.text) > 11) {
+          sliderMinVal = numberOfPassengers.toDouble();
+          sliderCount = '$numberOfPassengers+';
+          isSliderDisable = false;
+        } else {
+          sliderMinVal = 11;
+          sliderCount = '10+';
+          isSliderDisable = false;
+        }
+      }
+    }
+
     final FlutterSecureStorage storage = FlutterSecureStorage();
     var lprDeviceId = sharedPreferences!.getString('lprDeviceId');
     // var lprDeviceId = await storage.read(
