@@ -333,7 +333,10 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                     message:
                     'Location permissions are denied without permissions we are unable to start the trip');
                 Future.delayed(Duration(seconds: 2), () async {
-                  await openAppSettings();
+                          if(!isLocationDialogBoxOpen){
+                          showLocationDailog();
+
+                          }
                 });
               }
             }
@@ -346,7 +349,10 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                   'Location permissions are denied without permissions we are unable to start the trip');
               Future.delayed(Duration(seconds: 2), () async {
                 openedSettingsPageForPermission = true;
-                await openAppSettings();
+                          if(!isLocationDialogBoxOpen){
+                          showLocationDailog();
+
+                          }
               });
             }
             else {
@@ -420,7 +426,10 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                         message:
                         'Location permissions are denied without permissions we are unable to start the trip');
                     Future.delayed(Duration(seconds: 2), () async {
-                      await openAppSettings();
+                          if(!isLocationDialogBoxOpen){
+                          showLocationDailog();
+
+                          }
                     });
                   }
                 }
@@ -442,7 +451,10 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                 'Location permissions are denied without permissions we are unable to start the trip');
             Future.delayed(Duration(seconds: 2), () async {
               openedSettingsPageForPermission = true;
-              await openAppSettings();
+                          if(!isLocationDialogBoxOpen){
+                          showLocationDailog();
+
+                          }
             });
           }
           else {
@@ -484,7 +496,10 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                     message:
                     'Location permissions are denied without permissions we are unable to start the trip');
                 Future.delayed(Duration(seconds: 2), () async {
-                  await openAppSettings();
+                          if(!isLocationDialogBoxOpen){
+                          showLocationDailog();
+
+                          }
                 });
               }
               else {
@@ -603,7 +618,10 @@ locationController?.getUserCurrentLocation(context);
                         message:
                         'Location permissions are denied without permissions we are unable to start the trip');
                     Future.delayed(Duration(seconds: 2), () async {
-                      await openAppSettings();
+                          if(!isLocationDialogBoxOpen){
+                          showLocationDailog();
+
+                          }
                     });
                   } else {
                  //   await Permission.locationAlways.request();
@@ -643,7 +661,10 @@ locationController?.getUserCurrentLocation(context);
                           message:
                           'Location permissions are denied without permissions we are unable to start the trip');
                       Future.delayed(Duration(seconds: 2), () async {
-                        await openAppSettings();
+                          if(!isLocationDialogBoxOpen){
+                          showLocationDailog();
+
+                          }
                       });
                     }
                   }
@@ -665,7 +686,10 @@ locationController?.getUserCurrentLocation(context);
                   'Location permissions are denied without permissions we are unable to start the trip');
               Future.delayed(Duration(seconds: 2), () async {
                 openedSettingsPageForPermission = true;
-                await openAppSettings();
+                          if(!isLocationDialogBoxOpen){
+                          showLocationDailog();
+
+                          }
               });
             }
             else {
@@ -707,7 +731,10 @@ locationController?.getUserCurrentLocation(context);
                       message:
                       'Location permissions are denied without permissions we are unable to start the trip');
                   Future.delayed(Duration(seconds: 2), () async {
-                    await openAppSettings();
+                          if(!isLocationDialogBoxOpen){
+                          showLocationDailog();
+
+                          }
                   });
                 } else {
            //       await Permission.locationAlways.request();
@@ -747,7 +774,10 @@ locationController?.getUserCurrentLocation(context);
                         message:
                         'Location permissions are denied without permissions we are unable to start the trip');
                     Future.delayed(Duration(seconds: 2), () async {
-                      await openAppSettings();
+                          if(!isLocationDialogBoxOpen){
+                          showLocationDailog();
+
+                          }
                     });
                   }
                 }
@@ -804,7 +834,10 @@ locationController?.getUserCurrentLocation(context);
                           message:
                           'Location permissions are denied without permissions we are unable to start the trip');
                       Future.delayed(Duration(seconds: 2), () async {
-                        await openAppSettings();
+                          if(!isLocationDialogBoxOpen){
+                          showLocationDailog();
+
+                          }
                       });
                     } else {
                       if(!isLocationDialogBoxOpen){
@@ -2030,7 +2063,10 @@ locationController?.getUserCurrentLocation(context);
                                                                   Future.delayed(
                                                                       Duration(seconds: 2),
                                                                           () async {
-                                                                        await openAppSettings();
+                          if(!isLocationDialogBoxOpen){
+                          showLocationDailog();
+
+                          }
                                                                       });
                                                                 } else {
                                                                   if (await Permission
@@ -2090,7 +2126,10 @@ locationController?.getUserCurrentLocation(context);
                                                                   Future.delayed(
                                                                       Duration(seconds: 2),
                                                                           () async {
-                                                                        await openAppSettings();
+                          if(!isLocationDialogBoxOpen){
+                          showLocationDailog();
+
+                          }
                                                                       });
                                                                 } else {
                                                                   if (await Permission
@@ -2109,7 +2148,10 @@ locationController?.getUserCurrentLocation(context);
                                                                           message: 'Location permissions are denied without permissions we are unable to start the trip');
                                                                       Future.delayed(Duration(seconds: 2),
                                                                               () async {
-                                                                            await openAppSettings();
+                          if(!isLocationDialogBoxOpen){
+                          showLocationDailog();
+
+                          }
                                                                           });
                                                                     } else {
                                                                       await Permission.location.request();
@@ -2158,7 +2200,10 @@ locationController?.getUserCurrentLocation(context);
                                                                     Future.delayed(
                                                                         Duration(seconds: 2),
                                                                             () async {
-                                                                          await openAppSettings();
+                          if(!isLocationDialogBoxOpen){
+                          showLocationDailog();
+
+                          }
                                                                         });
                                                                   } else {
                                                                     if (await Permission
@@ -2945,7 +2990,10 @@ locationController?.getUserCurrentLocation(context);
                     "Location permissions are denied without permissions we are unable to start the trip");
 
                 Future.delayed(Duration(seconds: 3), () async {
-                  await openAppSettings();
+                          if(!isLocationDialogBoxOpen){
+                          showLocationDailog();
+
+                          }
                 });
                 return PermissionStatus.denied;
               });
@@ -2958,7 +3006,10 @@ locationController?.getUserCurrentLocation(context);
                     "Location permissions are denied without permissions we are unable to start the trip");
 
                 Future.delayed(Duration(seconds: 3), () async {
-                  await openAppSettings();
+                          if(!isLocationDialogBoxOpen){
+                          showLocationDailog();
+
+                          }
                 });
               }
             } else {
@@ -3007,7 +3058,10 @@ locationController?.getUserCurrentLocation(context);
                     'Location permissions are denied without permissions we are unable to start the trip');
 
                 Future.delayed(Duration(seconds: 3), () async {
-                  await openAppSettings();
+                          if(!isLocationDialogBoxOpen){
+                          showLocationDailog();
+
+                          }
                 });
               }
             } else {
