@@ -1,7 +1,9 @@
 class Urls {
   //Client Environment
   static const String baseUrl = 'goeapidev.azurewebsites.net';
+
   // static String baseUrl =  baseUrlVersion;
+
 
   // Auth
   static const String registrationUrl = '/api/auth/signup';

@@ -898,7 +898,7 @@ locationController?.getUserCurrentLocation(context);
       }
     }
   }
-
+    
   autoConnectToDevice() async {
     final FlutterSecureStorage storage = FlutterSecureStorage();
     var lprDeviceId = sharedPreferences!.getString('lprDeviceId');
@@ -2347,29 +2347,11 @@ locationController?.getUserCurrentLocation(context);
                                         addNewVesselDialogBox(
                                             context);
                                       } else {
-                                        if (selectedValue == null) {
-                                          Utils.customPrint(
-                                              'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
-                                          ScaffoldMessenger.of(
-                                              context)
-                                              .showSnackBar(
-                                              SnackBar(
-                                                behavior:
-                                                SnackBarBehavior
-                                                    .floating,
-                                                content: Text(
-                                                    "Please select vessel"),
-                                                duration: Duration(
-                                                    seconds: 1),
-                                                backgroundColor:
-                                                Colors.blue,
-                                              ));
-                                          return;
-                                        }
-                                        if (isCheck) {
-                                          if (textEditingController
-                                              .text.isEmpty ||
-                                              !isOKClick) {
+                                        if (Platform.isIOS) {
+                                          if (selectedValue ==
+                                              null) {
+                                            Utils.customPrint(
+                                                'SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
                                             ScaffoldMessenger.of(
                                                 context)
                                                 .showSnackBar(
@@ -2377,9 +2359,8 @@ locationController?.getUserCurrentLocation(context);
                                                   behavior:
                                                   SnackBarBehavior
                                                       .floating,
-                                                  content: Text(isOKClick
-                                                      ? "Please Enter Number of Passengers and Submit"
-                                                      : "Please Submit Number of Passengers"),
+                                                  content: Text(
+                                                      "Please select vessel"),
                                                   duration: Duration(
                                                       seconds: 1),
                                                   backgroundColor:
@@ -2388,27 +2369,52 @@ locationController?.getUserCurrentLocation(context);
                                             return;
                                           }
 
-                                          if (int.parse(
-                                              textEditingController
-                                                  .text) >
-                                              11) {
-                                            sliderMinVal =
-                                                numberOfPassengers
-                                                    .toDouble();
-                                            sliderCount =
-                                            '$numberOfPassengers+';
-                                            isSliderDisable = false;
-                                          } else {
-                                            sliderMinVal = 11;
-                                            sliderCount = '10+';
-                                            isSliderDisable = false;
+                                          if (isCheck) {
+                                            if (textEditingController
+                                                .text.isEmpty ||
+                                                !isOKClick) {
+                                              ScaffoldMessenger.of(
+                                                  context)
+                                                  .showSnackBar(
+                                                  SnackBar(
+                                                    behavior:
+                                                    SnackBarBehavior
+                                                        .floating,
+                                                    content: Text(isOKClick
+                                                        ? "Please Enter Number of Passengers and Submit"
+                                                        : "Please Submit Number of Passengers"),
+                                                    duration: Duration(
+                                                        seconds: 1),
+                                                    backgroundColor:
+                                                    Colors.blue,
+                                                  ));
+                                              return;
+                                            }
+
+                                            if (int.parse(
+                                                textEditingController
+                                                    .text) >
+                                                11) {
+                                              sliderMinVal =
+                                                  numberOfPassengers
+                                                      .toDouble();
+                                              sliderCount =
+                                              '$numberOfPassengers+';
+                                              isSliderDisable =
+                                              false;
+                                            } else {
+                                              sliderMinVal = 11;
+                                              sliderCount = '10+';
+                                              isSliderDisable =
+                                              false;
+                                            }
                                           }
                                         }
 
+                                        checkAllPermission(true);
+
                                         Utils.customPrint(
                                             'SELECTED VESSEL WEIGHT $selectedVesselWeight');
-
-                                        checkAllPermission(true);
                                       }
 
                                       List<BluetoothDevice>
@@ -2772,6 +2778,7 @@ locationController?.getUserCurrentLocation(context);
 
               if (isBluetoothEnable) {
                 // vessel!.add(widget.vessel!);
+
                 await locationPermissions(tripRecordingStarted);
               } else {
                 showBluetoothDialog(context);
@@ -2925,8 +2932,7 @@ locationController?.getUserCurrentLocation(context);
                 }
               }
             }
-          }
-          else if (await Permission.locationAlways.isPermanentlyDenied) {
+          } else if (await Permission.locationAlways.isPermanentlyDenied) {
             if (Platform.isIOS) {
               Permission.locationAlways.request();
 
@@ -3020,7 +3026,7 @@ locationController?.getUserCurrentLocation(context);
                           buttonText: 'Ok',
                           buttonOnTap: () async {
                             Get.back();
-                            await openAppSettings();
+                            openAppSettings();
                           });
                     }).then((value) {
                   isLocationDialogBoxOpen = false;
@@ -3935,6 +3941,43 @@ locationController?.getUserCurrentLocation(context);
 
   /// Check location permission
   locationPermissions(bool isTripRecordingStarted) async {
+    if (Platform.isAndroid) {
+      if (selectedValue == null) {
+        Utils.customPrint('SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: Text("Please select vessel"),
+          duration: Duration(seconds: 1),
+          backgroundColor: Colors.blue,
+        ));
+        return;
+      }
+
+      if (isCheck) {
+        if (textEditingController.text.isEmpty || !isOKClick) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: Text(isOKClick
+                ? "Please Enter Number of Passengers and Submit"
+                : "Please Submit Number of Passengers"),
+            duration: Duration(seconds: 1),
+            backgroundColor: Colors.blue,
+          ));
+          return;
+        }
+
+        if (int.parse(textEditingController.text) > 11) {
+          sliderMinVal = numberOfPassengers.toDouble();
+          sliderCount = '$numberOfPassengers+';
+          isSliderDisable = false;
+        } else {
+          sliderMinVal = 11;
+          sliderCount = '10+';
+          isSliderDisable = false;
+        }
+      }
+    }
+
     final FlutterSecureStorage storage = FlutterSecureStorage();
     var lprDeviceId = sharedPreferences!.getString('lprDeviceId');
     // var lprDeviceId = await storage.read(
