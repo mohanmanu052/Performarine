@@ -318,6 +318,9 @@ showLocationDailog();
               });
             } else {
              // await Permission.locationAlways.request();
+              if (Platform.isIOS) {
+                Permission.locationAlways.request();
+              }
               if (await Permission.locationAlways.isGranted) {
                 dynamic isBluetoothEnable = Platform.isAndroid
                     ? await blueIsOn()
@@ -451,6 +454,10 @@ showLocationDailog();
                   });
                 } else {
                   print('LOC AAAAAAa 4');
+                  if (Platform.isIOS) {
+                    Permission.locationAlways.request();
+                  }
+
                 //  await Permission.locationAlways.request();
                   if (await Permission.locationAlways.isGranted) {
                     dynamic isBluetoothEnable = Platform.isAndroid
@@ -2708,7 +2715,10 @@ showLocationDailog();
               });
             }
           } else {
-       //     await Permission.locationAlways.request();
+            if(Platform.isIOS){
+              await Permission.locationAlways.request();
+
+            }
 
             bool isGranted = await Permission.locationAlways.isGranted;
 
