@@ -141,7 +141,7 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
     return Screenshot(
       controller: controller,
       child: Container(
-        margin: EdgeInsets.only(left: 17, right: 17, top: 17, bottom: 10),
+        margin: EdgeInsets.only(left: 17, right: 17, top: 0, bottom: 10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -569,7 +569,7 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
                     },
                 ),
 
-              SizedBox(height: displayHeight(context) * 0.03,)
+              SizedBox(height: displayHeight(context) * 0.04,)
               ],
             )
           ],

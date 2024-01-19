@@ -254,12 +254,15 @@ if(isLoadLocalLprFile){
     isSelfDisconnected = false;
     bool isDailogShowing = true;
     Get.dialog(barrierDismissible: false, Dialog(
+      shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
       child: OrientationBuilder(builder: (context, orientation) {
         return WillPopScope(
             onWillPop: () async => false,
             child: Container(
               height: orientation == Orientation.portrait
-                  ? displayHeight(Get.context!) * 0.42
+                  ? displayHeight(Get.context!) * 0.45
                   : displayHeight(Get.context!) * 0.70,
               width: orientation == Orientation.portrait
                   ? MediaQuery.of(Get.context!).size.width
@@ -308,14 +311,63 @@ if(isLoadLocalLprFile){
                               : displayWidth(Get.context!) * 0.023,
                           textAlign: TextAlign.center),
                     ),
-                    SizedBox(
-                      height: displayHeight(Get.context!) * 0.01,
-                    ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.012,
+                        ),
                     Column(
                       children: [
                         Center(
                           child: CommonButtons.getAcceptButton(
-                              'Re-connect', Get.context!, endTripBtnColor,
+                              'End Trip', Get.context!, endTripBtnColor, () {
+                            endTrip();
+                          },
+                                                        orientation == Orientation.portrait
+                                  ? displayWidth(Get.context!) / 1.5
+                                  : displayWidth(Get.context!) / 3,
+                              orientation == Orientation.portrait
+                                  ? displayHeight(Get.context!) * 0.055
+                                  : displayHeight(Get.context!) * 0.095,
+                              primaryColor,
+                              Colors.white,
+                              orientation == Orientation.portrait
+                                  ? displayWidth(Get.context!) * 0.036
+                                  : displayWidth(Get.context!) * 0.023,
+                              endTripBtnColor,
+                              '',
+                              fontWeight: FontWeight.w500
+                              
+
+                              // displayWidth(Get.context!) * 0.5,
+                              // orientation == Orientation.portrait
+                              //     ? displayHeight(Get.context!) * 0.05
+                              //     : displayHeight(Get.context!) * 0.10,
+                              // Colors.transparent,
+                              // Theme.of(Get.context!).brightness ==
+                              //         Brightness.dark
+                              //     ? Colors.white
+                              //     : blueColor,
+                              // orientation == Orientation.portrait
+                              //     ? displayHeight(Get.context!) * 0.018
+                              //     : displayHeight(Get.context!) * 0.038,
+                              // Colors.transparent,
+                              // '',
+                              // fontWeight: FontWeight.w500,
+                              
+                              ),),
+
+
+                                                      SizedBox(
+                          height: 10.0,
+                        ),
+
+                                                      Center(
+                          child: CommonButtons.getAcceptButton(
+                              'Re-connect', 
+                              
+                              
+                              Get.context!, Colors.transparent,
+
+
                               () async {
                             isDailogShowing = false;
                             Get.back();
@@ -374,32 +426,9 @@ if(isNavigateToMaps){
                               autoConnectToDevice(isDailogShowing,isMapScreenNavigation: isNavigateToMaps);
                             }
                           },
+                                                        displayWidth(Get.context!) * 0.65,
                               orientation == Orientation.portrait
-                                  ? displayWidth(Get.context!) / 1.5
-                                  : displayWidth(Get.context!) / 3,
-                              orientation == Orientation.portrait
-                                  ? displayHeight(Get.context!) * 0.055
-                                  : displayHeight(Get.context!) * 0.095,
-                              primaryColor,
-                              Colors.white,
-                              orientation == Orientation.portrait
-                                  ? displayWidth(Get.context!) * 0.036
-                                  : displayWidth(Get.context!) * 0.023,
-                              endTripBtnColor,
-                              '',
-                              fontWeight: FontWeight.w500),
-                        ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        Center(
-                          child: CommonButtons.getAcceptButton(
-                              'End Trip', Get.context!, Colors.transparent, () {
-                            endTrip();
-                          },
-                              displayWidth(Get.context!) * 0.5,
-                              orientation == Orientation.portrait
-                                  ? displayHeight(Get.context!) * 0.05
+                                  ? displayHeight(Get.context!) * 0.054
                                   : displayHeight(Get.context!) * 0.10,
                               Colors.transparent,
                               Theme.of(Get.context!).brightness ==
@@ -411,8 +440,11 @@ if(isNavigateToMaps){
                                   : displayHeight(Get.context!) * 0.038,
                               Colors.transparent,
                               '',
-                              fontWeight: FontWeight.w500),
+                              fontWeight: FontWeight.w700
+                              ),
                         ),
+
+                        
                         SizedBox(
                           height: 10.0,
                         ),
