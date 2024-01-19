@@ -74,7 +74,7 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>
 
     commonProvider = context.read<CommonProvider>();
     Wakelock.enable();
-    tabController = TabController(initialIndex: 0, length: 2, vsync: this);
+    tabController = TabController(initialIndex: 0, length: 1, vsync: this);
     tabController.addListener(() {
       setState(() {
         currentTabIndex = tabController.index;
@@ -279,63 +279,63 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>
                 textSize: displayWidth(context) * 0.045,
               ),*/
             ),
-            bottom: TabBar(
-              controller: tabController,
-              padding: EdgeInsets.all(0),
-              labelPadding: EdgeInsets.zero,
-              isScrollable: true,
-              indicatorColor: Colors.white,
-              onTap: (int value) {
-                setState(() {
-                  currentTabIndex = value;
-                });
-              },
-              tabs: [
-                Container(
-                  margin: EdgeInsets.only(right: 2),
-                  width: displayWidth(context) * 0.35,
-                  decoration: BoxDecoration(
-                      color: currentTabIndex == 0
-                          ? Color(0xff2663DB)
-                          : backgroundColor,
-                      border: Border.all(color: Color(0xff2663DB)),
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 9.0),
-                    child: commonText(
-                      context: context,
-                      text: 'Map View',
-                      fontWeight: FontWeight.w400,
-                      textColor:
-                          currentTabIndex == 0 ? Colors.white : Colors.black,
-                      textSize: displayWidth(context) * 0.034,
-                    ),
-                    // Text('Vessels'),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 12),
-                  width: displayWidth(context) * 0.35,
-                  decoration: BoxDecoration(
-                      color: currentTabIndex == 1
-                          ? Color(0xff2663DB)
-                          : backgroundColor,
-                      border: Border.all(color: Color(0xff2663DB)),
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 9.0),
-                    child: commonText(
-                      context: context,
-                      text: 'Analytics',
-                      fontWeight: FontWeight.w400,
-                      textColor:
-                          currentTabIndex == 1 ? Colors.white : Colors.black,
-                      textSize: displayWidth(context) * 0.034,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            // bottom: TabBar(
+            //   controller: tabController,
+            //   padding: EdgeInsets.all(0),
+            //   labelPadding: EdgeInsets.zero,
+            //   isScrollable: true,
+            //   indicatorColor: Colors.white,
+            //   onTap: (int value) {
+            //     setState(() {
+            //       currentTabIndex = value;
+            //     });
+            //   },
+            //   tabs: [
+            //     Container(
+            //       margin: EdgeInsets.only(right: 2),
+            //       width: displayWidth(context) * 0.35,
+            //       decoration: BoxDecoration(
+            //           color: currentTabIndex == 0
+            //               ? Color(0xff2663DB)
+            //               : backgroundColor,
+            //           border: Border.all(color: Color(0xff2663DB)),
+            //           borderRadius: BorderRadius.all(Radius.circular(10))),
+            //       child: Padding(
+            //         padding: const EdgeInsets.symmetric(vertical: 9.0),
+            //         child: commonText(
+            //           context: context,
+            //           text: 'Map View',
+            //           fontWeight: FontWeight.w400,
+            //           textColor:
+            //               currentTabIndex == 0 ? Colors.white : Colors.black,
+            //           textSize: displayWidth(context) * 0.034,
+            //         ),
+            //         // Text('Vessels'),
+            //       ),
+            //     ),
+            //     Container(
+            //       margin: EdgeInsets.only(left: 12),
+            //       width: displayWidth(context) * 0.35,
+            //       decoration: BoxDecoration(
+            //           color: currentTabIndex == 1
+            //               ? Color(0xff2663DB)
+            //               : backgroundColor,
+            //           border: Border.all(color: Color(0xff2663DB)),
+            //           borderRadius: BorderRadius.all(Radius.circular(10))),
+            //       child: Padding(
+            //         padding: const EdgeInsets.symmetric(vertical: 9.0),
+            //         child: commonText(
+            //           context: context,
+            //           text: 'Analytics',
+            //           fontWeight: FontWeight.w400,
+            //           textColor:
+            //               currentTabIndex == 1 ? Colors.white : Colors.black,
+            //           textSize: displayWidth(context) * 0.034,
+            //         ),
+            //       ),
+            //     ),
+              //],
+           // ),
             actions: [
               Container(
                 margin: EdgeInsets.only(right: 8),
@@ -368,14 +368,14 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>
               TabBarView(
                 controller: tabController,
                 children: [
-                  MapScreen(
-                      calledFrom: widget.calledFrom,
-                      scaffoldKey: scaffoldKey,
-                      tripId: widget.tripId,
-                      vesselId: widget.vesselId,
-                      tripIsRunningOrNot: widget.tripIsRunningOrNot,
-                      context: context,
-                      isAppKilled: widget.isAppKilled),
+                  // MapScreen(
+                  //     calledFrom: widget.calledFrom,
+                  //     scaffoldKey: scaffoldKey,
+                  //     tripId: widget.tripId,
+                  //     vesselId: widget.vesselId,
+                  //     tripIsRunningOrNot: widget.tripIsRunningOrNot,
+                  //     context: context,
+                  //     isAppKilled: widget.isAppKilled),
                   TripRecordingAnalyticsScreen(
                       calledFrom: widget.calledFrom,
                       scaffoldKey: scaffoldKey,
@@ -387,7 +387,7 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>
                 ],
               ),
               Positioned(
-                  bottom: 5,
+                  bottom: displayHeight(context)*0.01,
                   child: GestureDetector(
                       onTap: () async {
                         final image = await controller.capture();
