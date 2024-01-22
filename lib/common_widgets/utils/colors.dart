@@ -47,4 +47,5 @@ const deleteTripBtnColor = Color(0xFFFF2020);
 const inProgressTrip = Color(0xFFFDBF21);
 const skipAndContinueBtnColor = Color(0xFFD1E0FC);
 const reroprtHighlightBackgroundColor=Color(0xFFC0EDFC);
-
+const colorLightRed=Color(0xffECDFDF);
+const colorgreenLight=Color(0xffE5FFE9);
