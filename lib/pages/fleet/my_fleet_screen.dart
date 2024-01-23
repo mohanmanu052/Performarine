@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
@@ -98,11 +100,11 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
             SingleChildScrollView(
               physics: ClampingScrollPhysics(),
               child: Container(
-                height: displayHeight(context),
-                margin: EdgeInsets.only(left: 17, right: 17, top: 17, bottom: displayHeight(context) * 0.06),
+                //height: displayHeight(context),
+                margin: EdgeInsets.only(left: 17, right: 17, top: 17, bottom: displayHeight(context) * 0.1),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-
                     Theme(
                       data: Theme.of(context).copyWith(
                           colorScheme: ColorScheme.light(
@@ -216,7 +218,7 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                         ],
                       ),
                     ),
-                    SizedBox(height: displayHeight(context) * 0.01,),
+                    SizedBox(height: Platform.isAndroid ? displayHeight(context) * 0.01 : 0),
                     Theme(
                       data: Theme.of(context).copyWith(
                           colorScheme: ColorScheme.light(
@@ -328,7 +330,7 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                         ],
                       ),
                     ),
-                    SizedBox(height: displayHeight(context) * 0.01,),
+                    SizedBox(height: Platform.isAndroid ? displayHeight(context) * 0.01 : 0,),
                     Theme(
                       data: Theme.of(context).copyWith(
                           colorScheme: ColorScheme.light(
@@ -447,6 +449,7 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                         ],
                       ),
                     ),
+
                   ],
                 ),
               ),

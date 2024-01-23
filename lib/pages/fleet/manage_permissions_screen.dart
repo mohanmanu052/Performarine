@@ -205,12 +205,13 @@ class _ManagePermissionsScreenState extends State<ManagePermissionsScreen> {
                         });
                       },
                       checkboxType: CheckboxType.Parent,
-                      activeColor: Colors.indigo,
+                      activeColor: blueColor,
                     ),
                     Column(
                       children: List.generate(
                         manageVesselList.length,
                             (index) => CheckboxListTile(
+                              activeColor: blueColor,
                           controlAffinity: ListTileControlAffinity.leading,
                           contentPadding: EdgeInsets.symmetric(horizontal: 4),
                           dense: true,

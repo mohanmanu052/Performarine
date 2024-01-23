@@ -27,6 +27,8 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
   List<int> inviteCountList = [];
   List<String> inviteEmailList = [];
 
+  List<SearchWidget> searchWidgetList = [];
+
   @override
   void initState() {
     // TODO: implement initState
