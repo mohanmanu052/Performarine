@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
 import 'package:performarine/pages/feedback_report.dart';
-import 'package:performarine/pages/fleet/manage_permissions_screen.dart';
+import 'package:performarine/pages/fleet/my_delegate_invites_screen.dart';
 import 'package:performarine/pages/fleet/search_widget.dart';
 import 'package:screenshot/screenshot.dart';
 
@@ -53,7 +53,6 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
                 ? Colors.white
                 : Colors.black,
           ),
-          centerTitle: true,
           title: commonText(
               context: context,
               text: 'Send Invite',
@@ -176,11 +175,11 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
                           onTap: () {
                             // print('INVITE EMAIL LIST: ${inviteCountList}');
                             // print('INVITE EMAIL LIST: ${inviteEmailList}');
-                            Navigator.push(
+                           /* Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => ManagePermissionsScreen()),
-                            );
+                                  builder: (context) => MyDelegateInvitesScreen()),
+                            );*/
                           }),
                     ),
                     GestureDetector(

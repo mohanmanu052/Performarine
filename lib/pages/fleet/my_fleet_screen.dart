@@ -16,6 +16,8 @@ import '../../common_widgets/widgets/common_buttons.dart';
 import '../../common_widgets/widgets/log_level.dart';
 import '../../common_widgets/widgets/user_feed_back.dart';
 import '../feedback_report.dart';
+import 'manage_permissions_screen.dart';
+import 'my_delegate_invites_screen.dart';
 
 
 class MyFleetScreen extends StatefulWidget {
@@ -32,9 +34,10 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
   final controller = ScreenshotController();
 
   List<MyFleetModel> myFleetList =  [
-    MyFleetModel(emailId: 'abhiram80@paccor.com', dateOfJoin: '03-26-2024', noOfVessel: '03', status: 'Accepted'),
-    MyFleetModel(emailId: 'Janeiskij02@knds.com', dateOfJoin: '03-26-2024', noOfVessel: '02', status: 'Accepted'),
-    MyFleetModel(emailId: 'bvudsam80@paccor.com', dateOfJoin: '03-26-2024', noOfVessel: '01', status: 'Removed'),
+    MyFleetModel(emailId: 'abhiram90@paccor.com', dateOfJoin: '03-26-2024', noOfVessel: '02', status: 'Accepted'),
+    MyFleetModel(emailId: 'Rupali02@knds.com', dateOfJoin: '03-26-2024', noOfVessel: '02', status: 'Accepted'),
+    MyFleetModel(emailId: 'Mohan80@paccor.com', dateOfJoin: '03-26-2024', noOfVessel: '00', status: 'Rejected'),
+    MyFleetModel(emailId: 'Rupali80@paccor.com', dateOfJoin: '03-26-2024', noOfVessel: '00', status: 'Left'),
     MyFleetModel(emailId: 'bvudsam80@paccor.com', dateOfJoin: '03-26-2024', noOfVessel: '03', status: 'Pending'),
   ];
 
@@ -69,7 +72,6 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                 ? Colors.white
                 : Colors.black,
           ),
-          centerTitle: true,
           title: commonText(
               context: context,
               text: 'My Fleet',
@@ -152,7 +154,9 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                                     ? Colors.green.shade50
                                                     : myFleetList[index].status == 'Pending'
                                                     ? Colors.yellow.shade100
-                                                    : Colors.red.shade50,
+                                                    : myFleetList[index].status == 'Left'
+                                                ? Colors.grey.shade100
+                                                : Colors.red.shade50,
                                                 borderRadius: BorderRadius.circular(20)
                                             ),
                                             child: Center(
@@ -166,7 +170,9 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                                         ? Colors.green
                                                         : myFleetList[index].status == 'Pending'
                                                         ? Colors.yellow.shade700
-                                                        : Colors.red,
+                                                        :  myFleetList[index].status == 'Left'
+                                                        ? Colors.grey
+                                                    : Colors.red,
                                                     textSize: displayWidth(context) * 0.03,
                                                     textAlign: TextAlign.start,  fontFamily: poppins),
                                               ),
@@ -191,20 +197,27 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                               textSize: displayWidth(context) * 0.028,
                                               textAlign: TextAlign.start),
                                           SizedBox(width: displayWidth(context) * 0.03,),
-                                          commonText(
-                                              context: context,
-                                              text: 'No of Vessels: ',
-                                              fontWeight: FontWeight.w400,
-                                              textColor: Colors.grey,
-                                              textSize: displayWidth(context) * 0.028,
-                                              textAlign: TextAlign.start),
-                                          commonText(
-                                              context: context,
-                                              text: myFleetList[index].noOfVessel,
-                                              fontWeight: FontWeight.w500,
-                                              textColor: blueColor,
-                                              textSize: displayWidth(context) * 0.028,
-                                              textAlign: TextAlign.start),
+
+                                          myFleetList[index].status == 'Pending' || myFleetList[index].status == 'Rejected'
+                                              ? SizedBox()
+                                              : Row(
+                                            children: [
+                                              commonText(
+                                                  context: context,
+                                                  text: 'No of Vessels: ',
+                                                  fontWeight: FontWeight.w400,
+                                                  textColor: Colors.grey,
+                                                  textSize: displayWidth(context) * 0.028,
+                                                  textAlign: TextAlign.start),
+                                              commonText(
+                                                  context: context,
+                                                  text: myFleetList[index].noOfVessel,
+                                                  fontWeight: FontWeight.w500,
+                                                  textColor: Colors.black,
+                                                  textSize: displayWidth(context) * 0.028,
+                                                  textAlign: TextAlign.start),
+                                            ],
+                                          )
 
 
                                         ],
@@ -231,7 +244,7 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                         childrenPadding: EdgeInsets.zero,
                         title: commonText(
                             context: context,
-                            text: 'Fleet Your in',
+                            text: 'Fleet I am in',
                             fontWeight: FontWeight.w500,
                             textColor: blueColor,
                             textSize: displayWidth(context) * 0.048,
@@ -248,53 +261,18 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                   child: Column(
                                     children: [
                                       Row(
-                                        mainAxisSize: MainAxisSize.min,
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Flexible(
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                commonText(
-                                                  context: context,
-                                                  text: fleetList[index].fleetName,
-                                                  fontWeight: FontWeight.w500,
-                                                  textColor: Colors.black,
-                                                  textSize: displayWidth(context) * 0.04,
-                                                  textAlign: TextAlign.start,),
-
-                                                Row(
-                                                  children: [
-                                                    commonText(
-                                                        context: context,
-                                                        text: 'Date of join: ',
-                                                        fontWeight: FontWeight.w400,
-                                                        textColor: Colors.grey,
-                                                        textSize: displayWidth(context) * 0.028,
-                                                        textAlign: TextAlign.start),
-                                                    commonText(
-                                                        context: context,
-                                                        text: fleetList[index].dateOfJoin,
-                                                        fontWeight: FontWeight.w500,
-                                                        textColor: Colors.black,
-                                                        textSize: displayWidth(context) * 0.028,
-                                                        textAlign: TextAlign.start),
-                                                    SizedBox(width: displayWidth(context) * 0.03,),
-                                                    commonText(
-                                                        context: context,
-                                                        text: 'Manage Vessels',
-                                                        fontWeight: FontWeight.w400,
-                                                        textColor: blueColor,
-                                                        textSize: displayWidth(context) * 0.028,
-                                                        textAlign: TextAlign.start),
-
-
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
+                                            child: commonText(
+                                              context: context,
+                                              text: fleetList[index].fleetName,
+                                              fontWeight: FontWeight.w500,
+                                              textColor: Colors.black,
+                                              textSize: displayWidth(context) * 0.04,
+                                              textAlign: TextAlign.start,),
                                           ),
-                                          SizedBox(width: 4,),
+
                                           Container(
                                             width: displayWidth(context) * 0.2,
                                             decoration: BoxDecoration(
@@ -315,8 +293,79 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                               ),
                                             ),
                                           )
+
                                         ],
                                       ),
+                                      SizedBox(height: 4,),
+                                      Row(
+                                        children: [
+                                          commonText(
+                                              context: context,
+                                              text: 'Date of join: ',
+                                              fontWeight: FontWeight.w400,
+                                              textColor: Colors.grey,
+                                              textSize: displayWidth(context) * 0.028,
+                                              textAlign: TextAlign.start),
+                                          commonText(
+                                              context: context,
+                                              text: fleetList[index].dateOfJoin,
+                                              fontWeight: FontWeight.w500,
+                                              textColor: Colors.black,
+                                              textSize: displayWidth(context) * 0.028,
+                                              textAlign: TextAlign.start),
+                                          SizedBox(width: displayWidth(context) * 0.03,),
+                                          commonText(
+                                              context: context,
+                                              text: 'No of Vessels: ',
+                                              fontWeight: FontWeight.w400,
+                                              textColor: Colors.grey,
+                                              textSize: displayWidth(context) * 0.028,
+                                              textAlign: TextAlign.start),
+                                          commonText(
+                                              context: context,
+                                              text: myFleetList[index].noOfVessel,
+                                              fontWeight: FontWeight.w500,
+                                              textColor: Colors.black,
+                                              textSize: displayWidth(context) * 0.028,
+                                              textAlign: TextAlign.start),
+                                          SizedBox(width: displayWidth(context) * 0.015,),
+                                          InkWell(
+                                            onTap: (){
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) => ManagePermissionsScreen()),
+                                              );
+                                            },
+                                            child: commonText(
+                                                context: context,
+                                                text: 'Manage Vessels',
+                                                fontWeight: FontWeight.w400,
+                                                textColor: blueColor,
+                                                textSize: displayWidth(context) * 0.028,
+                                                textAlign: TextAlign.start),
+                                          )
+                                          /*TextButton(
+                                            child: commonText(
+                                                context: context,
+                                                text: 'Manage Vessels',
+                                                fontWeight: FontWeight.w400,
+                                                textColor: blueColor,
+                                                textSize: displayWidth(context) * 0.028,
+                                                textAlign: TextAlign.start),
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) => ManagePermissionsScreen()),
+                                              );
+                                            },
+                                          )*/
+
+
+                                        ],
+                                      ),
+                                      SizedBox(height: 4,),
                                       Divider(
                                         color: Colors.grey.shade300,
                                         thickness: 2,
@@ -343,7 +392,7 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                         childrenPadding: EdgeInsets.zero,
                         title: commonText(
                             context: context,
-                            text: 'Invites',
+                            text: 'Fleet Invites',
                             fontWeight: FontWeight.w500,
                             textColor: blueColor,
                             textSize: displayWidth(context) * 0.048,

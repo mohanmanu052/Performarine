@@ -91,7 +91,7 @@ class _ManagePermissionsScreenState extends State<ManagePermissionsScreen> {
           centerTitle: true,
           title: commonText(
               context: context,
-              text: 'Manage Permissions',
+              text: 'Manage',
               fontWeight: FontWeight.w600,
               textColor: Colors.black,
               textSize: displayWidth(context) * 0.05,
@@ -128,7 +128,7 @@ class _ManagePermissionsScreenState extends State<ManagePermissionsScreen> {
                       alignment: Alignment.center,
                       child: commonText(
                           context: context,
-                          text: 'Manage Vessels',
+                          text: 'Assign Vessels',
                           fontWeight: FontWeight.w600,
                           textColor: Colors.black,
                           textSize: displayWidth(context) * 0.05,
@@ -141,33 +141,17 @@ class _ManagePermissionsScreenState extends State<ManagePermissionsScreen> {
                       width: displayWidth(context),
                       decoration: BoxDecoration(
                         color: Colors.blue.withOpacity(.1),
-                        borderRadius: BorderRadius.circular(12)
+                        borderRadius: BorderRadius.circular(18)
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 14),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            commonText(
-                                context: context,
-                                text: 'Name of the fleet',
-                                fontWeight: FontWeight.w500,
-                                textColor: Colors.black,
-                                textSize: displayWidth(context) * 0.042,
-                                textAlign: TextAlign.start),
-
-                            SizedBox(height: 2,),
-
-                            commonText(
-                                context: context,
-                                text: 'abhiram90@gmail.com',
-                                fontWeight: FontWeight.w500,
-                                textColor: Colors.black54,
-                                textSize: displayWidth(context) * 0.038,
-                                textAlign: TextAlign.start),
-
-                          ],
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 18),
+                        child: commonText(
+                            context: context,
+                            text: 'abhiram90@gmail.com',
+                            fontWeight: FontWeight.w500,
+                            textColor: Colors.black87,
+                            textSize: displayWidth(context) * 0.038,
+                            textAlign: TextAlign.start),
                       ),
                     ),
 
