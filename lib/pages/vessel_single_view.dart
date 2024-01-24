@@ -18,7 +18,7 @@ import 'package:performarine/models/device_model.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/custom_drawer.dart';
-import 'package:performarine/pages/fleet_mangement/delegates_screen.dart';
+import 'package:performarine/pages/delegate/delegates_screen.dart';
 import 'package:performarine/pages/trip/tripViewBuilder.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';

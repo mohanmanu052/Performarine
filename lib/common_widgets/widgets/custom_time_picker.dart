@@ -77,6 +77,17 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
                     //  ),
                 ),
               ),
+Container(
+child: Text(':',
+style: TextStyle(
+  fontSize: 22,
+  color: Colors.black,
+  fontWeight: FontWeight.bold
+),
+
+),
+),
+
               NumberPicker(
                 minValue: 00,
                 maxValue: 59,

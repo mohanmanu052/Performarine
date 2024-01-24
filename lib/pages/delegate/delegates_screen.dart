@@ -12,7 +12,7 @@ import 'package:performarine/common_widgets/widgets/vessel_info_card.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
 import 'package:performarine/pages/feedback_report.dart';
-import 'package:performarine/pages/fleet_mangement/invite_delegate.dart';
+import 'package:performarine/pages/delegate/invite_delegate.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:screenshot/screenshot.dart';
 
