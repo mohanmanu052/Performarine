@@ -215,7 +215,7 @@ tag(colorgreenLight, '24 Hr Access')
       text: 'Active',
       textColor: Colors.green,
       fontWeight: FontWeight.w500,
-      textSize: 10
+      textSize: 11
 
 
     )),
@@ -266,7 +266,7 @@ size: 12,
                                                                                                   ),
                                                                                                   child: commonText(text: 'Remove Access',
                                                                                                   fontWeight: FontWeight.w400,
-                                                                                                  textSize: 8,
+                                                                                                  textSize: 10,
                                                                                                   textColor: floatingBtnColor
                                                                                                   ),
                                                                                                 ),
@@ -300,12 +300,12 @@ textColor: blueColor
                                               child: Column(children: [
                                                 commonText(text: 'Permissions:',
                                                 fontWeight: FontWeight.w400,
-                                                textSize: 9
+                                                textSize: 10
                                                 ),
-                                                                                                commonText(text: 'Reports | Manage Trips | Edit',
-                                                fontWeight: FontWeight.w400,
-                                                textSize: 7
-                                                ),
+                                                //                                                 commonText(text: 'Reports | Manage Trips | Edit',
+                                                // fontWeight: FontWeight.w400,
+                                                // textSize: 7
+                                                // ),
 
                                               ]),
                                             ))

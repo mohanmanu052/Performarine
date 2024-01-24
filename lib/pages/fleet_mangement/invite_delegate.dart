@@ -221,31 +221,42 @@ Visibility(
     children: [
       Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-      Container(
-      padding: EdgeInsets.symmetric(horizontal: 10,vertical: 4),
-      child: InkWell(
-        onTap: () {
-          calenderType=0;
-          setState(() {
-            
-          });
-        },
+            Flexible(
+        flex: 6,
+        fit: FlexFit.tight,
+
+        child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10,vertical: 4),
+        child: InkWell(
+          onTap: () {
+            calenderType=0;
+            setState(() {
+              
+            });
+          },
+          
+          child: fromToDate('From Date: ',startDateText))),
+      ),
+      Flexible(
+        flex: 4,
+        fit: FlexFit.tight,
+        child: Container(
+          alignment: Alignment.centerLeft,
+        padding: EdgeInsets.symmetric(horizontal: 8,vertical: 4),
         
-        child: fromToDate('From Date: ',startDateText))),
-      Container(
-      padding: EdgeInsets.symmetric(horizontal: 8,vertical: 4),
-      
-      child: InkWell(
-        onTap: () {
-          calenderType=1;
-          setState(() {
-            
-          });
-      
-        },
+        child: InkWell(
+          onTap: () {
+            calenderType=1;
+            setState(() {
+              
+            });
         
-        child: fromToDate('To Date: ',endDate))),
+          },
+          
+          child: fromToDate('To Date: ',endDate))),
+      ),
       
       ],
       ),
