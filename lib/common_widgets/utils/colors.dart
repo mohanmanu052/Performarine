@@ -49,3 +49,6 @@ const skipAndContinueBtnColor = Color(0xFFD1E0FC);
 const reroprtHighlightBackgroundColor=Color(0xFFC0EDFC);
 const colorLightRed=Color(0xffECDFDF);
 const colorgreenLight=Color(0xffE5FFE9);
+const colorlightBlueTimePickerUnselecetd=Color(0xffA8C5FD);
+const calenderBackgroundColor=Color(0xfF9FBFD);
+const delegateTextHeaderColor=Color(0xff275778);

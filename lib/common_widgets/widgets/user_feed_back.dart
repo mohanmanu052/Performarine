@@ -11,12 +11,12 @@ import 'common_widgets.dart';
 class UserFeedback{
 
   
-  Widget getUserFeedback(BuildContext context,{Orientation orientation=Orientation.portrait}){
+  Widget getUserFeedback(BuildContext context,{Orientation orientation=Orientation.portrait,double bottom=0}){
 
     double value = Platform.isIOS ? displayHeight(context) * 0.015 : 0;
 
     return Container(
-      margin: EdgeInsets.only(top: 8, bottom: value),
+      margin: EdgeInsets.only(top: 8, bottom: bottom==0?value:bottom),
       height: displayWidth(context) * 0.05,
       width: displayWidth(context),
       child: Row(

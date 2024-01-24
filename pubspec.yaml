@@ -100,6 +100,7 @@ dependencies:
   #syncfusion_flutter_core: ^23.1.36
   # intl: ^0.18.0
   flutter_map_tile_caching: ^8.0.1
+  numberpicker: ^2.1.2
 
 
 

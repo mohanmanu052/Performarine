@@ -125,7 +125,7 @@ GlobalKey<ScaffoldState> _scafoldKey=GlobalKey();
                                 //physics: NeverScrollableScrollPhysics(),
                                 itemBuilder: (context, index) {
                                   final vessel = snapshot.data![index];
-                                  return snapshot.data![index].vesselStatus == 0
+                                  return snapshot.data![index].vesselStatus == 1
                                       ? vesselSingleViewCard(context, vessel,
                                           (CreateVessel value) {
 

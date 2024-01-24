@@ -8,9 +8,11 @@ import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/user_feed_back.dart';
+import 'package:performarine/common_widgets/widgets/vessel_info_card.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
 import 'package:performarine/pages/feedback_report.dart';
+import 'package:performarine/pages/fleet_mangement/invite_delegate.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:screenshot/screenshot.dart';
 
@@ -31,10 +33,15 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
   @override
   void initState() {
             getVesselFuture = _databaseService.vessels();
-          getVesselFuture.then((value) => {
-           vesselData=   value[0]
+          getVesselFuture.then((value)  {
+           vesselData=   value[1];
+           setState(() {
+             
+           });
            
             });
+
+
 
     // TODO: implement initState
     super.initState();
@@ -109,7 +116,7 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                   right: 0,
                   left: 0,
                   child: Container(
-                    height: displayHeight(context)/7.9,
+                    height: displayHeight(context)/8.5,
                     padding: EdgeInsets.all(8),
 
                   child: Column(
@@ -122,9 +129,10 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
             buttonPrimaryColor: blueColor,
             borderColor: blueColor,
             onTap: (){
-
+Navigator.push(context, MaterialPageRoute(builder: ((context) => InviteDelegate())));
             },
             width: displayWidth(context)/1.3,
+            height: displayHeight(context)*0.053
             
             ),
 
@@ -156,7 +164,16 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                                   child: SingleChildScrollView(
                                     child: Column(
                                       children: [
-                                    
+                                        SizedBox(height: 5,),
+                                        if(vesselData!=null)
+                                    Container(
+                                      margin: EdgeInsets.symmetric(horizontal: 15,),
+                                      width: displayWidth(context),
+                                      //height: displayHeight(context)*0.2,
+                                      
+                                      child: VesselinfoCard(vesselData: vesselData,)),
+
+SizedBox(height: 10,),
                                     ListView.builder(
                                     physics: NeverScrollableScrollPhysics(),
                                       shrinkWrap: true,
