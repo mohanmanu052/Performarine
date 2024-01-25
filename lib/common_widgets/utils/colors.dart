@@ -48,3 +48,4 @@ const inProgressTrip = Color(0xFFFDBF21);
 const skipAndContinueBtnColor = Color(0xFFD1E0FC);
 const reroprtHighlightBackgroundColor=Color(0xFFC0EDFC);
 
+

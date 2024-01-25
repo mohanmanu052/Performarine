@@ -20,6 +20,7 @@ import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/add_vessel_new/add_new_vessel_screen.dart';
 import 'package:performarine/pages/auth_new/change_password.dart';
 import 'package:performarine/pages/auth_new/sign_in_screen.dart';
+import 'package:performarine/pages/fleet/my_fleet_screen.dart';
 import 'package:performarine/pages/retired_vessels_screen.dart';
 import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
 import 'package:performarine/pages/sync_data_cloud_to_mobile_screen.dart';
@@ -316,6 +317,34 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               SizedBox(
                                 height: displayHeight(context) * 0.02,
                               ), */
+                              Container(
+                                width: displayWidth(context),
+                                child: InkWell(
+                                  onTap: ()async {
+                                    // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                    await Future.delayed(Duration(milliseconds: 500), (){});
+                                    CustomLogger().logWithFile(Level.info, "User Navigating to My Fleet Screen -> $page");
+                                    Navigator.of(context).pop();
+
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              MyFleetScreen(bottomNavIndex: widget.bottomNavIndex,)),
+                                    );
+                                  },
+                                  child: commonText(
+                                      context: context,
+                                      text: 'My Fleet',
+                                      fontWeight: FontWeight.w400,
+                                      textColor: Colors.black54,
+                                      textSize: textSize,
+                                      textAlign: TextAlign.start),
+                                ),
+                              ),
+                              SizedBox(
+                                height: displayHeight(context) * 0.02,
+                              ),
                               Container(
                                 width: displayWidth(context),
                                 child: InkWell(
@@ -889,6 +918,34 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           SizedBox(
                             height: displayHeight(context) * 0.02,
                           ), */
+                          Container(
+                            width: displayWidth(context),
+                            child: InkWell(
+                              onTap: ()async {
+                                // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                await Future.delayed(Duration(milliseconds: 500), (){});
+                                CustomLogger().logWithFile(Level.info, "User Navigating to My Fleet Screen -> $page");
+                                Navigator.of(context).pop();
+
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          MyFleetScreen(bottomNavIndex: widget.bottomNavIndex,)),
+                                );
+                              },
+                              child: commonText(
+                                  context: context,
+                                  text: 'My Fleet',
+                                  fontWeight: FontWeight.w400,
+                                  textColor: Colors.black54,
+                                  textSize: textSize,
+                                  textAlign: TextAlign.start),
+                            ),
+                          ),
+                          SizedBox(
+                            height: displayHeight(context) * 0.02,
+                          ),
                           Container(
                             width: displayWidth(context),
                             child: InkWell(
