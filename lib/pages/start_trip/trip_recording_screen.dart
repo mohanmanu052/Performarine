@@ -387,7 +387,7 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>
                 ],
               ),
               Positioned(
-                  bottom: 10,
+                  bottom: displayHeight(context)*0.01,
                   child: GestureDetector(
                       onTap: () async {
                         final image = await controller.capture();

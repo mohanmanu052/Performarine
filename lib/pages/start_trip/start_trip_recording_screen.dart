@@ -2200,7 +2200,7 @@ showLocationDailog();
                                         addNewVesselDialogBox(
                                             context);
                                       } else {
-                                        if (Platform.isIOS) {
+                                        /*if (Platform.isIOS) {
                                           if (selectedValue ==
                                               null) {
                                             Utils.customPrint(
@@ -2262,7 +2262,7 @@ showLocationDailog();
                                               false;
                                             }
                                           }
-                                        }
+                                        }*/
 
                                         checkAllPermission(true);
 
@@ -3806,40 +3806,38 @@ showLocationDailog();
 
   /// Check location permission
   locationPermissions(bool isTripRecordingStarted) async {
-    if (Platform.isAndroid) {
-      if (selectedValue == null) {
-        Utils.customPrint('SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
+    if (selectedValue == null) {
+      Utils.customPrint('SELECTED VESSEL WEIGHT 12 $selectedVesselWeight');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating,
+        content: Text("Please select vessel"),
+        duration: Duration(seconds: 1),
+        backgroundColor: Colors.blue,
+      ));
+      return;
+    }
+
+    if (isCheck) {
+      if (textEditingController.text.isEmpty || !isOKClick) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           behavior: SnackBarBehavior.floating,
-          content: Text("Please select vessel"),
+          content: Text(isOKClick
+              ? "Please Enter Number of Passengers and Submit"
+              : "Please Submit Number of Passengers"),
           duration: Duration(seconds: 1),
           backgroundColor: Colors.blue,
         ));
         return;
       }
 
-      if (isCheck) {
-        if (textEditingController.text.isEmpty || !isOKClick) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            behavior: SnackBarBehavior.floating,
-            content: Text(isOKClick
-                ? "Please Enter Number of Passengers and Submit"
-                : "Please Submit Number of Passengers"),
-            duration: Duration(seconds: 1),
-            backgroundColor: Colors.blue,
-          ));
-          return;
-        }
-
-        if (int.parse(textEditingController.text) > 11) {
-          sliderMinVal = numberOfPassengers.toDouble();
-          sliderCount = '$numberOfPassengers+';
-          isSliderDisable = false;
-        } else {
-          sliderMinVal = 11;
-          sliderCount = '10+';
-          isSliderDisable = false;
-        }
+      if (int.parse(textEditingController.text) > 11) {
+        sliderMinVal = numberOfPassengers.toDouble();
+        sliderCount = '$numberOfPassengers+';
+        isSliderDisable = false;
+      } else {
+        sliderMinVal = 11;
+        sliderCount = '10+';
+        isSliderDisable = false;
       }
     }
 
@@ -5112,6 +5110,7 @@ showLocationDailog();
         }).then((value) {
       setState(() {});
       Future.delayed(Duration(microseconds: 500), () {
+        isBluetoothSearching = false;
         setState(() {});
       });
 
