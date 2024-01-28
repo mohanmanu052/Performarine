@@ -7,6 +7,7 @@ import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/common_widgets/widgets/custom_fleet_dailog.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
 import 'package:performarine/pages/fleet/widgets/fleet_details_card.dart';
@@ -89,10 +90,16 @@ break;
 Container(
   margin: EdgeInsets.only(right: 10),
   alignment: Alignment.center,
-  child: commonText(text: 'Edit Fleet',
-  textColor: blueColor,
-  fontWeight: FontWeight.w500,
-  textSize: 13
+  child: InkWell(
+    onTap: () {
+      CustomFleetDailog().showEditFleetDialog(context: context,fleetData: fleetData);
+    },
+    child: commonText(text: 'Edit Fleet',
+    
+    textColor: blueColor,
+    fontWeight: FontWeight.w500,
+    textSize: 13
+    ),
   ),
 ),
 
