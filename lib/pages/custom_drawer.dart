@@ -1007,7 +1007,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             child: commonText(
                                 context: context,
                                 text: 'My Reports',
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.w400,
                                 textColor: Colors.black54,
                                 textSize: textSize,
                                 textAlign: TextAlign.start),
