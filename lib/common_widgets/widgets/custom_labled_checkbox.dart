@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
+import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 
 enum CheckboxType {
   Parent,
@@ -174,6 +175,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
       this.dateTime,
       this.distance,
       this.orientation,
+      this.isfleetType,
       this.imageUrl,
       this.time})
       : assert(label != null),
@@ -195,6 +197,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
   String? distance;
   String? time;
   Orientation? orientation;
+  bool? isfleetType;
 
   void _onChanged() {
     if (value != null) {
@@ -213,181 +216,238 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
       child: Container(
         width: displayWidth(context) / 1.2,
         height: orientation == Orientation.portrait
-            ? displayHeight(context) * 0.09
-            : displayHeight(context) * 0.19,
+            ?isfleetType??false?displayHeight(context) * 0.095: displayHeight(context) * 0.09
+            :isfleetType??false? displayHeight(context) * 0.22:displayHeight(context) * 0.19,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(20)),
             color: reportTripsListColor),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          //crossAxisAlignment: CrossAxisAlignment.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Checkbox(
-              tristate: tristate,
-              value: value,
-              onChanged: (_) {
-                _onChanged();
-              },
-              activeColor: activeColor,
-            ),
-
             Container(
-                height: orientation == Orientation.portrait
-                    ? displayHeight(context) * 0.06
-                    : displayHeight(context) * 0.11,
-                width: orientation == Orientation.portrait
-                    ? displayWidth(context) * 0.11
-                    : displayWidth(context) * 0.12,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  image: imageUrl != null && imageUrl!.isNotEmpty
-                      ? DecorationImage(
-                          fit: BoxFit.cover,
-                          image: FileImage(File(imageUrl ?? '')))
-                      : DecorationImage(
-                          fit: BoxFit.cover,
-                          image: AssetImage(
-                            "assets/images/vessel_default_img.png",
-                          )),
-                )),
-
-            //  Image.asset(
-            //    "assets/images/reports-boat.png",
-            //    height:orientation==Orientation.portrait? displayHeight(context) * 0.06:displayHeight(context) * 0.10,
-            //    width:orientation==Orientation.portrait? displayWidth(context) * 0.13:displayWidth(context) * 0.15,
-            //  ),
-
-            SizedBox(
-              width: 10,
-            ),
-
-            SizedBox(
-              width: displayWidth(context) / 5.4,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
+             // margin: EdgeInsets.only(bottom: isfleetType??false?10:0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    "$dateTime",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontFamily: outfit,
-                        fontSize: orientation == Orientation.portrait
-                            ? displayWidth(context) * 0.030
-                            : displayWidth(context) * 0.02,
-                        color: blutoothDialogTxtColor),
+                  Checkbox(
+                    tristate: tristate,
+                    value: value,
+                    onChanged: (_) {
+                      _onChanged();
+                    },
+                    activeColor: activeColor,
                   ),
+              
+                  Container(
+                      height: orientation == Orientation.portrait
+                          ? displayHeight(context) * 0.06
+                          : displayHeight(context) * 0.11,
+                      width: orientation == Orientation.portrait
+                          ? displayWidth(context) * 0.11
+                          : displayWidth(context) * 0.12,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        image: imageUrl != null && imageUrl!.isNotEmpty
+                            ? DecorationImage(
+                                fit: BoxFit.cover,
+                                image: FileImage(File(imageUrl ?? '')))
+                            : DecorationImage(
+                                fit: BoxFit.cover,
+                                image: AssetImage(
+                                  "assets/images/vessel_default_img.png",
+                                )),
+                      )),
+              
+                  //  Image.asset(
+                  //    "assets/images/reports-boat.png",
+                  //    height:orientation==Orientation.portrait? displayHeight(context) * 0.06:displayHeight(context) * 0.10,
+                  //    width:orientation==Orientation.portrait? displayWidth(context) * 0.13:displayWidth(context) * 0.15,
+                  //  ),
+              
                   SizedBox(
-                    height: displayHeight(context) * 0.005,
+                    width: 10,
                   ),
-                  Text(
-                    "Date",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontFamily: poppins,
-                        fontSize: orientation == Orientation.portrait
-                            ? displayWidth(context) * 0.026
-                            : displayWidth(context) * 0.016,
-                        color: filterByTripTxtColor),
+              
+                  SizedBox(
+                    width: displayWidth(context) / 5.4,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                         isfleetType??false?'Vessel Name': "$dateTime",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontFamily: outfit,
+                              fontSize: orientation == Orientation.portrait
+                                  ? displayWidth(context) * 0.030
+                                  : displayWidth(context) * 0.02,
+                              color: blutoothDialogTxtColor),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.005,
+                        ),
+                        Text(
+                      isfleetType??false?'#65167423' :   "Date",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontFamily: poppins,
+                              fontSize: orientation == Orientation.portrait
+                                  ? displayWidth(context) * 0.026
+                                  : displayWidth(context) * 0.016,
+                              color: filterByTripTxtColor),
+                        ),
+                      ],
+                    ),
+                  ),
+              
+                  SizedBox(
+                    width: 5,
+                  ),
+              
+SizedBox(
+   height: 35,
+   child: VerticalDivider(
+      thickness: 2,
+      width: 5,
+      color: Colors.black,
+   ),
+),
+                  SizedBox(
+                    width: 8,
+                  ),
+              
+                  SizedBox(
+                    width: displayWidth(context) / 7,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "$distance",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontFamily: outfit,
+                              fontSize: orientation == Orientation.portrait
+                                  ? displayWidth(context) * 0.032
+                                  : displayWidth(context) * 0.02,
+                              color: blutoothDialogTxtColor),
+                        ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.005,
+                        ),
+                        Text(
+                          "Distance",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontFamily: poppins,
+                              fontSize: orientation == Orientation.portrait
+                                  ? displayWidth(context) * 0.026
+                                  : displayWidth(context) * 0.016,
+                              color: filterByTripTxtColor),
+                        ),
+                      ],
+                    ),
+                  ),
+              
+                  SizedBox(
+                    width: 8,
+                  ),
+              
+SizedBox(
+   height: 35,
+   child: VerticalDivider(
+      thickness: 2,
+      width: 5,
+      color: Colors.black,
+   ),
+),
+                  SizedBox(
+                    width: displayWidth(context) * 0.015,
+                  ),
+              
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "$time",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontFamily: outfit,
+                            fontSize: orientation == Orientation.portrait
+                                ? displayWidth(context) * 0.032
+                                : displayWidth(context) * 0.02,
+                            color: blutoothDialogTxtColor),
+                      ),
+                      SizedBox(
+                        height: displayHeight(context) * 0.008,
+                      ),
+                      Text(
+                        "Time",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontFamily: poppins,
+                            fontSize: orientation == Orientation.portrait
+                                ? displayWidth(context) * 0.026
+                                : displayWidth(context) * 0.016,
+                            color: filterByTripTxtColor),
+                      ),
+              // Visibility(child: 
+              
+              // Row(
+              //   children: [
+              // commonText(
+              //   text: 'Vessel Owner:',
+              //   fontWeight: FontWeight.w400,
+              //   textSize: 11,
+              //   textColor: tableHeaderColor
+              // ),commonText(
+              //   text: 'Abhiram',
+              //   fontWeight: FontWeight.w500,
+              //   textSize: 11,
+              //   textColor: buttonBGColor
+              // )
+              
+              //   ],
+              // )
+              // )
+                      
+                    ],
                   ),
                 ],
               ),
             ),
-
-            SizedBox(
-              width: 5,
-            ),
-
-            VerticalDivider(
-              indent: displayHeight(context) * 0.024,
-              endIndent: displayHeight(context) * 0.024,
-              width: 3,
-              thickness: 1.3,
-              color: Colors.black,
-            ),
-            SizedBox(
-              width: 8,
-            ),
-
-            SizedBox(
-              width: displayWidth(context) / 7,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
+            Visibility
+            (
+              visible:isfleetType??false ,
+              child: 
+            
+            Container(
+              margin: EdgeInsets.only(left: orientation == Orientation.portrait
+                          ? displayWidth(context) * 0.25
+                          : displayWidth(context) * 0.19),
+              child: Row(
                 children: [
-                  Text(
-                    "$distance",
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontFamily: outfit,
-                        fontSize: orientation == Orientation.portrait
-                            ? displayWidth(context) * 0.032
-                            : displayWidth(context) * 0.02,
-                        color: blutoothDialogTxtColor),
-                  ),
-                  SizedBox(
-                    height: displayHeight(context) * 0.005,
-                  ),
-                  Text(
-                    "Distance",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontFamily: poppins,
-                        fontSize: orientation == Orientation.portrait
-                            ? displayWidth(context) * 0.026
-                            : displayWidth(context) * 0.016,
-                        color: filterByTripTxtColor),
-                  ),
+              commonText(
+                text: 'Vessel Owner:',
+                fontWeight: FontWeight.w400,
+                textSize: 11,
+                textColor: tableHeaderColor
+              ),commonText(
+                text: 'Abhiram',
+                fontWeight: FontWeight.w500,
+                textSize: 11,
+                textColor: buttonBGColor
+              )
+              
                 ],
               ),
-            ),
-
-            SizedBox(
-              width: 8,
-            ),
-
-            VerticalDivider(
-              indent: displayHeight(context) * 0.024,
-              endIndent: displayHeight(context) * 0.024,
-              width: 3,
-              thickness: 1.3,
-              color: Colors.black,
-            ),
-            SizedBox(
-              width: displayWidth(context) * 0.015,
-            ),
-
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "$time",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontFamily: outfit,
-                      fontSize: orientation == Orientation.portrait
-                          ? displayWidth(context) * 0.032
-                          : displayWidth(context) * 0.02,
-                      color: blutoothDialogTxtColor),
-                ),
-                SizedBox(
-                  height: displayHeight(context) * 0.008,
-                ),
-                Text(
-                  "Time",
-                  style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontFamily: poppins,
-                      fontSize: orientation == Orientation.portrait
-                          ? displayWidth(context) * 0.026
-                          : displayWidth(context) * 0.016,
-                      color: filterByTripTxtColor),
-                ),
-              ],
-            ),
+            )
+            )
           ],
         ),
       ),

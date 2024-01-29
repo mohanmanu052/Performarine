@@ -31,9 +31,10 @@ import '../../models/reports_model.dart';
 import '../../provider/common_provider.dart';
 
 class ReportsModule extends StatefulWidget {
-  ReportsModule({super.key, this.onScreenShotCaptureCallback});
+  ReportsModule({super.key, this.onScreenShotCaptureCallback,this.isTypeFleet});
 
   VoidCallback? onScreenShotCaptureCallback;
+  bool? isTypeFleet;
 
   @override
   State<ReportsModule> createState() => _ReportsModuleState();
@@ -52,6 +53,7 @@ class _ReportsModuleState extends State<ReportsModule>
   List<DropdownItem> vesselData = [];
   List<String> filters = ["Filter by Date", "Filter by Trips"];
   DropdownItem? selectedValue;
+  DropdownItem? selectedFleet;
   String? selectedFilter;
   DateTime selectedDateForStartDate = DateTime.now();
   DateTime selectedDateForEndDate = DateTime.now();
@@ -73,6 +75,7 @@ class _ReportsModuleState extends State<ReportsModule>
   List<String>? dateTimeList = [];
   List<String>? distanceList = [];
   List<String>? timeList = [];
+  List<DropdownItem>? fleetList=[DropdownItem(id: '123',name: 'Fleet1'),DropdownItem(id: '1233',name: 'Fleet2'),DropdownItem(id: '124',name: 'Fleet3'),DropdownItem(id: '125',name: 'Fleet4'),];
   String? selectedTripsAndDateDetails = "";
   int? selectedCaseType = 0;
   int? selectDateOption;
@@ -1170,6 +1173,368 @@ class _ReportsModuleState extends State<ReportsModule>
                             key: _formKey,
                             child: Column(
                               children: [
+
+if(widget.isTypeFleet??false)
+                                         Container(
+                                          alignment: Alignment.center,
+                                          // height: orientation==Orientation.landscape?60:60,
+                                          width: displayWidth(context) * 0.8,
+                                          child: Column(
+                                            children: [
+                                              IgnorePointer(
+                                                ignoring: isBtnClick ?? false,
+                                                child: DropdownButtonHideUnderline(
+                                                  child: FormField(
+                                                    builder: (state) {
+                                                      return DropdownButtonFormField2<
+                                                          DropdownItem>(
+                                                        isExpanded: true,
+                                                        decoration: InputDecoration(
+                                                          //errorText: _showDropdownError1 ? 'Select Vessel' : null,
+                                              
+                                                          prefixIcon: Container(
+                                                              width: 50,
+                                                              height: displayHeight(
+                                                                      context) *
+                                                                  0.02,
+                                                              child:
+                                                                  Transform.scale(
+                                                                scale: 0.5,
+                                                                child: Image.asset(
+                                                                  'assets/icons/vessels.png',
+                                                                  height: displayHeight(
+                                                                          context) *
+                                                                      0.02,
+                                                                ),
+                                                              )),
+                                                          contentPadding:
+                                                              EdgeInsets.symmetric(
+                                                                  horizontal: 0,
+                                                                  vertical: orientation ==
+                                                                          Orientation
+                                                                              .portrait
+                                                                      ? 10
+                                                                      : 13),
+                                              
+                                                          focusedBorder: OutlineInputBorder(
+                                                              borderSide: BorderSide(
+                                                                  width: 1.5,
+                                                                  color: Colors
+                                                                      .transparent),
+                                                              borderRadius:
+                                                                  BorderRadius.all(
+                                                                      Radius
+                                                                          .circular(
+                                                                              15))),
+                                                          enabledBorder: OutlineInputBorder(
+                                                              borderSide: BorderSide(
+                                                                  width: 1.5,
+                                                                  color: Colors
+                                                                      .transparent),
+                                                              borderRadius:
+                                                                  BorderRadius.all(
+                                                                      Radius
+                                                                          .circular(
+                                                                              15))),
+                                                          errorBorder: OutlineInputBorder(
+                                                              borderSide: BorderSide(
+                                                                  width: 1.5,
+                                                                  color: Colors
+                                                                      .red.shade300
+                                                                      .withOpacity(
+                                                                          0.7)),
+                                                              borderRadius:
+                                                                  BorderRadius.all(
+                                                                      Radius
+                                                                          .circular(
+                                                                              15))),
+                                                          errorStyle: TextStyle(
+                                                              fontFamily: inter,
+                                                              fontSize: orientation ==
+                                                                      Orientation
+                                                                          .portrait
+                                                                  ? displayWidth(
+                                                                          context) *
+                                                                      0.025
+                                                                  : displayWidth(
+                                                                          context) *
+                                                                      0.015),
+                                                          focusedErrorBorder: OutlineInputBorder(
+                                                              borderSide: BorderSide(
+                                                                  width: 1.5,
+                                                                  color: Colors
+                                                                      .red.shade300
+                                                                      .withOpacity(
+                                                                          0.7)),
+                                                              borderRadius:
+                                                                  BorderRadius.all(
+                                                                      Radius
+                                                                          .circular(
+                                                                              15))),
+                                                          fillColor:
+                                                              reportDropdownColor,
+                                                          filled: true,
+                                                          hintText: "Filter By",
+                                              
+                                                          hintStyle: TextStyle(
+                                                              color: Theme.of(context)
+                                                                          .brightness ==
+                                                                      Brightness
+                                                                          .dark
+                                                                  ? "Filter By" ==
+                                                                          'User SubRole'
+                                                                      ? Colors
+                                                                          .black54
+                                                                      : Colors.white
+                                                                  : Colors.black,
+                                                              fontSize: orientation == Orientation.portrait
+                                                                  ? displayWidth(
+                                                                          context) *
+                                                                      0.034
+                                                              : displayWidth(
+                                                                  context) *
+                                                                  0.015,
+                                                              fontFamily: outfit,
+                                                              fontWeight:
+                                                                  FontWeight.w300),
+                                                        ),
+                                                        hint: Container(
+                                                          alignment:
+                                                              Alignment.centerLeft,
+                                                          margin: EdgeInsets.only(
+                                                            left: 15,
+                                                          ),
+                                                          child: Text(
+                                                            'Select Fleet *',
+                                                            style: TextStyle(
+                                                                color: Colors.black,
+                                                                fontSize: orientation ==
+                                                                        Orientation
+                                                                            .portrait
+                                                                    ? displayWidth(
+                                                                            context) *
+                                                                        0.032
+                                                                    : displayWidth(
+                                                                            context) *
+                                                                        0.02,
+                                                                fontFamily: outfit,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400),
+                                                            overflow: TextOverflow
+                                                                .ellipsis,
+                                                          ),
+                                                        ),
+                                                        value: selectedFleet,
+                                                        items:
+                                                            fleetList!.map((item) {
+                                                          return DropdownMenuItem<
+                                                              DropdownItem>(
+                                                            value: item,
+                                                            child: Container(
+                                                              margin:
+                                                                  EdgeInsets.only(
+                                                                left: 15,
+                                                              ),
+                                                              child: Text(
+                                                                item.name!,
+                                                                style: TextStyle(
+                                                                    fontSize: orientation ==
+                                                                            Orientation
+                                                                                .portrait
+                                                                        ? displayWidth(
+                                                                                context) *
+                                                                            0.032
+                                                                        : displayWidth(
+                                                                                context) *
+                                                                            0.02,
+                                                                    color: Theme.of(context)
+                                                                                .brightness ==
+                                                                            Brightness
+                                                                                .dark
+                                                                        ? "Select Vessel" ==
+                                                                                'User SubRole'
+                                                                            ? Colors
+                                                                                .black
+                                                                            : Colors
+                                                                                .white
+                                                                        : Colors
+                                                                            .black,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500),
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                              ),
+                                                            ),
+                                                          );
+                                                        }).toList(),
+                                                        validator: (value) {
+                                                          if (value == null) {
+                                                            return 'Select Fleet';
+                                                          }
+                                                          return null;
+                                                        },
+                                                        style: TextStyle(
+                                                            fontSize: orientation ==
+                                                                Orientation
+                                                                    .portrait
+                                                                ? displayWidth(
+                                                                context) *
+                                                                0.032
+                                                                : displayWidth(
+                                                                context) *
+                                                                0.02,
+                                                            fontWeight:
+                                                            FontWeight
+                                                                .w500),
+                                                        onChanged: (item) {
+                                                          if (item != null) {
+                                                            if (item != null) {
+                                                              selectedFleet=item;
+                                                              // Remove error for the first dropdown
+                                                              _formKey.currentState
+                                                                  ?.validate();
+                                                            }
+                                                          }
+                                                          // getVesselDetails(
+                                                          //     item?.id ?? "");
+                                                          // Utils.customPrint(
+                                                          //     "id is: ${item?.id} ");
+                                                          // CustomLogger().logWithFile(
+                                                          //     Level.info,
+                                                          //     "id is: ${item?.id}-> $page");
+                                              
+                                                          // parentValue = false;
+                                                          // selectedVessel = item!.id;
+                                                          // selectedVesselName =
+                                                          //     item.name;
+                                              
+                                                          // if (mounted) {
+                                                          //   setState(() {
+                                                          //     isTripIdListLoading =
+                                                          //         false;
+                                                          //     isSHowGraph = false;
+                                                          //     avgSpeed = null;
+                                                          //     avgDuration = null;
+                                                          //     avgFuelConsumption =
+                                                          //         null;
+                                                          //     avgPower = null;
+                                                          //     triSpeedList.clear();
+                                                          //     tripList.clear();
+                                                          //     duration1 = null;
+                                                          //     avgSpeed1 = null;
+                                                          //     fuelUsage = null;
+                                                          //     powerUsage = null;
+                                                          //     finalData.clear();
+                                                          //     durationGraphData
+                                                          //         .clear();
+                                              
+                                                          //     durationColumnSeriesData
+                                                          //         .clear();
+                                                          //     tempDurationColumnSeriesData
+                                                          //         .clear();
+                                                          //     avgSpeedColumnSeriesData
+                                                          //         .clear();
+                                                          //     tempAvgSpeedColumnSeriesData
+                                                          //         .clear();
+                                                          //     fuelUsageColumnSeriesData
+                                                          //         .clear();
+                                                          //     tempFuelUsageColumnSeriesData
+                                                          //         .clear();
+                                                          //     powerUsageColumnSeriesData
+                                                          //         .clear();
+                                                          //     tempPowerUsageColumnSeriesData
+                                                          //         .clear();
+                                                          //     selectedTripIdList!
+                                                          //         .clear();
+                                                          //     selectedTripLabelList!
+                                                          //         .clear();
+                                                          //   });
+                                                          // }
+                                              
+                                                          // dateTimeList!.clear();
+                                                          // children!.clear();
+                                                          // getTripListData(item.id!);
+                                                        },
+                                                        buttonStyleData:
+                                                            ButtonStyleData(
+                                                          padding: EdgeInsets.only(
+                                                              right: orientation ==
+                                                                      Orientation
+                                                                          .portrait
+                                                                  ? 0
+                                                                  : 10),
+                                                        ),
+                                                        iconStyleData:
+                                                            IconStyleData(
+                                                          icon: Icon(
+                                                            Icons
+                                                                .keyboard_arrow_down_rounded,
+                                                            color: Colors.black,
+                                                          ),
+                                                          iconSize: orientation ==
+                                                                  Orientation
+                                                                      .portrait
+                                                              ? displayHeight(
+                                                                      context) *
+                                                                  0.035
+                                                              : displayHeight(
+                                                                      context) *
+                                                                  0.080,
+                                                        ),
+                                                        dropdownStyleData:
+                                                            DropdownStyleData(
+                                                          maxHeight: orientation ==
+                                                                  Orientation
+                                                                      .portrait
+                                                              ? displayHeight(
+                                                                      context) *
+                                                                  0.25
+                                                              : displayHeight(
+                                                                      context) *
+                                                                  0.42,
+                                                          decoration: BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(14),
+                                                            // color: backgroundColor,
+                                                          ),
+                                                          offset:
+                                                              const Offset(0, 0),
+                                                          scrollbarTheme:
+                                                              ScrollbarThemeData(
+                                                            radius: const Radius
+                                                                .circular(20),
+                                                            thickness:
+                                                                MaterialStateProperty
+                                                                    .all<double>(6),
+                                                            thumbVisibility:
+                                                                MaterialStateProperty
+                                                                    .all<bool>(
+                                                                        true),
+                                                          ),
+                                                        ),
+                                                        menuItemStyleData:
+                                                            MenuItemStyleData(
+                                                          padding:
+                                                              EdgeInsets.symmetric(
+                                                                  horizontal: 0),
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(height: 10,),
+                                            ],
+                                          ),
+                                        ),
+                                      
+
+
+
                                 isVesselDataLoading!
                                     ? InkWell(
                                         onTap: () async {
@@ -4235,6 +4600,7 @@ class _ReportsModuleState extends State<ReportsModule>
                                         : displayHeight(context) * 0.03,
                                   ),
                                   CustomLabeledCheckboxNew(
+                                    isfleetType: widget.isTypeFleet,
                                     orientation: orientation,
                                     label: children![index],
                                     value: childrenValue![index],

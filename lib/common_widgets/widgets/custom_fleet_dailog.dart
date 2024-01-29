@@ -324,7 +324,7 @@ Padding(
   child: CommonTextField(
                       //controller: nameController,
                      // focusNode: nameFocusNode,
-                      labelText: 'Name of the fleet',
+                      labelText: 'Fleet Name',
                       hintText: '',
                       suffixText: null,
                       textInputAction: TextInputAction.next,
@@ -349,102 +349,102 @@ Padding(
                       }),
 ), 
 
-                    SizedBox(
-                      height: 10,
-                    ),
+                    // SizedBox(
+                    //   height: 10,
+                    // ),
 
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: CommonTextField(
-                      //controller: nameController,
-                                         // focusNode: nameFocusNode,
-                      labelText: 'Name of the owner',
-                      hintText: '',
-                      suffixText: null,
-                      textInputAction: TextInputAction.next,
-                      textInputType: TextInputType.text,
-                      textCapitalization: TextCapitalization.words,
-                      maxLength: 32,
-                      prefixIcon: null,
-                                         // requestFocusNode: modelFocusNode,
-                      obscureText: false,
-                      onTap: () {},
-                      onChanged: (String value) {
-                      },
-                      validator: (value) {
-                        if (value!.trim().isEmpty) {
-                          return 'Enter Owner Name';
-                        }
-                        return null;
-                      },
-                      onSaved: (String value) {
-                        // CustomLogger().logWithFile(Level.info, "vessel name $value -> $page");
-                        // Utils.customPrint(value);
-                      }),
-                    ),  
+                    // Padding(
+                    //   padding: const EdgeInsets.all(8.0),
+                    //   child: CommonTextField(
+                    //   //controller: nameController,
+                    //                      // focusNode: nameFocusNode,
+                    //   labelText: 'Name of the owner',
+                    //   hintText: '',
+                    //   suffixText: null,
+                    //   textInputAction: TextInputAction.next,
+                    //   textInputType: TextInputType.text,
+                    //   textCapitalization: TextCapitalization.words,
+                    //   maxLength: 32,
+                    //   prefixIcon: null,
+                    //                      // requestFocusNode: modelFocusNode,
+                    //   obscureText: false,
+                    //   onTap: () {},
+                    //   onChanged: (String value) {
+                    //   },
+                    //   validator: (value) {
+                    //     if (value!.trim().isEmpty) {
+                    //       return 'Enter Owner Name';
+                    //     }
+                    //     return null;
+                    //   },
+                    //   onSaved: (String value) {
+                    //     // CustomLogger().logWithFile(Level.info, "vessel name $value -> $page");
+                    //     // Utils.customPrint(value);
+                    //   }),
+                    // ),  
 
-                    SizedBox(height: 10,),
+//                     SizedBox(height: 10,),
 
-                    Row(
+//                     Row(
                       
-children: [
-                          Flexible(
-                            flex: 1,
-                            fit: FlexFit.tight,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Radio(
-                                              value: 'Active',
-                                              groupValue: selectedStatus,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  selectedStatus = value.toString();
-                                                });
-                                              },
-                                            ),
-                                                        commonText(text: 'Active',
-                                        fontWeight: FontWeight.w400,
-                                        textSize: 16
+// children: [
+//                           Flexible(
+//                             flex: 1,
+//                             fit: FlexFit.tight,
+//                             child: Row(
+//                               mainAxisAlignment: MainAxisAlignment.center,
+//                               children: [
+//                                 Radio(
+//                                               value: 'Active',
+//                                               groupValue: selectedStatus,
+//                                               onChanged: (value) {
+//                                                 setState(() {
+//                                                   selectedStatus = value.toString();
+//                                                 });
+//                                               },
+//                                             ),
+//                                                         commonText(text: 'Active',
+//                                         fontWeight: FontWeight.w400,
+//                                         textSize: 16
                                         
-                                        ),
+//                                         ),
                             
-                              ],
-                            ),
-                          ),
+//                               ],
+//                             ),
+//                           ),
 
-                          Flexible(
-                            flex: 1,
-                            fit: FlexFit.tight,
-                            child: Row(
-                              children: [
-                                Radio(
-                                              value: 'Inactive',
-                                              groupValue: selectedStatus,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  selectedStatus = value.toString();
-                                                });
-                                              },
-                                            ),
-                                                        commonText(text: 'Inactive',
-                                        fontWeight: FontWeight.w400,
-                                        textSize: 16
+//                           Flexible(
+//                             flex: 1,
+//                             fit: FlexFit.tight,
+//                             child: Row(
+//                               children: [
+//                                 Radio(
+//                                               value: 'Inactive',
+//                                               groupValue: selectedStatus,
+//                                               onChanged: (value) {
+//                                                 setState(() {
+//                                                   selectedStatus = value.toString();
+//                                                 });
+//                                               },
+//                                             ),
+//                                                         commonText(text: 'Inactive',
+//                                         fontWeight: FontWeight.w400,
+//                                         textSize: 16
                                         
-                                        ),
+//                                         ),
                             
-                              ],
-                            ),
-                          ),
+//                               ],
+//                             ),
+//                           ),
 
-],
-                    ),
+// ],
+//                     ),
 
                     SizedBox(height: 10,),
                     Container(
                       padding: EdgeInsets.all(8),
                       child: CommonButtons.getActionButton(
-                                        title: 'Invite to Fleet',
+                                        title: 'Update Changes',
                                         context: context,
                                         fontSize: 15,
                                         
