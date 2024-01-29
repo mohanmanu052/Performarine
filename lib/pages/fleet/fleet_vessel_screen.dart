@@ -16,8 +16,8 @@ import 'package:performarine/services/database_service.dart';
 import 'package:screenshot/screenshot.dart';
 
 class FleetVesselScreen extends StatefulWidget {
-  const FleetVesselScreen({super.key});
-
+   FleetVesselScreen({super.key,this.tabIndex});
+int? tabIndex;
   @override
   State<FleetVesselScreen> createState() => _FleetVesselScreenState();
 }
@@ -32,10 +32,15 @@ List<String> fleetData=['Fleet1','Fleet2','Fleet3','Fleet4'];
 int currentTabIndex=0;
 @override
   void initState() {
- _tabController=    TabController(length: 2, vsync: this);
+ _tabController=    TabController(length: 2, vsync: this,initialIndex: widget.tabIndex??0);
  _tabController!.addListener(_handleTabSelection);
         getVesselFuture = _databaseService.vessels();
-
+if(widget.tabIndex!=null){
+  currentTabIndex=widget.tabIndex!;
+  setState(() {
+    
+  });
+}
     // TODO: implement initState
     super.initState();
   }

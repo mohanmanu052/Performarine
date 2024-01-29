@@ -6,6 +6,7 @@ import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/custom_fleet_dailog.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
+import 'package:performarine/pages/fleet/fleet_vessel_screen.dart';
 import 'package:performarine/pages/fleet/send_invite_screen.dart';
 import 'package:screenshot/screenshot.dart';
 
@@ -149,7 +150,17 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                                     textSize: displayWidth(context) * 0.04,
                                                     textAlign: TextAlign.start,),
                                                   SizedBox(width: displayWidth(context) * 0.01,),
-                                                  Image.asset('assets/icons/Edit.png', height: displayHeight(context) * 0.018, color: blueColor,),
+                                                  InkWell(
+                                                    onTap: (){
+                                                      List<String> fleetData=[];
+                                                      for(FleetModel data in fleetList){
+                                                        fleetData.add(data.fleetName??'');
+
+                                                      }
+                                                      CustomFleetDailog().showEditFleetDialog(context: context,fleetData:fleetData );
+                                                    },
+                                                    
+                                                    child: Image.asset('assets/icons/Edit.png', height: displayHeight(context) * 0.018, color: blueColor,)),
                                                 ],
                                               ),
                                               SizedBox(height: displayHeight(context) * 0.005,),
@@ -236,27 +247,41 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                           ),
                                           Row(
                                             children: [
-                                              Container(
-                                                width: displayWidth(context) * 0.22,
-                                                decoration: BoxDecoration(
-                                                    color: blueColor,
-                                                    borderRadius: BorderRadius.circular(8)
-                                                ),
-                                                child: Center(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.only(top: 8, bottom: 8),
-                                                    child: commonText(
-                                                        context: context,
-                                                        text: 'Fleet Details',
-                                                        fontWeight: FontWeight.w300,
-                                                        textColor: Colors.white,
-                                                        textSize: displayWidth(context) * 0.03,
-                                                        textAlign: TextAlign.start,  fontFamily: poppins),
+                                              InkWell(
+                                                onTap: (){
+                                                  Navigator.push(context, MaterialPageRoute(builder: ((context) => FleetVesselScreen(
+                                                    tabIndex: 1,
+                                                  ))));
+                                                },
+                                                child: Container(
+                                                  width: displayWidth(context) * 0.22,
+                                                  decoration: BoxDecoration(
+                                                      color: blueColor,
+                                                      borderRadius: BorderRadius.circular(8)
+                                                  ),
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(top: 8, bottom: 8),
+                                                      child: commonText(
+                                                          context: context,
+                                                          text: 'Fleet Details',
+                                                          fontWeight: FontWeight.w300,
+                                                          textColor: Colors.white,
+                                                          textSize: displayWidth(context) * 0.03,
+                                                          textAlign: TextAlign.start,  fontFamily: poppins),
+                                                    ),
                                                   ),
                                                 ),
                                               ),
                                              SizedBox(width: displayWidth(context) * 0.02,),
-                                             Image.asset('assets/images/Trash.png', height: displayHeight(context) * 0.02, color: Colors.red,),
+                                             InkWell(
+                                              onTap: (){
+                       CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to leave this fleet?',subtext: inviteList[index].fleetName??'',description: 'If you leave the fleet your fleet manager cannot view your vessels & Reports',
+                        postiveButtonColor: deleteTripBtnColor,positiveButtonText: 'Leave');
+
+                                              },
+                                              
+                                              child: Image.asset('assets/images/Trash.png', height: displayHeight(context) * 0.02, color: Colors.red,)),
                                             ],
                                           )
                                         ],
@@ -565,7 +590,7 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                                       padding: const EdgeInsets.only(top: 4, bottom: 4),
                                                       child: InkWell(
                                                         onTap: (){
-                                                                                 CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to accept fleet Invite?',subtext: inviteList[index].fleetName??'',description: 'If you leave the fleet your fleet manager cannot view your vessels & Reports',
+                                                                                 CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to accept fleet Invite?',subtext: inviteList[index].fleetName??'',
                         postiveButtonColor: blueColor,positiveButtonText: 'Accept',negtiveButtuonColor: primaryColor);
                         
 

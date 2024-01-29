@@ -179,7 +179,7 @@ Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 4),
                 child: DropdownButtonHideUnderline(
                         child: DropdownButtonFormField2<String>(
-                            value: 'Fleet1',
+                            value: fleetData![0],
                             
                           iconStyleData: IconStyleData(
                             icon: Icon(Icons.keyboard_arrow_down,
