@@ -20,7 +20,10 @@ import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/add_vessel_new/add_new_vessel_screen.dart';
 import 'package:performarine/pages/auth_new/change_password.dart';
 import 'package:performarine/pages/auth_new/sign_in_screen.dart';
+import 'package:performarine/pages/fleet/fleet_reports.dart';
+import 'package:performarine/pages/fleet/fleet_vessel_screen.dart';
 import 'package:performarine/pages/fleet/my_fleet_screen.dart';
+import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/retired_vessels_screen.dart';
 import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
 import 'package:performarine/pages/sync_data_cloud_to_mobile_screen.dart';
@@ -990,7 +993,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           SizedBox(
                             height: displayHeight(context) * 0.02,
                           ),
-                          /*   InkWell(
+                            InkWell(
                             onTap: () {
                               CustomLogger().logWithFile(Level.info, "User Navigating to Search and Filter -> $page");
                               Navigator.of(context).pop();
@@ -998,12 +1001,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => ReportsModule()),
+                                    builder: (context) => BottomNavigation(tabIndex: 1,)),
                               );
                             },
                             child: commonText(
                                 context: context,
-                                text: 'Reports',
+                                text: 'My Reports',
                                 fontWeight: FontWeight.w500,
                                 textColor: Colors.black54,
                                 textSize: textSize,
@@ -1011,7 +1014,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           ),
                           SizedBox(
                             height: displayHeight(context) * 0.02,
-                          ), */
+                          ), 
                           Padding(
                             padding: EdgeInsets.only(right: displayWidth(context)* 0.1, bottom: displayHeight(context) * 0.01),
                             child: Divider(
@@ -1060,7 +1063,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          MyFleetScreen(bottomNavIndex: widget.bottomNavIndex,data: false,)),
+                                          FleetVesselScreen()),
                                 );
                               },
                               child: commonText(
@@ -1088,7 +1091,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          MyFleetScreen(bottomNavIndex: widget.bottomNavIndex,data: false,)),
+                                          FleetReports()),
                                 );
                               },
                               child: commonText(
@@ -1239,7 +1242,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       commonProvider.loginModel!.loginType == "regular" ?   Container(
                         width: displayWidth(context),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
+
                             SizedBox(
                               height: displayHeight(context) * 0.02,
                             ),
