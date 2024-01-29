@@ -97,13 +97,16 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    commonText(
-                        context: context,
-                        text: 'Invite to My fleet',
-                        fontWeight: FontWeight.w600,
-                        textColor: Colors.black,
-                        textSize: displayWidth(context) * 0.048,
-                        textAlign: TextAlign.start),
+                    SizedBox(height: displayHeight(context) * 0.05,),
+                    Center(
+                      child: commonText(
+                          context: context,
+                          text: 'Invite to My fleet',
+                          fontWeight: FontWeight.w600,
+                          textColor: Colors.black,
+                          textSize: displayWidth(context) * 0.048,
+                          textAlign: TextAlign.start),
+                    ),
                     SizedBox(
                       height: displayHeight(context) * 0.03,
                     ),
@@ -187,16 +190,9 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
                   children: [
                     Padding(
                         padding: const EdgeInsets.only(
-                            left: 17, right: 17, top: 8, bottom: 12),
-                        child: TextButton(
-                          child: commonText(
-                              context: context,
-                              text: '+ Add More Invite',
-                              fontWeight: FontWeight.w500,
-                              textColor: blueColor,
-                              textSize: displayWidth(context) * 0.038,
-                              textAlign: TextAlign.start),
-                          onPressed: () {
+                            left: 17, right: 17, top: 8, bottom: 0),
+                        child: InkWell(
+                          onTap: (){
                             if (inviteCountList.isEmpty) {
                               inviteCountList.add(0);
                             } else {
@@ -205,10 +201,17 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
 
                             setState(() {});
                           },
-                        )),
+                          child: commonText(
+                              context: context,
+                              text: '+ Add Another Invite',
+                              fontWeight: FontWeight.w500,
+                              textColor: blueColor,
+                              textSize: displayWidth(context) * 0.038,
+                              textAlign: TextAlign.start),
+                        ),),
                     Padding(
                       padding:
-                      const EdgeInsets.only(left: 17, right: 17, top: 8),
+                      const EdgeInsets.only(left: 17, right: 17, top: 12),
                       child: CommonButtons.getActionButton(
                           title: 'Invite Fleet',
                           context: context,

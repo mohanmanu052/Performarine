@@ -99,7 +99,7 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                 width: displayWidth(context),
                 height: widget.data! ? null :displayHeight(context),
                 margin: EdgeInsets.only(left: 17, right: 17, top: 17, bottom: displayHeight(context) * 0.14),
-                child: widget.data! ? Column(
+                child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Theme(
@@ -120,7 +120,8 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                             textSize: displayWidth(context) * 0.048,
                             textAlign: TextAlign.start),
                         children: <Widget>[
-                          ListView.builder(
+                          widget.data!
+                          ? ListView.builder(
                             physics: NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
                               itemCount: myFleetList.length,
@@ -137,13 +138,19 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                           Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              commonText(
-                                                context: context,
-                                                text: myFleetList[index].fleetName,
-                                                fontWeight: FontWeight.w500,
-                                                textColor: Colors.black,
-                                                textSize: displayWidth(context) * 0.04,
-                                                textAlign: TextAlign.start,),
+                                              Row(
+                                                children: [
+                                                  commonText(
+                                                    context: context,
+                                                    text: myFleetList[index].fleetName,
+                                                    fontWeight: FontWeight.w500,
+                                                    textColor: Colors.black,
+                                                    textSize: displayWidth(context) * 0.04,
+                                                    textAlign: TextAlign.start,),
+                                                  SizedBox(width: displayWidth(context) * 0.01,),
+                                                  Image.asset('assets/icons/Edit.png', height: displayHeight(context) * 0.018, color: Colors.black,),
+                                                ],
+                                              ),
                                               SizedBox(height: displayHeight(context) * 0.005,),
                                               Row(
                                                 children: [
@@ -226,24 +233,30 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                               )
                                             ],
                                           ),
-                                          Container(
-                                            width: displayWidth(context) * 0.22,
-                                            decoration: BoxDecoration(
-                                                color: blueColor,
-                                                borderRadius: BorderRadius.circular(8)
-                                            ),
-                                            child: Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(top: 8, bottom: 8),
-                                                child: commonText(
-                                                    context: context,
-                                                    text: 'Fleet Details',
-                                                    fontWeight: FontWeight.w300,
-                                                    textColor: Colors.white,
-                                                    textSize: displayWidth(context) * 0.03,
-                                                    textAlign: TextAlign.start,  fontFamily: poppins),
+                                          Row(
+                                            children: [
+                                              Container(
+                                                width: displayWidth(context) * 0.22,
+                                                decoration: BoxDecoration(
+                                                    color: blueColor,
+                                                    borderRadius: BorderRadius.circular(8)
+                                                ),
+                                                child: Center(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.only(top: 8, bottom: 8),
+                                                    child: commonText(
+                                                        context: context,
+                                                        text: 'Fleet Details',
+                                                        fontWeight: FontWeight.w300,
+                                                        textColor: Colors.white,
+                                                        textSize: displayWidth(context) * 0.03,
+                                                        textAlign: TextAlign.start,  fontFamily: poppins),
+                                                  ),
+                                                ),
                                               ),
-                                            ),
+                                             SizedBox(width: displayWidth(context) * 0.02,),
+                                             Image.asset('assets/images/delete.png', height: displayHeight(context) * 0.02, color: Colors.red,),
+                                            ],
                                           )
                                         ],
                                       ),
@@ -257,6 +270,17 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                 );
                               }
                           )
+                              : Container(
+                                alignment: Alignment.centerLeft,
+                                height: displayHeight(context) * 0.08,
+                                child: commonText(
+                                context: context,
+                                text: 'No fleets Created',
+                                fontWeight: FontWeight.w500,
+                                textColor: Colors.grey,
+                                textSize: displayWidth(context) * 0.04,
+                                textAlign: TextAlign.start),
+                              )
 
                         ],
                       ),
@@ -280,7 +304,9 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                             textSize: displayWidth(context) * 0.048,
                             textAlign: TextAlign.start),
                         children: <Widget>[
-                          ListView.builder(
+
+                          widget.data!
+                          ? ListView.builder(
                               physics: NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
                               itemCount: fleetList.length,
@@ -406,6 +432,17 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                 );
                               }
                           )
+                              : Container(
+                            alignment: Alignment.centerLeft,
+                            height: displayHeight(context) * 0.08,
+                            child: commonText(
+                                context: context,
+                                text: 'You haven’t joined any fleet',
+                                fontWeight: FontWeight.w500,
+                                textColor: Colors.grey,
+                                textSize: displayWidth(context) * 0.04,
+                                textAlign: TextAlign.start),
+                          )
 
                         ],
                       ),
@@ -429,7 +466,8 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                             textSize: displayWidth(context) * 0.048,
                             textAlign: TextAlign.start),
                         children: <Widget>[
-                          ListView.builder(
+                          widget.data!
+                          ? ListView.builder(
                               physics: NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
                               itemCount: inviteList.length,
@@ -486,7 +524,7 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                                     context: context,
                                                     text: 'Reject',
                                                     fontWeight: FontWeight.w300,
-                                                    textColor: blueColor,
+                                                    textColor: Colors.red,
                                                     textSize: displayWidth(context) * 0.03,
                                                     textAlign: TextAlign.start,
                                                     fontFamily: poppins),
@@ -525,28 +563,20 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                 );
                               }
                           )
-
+                              : Container(
+                            alignment: Alignment.centerLeft,
+                            height: displayHeight(context) * 0.08,
+                            child: commonText(
+                                context: context,
+                                text: 'No Fleet Invites',
+                                fontWeight: FontWeight.w500,
+                                textColor: Colors.grey,
+                                textSize: displayWidth(context) * 0.04,
+                                textAlign: TextAlign.start),
+                          )
                         ],
                       ),
                     ),
-
-                  ],
-                )
-                : Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  //mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(height: displayHeight(context) * 0.1,),
-                    Image.asset('assets/images/no_fleet_img.png', height: displayHeight(context) * 0.2,),
-                    SizedBox(height: displayHeight(context) * 0.02,),
-                    commonText(
-                        context: context,
-                        text: 'No Fleets Created',
-                        fontWeight: FontWeight.w600,
-                        textColor: Colors.black,
-                        textSize: displayWidth(context) * 0.05,
-                        textAlign: TextAlign.start),
 
                   ],
                 ),
@@ -586,6 +616,7 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                     widget.data!
                         ? Column(
                           children: [
+                            SizedBox(height: displayHeight(context) * 0.01,),
                             InkWell(
                               onTap: (){},
                               child: commonText(

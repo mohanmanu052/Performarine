@@ -90,7 +90,7 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
                   TextFormField(
                     controller: fleetNameEditingController,
                     decoration: InputDecoration(
-                      hintText: 'Name of the fleet',
+                      hintText: 'Fleet Name',
                         hintStyle: TextStyle(fontSize: displayWidth(context) * 0.038, fontFamily: outfit, color: Colors.grey),
                         filled: true,
                         fillColor: Colors.blue.shade50,
@@ -105,25 +105,6 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
                     ),
 
                   ),
-                  SizedBox(height: displayHeight(context) * 0.015,),
-                  TextFormField(
-                    controller: ownerNameEditingController,
-                    decoration: InputDecoration(
-                      hintText: 'Name of the owner',
-                      hintStyle: TextStyle(fontSize: displayWidth(context) * 0.038, fontFamily: outfit, color: Colors.grey),
-                      filled: true,
-                      fillColor: Colors.blue.shade50,
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue.shade50),
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue.shade50),
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                    ),
-                  ),
-
                   SizedBox(height: displayHeight(context) * 0.04,),
                   commonText(
                       context: context,
@@ -177,7 +158,16 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
                   Padding(
                       padding: const EdgeInsets.only(
                           left: 17, right: 17, top: 8, bottom: 12),
-                      child: TextButton(
+                      child: InkWell(
+                        onTap: (){
+                          if (inviteCountList.isEmpty) {
+                          inviteCountList.add(0);
+                          } else {
+                          inviteCountList.add(inviteCountList.last + 1);
+                          }
+
+                          setState(() {});
+                          },
                         child: commonText(
                             context: context,
                             text: '+ Add More Invite',
@@ -185,16 +175,8 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
                             textColor: blueColor,
                             textSize: displayWidth(context) * 0.038,
                             textAlign: TextAlign.start),
-                        onPressed: () {
-                          if (inviteCountList.isEmpty) {
-                            inviteCountList.add(0);
-                          } else {
-                            inviteCountList.add(inviteCountList.last + 1);
-                          }
-
-                          setState(() {});
-                        },
-                      )),
+                      )
+                  ),
                   Padding(
                     padding:
                     const EdgeInsets.only(left: 17, right: 17, top: 8),
