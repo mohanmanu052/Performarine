@@ -94,7 +94,7 @@ Container(
                     child: InkWell(
                       onTap: (){
                         CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to  remove member from fleet?',subtext: fleetInviteData[index].email??'',description: 'Your permissions to their vessels will be removed & cannot be viewed',
-                        postiveButtonColor: deleteTripBtnColor,positiveButtonText: 'Confirm & Reject',
+                        postiveButtonColor: deleteTripBtnColor,positiveButtonText: 'Remove',
                         
                         );
                       },
@@ -149,7 +149,7 @@ Container(
                 child: Column(
                   children: [
                           CommonButtons.getActionButton(
-                                  title: 'Invite Delegate',
+                                  title: 'Invite To Fleet',
                                   context: context,
                                   fontSize: displayWidth(context) * 0.044,
                                   textColor: Colors.white,
