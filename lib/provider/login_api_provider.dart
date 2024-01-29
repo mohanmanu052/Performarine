@@ -35,7 +35,7 @@ class LoginApiProvider with ChangeNotifier {
         "userEmail": email.toLowerCase(),
         "password": password,
         "loginType": "gmail",
-        "socialLoginId": socialLoginId
+        "socialLoginId": socialLoginId,
       };
     } else {
       queryParameters = {

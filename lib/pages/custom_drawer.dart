@@ -121,32 +121,62 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 Image.asset('assets/images/home.png', height: displayHeight(context) * 0.04,),
 
                                 SizedBox(width: displayWidth(context) * 0.015,),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    commonText(
-                                        context: context,
-                                        text: 'Hey!',
-                                        fontWeight: FontWeight.w700,
-                                        textSize: textSize,
-                                        textAlign: TextAlign.start),
-                                    SizedBox(height: displayHeight(context) * 0.005,),
-                                    Flexible(
-                                      child: Text(
-                                        "${commonProvider.loginModel!.userEmail}",
-                                        style: TextStyle(
-                                          color: Colors.grey,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: gmailTextSize,
-                                          fontFamily: poppins,
-                                        ),
-                                        textAlign: TextAlign.start,
-                                        overflow: TextOverflow.clip,
-                                        softWrap: true,
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          commonText(
+                                              context: context,
+                                              text: 'Hey! - ',
+                                              fontWeight: FontWeight.w700,
+                                              textSize: textSize,
+                                              textAlign: TextAlign.start),
+                                          commonProvider.loginModel!.userFirstName == null || commonProvider.loginModel!.userFirstName!.isEmpty
+                                          ? SizedBox()
+                                          : commonText(
+                                              context: context,
+                                              text: '${commonProvider.loginModel!.userFirstName} ',
+                                              fontWeight: FontWeight.w700,
+                                              textSize: textSize,
+                                              textAlign: TextAlign.start),
+                                          commonProvider.loginModel!.userLastName == null || commonProvider.loginModel!.userLastName!.isEmpty
+                                              ? SizedBox()
+                                              : commonText(
+                                              context: context,
+                                              text: '${commonProvider.loginModel!.userLastName}',
+                                              fontWeight: FontWeight.w700,
+                                              textSize: textSize,
+                                              textAlign: TextAlign.start),
+                                        ],
                                       ),
-                                    ),
-                                  ],
+                                      SizedBox(height: displayHeight(context) * 0.005,),
+                                      Flexible(
+                                        child: Text(
+                                          "${commonProvider.loginModel!.userEmail}",
+                                          style: TextStyle(
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: gmailTextSize,
+                                            fontFamily: poppins,
+                                          ),
+                                          textAlign: TextAlign.start,
+                                          overflow: TextOverflow.clip,
+                                          softWrap: true,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                                  child: InkWell(
+                                    child: Icon(Icons.edit, size: 18,),
+                                    onTap: (){},
+                                  ),
                                 )
                                /* Expanded(
                                   child: RichText(
@@ -816,36 +846,64 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-
                             Image.asset('assets/images/home.png', height: displayHeight(context) * 0.04,),
-
                             SizedBox(width: displayWidth(context) * 0.015,),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                commonText(
-                                    context: context,
-                                    text: 'Hey!',
-                                    fontWeight: FontWeight.w700,
-                                    textSize: textSize,
-                                    textAlign: TextAlign.start),
-                                SizedBox(height: displayHeight(context) * 0.005,),
-                                Flexible(
-                                  child: Text(
-                                    "${commonProvider.loginModel!.userEmail}",
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: displayWidth(context) * 0.03,
-                                      fontFamily: poppins,
-                                    ),
-                                    textAlign: TextAlign.start,
-                                    overflow: TextOverflow.clip,
-                                    softWrap: true,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      commonText(
+                                          context: context,
+                                          text: 'Hey! - ',
+                                          fontWeight: FontWeight.w700,
+                                          textSize: textSize,
+                                          textAlign: TextAlign.start),
+                                      commonProvider.loginModel!.userFirstName == null || commonProvider.loginModel!.userFirstName!.isEmpty
+                                          ? SizedBox()
+                                          : commonText(
+                                          context: context,
+                                          text: '${commonProvider.loginModel!.userFirstName} ',
+                                          fontWeight: FontWeight.w700,
+                                          textSize: textSize,
+                                          textAlign: TextAlign.start),
+                                      commonProvider.loginModel!.userLastName == null || commonProvider.loginModel!.userLastName!.isEmpty
+                                          ? SizedBox()
+                                          : commonText(
+                                          context: context,
+                                          text: '${commonProvider.loginModel!.userLastName}',
+                                          fontWeight: FontWeight.w700,
+                                          textSize: textSize,
+                                          textAlign: TextAlign.start),
+                                    ],
                                   ),
-                                ),
-                              ],
+                                  SizedBox(height: displayHeight(context) * 0.005,),
+                                  Flexible(
+                                    child: Text(
+                                      "${commonProvider.loginModel!.userEmail}",
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: displayWidth(context) * 0.03,
+                                        fontFamily: poppins,
+                                      ),
+                                      textAlign: TextAlign.start,
+                                      overflow: TextOverflow.clip,
+                                      softWrap: true,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 6),
+                              child: InkWell(
+                                child: Icon(Icons.edit, size: 18,),
+                                onTap: (){},
+                              ),
                             )
                             /* Expanded(
                               child: RichText(

@@ -266,11 +266,9 @@ class _SignInScreenState extends State<SignInScreen> {
                                                   .login(
                                                       context,
                                                       googleSignInAccount.email,
-                                                      //'paccoretesting@gmail.com',
                                                       "",
                                                       true,
                                                       googleSignInAccount.id,
-                                                      //'114993051138200889304',
                                                       scaffoldKey)
                                                   .then((value) async {
                                                 setState(() {

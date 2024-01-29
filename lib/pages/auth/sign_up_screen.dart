@@ -234,7 +234,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                               googleSignInAccount.id,
                                               googleSignInAccount.photoUrl ??
                                                   '',
-                                              scaffoldKey)
+                                              scaffoldKey,
+                                          googleSignInAccount.displayName?.split(' ').first,
+                                          googleSignInAccount.displayName?.split(' ').last,
+                                      )
                                           .then((value) {
                                         setState(() {
                                           isGoogleSignInBtnClicked = false;
@@ -625,7 +628,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       false,
                                       "",
                                       "",
-                                      scaffoldKey)
+                                      scaffoldKey,
+                                  '',
+                                  '')
                                       .then((value) {
                                     setState(() {
                                       isRegistrationBtnClicked = false;

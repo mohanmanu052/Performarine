@@ -176,7 +176,7 @@ class CommonProvider with ChangeNotifier {
     String password,
     bool isLoginWithGoogle,
     String socialLoginId,
-    GlobalKey<ScaffoldState> scaffoldKey,
+    GlobalKey<ScaffoldState> scaffoldKey
   ) async {
     loginModel = LoginModel();
 
@@ -202,6 +202,8 @@ class CommonProvider with ChangeNotifier {
     String socialLoginId,
     String profileImage,
     GlobalKey<ScaffoldState> scaffoldKey,
+    String? firstName,
+      String? lastName
   ) async {
     registrationModel = RegistrationModel();
 
@@ -218,7 +220,8 @@ class CommonProvider with ChangeNotifier {
         isRegisterWithGoogle,
         socialLoginId,
         profileImage,
-        scaffoldKey);
+        scaffoldKey,
+    firstName, lastName);
     notifyListeners();
 
     return registrationModel!;

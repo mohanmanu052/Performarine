@@ -5,10 +5,14 @@ class LoginModel {
   int? statusCode;
   String? message;
   String? userEmail;
+  String? userFirstName;
+  String? userLastName;
   String? loginType;
 
   LoginModel(
-      {this.token, this.userId, this.status, this.statusCode, this.userEmail,this.loginType});
+      {this.token, this.userId, this.status, this.statusCode, this.userEmail,
+        this.userFirstName,
+        this.userLastName,this.loginType});
 
   LoginModel.fromJson(Map<String, dynamic> json) {
     token = json['token'];
@@ -17,6 +21,8 @@ class LoginModel {
     statusCode = json['statusCode'];
     message = json['message'];
     userEmail = json['userEmail'];
+    userFirstName = json['first_name'];
+    userLastName = json['last_name'];
     loginType = json['loginType'];
   }
 
@@ -28,6 +34,8 @@ class LoginModel {
     data['statusCode'] = this.statusCode;
     data['message'] = this.message;
     data['userEmail'] = this.userEmail;
+    data['first_name'] = this.userFirstName;
+    data['last_name'] = this.userLastName;
     data['loginType'] = this.loginType;
     return data;
   }
