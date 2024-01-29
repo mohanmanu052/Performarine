@@ -324,7 +324,7 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                         childrenPadding: EdgeInsets.zero,
                         title: commonText(
                             context: context,
-                            text: 'Fleet I am in',
+                            text: 'Fleet I am In',
                             fontWeight: FontWeight.w500,
                             textColor: blueColor,
                             textSize: displayWidth(context) * 0.048,
