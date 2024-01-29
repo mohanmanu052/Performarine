@@ -4,6 +4,7 @@ import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/models/vessel.dart';
+import 'package:performarine/pages/vessel_single_view.dart';
 import 'package:performarine/services/database_service.dart';
 
 class FleetDetailsCard extends StatefulWidget {
@@ -79,8 +80,13 @@ class _FleetDetailsCardState extends State<FleetDetailsCard> {
                                     return snapshot.data![index].vesselStatus == 1
                                         ? vesselSingleViewCard(context, vessel,
                                             (CreateVessel value) {
+                                              Navigator.push(context, MaterialPageRoute(builder: (context)=>VesselSingleView(
+                                                vessel: value,
+                                              )));
       
-                                            }, widget.scaffoldKey!,isOwnerNameVisible: true,ownerName: 'abc456@gmail.com')
+                                            }, widget.scaffoldKey!,isOwnerNameVisible: true,ownerName: 'abc456@gmail.com',
+                                            
+                                            )
                                         : SizedBox();
                                   },
                                 ),

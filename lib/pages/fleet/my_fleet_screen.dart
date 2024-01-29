@@ -412,16 +412,21 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                                 borderRadius: BorderRadius.circular(8)
                                             ),
                                             child: Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(top: 8, bottom: 8),
-                                                child: commonText(
-                                                    context: context,
-                                                    text: 'Assign Vessel',
-                                                    fontWeight: FontWeight.w300,
-                                                    textColor: Colors.white,
-                                                    textSize: displayWidth(context) * 0.03,
-                                                    textAlign: TextAlign.start,
-                                                    fontFamily: poppins),
+                                              child: InkWell(
+                                                onTap: (){
+                                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>ManagePermissionsScreen()));
+                                                },
+                                                child: Padding(
+                                                  padding: const EdgeInsets.only(top: 8, bottom: 8),
+                                                  child: commonText(
+                                                      context: context,
+                                                      text: 'Assign Vessel',
+                                                      fontWeight: FontWeight.w300,
+                                                      textColor: Colors.white,
+                                                      textSize: displayWidth(context) * 0.03,
+                                                      textAlign: TextAlign.start,
+                                                      fontFamily: poppins),
+                                                ),
                                               ),
                                             ),
                                           ),
