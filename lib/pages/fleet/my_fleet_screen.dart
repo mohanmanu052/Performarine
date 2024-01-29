@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/common_widgets/widgets/custom_fleet_dailog.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
 import 'package:performarine/pages/fleet/send_invite_screen.dart';
 import 'package:screenshot/screenshot.dart';
@@ -396,14 +397,24 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
-                                          commonText(
-                                              context: context,
-                                              text: 'Leave',
-                                              fontWeight: FontWeight.w500,
-                                              textColor: Colors.red,
-                                              textSize: displayWidth(context) * 0.03,
-                                              textAlign: TextAlign.start,
-                                              fontFamily: poppins),
+                                          InkWell(
+                                            onTap: (){
+                       CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to leave this fleet?',subtext: inviteList[index].fleetName??'',description: 'If you leave the fleet your fleet manager cannot view your vessels & Reports',
+                        postiveButtonColor: deleteTripBtnColor,positiveButtonText: 'Leave',
+                        
+                        );
+
+
+                                            },
+                                            child: commonText(
+                                                context: context,
+                                                text: 'Leave',
+                                                fontWeight: FontWeight.w500,
+                                                textColor: Colors.red,
+                                                textSize: displayWidth(context) * 0.03,
+                                                textAlign: TextAlign.start,
+                                                fontFamily: poppins),
+                                          ),
                                           SizedBox(width: displayWidth(context) * 0.04,),
                                           Container(
                                             width: displayWidth(context) * 0.25,
@@ -525,14 +536,23 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                                 fontFamily: poppins)
                                             : Row(
                                               children: [
-                                                commonText(
-                                                    context: context,
-                                                    text: 'Reject',
-                                                    fontWeight: FontWeight.w300,
-                                                    textColor: Colors.red,
-                                                    textSize: displayWidth(context) * 0.03,
-                                                    textAlign: TextAlign.start,
-                                                    fontFamily: poppins),
+                                                InkWell(
+                                                  onTap: (){
+                                                                            CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to Reject fleet Invite??',subtext: inviteList[index].fleetName??'',
+                        postiveButtonColor: deleteTripBtnColor,positiveButtonText: 'Reject',
+                        
+                        );
+
+                                                  },
+                                                  child: commonText(
+                                                      context: context,
+                                                      text: 'Reject',
+                                                      fontWeight: FontWeight.w300,
+                                                      textColor: Colors.red,
+                                                      textSize: displayWidth(context) * 0.03,
+                                                      textAlign: TextAlign.start,
+                                                      fontFamily: poppins),
+                                                ),
                                                 SizedBox(width: displayWidth(context) * 0.04,),
                                                 Container(
                                                   width: displayWidth(context) * 0.18,
@@ -543,14 +563,22 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                                   child: Center(
                                                     child: Padding(
                                                       padding: const EdgeInsets.only(top: 4, bottom: 4),
-                                                      child: commonText(
-                                                          context: context,
-                                                          text: 'Accept',
-                                                          fontWeight: FontWeight.w300,
-                                                          textColor: Colors.white,
-                                                          textSize: displayWidth(context) * 0.03,
-                                                          textAlign: TextAlign.start,
-                                                      fontFamily: poppins),
+                                                      child: InkWell(
+                                                        onTap: (){
+                                                                                 CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to accept fleet Invite?',subtext: inviteList[index].fleetName??'',description: 'If you leave the fleet your fleet manager cannot view your vessels & Reports',
+                        postiveButtonColor: blueColor,positiveButtonText: 'Accept',negtiveButtuonColor: primaryColor);
+                        
+
+                                                        },
+                                                        child: commonText(
+                                                            context: context,
+                                                            text: 'Accept',
+                                                            fontWeight: FontWeight.w300,
+                                                            textColor: Colors.white,
+                                                            textSize: displayWidth(context) * 0.03,
+                                                            textAlign: TextAlign.start,
+                                                        fontFamily: poppins),
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
