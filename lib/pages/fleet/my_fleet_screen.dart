@@ -149,7 +149,7 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                                     textSize: displayWidth(context) * 0.04,
                                                     textAlign: TextAlign.start,),
                                                   SizedBox(width: displayWidth(context) * 0.01,),
-                                                  Image.asset('assets/icons/Edit.png', height: displayHeight(context) * 0.018, color: Colors.black,),
+                                                  Image.asset('assets/icons/Edit.png', height: displayHeight(context) * 0.018, color: blueColor,),
                                                 ],
                                               ),
                                               SizedBox(height: displayHeight(context) * 0.005,),
@@ -256,7 +256,7 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                                 ),
                                               ),
                                              SizedBox(width: displayWidth(context) * 0.02,),
-                                             Image.asset('assets/images/delete.png', height: displayHeight(context) * 0.02, color: Colors.red,),
+                                             Image.asset('assets/images/Trash.png', height: displayHeight(context) * 0.02, color: Colors.red,),
                                             ],
                                           )
                                         ],
