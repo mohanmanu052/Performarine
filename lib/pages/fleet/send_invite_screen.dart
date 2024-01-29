@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
 import 'package:performarine/pages/feedback_report.dart';
 import 'package:performarine/pages/fleet/my_delegate_invites_screen.dart';
@@ -28,6 +29,9 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
   List<String> inviteEmailList = [];
 
   List<SearchWidget> searchWidgetList = [];
+
+  final items = ['Fleet 011513', 'Fleet 011514', 'Fleet 011515', 'Fleet 011516'];
+  String selectedValue = 'Fleet 011513';
 
   @override
   void initState() {
@@ -91,16 +95,60 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
                     top: 17,
                     bottom: displayHeight(context) * 0.06),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    commonText(
-                        context: context,
-                        text: 'Invite to My fleet',
-                        fontWeight: FontWeight.w600,
-                        textColor: Colors.black,
-                        textSize: displayWidth(context) * 0.05,
-                        textAlign: TextAlign.start),
+                    SizedBox(height: displayHeight(context) * 0.05,),
+                    Center(
+                      child: commonText(
+                          context: context,
+                          text: 'Invite to My fleet',
+                          fontWeight: FontWeight.w600,
+                          textColor: Colors.black,
+                          textSize: displayWidth(context) * 0.048,
+                          textAlign: TextAlign.start),
+                    ),
                     SizedBox(
                       height: displayHeight(context) * 0.03,
+                    ),
+
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                        color: Colors.blue.shade50, borderRadius: BorderRadius.circular(18),
+                    ),
+                    child: DropdownButton<String>(
+                      value: selectedValue,
+                      onChanged: (String? newValue) =>
+                          setState(() => selectedValue = newValue!),
+                      items: items
+                          .map<DropdownMenuItem<String>>(
+                              (String value) => DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          ))
+                          .toList(),
+
+                      // add extra sugar..
+                      icon: Icon(Icons.keyboard_arrow_down_rounded),
+                      iconSize: 24,
+                      underline: SizedBox(),
+                      isExpanded: true,
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                    ),
+                  ),
+
+                    SizedBox(
+                      height: displayHeight(context) * 0.03,
+                    ),
+                    commonText(
+                        context: context,
+                        text: 'Invite Members',
+                        fontWeight: FontWeight.w500,
+                        textColor: Colors.black,
+                        textSize: displayWidth(context) * 0.04,
+                        textAlign: TextAlign.start),
+                    SizedBox(
+                      height: displayHeight(context) * 0.015,
                     ),
                     ListView.separated(
                       shrinkWrap: true,
@@ -142,16 +190,9 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
                   children: [
                     Padding(
                         padding: const EdgeInsets.only(
-                            left: 17, right: 17, top: 8, bottom: 12),
-                        child: TextButton(
-                          child: commonText(
-                              context: context,
-                              text: '+ Add More Invite',
-                              fontWeight: FontWeight.w500,
-                              textColor: blueColor,
-                              textSize: displayWidth(context) * 0.038,
-                              textAlign: TextAlign.start),
-                          onPressed: () {
+                            left: 17, right: 17, top: 8, bottom: 0),
+                        child: InkWell(
+                          onTap: (){
                             if (inviteCountList.isEmpty) {
                               inviteCountList.add(0);
                             } else {
@@ -160,10 +201,17 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
 
                             setState(() {});
                           },
-                        )),
+                          child: commonText(
+                              context: context,
+                              text: '+ Add Another Invite',
+                              fontWeight: FontWeight.w500,
+                              textColor: blueColor,
+                              textSize: displayWidth(context) * 0.038,
+                              textAlign: TextAlign.start),
+                        ),),
                     Padding(
                       padding:
-                      const EdgeInsets.only(left: 17, right: 17, top: 8),
+                      const EdgeInsets.only(left: 17, right: 17, top: 12),
                       child: CommonButtons.getActionButton(
                           title: 'Invite Fleet',
                           context: context,

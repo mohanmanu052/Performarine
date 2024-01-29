@@ -317,6 +317,15 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               SizedBox(
                                 height: displayHeight(context) * 0.02,
                               ), */
+
+                              Padding(
+                                padding: EdgeInsets.only(right: displayWidth(context)* 0.1, bottom: displayHeight(context) * 0.01),
+                                child: Divider(
+                                  thickness: 1.5,
+                                  color: Colors.grey,
+                                ),
+                              ),
+
                               Container(
                                 width: displayWidth(context),
                                 child: InkWell(
@@ -330,7 +339,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              MyFleetScreen(bottomNavIndex: widget.bottomNavIndex,)),
+                                              MyFleetScreen(bottomNavIndex: widget.bottomNavIndex, data: false,)),
                                     );
                                   },
                                   child: commonText(
@@ -346,6 +355,62 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 height: displayHeight(context) * 0.02,
                               ),
                               Container(
+                                width: displayWidth(context),
+                                child: InkWell(
+                                  onTap: ()async {
+                                    // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                    await Future.delayed(Duration(milliseconds: 500), (){});
+                                    CustomLogger().logWithFile(Level.info, "User Navigating to My Fleet Screen -> $page");
+                                    Navigator.of(context).pop();
+
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              MyFleetScreen(bottomNavIndex: widget.bottomNavIndex,data: false,)),
+                                    );
+                                  },
+                                  child: commonText(
+                                      context: context,
+                                      text: 'Fleet Vessels',
+                                      fontWeight: FontWeight.w400,
+                                      textColor: Colors.black54,
+                                      textSize: textSize,
+                                      textAlign: TextAlign.start),
+                                ),
+                              ),
+                              SizedBox(
+                                height: displayHeight(context) * 0.02,
+                              ),
+                              Container(
+                                width: displayWidth(context),
+                                child: InkWell(
+                                  onTap: ()async {
+                                    // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                    await Future.delayed(Duration(milliseconds: 500), (){});
+                                    CustomLogger().logWithFile(Level.info, "User Navigating to My Fleet Screen -> $page");
+                                    Navigator.of(context).pop();
+
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              MyFleetScreen(bottomNavIndex: widget.bottomNavIndex,data: false,)),
+                                    );
+                                  },
+                                  child: commonText(
+                                      context: context,
+                                      text: 'Fleet Reports',
+                                      fontWeight: FontWeight.w400,
+                                      textColor: Colors.black54,
+                                      textSize: textSize,
+                                      textAlign: TextAlign.start),
+                                ),
+                              ),
+                              SizedBox(
+                                height: displayHeight(context) * 0.02,
+                              ),
+                             /* Container(
                                 width: displayWidth(context),
                                 child: InkWell(
                                   onTap: () async {
@@ -420,58 +485,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                       textAlign: TextAlign.start),
                                 ),
                               ),
-                           /*   DropdownButton<String>(
-                                focusColor:Colors.transparent,
-                                value: chosenValue,
-                                //elevation: 5,
-                                style: TextStyle(color: Colors.white),
-                                iconEnabledColor:Colors.black54,
-                                items: <String>[
-                                  'Info',
-                                  'Debug',
-                                  'Warning',
-                                  'Error',
-                                  'Verbose',
-                                ].map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: commonText(
-                                        context: context,
-                                        text: value,
-                                        fontWeight: FontWeight.w500,
-                                        textColor: Colors.black54,
-                                        textSize: textSize,
-                                        textAlign: TextAlign.start)
-                                  );
-                                }).toList(),
-                                hint: commonText(
-                                    context: context,
-                                    text: chosenValue,
-                                    fontWeight: FontWeight.w500,
-                                    textColor: Colors.black54,
-                                    textSize: textSize,
-                                    textAlign: TextAlign.start),
-
-                                onChanged: (String? value) {
-                                  setState(() {
-                                    chosenValue = value;
-                                    if(chosenValue == "Info"){
-                                      logLevel = "info";
-                                    } else if(chosenValue == "Debug"){
-                                      logLevel = "debug";
-                                    } else if(chosenValue == "Warning"){
-                                      logLevel = "warning";
-                                    } else if(chosenValue == "Error"){
-                                      logLevel = "error";
-                                    } else if(chosenValue == "Verbose"){
-                                      logLevel = "verbose";
-                                    }
-                                  });
-                                },
-                              ), */
                               SizedBox(
                                 height: displayHeight(context) * 0.02,
-                              ),
+                              ),*/
                             ],
                           )
                         ],
@@ -482,6 +498,84 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            SizedBox(
+                              height: displayHeight(context) * 0.02,
+                            ),
+                            Container(
+                              width: displayWidth(context),
+                              child: InkWell(
+                                onTap: () async {
+
+                                  // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                  await Future.delayed(Duration(milliseconds: 500), (){});
+
+                                  bool? isTripStarted =
+                                  sharedPreferences!.getBool('trip_started');
+
+                                  var tripSyncDetails =
+                                  await _databaseService.tripSyncDetails();
+                                  var vesselsSyncDetails =
+                                  await _databaseService.vesselsSyncDetails();
+
+                                  Utils.customPrint(
+                                      "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
+                                  CustomLogger().logWithFile(Level.info, "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails-> $page");
+
+                                  if (isTripStarted != null) {
+                                    if (isTripStarted) {
+
+                                      if(commonProvider.bottomNavIndex != 1){
+                                        SystemChrome.setPreferredOrientations([
+                                          DeviceOrientation.portraitUp
+                                        ]);
+                                      }else{
+                                        SystemChrome.setPreferredOrientations([
+                                          DeviceOrientation.landscapeLeft,
+                                          DeviceOrientation.landscapeRight,
+                                          DeviceOrientation.portraitDown,
+                                          DeviceOrientation.portraitUp
+                                        ]);
+                                      }
+
+                                      Navigator.of(context).pop();
+                                      Utils.showSnackBar(context,
+                                          scaffoldKey: widget.scaffoldKey,
+                                          message:
+                                          'Please end the trip which is already running');
+                                    } else {
+                                      CustomLogger().logWithFile(Level.info, "User navigating to Sync Data Cloud to mobile screen-> $page");
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                SyncDataCloudToMobileScreen(bottomNavIndex: widget.bottomNavIndex,)),
+                                      );
+                                    }
+                                  } else {
+                                    if (vesselsSyncDetails || tripSyncDetails) {
+                                      showDialogBoxToUploadData(
+                                          context, widget.scaffoldKey!, false,widget.orientation??Orientation.portrait);
+                                    } else {
+                                      Navigator.of(context).pop();
+                                      CustomLogger().logWithFile(Level.info, "User navigating to Sync Data Cloud to mobile screen-> $page");
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                SyncDataCloudToMobileScreen(bottomNavIndex: widget.bottomNavIndex,)),
+                                      );
+                                    }
+                                  }
+                                },
+                                child: commonText(
+                                    context: context,
+                                    text: 'Sync from Cloud',
+                                    fontWeight: FontWeight.w400,
+                                    textColor: Colors.black54,
+                                    textSize: textSize,
+                                    textAlign: TextAlign.start),
+                              ),
+                            ),
                             SizedBox(
                               height: displayHeight(context) * 0.02,
                             ),
@@ -918,6 +1012,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           SizedBox(
                             height: displayHeight(context) * 0.02,
                           ), */
+                          Padding(
+                            padding: EdgeInsets.only(right: displayWidth(context)* 0.1, bottom: displayHeight(context) * 0.01),
+                            child: Divider(
+                              thickness: 1.5,
+                              color: Colors.grey,
+                            ),
+                          ),
                           Container(
                             width: displayWidth(context),
                             child: InkWell(
@@ -931,12 +1032,12 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          MyFleetScreen(bottomNavIndex: widget.bottomNavIndex,)),
+                                          MyFleetScreen(bottomNavIndex: widget.bottomNavIndex,data: false,)),
                                 );
                               },
                               child: commonText(
                                   context: context,
-                                  text: 'My Fleet',
+                                  text: 'My Fleets',
                                   fontWeight: FontWeight.w400,
                                   textColor: Colors.black54,
                                   textSize: textSize,
@@ -947,6 +1048,62 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             height: displayHeight(context) * 0.02,
                           ),
                           Container(
+                            width: displayWidth(context),
+                            child: InkWell(
+                              onTap: ()async {
+                                // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                await Future.delayed(Duration(milliseconds: 500), (){});
+                                CustomLogger().logWithFile(Level.info, "User Navigating to My Fleet Screen -> $page");
+                                Navigator.of(context).pop();
+
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          MyFleetScreen(bottomNavIndex: widget.bottomNavIndex,data: false,)),
+                                );
+                              },
+                              child: commonText(
+                                  context: context,
+                                  text: 'Fleet Vessels',
+                                  fontWeight: FontWeight.w400,
+                                  textColor: Colors.black54,
+                                  textSize: textSize,
+                                  textAlign: TextAlign.start),
+                            ),
+                          ),
+                          SizedBox(
+                            height: displayHeight(context) * 0.02,
+                          ),
+                          Container(
+                            width: displayWidth(context),
+                            child: InkWell(
+                              onTap: ()async {
+                                // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                await Future.delayed(Duration(milliseconds: 500), (){});
+                                CustomLogger().logWithFile(Level.info, "User Navigating to My Fleet Screen -> $page");
+                                Navigator.of(context).pop();
+
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          MyFleetScreen(bottomNavIndex: widget.bottomNavIndex,data: false,)),
+                                );
+                              },
+                              child: commonText(
+                                  context: context,
+                                  text: 'Fleet Reports',
+                                  fontWeight: FontWeight.w400,
+                                  textColor: Colors.black54,
+                                  textSize: textSize,
+                                  textAlign: TextAlign.start),
+                            ),
+                          ),
+                          SizedBox(
+                            height: displayHeight(context) * 0.02,
+                          ),
+                         /* Container(
                             width: displayWidth(context),
                             child: InkWell(
                               onTap: () async {
@@ -1004,58 +1161,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   textAlign: TextAlign.start),
                             ),
                           ),
-                          /*   DropdownButton<String>(
-                            focusColor:Colors.transparent,
-                            value: chosenValue,
-                            //elevation: 5,
-                            style: TextStyle(color: Colors.white),
-                            iconEnabledColor:Colors.black54,
-                            items: <String>[
-                              'Info',
-                              'Debug',
-                              'Warning',
-                              'Error',
-                              'Verbose',
-                            ].map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: commonText(
-                                    context: context,
-                                    text: value,
-                                    fontWeight: FontWeight.w500,
-                                    textColor: Colors.black54,
-                                    textSize: textSize,
-                                    textAlign: TextAlign.start)
-                              );
-                            }).toList(),
-                            hint: commonText(
-                                context: context,
-                                text: chosenValue,
-                                fontWeight: FontWeight.w500,
-                                textColor: Colors.black54,
-                                textSize: textSize,
-                                textAlign: TextAlign.start),
-
-                            onChanged: (String? value) {
-                              setState(() {
-                                chosenValue = value;
-                                if(chosenValue == "Info"){
-                                  logLevel = "info";
-                                } else if(chosenValue == "Debug"){
-                                  logLevel = "debug";
-                                } else if(chosenValue == "Warning"){
-                                  logLevel = "warning";
-                                } else if(chosenValue == "Error"){
-                                  logLevel = "error";
-                                } else if(chosenValue == "Verbose"){
-                                  logLevel = "verbose";
-                                }
-                              });
-                            },
-                          ), */
                           SizedBox(
                             height: displayHeight(context) * 0.02,
-                          ),
+                          ),*/
                         ],
                       )
                     ],
@@ -1069,11 +1177,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       SizedBox(
                         height: displayHeight(context) * 0.02,
                       ),
-                      commonProvider.loginModel!.loginType == "regular" ?   Container(
+                      Container(
                         width: displayWidth(context),
                         child: InkWell(
-                          onTap: ()async {
-                           // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                          onTap: () async {
+                            // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                             bool? isTripStarted =
                             sharedPreferences!.getBool('trip_started');
 
@@ -1089,41 +1197,107 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             if (isTripStarted != null) {
                               if (isTripStarted) {
                                 Navigator.of(context).pop();
-                                showEndTripDialogBox(context, );
+                                Utils.showSnackBar(context,
+                                    scaffoldKey: widget.scaffoldKey,
+                                    message:
+                                    'Please end the trip which is already running');
                               } else {
-                                if (vesselsSyncDetails || tripSyncDetails) {
-                                  CustomLogger().logWithFile(Level.warning, "showDialogBoxToUploadData pop up for user confirmation-> $page");
-                                  showDialogBoxToUploadData(context, widget.scaffoldKey!, true,widget.orientation??Orientation.portrait);
-                                } else {
-                                  CustomLogger().logWithFile(Level.info, "User Navigating to change password screen-> $page");
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ChangePassword(bottomNavIndex:widget.bottomNavIndex ,)),
-                                  );
-                                }
-                              }
-                            } else {
-                              if (vesselsSyncDetails || tripSyncDetails) {
-                                CustomLogger().logWithFile(Level.warning, "showDialogBoxToUploadData pop up for user confirmation-> $page");
-                                showDialogBoxToUploadData(context, widget.scaffoldKey!, true,widget.orientation??Orientation.portrait);
-                              } else {
-                                CustomLogger().logWithFile(Level.info, "User Navigating to change password screen-> $page");
+                                CustomLogger().logWithFile(Level.info, "User navigating to Sync Data Cloud to mobile screen-> $page");
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => ChangePassword(bottomNavIndex:widget.bottomNavIndex )),
+                                      builder: (context) =>
+                                          SyncDataCloudToMobileScreen(bottomNavIndex: widget.bottomNavIndex,)),
+                                );
+                              }
+                            } else {
+                              if (vesselsSyncDetails || tripSyncDetails) {
+                                showDialogBoxToUploadData(
+                                    context, widget.scaffoldKey!, false,widget.orientation??Orientation.portrait);
+                              } else {
+                                Navigator.of(context).pop();
+                                CustomLogger().logWithFile(Level.info, "User navigating to Sync Data Cloud to mobile screen-> $page");
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          SyncDataCloudToMobileScreen(bottomNavIndex: widget.bottomNavIndex)),
                                 );
                               }
                             }
                           },
                           child: commonText(
                               context: context,
-                              text: 'Change Password',
+                              text: 'Sync from Cloud',
                               fontWeight: FontWeight.w400,
                               textColor: Colors.black54,
                               textSize: textSize,
                               textAlign: TextAlign.start),
+                        ),
+                      ),
+
+                      commonProvider.loginModel!.loginType == "regular" ?   Container(
+                        width: displayWidth(context),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: displayHeight(context) * 0.02,
+                            ),
+                            InkWell(
+                              onTap: ()async {
+                               // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                bool? isTripStarted =
+                                sharedPreferences!.getBool('trip_started');
+
+                                var tripSyncDetails =
+                                await _databaseService.tripSyncDetails();
+                                var vesselsSyncDetails =
+                                await _databaseService.vesselsSyncDetails();
+
+                                Utils.customPrint(
+                                    "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails");
+                                CustomLogger().logWithFile(Level.info, "TRIP SYNC DATA ${tripSyncDetails} $vesselsSyncDetails-> $page");
+
+                                if (isTripStarted != null) {
+                                  if (isTripStarted) {
+                                    Navigator.of(context).pop();
+                                    showEndTripDialogBox(context, );
+                                  } else {
+                                    if (vesselsSyncDetails || tripSyncDetails) {
+                                      CustomLogger().logWithFile(Level.warning, "showDialogBoxToUploadData pop up for user confirmation-> $page");
+                                      showDialogBoxToUploadData(context, widget.scaffoldKey!, true,widget.orientation??Orientation.portrait);
+                                    } else {
+                                      CustomLogger().logWithFile(Level.info, "User Navigating to change password screen-> $page");
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ChangePassword(bottomNavIndex:widget.bottomNavIndex ,)),
+                                      );
+                                    }
+                                  }
+                                } else {
+                                  if (vesselsSyncDetails || tripSyncDetails) {
+                                    CustomLogger().logWithFile(Level.warning, "showDialogBoxToUploadData pop up for user confirmation-> $page");
+                                    showDialogBoxToUploadData(context, widget.scaffoldKey!, true,widget.orientation??Orientation.portrait);
+                                  } else {
+                                    CustomLogger().logWithFile(Level.info, "User Navigating to change password screen-> $page");
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ChangePassword(bottomNavIndex:widget.bottomNavIndex )),
+                                    );
+                                  }
+                                }
+                              },
+                              child: commonText(
+                                  context: context,
+                                  text: 'Change Password',
+                                  fontWeight: FontWeight.w400,
+                                  textColor: Colors.black54,
+                                  textSize: textSize,
+                                  textAlign: TextAlign.start),
+                            ),
+                          ],
                         ),
                       ) : Container(),
                       SizedBox(
