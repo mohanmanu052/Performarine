@@ -1,8 +1,8 @@
 class Urls {
   //Client Environment
-  //static const String baseUrl = 'goeapidev.azurewebsites.net';
+  static const String baseUrl = 'goeapidev.azurewebsites.net';
 
-  static String baseUrl =  baseUrlVersion;
+ // static String baseUrl =  baseUrlVersion;
 
 
   // Auth
@@ -34,6 +34,9 @@ class Urls {
 
   // Delete Trip
   static const deleteTrip = '/api/getTripById';
+
+  // Update User Info
+  static const updateUserInfo = '/api/auth/updateUserInfo';
 
 
   static String baseUrlVersion = '';

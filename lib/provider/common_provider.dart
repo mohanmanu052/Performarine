@@ -25,6 +25,7 @@ import 'package:performarine/provider/registration_api_provider.dart';
 import 'package:performarine/provider/report_module_provider.dart';
 import 'package:performarine/provider/reset_password_provider.dart';
 import 'package:performarine/provider/send_sensor_info_api_provider.dart';
+import 'package:performarine/provider/update_userinfo_api_provider.dart';
 import 'package:performarine/provider/user_feedback_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -63,6 +64,7 @@ class CommonProvider with ChangeNotifier {
   DeleteTripModel? deleteTripModel;
   int bottomNavIndex = 0;
   List<File?> selectedImageFiles = [];
+  CommonModel? userInfoCommonModel;
 
 
   init() {
@@ -451,6 +453,20 @@ Future<ExportDataModel> exportReportData(Map<String,dynamic>body,String token,Bu
   {
     onTripEndClicked = value;
     notifyListeners();
+  }
+
+  Future<CommonModel> updateUserInfo(
+      BuildContext context,
+      String token,
+      String firstName,
+      String lastName,
+      String userId,
+      GlobalKey<ScaffoldState> scaffoldKey) async {
+    userInfoCommonModel = CommonModel();
+    userInfoCommonModel = await UpdateUserInfoApiProvider().updateUserInfo(context, token, firstName, lastName, userId, scaffoldKey);
+    notifyListeners();
+
+    return userInfoCommonModel!;
   }
 
 }

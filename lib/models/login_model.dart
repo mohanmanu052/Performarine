@@ -21,8 +21,8 @@ class LoginModel {
     statusCode = json['statusCode'];
     message = json['message'];
     userEmail = json['userEmail'];
-    userFirstName = json['first_name'];
-    userLastName = json['last_name'];
+    userFirstName = json['firstName'];
+    userLastName = json['lastName'];
     loginType = json['loginType'];
   }
 
@@ -34,8 +34,8 @@ class LoginModel {
     data['statusCode'] = this.statusCode;
     data['message'] = this.message;
     data['userEmail'] = this.userEmail;
-    data['first_name'] = this.userFirstName;
-    data['last_name'] = this.userLastName;
+    data['firstName'] = this.userFirstName;
+    data['lastName'] = this.userLastName;
     data['loginType'] = this.loginType;
     return data;
   }
