@@ -344,7 +344,7 @@ Widget vesselSingleViewRichText(
 // Vessel single view card
 Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
     Function(CreateVessel) onTap, GlobalKey<ScaffoldState> scaffoldKey,
-    {bool isTripIsRunning = false}) {
+    {bool isTripIsRunning = false,bool isOwnerNameVisible=false,String ownerName=''}) {
   Utils.customPrint("IMAGE FROM HOME SINGLE WIDGET ${vesselData.imageURLs}");
   CustomLogger().logWithFile(Level.info, "IMAGE FROM HOME SINGLE WIDGET ${vesselData.imageURLs}");
 
@@ -757,6 +757,26 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                           softWrap: true,
                           //maxLines: 2,
                         ),
+if(isOwnerNameVisible)
+
+
+                        Container(
+                          padding: EdgeInsets.symmetric(vertical: 8),
+                          child: Text(
+                             'Owner : $ownerName',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.white,
+                              fontFamily: poppins,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: true,
+                            //maxLines: 2,
+                          ),
+                        ),
+
                         /*dashboardRichText(
                             modelName: vesselData.model,
                             builderName: vesselData.builderName,

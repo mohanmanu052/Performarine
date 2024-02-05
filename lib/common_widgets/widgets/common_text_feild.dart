@@ -30,6 +30,8 @@ class CommonTextField extends StatefulWidget {
   Function()? onTap;
   FilteringTextInputFormatter? inputFormatter;
   bool? isForDecimal = false;
+  Color? fillColor;
+  double? circularRadius;
   // GlobalKey<FormFieldState>? formFieldKey;
 
   CommonTextField(
@@ -43,6 +45,7 @@ class CommonTextField extends StatefulWidget {
         this.prefixIcon,
         this.suffixIcon,
         this.labelText,
+        this.circularRadius,
         this.hintText,
         this.suffixText,
         this.requestFocusNode,
@@ -52,6 +55,7 @@ class CommonTextField extends StatefulWidget {
         this.onSuffixIconTap,
         this.onChanged,
         this.onFieldSubmitted,
+        this.fillColor,
         this.onSaved,
         this.onTap,
         this.inputFormatter,
@@ -110,7 +114,7 @@ class _CommonTextFieldState extends State<CommonTextField> {
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             filled: true,
-            fillColor: dropDownBackgroundColor,
+            fillColor:widget.fillColor?? dropDownBackgroundColor,
             hintText: widget.hintText,
             labelText: widget.labelText,
             suffixText: widget.suffixText,
@@ -164,20 +168,20 @@ class _CommonTextFieldState extends State<CommonTextField> {
             focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                     width: 1.5, color: dropDownBackgroundColor),
-                borderRadius: BorderRadius.all(Radius.circular(8))),
+                borderRadius: BorderRadius.all(Radius.circular(widget.circularRadius?? 8))),
             enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                     width: 1.5, color: dropDownBackgroundColor),
-                borderRadius: const BorderRadius.all(Radius.circular(8))),
+                borderRadius:  BorderRadius.all(Radius.circular(widget.circularRadius??8))),
             errorBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                     width: 1.5, color: Colors.red.shade300.withOpacity(0.7)),
-                borderRadius: const BorderRadius.all(Radius.circular(8))),
+                borderRadius:  BorderRadius.all(Radius.circular(widget.circularRadius??8))),
             errorStyle: TextStyle(fontSize: displayWidth(context) * 0.03),
             focusedErrorBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                     width: 1, color: Colors.red.shade300.withOpacity(0.7)),
-                borderRadius: const BorderRadius.all(Radius.circular(8))),
+                borderRadius:  BorderRadius.all(Radius.circular(widget.circularRadius??8))),
           ),
           onFieldSubmitted: (value) {
             /*if (widget.onFieldSubmitted != null) {
@@ -360,7 +364,7 @@ class _CommonExpandTextFieldState extends State<CommonExpandTextField> {
             focusedErrorBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                     width: 1, color: Colors.red.shade300.withOpacity(0.7)),
-                borderRadius: const BorderRadius.all(Radius.circular(8))),
+                borderRadius: const BorderRadius.all(Radius.circular( 8))),
           ),
           onFieldSubmitted: (value) {
 

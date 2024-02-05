@@ -47,5 +47,15 @@ const deleteTripBtnColor = Color(0xFFFF2020);
 const inProgressTrip = Color(0xFFFDBF21);
 const skipAndContinueBtnColor = Color(0xFFD1E0FC);
 const reroprtHighlightBackgroundColor=Color(0xFFC0EDFC);
+const colorLightRed=Color(0xffECDFDF);
+const colorgreenLight=Color(0xffE5FFE9);
+const colorlightBlueTimePickerUnselecetd=Color(0xffA8C5FD);
+const calenderBackgroundColor=Color(0xfF9FBFD);
+const delegateTextHeaderColor=Color(0xff275778);
+const acceptTextGreen=Color(0xff63BD69);
+const acceptBackgrounGreen=Color(0xffE5FFE2);
+const pendingTextRed=Color(0xffE31D41);
+const pendingBacgroundRed=Color(0xffFFEBE2);
+
 
 

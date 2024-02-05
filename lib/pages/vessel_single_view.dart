@@ -18,6 +18,7 @@ import 'package:performarine/models/device_model.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/custom_drawer.dart';
+import 'package:performarine/pages/delegate/delegates_screen.dart';
 import 'package:performarine/pages/trip/tripViewBuilder.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
@@ -383,6 +384,54 @@ SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                                 padding: const EdgeInsets.only(top: 0.0, left: 17, right: 17),
                                 child: Column(
                                   children: [
+Theme(
+                                      data: Theme.of(context).copyWith(
+                                          colorScheme: ColorScheme.light(
+                                            primary: Colors.black,
+                                          ),
+                                          dividerColor: Colors.transparent),
+                                      child:
+ExpansionTile(
+  collapsedIconColor: Colors.black,
+                                          tilePadding: EdgeInsets.zero,
+                                        childrenPadding: EdgeInsets.zero,
+iconColor: Colors.black,
+  title: commonText(
+                                            context: context,
+                                            text: 'Delegate access',
+                                            fontWeight: FontWeight.w500,
+                                            textColor: Colors.black,
+                                            textSize: displayWidth(context) * 0.036,
+                                            textAlign: TextAlign.start),
+                                            
+                                          children: [
+                                            Container(
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                commonText(text:'No Delegates',
+                                                fontWeight: FontWeight.w600,
+                                                textSize: 16,
+                                                textColor: delegateTextHeaderColor
+                                                ),
+                                                                                                InkWell(
+                                                                                                  onTap: (){
+                                                                                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>DelegatesScreen()));
+                                                                                                  },
+                                                                                                  child: commonText(text:'Manage Delegate Access',
+                                                                                                                                                  fontWeight: FontWeight.w400,
+                                                                                                                                                  textSize: 11,
+                                                                                                                                                  textColor: blueColor
+                                                                                                                                                  ),
+                                                                                                )
+
+                                              ],
+                                            ),
+                                          ),  
+                                  ])),
+
+
+
 
                                     Theme(
                                       data: Theme.of(context).copyWith(
