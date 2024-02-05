@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -88,12 +89,12 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
             SingleChildScrollView(
               child: Container(
                 width: displayWidth(context),
-                height: displayHeight(context),
+               // height: displayHeight(context),
                 margin: EdgeInsets.only(
                     left: 17,
                     right: 17,
                     top: 17,
-                    bottom: displayHeight(context) * 0.06),
+                    bottom: displayHeight(context) * 0.075),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -176,7 +177,14 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
                           height: 10,
                         );
                       },
+                    ),
+                    Platform.isIOS
+                    ? SizedBox(
+                      height: displayHeight(context) * 0.055,
                     )
+                    :SizedBox(
+                      height: displayHeight(context) * 0.085,
+                    ),
                   ],
                 ),
               ),

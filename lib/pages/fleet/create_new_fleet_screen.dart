@@ -83,6 +83,7 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
         children: [
           SingleChildScrollView(
             child: Container(
+              //height: displayHeight(context),
               margin: EdgeInsets.symmetric(horizontal: 17, vertical: 17),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,7 +144,10 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
                         height: 10,
                       );
                     },
-                  )
+                  ),
+                  SizedBox(
+                    height: displayHeight(context) * 0.14,
+                  ),
                 ],
               ),
             ),
