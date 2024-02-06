@@ -43,6 +43,34 @@ status: 'Accepted'
 dateOfJoin: '29-08-2023',
 status: 'Pending'
 
+  ),
+
+
+  FleetDetailsInviteModel(
+    email: 'abc7poppsopo@gmail.com',
+dateOfJoin: '29-08-2023',
+status: 'Pending'
+
+  ),FleetDetailsInviteModel(
+    email: 'abc7poppsopo@gmail.com',
+dateOfJoin: '29-08-2023',
+status: 'Pending'
+
+  ),FleetDetailsInviteModel(
+    email: 'abc7poppsopo@gmail.com',
+dateOfJoin: '29-08-2023',
+status: 'Pending'
+
+  ),FleetDetailsInviteModel(
+    email: 'abc7poppsopo@gmail.com',
+dateOfJoin: '29-08-2023',
+status: 'Pending'
+
+  ),FleetDetailsInviteModel(
+    email: 'abc7poppsopo@gmail.com',
+dateOfJoin: '29-08-2023',
+status: 'Pending'
+
   )
  
  
@@ -144,49 +172,52 @@ Container(
 
             Positioned(
               bottom: 0,
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Column(
-                  children: [
-                          CommonButtons.getActionButton(
-                                  title: 'Invite To Fleet',
-                                  context: context,
-                                  fontSize: displayWidth(context) * 0.044,
-                                  textColor: Colors.white,
-                                  buttonPrimaryColor: blueColor,
-                                  borderColor: blueColor,
-                                  onTap: (){
+              child: Container(
+                color: Colors.white,
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Column(
+                    children: [
+                            CommonButtons.getActionButton(
+                                    title: 'Invite To Fleet',
+                                    context: context,
+                                    fontSize: displayWidth(context) * 0.044,
+                                    textColor: Colors.white,
+                                    buttonPrimaryColor: blueColor,
+                                    borderColor: blueColor,
+                                    onTap: (){
+                                                    
+                                    },
+                                    width: displayWidth(context)/1.3,
+                                    height: displayHeight(context)*0.060
+                                    
+                                    ),
+                        
+                                    SizedBox(height: 5,),
+                                    GestureDetector(
+                                      onTap: (()async {
+                                                final image = await controller.capture();
+                                await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                        
+                        
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
+                                  imagePath: image.toString(),
+                                  uIntList: image,)));
+                        
+                                      }),
+                                            child: UserFeedback().getUserFeedback(
+                                                context,
+                                                )),
+                         
+                         
+                         
+                         
+                         
+                         
+                         
                       
-                                  },
-                                  width: displayWidth(context)/1.3,
-                                  height: displayHeight(context)*0.050
-                                  
-                                  ),
-                      
-                                  SizedBox(height: 5,),
-                                  GestureDetector(
-                                    onTap: (()async {
-                                              final image = await controller.capture();
-                              await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-                      
-                      
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
-                                imagePath: image.toString(),
-                                uIntList: image,)));
-                      
-                                    }),
-                                          child: UserFeedback().getUserFeedback(
-                                              context,
-                                              )),
-                       
-                       
-                       
-                       
-                       
-                       
-                       
-                    
-                  ],
+                    ],
+                  ),
                 ),
               ),
             )
