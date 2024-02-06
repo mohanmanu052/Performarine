@@ -672,7 +672,7 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                               context,
                               MaterialPageRoute(builder: (context) => SendInviteScreen()),
                             )
-                            : Navigator.pushReplacement(
+                            : Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => CreateNewFleetScreen()),
                             );
