@@ -2573,6 +2573,7 @@ if(!isSyncSignoutClicked){
                                       blueColor, () async {
                                     if (firstNameFormKey.currentState!.validate() && lastNameFormKey.currentState!.validate())
                                       {
+
                                         bool internet =
                                         await Utils().check(scaffoldKey);
                                         setState(() {
