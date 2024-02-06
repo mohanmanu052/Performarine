@@ -189,7 +189,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 6),
                                   child: InkWell(
-                                    child: Icon(Icons.edit, size: 18,),
+                                    child: Icon(Icons.edit, size: 18,
+                                    color: blueColor,
+                                    ),
                                     onTap: (){
                                       showUpdateUserInfoDialog(context, scaffoldKey );
                                     },
@@ -918,7 +920,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 6),
                               child: InkWell(
-                                child: Icon(Icons.edit, size: 18,),
+                                child: Icon(Icons.edit, size: 18,
+                                color: blueColor,
+                                ),
                                 onTap: (){
                                   showUpdateUserInfoDialog(context,scaffoldKey );
                                 },
@@ -2411,6 +2415,8 @@ if(!isSyncSignoutClicked){
 
   showUpdateUserInfoDialog(
       BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) {
+        firstNameEditingController.text=commonProvider.loginModel!.userFirstName??'';
+        lastNameEditingController.text=commonProvider.loginModel!.userLastName??'';
     return showDialog(
         barrierDismissible: false,
         context: context,
@@ -2469,15 +2475,17 @@ if(!isSyncSignoutClicked){
                                               borderSide: BorderSide(color: Colors.blue.shade50),
                                               borderRadius: BorderRadius.circular(18),
                                             ),
-                                            suffixIcon: IconButton(
-                                              icon: Icon(
-                                                Icons.close,
-                                                color: Colors.black87,
-                                                size: displayWidth(context) * 0.05,
-                                              ),
-                                              onPressed: () {
-                                              },
-                                            )),
+                                            // suffixIcon: IconButton(
+                                            //   icon: Icon(
+                                            //     Icons.close,
+                                            //     color: Colors.black87,
+                                            //     size: displayWidth(context) * 0.05,
+                                            //   ),
+                                              // onPressed: () {
+                                              // },
+                                            //)
+                                            
+                                            ),
                                         validator: (value) {
                                           if (value!.isEmpty) {
                                             return 'Enter First Name';
@@ -2516,15 +2524,17 @@ if(!isSyncSignoutClicked){
                                               borderSide: BorderSide(color: Colors.blue.shade50),
                                               borderRadius: BorderRadius.circular(18),
                                             ),
-                                            suffixIcon: IconButton(
-                                              icon: Icon(
-                                                Icons.close,
-                                                color: Colors.black87,
-                                                size: displayWidth(context) * 0.05,
-                                              ),
-                                              onPressed: () {
-                                              },
-                                            )),
+                                            // suffixIcon: IconButton(
+                                            //   icon: Icon(
+                                            //     Icons.close,
+                                            //     color: Colors.black87,
+                                            //     size: displayWidth(context) * 0.05,
+                                            //   ),
+                                            //   onPressed: () {
+                                            //   },
+                                            // )
+                                            
+                                            ),
                                         validator: (value) {
                                           if (value!.isEmpty) {
                                             return 'Enter last name';

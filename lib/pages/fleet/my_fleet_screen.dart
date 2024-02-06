@@ -157,7 +157,7 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                                     InkWell(
                                                       onTap: (){
                                                         List<String> fleetData=[];
-                                                        for(FleetModel data in fleetList){
+                                                        for(MyFleetModel data in myFleetList){
                                                           fleetData.add(data.fleetName??'');
               
                                                         }
@@ -683,7 +683,9 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                           children: [
                             SizedBox(height: displayHeight(context) * 0.01,),
                             InkWell(
-                              onTap: (){},
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (_)=>CreateNewFleetScreen()));
+                              },
                               child: commonText(
                               context: context,
                               text: '+ Create Another Fleet',

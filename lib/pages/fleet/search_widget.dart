@@ -50,8 +50,8 @@ class _SearchWidgetState extends State<SearchWidget> {
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.blue.shade50),
                    borderRadius: BorderRadius.only(topLeft: Radius.circular(18), topRight: Radius.circular(18),
-                       bottomLeft: textEditingController.text.isNotEmpty ? Radius.circular(0) : Radius.circular(18),
-                   bottomRight: textEditingController.text.isNotEmpty ? Radius.circular(0) : Radius.circular(18)),
+                       bottomLeft: textEditingController.text.isNotEmpty ? Radius.circular(18) : Radius.circular(18),
+                   bottomRight: textEditingController.text.isNotEmpty ? Radius.circular(18) : Radius.circular(18)),
                 ),
                 suffixIcon: IconButton(
                   icon: Icon(

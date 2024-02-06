@@ -440,10 +440,10 @@ fleetItem=newValue;
                           borderColor: blueColor,
                           width: displayWidth(context),
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => ManagePermissionsScreen()),
-                            );
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(builder: (context) => ManagePermissionsScreen()),
+                           // );
                           }),
                     ),
                     GestureDetector(
