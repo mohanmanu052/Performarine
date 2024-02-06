@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
@@ -32,6 +34,8 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
 
   final controller = ScreenshotController();
 
+  List<Key> fieldKeyList = [];
+
   @override
   void initState() {
     // TODO: implement initState
@@ -40,6 +44,24 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> children = [];
+    for (int index = 0; index < fieldKeyList.length; index++) {
+      children.add(SearchWidget(
+        key: fieldKeyList[index],
+        index: index,
+        onSelect: (value) {
+          FocusScope.of(context).requestFocus(new FocusNode());
+          if (!inviteEmailList.contains(value)) {
+            inviteEmailList[index] = value;
+          }
+        },
+        onRemoved: (p0, p1) {
+          inviteEmailList.removeAt(p0);
+          fieldKeyList.removeAt(p0);
+          setState(() {});
+        },
+      ));
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -118,32 +140,11 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
                   SizedBox(
                     height: displayHeight(context) * 0.015,
                   ),
-                  ListView.separated(
+                  ListView(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return SearchWidget(
-                        index: inviteCountList[index],
-                        onSelect: (value) {
-                          FocusScope.of(context)
-                              .requestFocus(new FocusNode());
-                          if (!inviteEmailList.contains(value)) {
-                            inviteEmailList.add(value);
-                          }
-                        },
-                        onRemoved: (index, email) {
-                          inviteEmailList.remove(email);
-                          inviteCountList.remove(index);
-                          setState(() {});
-                        },
-                      );
-                    },
-                    itemCount: inviteCountList.length,
-                    separatorBuilder: (context, index) {
-                      return SizedBox(
-                        height: 10,
-                      );
-                    },
+                    children: List.generate(children.length, (index1) {
+                      return children[index1];
+                    }).toList(),
                   ),
                   SizedBox(
                     height: displayHeight(context) * 0.14,
@@ -163,20 +164,29 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
                       padding: const EdgeInsets.only(
                           left: 17, right: 17, top: 8, bottom: 12),
                       child: InkWell(
-                        onTap: (){
-                          if (inviteCountList.isEmpty) {
+                        onTap: inviteEmailList.contains('')
+                            ? null
+                            : (){
+                          fieldKeyList.add(
+                              Key(Random().nextInt(9999).toString()));
+                          inviteEmailList.add('');
+
+                          setState(() {});
+                          /*if (inviteCountList.isEmpty) {
                           inviteCountList.add(0);
                           } else {
                           inviteCountList.add(inviteCountList.last + 1);
                           }
-
+*/
                           setState(() {});
                           },
                         child: commonText(
                             context: context,
                             text: '+ Add More Invite',
                             fontWeight: FontWeight.w500,
-                            textColor: blueColor,
+                            textColor: inviteEmailList.contains('')
+                                ? Colors.grey
+                                : blueColor,
                             textSize: displayWidth(context) * 0.038,
                             textAlign: TextAlign.start),
                       )
