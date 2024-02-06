@@ -668,7 +668,7 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                           width: displayWidth(context),
                           onTap: () {
                             widget.data!
-                            ? Navigator.pushReplacement(
+                            ? Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => SendInviteScreen()),
                             )

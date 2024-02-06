@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
 import 'package:performarine/pages/feedback_report.dart';
@@ -23,15 +24,20 @@ class SendInviteScreen extends StatefulWidget {
 }
 
 class _SendInviteScreenState extends State<SendInviteScreen> {
-
   final controller = ScreenshotController();
 
   List<int> inviteCountList = [];
   List<String> inviteEmailList = [];
 
   List<SearchWidget> searchWidgetList = [];
+  List<Key> fieldKeyList = [];
 
-  final items = ['Fleet 011513', 'Fleet 011514', 'Fleet 011515', 'Fleet 011516'];
+  final items = [
+    'Fleet 011513',
+    'Fleet 011514',
+    'Fleet 011515',
+    'Fleet 011516'
+  ];
   String selectedValue = 'Fleet 011513';
 
   @override
@@ -42,6 +48,24 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> children = [];
+    for (int index = 0; index < fieldKeyList.length; index++) {
+      children.add(SearchWidget(
+        key: fieldKeyList[index],
+        index: index,
+        onSelect: (value) {
+          FocusScope.of(context).requestFocus(new FocusNode());
+          if (!inviteEmailList.contains(value)) {
+            inviteEmailList[index] = value;
+          }
+        },
+        onRemoved: (p0, p1) {
+          inviteEmailList.removeAt(p0);
+          fieldKeyList.removeAt(p0);
+          setState(() {});
+        },
+      ));
+    }
     return Screenshot(
       controller: controller,
       child: Scaffold(
@@ -89,7 +113,7 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
             SingleChildScrollView(
               child: Container(
                 width: displayWidth(context),
-               // height: displayHeight(context),
+                // height: displayHeight(context),
                 margin: EdgeInsets.only(
                     left: 17,
                     right: 17,
@@ -98,7 +122,9 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: displayHeight(context) * 0.05,),
+                    SizedBox(
+                      height: displayHeight(context) * 0.05,
+                    ),
                     Center(
                       child: commonText(
                           context: context,
@@ -111,33 +137,33 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
                     SizedBox(
                       height: displayHeight(context) * 0.03,
                     ),
+                    Container(
+                      padding:
+                      EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.shade50,
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      child: DropdownButton<String>(
+                        value: selectedValue,
+                        onChanged: (String? newValue) =>
+                            setState(() => selectedValue = newValue!),
+                        items: items
+                            .map<DropdownMenuItem<String>>(
+                                (String value) => DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            ))
+                            .toList(),
 
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                        color: Colors.blue.shade50, borderRadius: BorderRadius.circular(18),
+                        // add extra sugar..
+                        icon: Icon(Icons.keyboard_arrow_down_rounded),
+                        iconSize: 24,
+                        underline: SizedBox(),
+                        isExpanded: true,
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                      ),
                     ),
-                    child: DropdownButton<String>(
-                      value: selectedValue,
-                      onChanged: (String? newValue) =>
-                          setState(() => selectedValue = newValue!),
-                      items: items
-                          .map<DropdownMenuItem<String>>(
-                              (String value) => DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          ))
-                          .toList(),
-
-                      // add extra sugar..
-                      icon: Icon(Icons.keyboard_arrow_down_rounded),
-                      iconSize: 24,
-                      underline: SizedBox(),
-                      isExpanded: true,
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                    ),
-                  ),
-
                     SizedBox(
                       height: displayHeight(context) * 0.03,
                     ),
@@ -151,38 +177,17 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
                     SizedBox(
                       height: displayHeight(context) * 0.015,
                     ),
-                    ListView.separated(
+                    ListView(
                       shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return SearchWidget(
-                          index: inviteCountList[index],
-                          onSelect: (value) {
-                            FocusScope.of(context)
-                                .requestFocus(new FocusNode());
-                            if (!inviteEmailList.contains(value)) {
-                              inviteEmailList.add(value);
-                            }
-                          },
-                          onRemoved: (index, email) {
-                            inviteEmailList.remove(email);
-                            inviteCountList.remove(index);
-                            setState(() {});
-                          },
-                        );
-                      },
-                      itemCount: inviteCountList.length,
-                      separatorBuilder: (context, index) {
-                        return SizedBox(
-                          height: 10,
-                        );
-                      },
+                      children: List.generate(children.length, (index1) {
+                        return children[index1];
+                      }).toList(),
                     ),
                     Platform.isIOS
-                    ? SizedBox(
+                        ? SizedBox(
                       height: displayHeight(context) * 0.055,
                     )
-                    :SizedBox(
+                        : SizedBox(
                       height: displayHeight(context) * 0.085,
                     ),
                   ],
@@ -197,26 +202,29 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Padding(
-                        padding: const EdgeInsets.only(
-                            left: 17, right: 17, top: 8, bottom: 0),
-                        child: InkWell(
-                          onTap: (){
-                            if (inviteCountList.isEmpty) {
-                              inviteCountList.add(0);
-                            } else {
-                              inviteCountList.add(inviteCountList.last + 1);
-                            }
+                      padding: const EdgeInsets.only(
+                          left: 17, right: 17, top: 8, bottom: 0),
+                      child: InkWell(
+                        onTap: inviteEmailList.contains('')
+                            ? null
+                            : () {
+                          fieldKeyList.add(
+                              Key(Random().nextInt(9999).toString()));
+                          inviteEmailList.add('');
 
-                            setState(() {});
-                          },
-                          child: commonText(
-                              context: context,
-                              text: '+ Add Another Invite',
-                              fontWeight: FontWeight.w500,
-                              textColor: blueColor,
-                              textSize: displayWidth(context) * 0.038,
-                              textAlign: TextAlign.start),
-                        ),),
+                          setState(() {});
+                        },
+                        child: commonText(
+                            context: context,
+                            text: '+ Add Another Invite',
+                            fontWeight: FontWeight.w500,
+                            textColor: inviteEmailList.contains('')
+                                ? Colors.grey
+                                : blueColor,
+                            textSize: displayWidth(context) * 0.038,
+                            textAlign: TextAlign.start),
+                      ),
+                    ),
                     Padding(
                       padding:
                       const EdgeInsets.only(left: 17, right: 17, top: 12),
@@ -229,9 +237,7 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
                           borderColor: blueColor,
                           width: displayWidth(context),
                           onTap: () {
-                            // print('INVITE EMAIL LIST: ${inviteCountList}');
-                            // print('INVITE EMAIL LIST: ${inviteEmailList}');
-                           /* Navigator.push(
+                            /* Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => MyDelegateInvitesScreen()),
@@ -251,7 +257,9 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
                                   )));
                         },
                         child: UserFeedback().getUserFeedback(context)),
-                    SizedBox(height: 4,)
+                    SizedBox(
+                      height: 4,
+                    )
                   ],
                 ),
               ),
