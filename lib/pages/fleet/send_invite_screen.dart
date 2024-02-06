@@ -2,11 +2,9 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:performarine/common_widgets/utils/constants.dart';
+import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
 import 'package:performarine/pages/feedback_report.dart';
-import 'package:performarine/pages/fleet/my_delegate_invites_screen.dart';
 import 'package:performarine/pages/fleet/search_widget.dart';
 import 'package:screenshot/screenshot.dart';
 
@@ -24,6 +22,7 @@ class SendInviteScreen extends StatefulWidget {
 }
 
 class _SendInviteScreenState extends State<SendInviteScreen> {
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   final controller = ScreenshotController();
 
   List<int> inviteCountList = [];
@@ -58,6 +57,15 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
           if (!inviteEmailList.contains(value)) {
             inviteEmailList[index] = value;
           }
+          else
+            {
+              fieldKeyList.removeAt(index);
+              inviteEmailList.removeAt(index);
+              setState(() {
+              });
+
+              Utils.showSnackBar(context, scaffoldKey: scaffoldKey, message: 'Email is already selected.');
+            }
         },
         onRemoved: (p0, p1) {
           inviteEmailList.removeAt(p0);
@@ -69,6 +77,7 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
     return Screenshot(
       controller: controller,
       child: Scaffold(
+        key: scaffoldKey,
         backgroundColor: Colors.white,
         appBar: AppBar(
           elevation: 0.0,
@@ -178,6 +187,7 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
                       height: displayHeight(context) * 0.015,
                     ),
                     ListView(
+                      physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       children: List.generate(children.length, (index1) {
                         return children[index1];
