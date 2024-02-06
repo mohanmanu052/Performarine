@@ -103,10 +103,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
     gmailTextSize = widget.orientation == Orientation.portrait ? displayWidth(context) * 0.03 : displayWidth(context) * 0.015;
     signOutText = widget.orientation == Orientation.portrait ? displayWidth(context) * 0.04 : displayWidth(context) * 0.025;
 
-    return 
-    
-    
-    
+    return
      Drawer(
           backgroundColor: backgroundColor,
           child: Container(
@@ -150,22 +147,23 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                               fontWeight: FontWeight.w700,
                                               textSize: textSize,
                                               textAlign: TextAlign.start),
-                                          commonProvider.loginModel!.userFirstName == null || commonProvider.loginModel!.userFirstName!.isEmpty
-                                          ? SizedBox()
-                                          : commonText(
-                                              context: context,
-                                              text: '${commonProvider.loginModel!.userFirstName} ',
-                                              fontWeight: FontWeight.w700,
-                                              textSize: textSize,
-                                              textAlign: TextAlign.start),
-                                          commonProvider.loginModel!.userLastName == null || commonProvider.loginModel!.userLastName!.isEmpty
+                                          commonProvider.loginModel!.userFirstName == null || commonProvider.loginModel!.userFirstName!.isEmpty &&
+                                              commonProvider.loginModel!.userLastName == null || commonProvider.loginModel!.userLastName!.isEmpty
                                               ? SizedBox()
-                                              : commonText(
-                                              context: context,
-                                              text: '${commonProvider.loginModel!.userLastName}',
-                                              fontWeight: FontWeight.w700,
-                                              textSize: textSize,
-                                              textAlign: TextAlign.start),
+                                              : Flexible(
+                                            flex: 1,
+                                            child: Text(
+                                              '${commonProvider.loginModel!.userFirstName} ${commonProvider.loginModel!.userLastName}',
+                                              style: TextStyle(
+                                                fontSize: textSize,
+                                                fontWeight: FontWeight.w700,
+                                                fontFamily: outfit,
+                                              ),
+                                              textAlign: TextAlign.start,
+                                              overflow: TextOverflow.ellipsis,
+                                              softWrap: true,
+                                            ),
+                                          ),
                                         ],
                                       ),
                                       SizedBox(height: displayHeight(context) * 0.005,),
@@ -879,22 +877,23 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                           fontWeight: FontWeight.w700,
                                           textSize: textSize,
                                           textAlign: TextAlign.start),
-                                      commonProvider.loginModel!.userFirstName == null || commonProvider.loginModel!.userFirstName!.isEmpty
+                                      commonProvider.loginModel!.userFirstName == null || commonProvider.loginModel!.userFirstName!.isEmpty &&
+                                          commonProvider.loginModel!.userLastName == null || commonProvider.loginModel!.userLastName!.isEmpty
                                           ? SizedBox()
-                                          : commonText(
-                                          context: context,
-                                          text: '${commonProvider.loginModel!.userFirstName} ',
-                                          fontWeight: FontWeight.w700,
-                                          textSize: textSize,
-                                          textAlign: TextAlign.start),
-                                      commonProvider.loginModel!.userLastName == null || commonProvider.loginModel!.userLastName!.isEmpty
-                                          ? SizedBox()
-                                          : commonText(
-                                          context: context,
-                                          text: '${commonProvider.loginModel!.userLastName}',
-                                          fontWeight: FontWeight.w700,
-                                          textSize: textSize,
-                                          textAlign: TextAlign.start),
+                                          : Flexible(
+                                        flex: 1,
+                                        child: Text(
+                                          '${commonProvider.loginModel!.userFirstName} ${commonProvider.loginModel!.userLastName}',
+                                          style: TextStyle(
+                                            fontSize: textSize,
+                                            fontWeight: FontWeight.w700,
+                                            fontFamily: outfit,
+                                          ),
+                                          textAlign: TextAlign.start,
+                                          overflow: TextOverflow.ellipsis,
+                                          softWrap: true,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                   SizedBox(height: displayHeight(context) * 0.005,),
@@ -920,7 +919,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               child: InkWell(
                                 child: Icon(Icons.edit, size: 18,),
                                 onTap: (){
-                                  showUpdateUserInfoDialog(context,scaffoldKey );
+                                  showUpdateUserInfoDialog(context, scaffoldKey );
                                 },
                               ),
                             )
@@ -2451,6 +2450,7 @@ if(!isSyncSignoutClicked){
                                       child: TextFormField(
                                         controller: firstNameEditingController,
                                         textCapitalization: TextCapitalization.words,
+                                        maxLength: 32,
                                         style: TextStyle(fontFamily: outfit, fontSize: displayWidth(context) * 0.036),
                                         decoration: InputDecoration(
                                             hintText: 'First Name',
@@ -2497,6 +2497,7 @@ if(!isSyncSignoutClicked){
                                       autovalidateMode: AutovalidateMode.onUserInteraction,
                                       child: TextFormField(
                                         controller: lastNameEditingController,
+                                        maxLength: 32,
                                         textCapitalization: TextCapitalization.words,
                                         style: TextStyle(fontFamily: outfit, fontSize: displayWidth(context) * 0.036),
                                         decoration: InputDecoration(

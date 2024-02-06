@@ -47,8 +47,10 @@ class UpdateUserInfoApiProvider with ChangeNotifier
       if (response.statusCode == HttpStatus.ok) {
         commonModel = CommonModel.fromJson(json.decode(response.body));
 
-        Utils.showSnackBar(scaffoldKey.currentContext!,
-            scaffoldKey: scaffoldKey, message: commonModel!.message);
+        Utils.customToast(commonModel!.message!);
+        
+        /*Utils.showSnackBar(scaffoldKey.currentContext!,
+            scaffoldKey: scaffoldKey, message: commonModel!.message);*/
         return commonModel!;
       } else if (response.statusCode == HttpStatus.gatewayTimeout) {
         kReleaseMode
@@ -60,15 +62,17 @@ class UpdateUserInfoApiProvider with ChangeNotifier
         CustomLogger().logWithFile(Level.error, "EXE RESP: $response -> $page");
 
         if (scaffoldKey != null) {
-          Utils.showSnackBar(context,
-              scaffoldKey: scaffoldKey, message: decodedData['message']);
+          Utils.customToast(decodedData['message']!);
+         /* Utils.showSnackBar(context,
+              scaffoldKey: scaffoldKey, message: decodedData['message']);*/
         }
 
         commonModel = null;
       } else {
         if (scaffoldKey != null) {
-          Utils.showSnackBar(context,
-              scaffoldKey: scaffoldKey, message: decodedData['message']);
+          Utils.customToast(decodedData['message']!);
+          /*Utils.showSnackBar(context,
+              scaffoldKey: scaffoldKey, message: decodedData['message']);*/
         }
 
         kReleaseMode
