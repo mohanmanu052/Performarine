@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
+import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/pages/fleet/my_fleet_screen.dart';
 import 'package:performarine/pages/fleet/search_widget.dart';
 import 'package:screenshot/screenshot.dart';
@@ -23,6 +24,8 @@ class CreateNewFleetScreen extends StatefulWidget {
 }
 
 class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
+
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
   final TextEditingController fleetNameEditingController = TextEditingController();
   final TextEditingController ownerNameEditingController = TextEditingController();
@@ -54,6 +57,15 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
           if (!inviteEmailList.contains(value)) {
             inviteEmailList[index] = value;
           }
+          else
+          {
+            fieldKeyList.removeAt(index);
+            inviteEmailList.removeAt(index);
+            setState(() {
+            });
+
+            Utils.showSnackBar(context, scaffoldKey: scaffoldKey, message: 'Email is already selected.');
+          }
         },
         onRemoved: (p0, p1) {
           inviteEmailList.removeAt(p0);
@@ -63,6 +75,7 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
       ));
     }
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0.0,
@@ -141,6 +154,7 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
                     height: displayHeight(context) * 0.015,
                   ),
                   ListView(
+                    physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     children: List.generate(children.length, (index1) {
                       return children[index1];
