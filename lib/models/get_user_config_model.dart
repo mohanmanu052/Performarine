@@ -1,6 +1,8 @@
 class GetUserConfigModel {
   String? userId;
   String? userEmail;
+  String? firstName;
+  String? lastName;
   List<Vessels>? vessels;
   List<Trips>? trips;
   String? message;
@@ -10,6 +12,8 @@ class GetUserConfigModel {
   GetUserConfigModel(
       {this.userId,
       this.userEmail,
+      this.firstName,
+      this.lastName,
       this.vessels,
       this.trips,
       this.message,
@@ -19,6 +23,8 @@ class GetUserConfigModel {
   GetUserConfigModel.fromJson(Map<String, dynamic> json) {
     userId = json['userId'];
     userEmail = json['userEmail'];
+    firstName = json['firstName'];
+    lastName = json['lastName'];
     if (json['vessels'] != null) {
       vessels = <Vessels>[];
       json['vessels'].forEach((v) {
@@ -40,6 +46,8 @@ class GetUserConfigModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['userId'] = this.userId;
     data['userEmail'] = this.userEmail;
+    data['firstName'] = this.firstName;
+    data['lastName'] = this.lastName;
     if (this.vessels != null) {
       data['vessels'] = this.vessels!.map((v) => v.toJson()).toList();
     }

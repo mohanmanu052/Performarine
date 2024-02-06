@@ -247,7 +247,8 @@ class _SignInScreenState extends State<SignInScreen> {
                                     true,
                                     googleSignInAccount.id,
                                     //'114993051138200889304',
-                                    scaffoldKey)
+                                    scaffoldKey,
+                                )
                                     .then((value) async {
                                   setState(() {
                                     isGoogleSignInBtnClicked =

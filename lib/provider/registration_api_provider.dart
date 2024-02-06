@@ -27,7 +27,8 @@ class RegistrationApiProvider with ChangeNotifier {
       bool isRegisterWithGoogle,
       String socialLoginId,
       String profileImage,
-      GlobalKey<ScaffoldState> scaffoldKey) async {
+      GlobalKey<ScaffoldState> scaffoldKey,
+      String? firstName, lastName) async {
 
     var headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
@@ -47,7 +48,9 @@ class RegistrationApiProvider with ChangeNotifier {
         "long": long,
         "loginType": "gmail",
         "socialLoginId": socialLoginId,
-        "profileImage": profileImage
+        "profileImage": profileImage,
+        "first_name": firstName ?? '',
+        "last_name": lastName ?? '',
       };
     } else {
       queryParameters = {
@@ -60,12 +63,14 @@ class RegistrationApiProvider with ChangeNotifier {
         "lat": lat,
         "long": long,
         "loginType": "regular",
-        "socialLoginId": ""
+        "socialLoginId": "",
+        "first_name": firstName ?? '',
+        "last_name": lastName ?? '',
       };
     }
 
     try {
-      Utils.customPrint('REGISTER REQ ${jsonEncode(queryParameters)}');
+      Utils.customPrint('REGISTER REQ 1 ${jsonEncode(queryParameters)}');
       CustomLogger().logWithFile(Level.info, "Register REQ $queryParameters -> $page");
 
       final response = await http.post(uri,

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
@@ -15,6 +16,7 @@ import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/main.dart';
+import 'package:performarine/models/login_model.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/add_vessel_new/add_new_vessel_screen.dart';
@@ -61,6 +63,15 @@ class _CustomDrawerState extends State<CustomDrawer> {
   bool uploadandSyncClicked=false;
   bool isSyncSignoutClicked=false, isSigningOut = false;
 
+  final TextEditingController firstNameEditingController = TextEditingController();
+  final TextEditingController lastNameEditingController = TextEditingController();
+
+  GlobalKey<FormState> firstNameFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> lastNameFormKey = GlobalKey<FormState>();
+
+  final FocusNode firstNameFocusNode = FocusNode();
+  final FocusNode lastNameFocusNode = FocusNode();
+
 
   @override
   void initState() {
@@ -87,6 +98,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    commonProvider = context.watch<CommonProvider>();
     textSize = widget.orientation == Orientation.portrait ? displayWidth(context) * 0.038 : displayWidth(context) * 0.02;
     gmailTextSize = widget.orientation == Orientation.portrait ? displayWidth(context) * 0.03 : displayWidth(context) * 0.015;
     signOutText = widget.orientation == Orientation.portrait ? displayWidth(context) * 0.04 : displayWidth(context) * 0.025;
@@ -124,32 +136,64 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 Image.asset('assets/images/home.png', height: displayHeight(context) * 0.04,),
 
                                 SizedBox(width: displayWidth(context) * 0.015,),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    commonText(
-                                        context: context,
-                                        text: 'Hey!',
-                                        fontWeight: FontWeight.w700,
-                                        textSize: textSize,
-                                        textAlign: TextAlign.start),
-                                    SizedBox(height: displayHeight(context) * 0.005,),
-                                    Flexible(
-                                      child: Text(
-                                        "${commonProvider.loginModel!.userEmail}",
-                                        style: TextStyle(
-                                          color: Colors.grey,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: gmailTextSize,
-                                          fontFamily: poppins,
-                                        ),
-                                        textAlign: TextAlign.start,
-                                        overflow: TextOverflow.clip,
-                                        softWrap: true,
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          commonText(
+                                              context: context,
+                                              text: 'Hey! - ',
+                                              fontWeight: FontWeight.w700,
+                                              textSize: textSize,
+                                              textAlign: TextAlign.start),
+                                          commonProvider.loginModel!.userFirstName == null || commonProvider.loginModel!.userFirstName!.isEmpty
+                                          ? SizedBox()
+                                          : commonText(
+                                              context: context,
+                                              text: '${commonProvider.loginModel!.userFirstName} ',
+                                              fontWeight: FontWeight.w700,
+                                              textSize: textSize,
+                                              textAlign: TextAlign.start),
+                                          commonProvider.loginModel!.userLastName == null || commonProvider.loginModel!.userLastName!.isEmpty
+                                              ? SizedBox()
+                                              : commonText(
+                                              context: context,
+                                              text: '${commonProvider.loginModel!.userLastName}',
+                                              fontWeight: FontWeight.w700,
+                                              textSize: textSize,
+                                              textAlign: TextAlign.start),
+                                        ],
                                       ),
-                                    ),
-                                  ],
+                                      SizedBox(height: displayHeight(context) * 0.005,),
+                                      Flexible(
+                                        child: Text(
+                                          "${commonProvider.loginModel!.userEmail}",
+                                          style: TextStyle(
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: gmailTextSize,
+                                            fontFamily: poppins,
+                                          ),
+                                          textAlign: TextAlign.start,
+                                          overflow: TextOverflow.clip,
+                                          softWrap: true,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                                  child: InkWell(
+                                    child: Icon(Icons.edit, size: 18,),
+                                    onTap: (){
+                                      showUpdateUserInfoDialog(context, scaffoldKey );
+                                    },
+                                  ),
                                 )
                                /* Expanded(
                                   child: RichText(
@@ -819,36 +863,66 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-
                             Image.asset('assets/images/home.png', height: displayHeight(context) * 0.04,),
-
                             SizedBox(width: displayWidth(context) * 0.015,),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                commonText(
-                                    context: context,
-                                    text: 'Hey!',
-                                    fontWeight: FontWeight.w700,
-                                    textSize: textSize,
-                                    textAlign: TextAlign.start),
-                                SizedBox(height: displayHeight(context) * 0.005,),
-                                Flexible(
-                                  child: Text(
-                                    "${commonProvider.loginModel!.userEmail}",
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: displayWidth(context) * 0.03,
-                                      fontFamily: poppins,
-                                    ),
-                                    textAlign: TextAlign.start,
-                                    overflow: TextOverflow.clip,
-                                    softWrap: true,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      commonText(
+                                          context: context,
+                                          text: 'Hey! - ',
+                                          fontWeight: FontWeight.w700,
+                                          textSize: textSize,
+                                          textAlign: TextAlign.start),
+                                      commonProvider.loginModel!.userFirstName == null || commonProvider.loginModel!.userFirstName!.isEmpty
+                                          ? SizedBox()
+                                          : commonText(
+                                          context: context,
+                                          text: '${commonProvider.loginModel!.userFirstName} ',
+                                          fontWeight: FontWeight.w700,
+                                          textSize: textSize,
+                                          textAlign: TextAlign.start),
+                                      commonProvider.loginModel!.userLastName == null || commonProvider.loginModel!.userLastName!.isEmpty
+                                          ? SizedBox()
+                                          : commonText(
+                                          context: context,
+                                          text: '${commonProvider.loginModel!.userLastName}',
+                                          fontWeight: FontWeight.w700,
+                                          textSize: textSize,
+                                          textAlign: TextAlign.start),
+                                    ],
                                   ),
-                                ),
-                              ],
+                                  SizedBox(height: displayHeight(context) * 0.005,),
+                                  Flexible(
+                                    child: Text(
+                                      "${commonProvider.loginModel!.userEmail}",
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: displayWidth(context) * 0.03,
+                                        fontFamily: poppins,
+                                      ),
+                                      textAlign: TextAlign.start,
+                                      overflow: TextOverflow.clip,
+                                      softWrap: true,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 6),
+                              child: InkWell(
+                                child: Icon(Icons.edit, size: 18,),
+                                onTap: (){
+                                  showUpdateUserInfoDialog(context,scaffoldKey );
+                                },
+                              ),
                             )
                             /* Expanded(
                               child: RichText(
@@ -2334,4 +2408,278 @@ if(!isSyncSignoutClicked){
       }
     });
   }
+
+  showUpdateUserInfoDialog(
+      BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) {
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext dialogBoxContext) {
+          return WillPopScope(
+            onWillPop: ()async {
+              return isUploadStarted ? false : true;
+            },
+            child: Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: StatefulBuilder(
+                builder: (ctx, setDialogState) {
+                  return Container(
+                    height: displayHeight(context) * 0.36,
+                    width: MediaQuery.of(context).size.width,
+                    child: Padding(
+                      padding:  EdgeInsets.only(
+                          left: 8.0, right: 8.0, top: 5, bottom: 15),
+                      child: Stack(
+                        children: [
+
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: displayHeight(context) * 0.045,
+                              ),
+                              Padding(
+                                padding:  EdgeInsets.only(left: 8.0, right: 8),
+                                child: Column(
+                                  children: [
+                                    Form(
+                                      key: firstNameFormKey,
+                                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                                      child: TextFormField(
+                                        controller: firstNameEditingController,
+                                        textCapitalization: TextCapitalization.words,
+                                        style: TextStyle(fontFamily: outfit, fontSize: displayWidth(context) * 0.036),
+                                        decoration: InputDecoration(
+                                            hintText: 'First Name',
+                                            hintStyle: TextStyle(fontFamily: outfit, fontSize: displayWidth(context) * 0.036),
+                                            filled: true,
+                                            fillColor: Colors.blue.shade50,
+                                            enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.blue.shade50),
+                                              borderRadius: BorderRadius.circular(18),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.blue.shade50),
+                                              borderRadius: BorderRadius.circular(18),
+                                            ),
+                                            errorBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.blue.shade50),
+                                              borderRadius: BorderRadius.circular(18),
+                                            ),
+                                            suffixIcon: IconButton(
+                                              icon: Icon(
+                                                Icons.close,
+                                                color: Colors.black87,
+                                                size: displayWidth(context) * 0.05,
+                                              ),
+                                              onPressed: () {
+                                              },
+                                            )),
+                                        validator: (value) {
+                                          if (value!.isEmpty) {
+                                            return 'Enter First Name';
+                                          }
+
+                                          return null;
+                                        },
+                                        focusNode: firstNameFocusNode,
+                                        onFieldSubmitted: (value) {
+                                          FocusScope.of(context).requestFocus(lastNameFocusNode);
+                                        },
+                                      ),
+                                    ),
+                                    SizedBox(height: displayHeight(context) * 0.02,),
+                                    Form(
+                                      key: lastNameFormKey,
+                                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                                      child: TextFormField(
+                                        controller: lastNameEditingController,
+                                        textCapitalization: TextCapitalization.words,
+                                        style: TextStyle(fontFamily: outfit, fontSize: displayWidth(context) * 0.036),
+                                        decoration: InputDecoration(
+                                            hintText: 'Last Name',
+                                            hintStyle: TextStyle(fontFamily: outfit, fontSize: displayWidth(context) * 0.036),
+                                            filled: true,
+                                            fillColor: Colors.blue.shade50,
+                                            enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.blue.shade50),
+                                              borderRadius: BorderRadius.circular(18),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.blue.shade50),
+                                              borderRadius: BorderRadius.circular(18),
+                                            ),
+                                            errorBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(color: Colors.blue.shade50),
+                                              borderRadius: BorderRadius.circular(18),
+                                            ),
+                                            suffixIcon: IconButton(
+                                              icon: Icon(
+                                                Icons.close,
+                                                color: Colors.black87,
+                                                size: displayWidth(context) * 0.05,
+                                              ),
+                                              onPressed: () {
+                                              },
+                                            )),
+                                        validator: (value) {
+                                          if (value!.isEmpty) {
+                                            return 'Enter last name';
+                                          }
+
+                                          return null;
+                                        },
+                                        focusNode: lastNameFocusNode,
+                                        onFieldSubmitted: (value) {
+                                          FocusScope.of(context).requestFocus(null);
+                                        },
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              // SizedBox(
+                              //   height: displayHeight(context) * 0.01,
+                              // ),
+                              Container(
+                                margin: EdgeInsets.only(
+                                  top: 8.0,
+                                ),
+                                child: Center(
+                                  child: isUploadStarted
+                                      ? Center(
+                                    child: Container(
+                                        child: Center(
+                                            child:
+                                            CircularProgressIndicator())),
+                                  )
+                                      : CommonButtons.getAcceptButton(
+                                      'Update',
+                                      context,
+                                      blueColor, () async {
+                                    if (firstNameFormKey.currentState!.validate() && lastNameFormKey.currentState!.validate())
+                                      {
+                                        bool internet =
+                                        await Utils().check(scaffoldKey);
+                                        setState(() {
+                                          isSync = true;
+                                        });
+                                        if (internet) {
+                                          if (mounted) {
+                                            setDialogState(() {
+                                              isUploadStarted = true;
+                                            });
+
+                                            commonProvider.updateUserInfo(
+                                                context,
+                                                commonProvider.loginModel!.token!,
+                                                firstNameEditingController.text,
+                                                lastNameEditingController.text,
+                                                commonProvider.loginModel!.userId!,
+                                                widget.scaffoldKey!).then((value)
+                                                {
+                                                  if(value.status!)
+                                                    {
+                                                    isUploadStarted = false;
+                                                    Future.delayed(
+                                                    Duration(seconds: 2),
+                                                    () {
+                                                    String? loginData =
+                                                    sharedPreferences!
+                                                        .getString(
+                                                    'loginData');
+                                                    if (loginData != null) {
+                                                    LoginModel loginModel =
+                                                    LoginModel.fromJson(
+                                                    json.decode(
+                                                    loginData));
+                                                    loginModel
+                                                        .userFirstName =
+                                                    firstNameEditingController
+                                                        .text
+                                                        .trim();
+                                                    loginModel
+                                                        .userLastName =
+                                                    lastNameEditingController
+                                                        .text
+                                                        .trim();
+                                                    firstNameEditingController
+                                                        .clear();
+                                                    lastNameEditingController
+                                                        .clear();
+                                                    sharedPreferences!
+                                                        .setString(
+                                                    'loginData',
+                                                    jsonEncode(
+                                                    loginModel
+                                                        .toJson()));
+                                                    commonProvider.init();
+                                                    setState(() {});
+                                                    }
+
+                                                    Navigator.of(context)
+                                                        .pop();
+                                                    });
+                                                    }
+
+                                                }).catchError((e){
+                                              setState(() {
+                                                isUploadStarted = false;
+                                              });
+                                            });
+                                          }
+                                        }
+                                      }
+                                    },
+                                      displayWidth(context) * 0.4,
+                                      displayHeight(context) * 0.05,
+                                      primaryColor,
+                                      Colors.white,
+                                      displayHeight(context) * 0.018,
+                                      blueColor,
+                                      '',
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                              SizedBox(
+                                height: displayHeight(context) * 0.01,
+                              ),
+                            ],
+                          ),
+
+                          Positioned(
+                            right: 10,
+                            top: 2,
+                            child: Container(
+                              height: 30,
+                              width: 30,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,),
+                              child: Center(
+                                child: isUploadStarted
+                                    ? SizedBox()
+                                    : IconButton(
+                                    onPressed: () {
+                                      Navigator.pop(ctx);
+                                      firstNameEditingController.clear();
+                                      lastNameEditingController.clear();
+                                    },
+                                    icon:  Icon(Icons.close_rounded, color: buttonBGColor)),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          );
+        });
+  }
+
 }

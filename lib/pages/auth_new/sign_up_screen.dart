@@ -40,6 +40,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   GlobalKey<FormState> phoneFormKey = GlobalKey<FormState>();
   GlobalKey<FormState> createPassFormKey = GlobalKey<FormState>();
   GlobalKey<FormState> confirmPassFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> firstNameFormKey = GlobalKey<FormState>();
+  GlobalKey<FormState> lastNameFormKey = GlobalKey<FormState>();
 
   late TextEditingController countryController;
   late TextEditingController countryCodeController;
@@ -48,6 +50,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   late TextEditingController phoneController;
   late TextEditingController createPasswordController;
   late TextEditingController confirmPasswordController;
+  late TextEditingController firstNameController;
+  late TextEditingController lastNameController;
 
   late FocusNode countryFocusNode = FocusNode();
   late FocusNode countryCodeFocusNode = FocusNode();
@@ -56,6 +60,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   late FocusNode phoneFocusNode = FocusNode();
   late FocusNode createPasswordFocusNode = FocusNode();
   late FocusNode confirmPasswordFocusNode = FocusNode();
+  late FocusNode firstNameFocusNode = FocusNode();
+  late FocusNode lastNameFocusNode = FocusNode();
 
   String? selectedCountryCode, selectedCountry;
 
@@ -91,6 +97,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     phoneController = TextEditingController();
     createPasswordController = TextEditingController();
     confirmPasswordController = TextEditingController();
+    firstNameController = TextEditingController();
+    lastNameController = TextEditingController();
   }
   @override
   void dispose() {
@@ -102,6 +110,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     phoneController.dispose();
     createPasswordController.dispose();
     confirmPasswordController.dispose();
+    firstNameController.dispose();
+    lastNameController.dispose();
     super.dispose();
   }
 
@@ -202,7 +212,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           googleSignInAccount.id,
                                           googleSignInAccount.photoUrl ??
                                               '',
-                                          scaffoldKey)
+                                          scaffoldKey,
+                                        googleSignInAccount.displayName?.split(' ').first,
+                                        googleSignInAccount.displayName?.split(' ').last,)
                                           .then((value) {
                                         setState(() {
                                           isGoogleSignInBtnClicked = false;
@@ -382,6 +394,72 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           onSaved: (String value) {
                             Utils.customPrint(value);
                             CustomLogger().logWithFile(Level.info, "Zip code or Postal Code $value -> $page");
+                          }),
+                    ),
+                    SizedBox(height: displayHeight(context) * 0.01),
+                    Form(
+                      key: firstNameFormKey,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      child: CommonTextField(
+                          controller: firstNameController,
+                          focusNode: firstNameFocusNode,
+                          labelText: 'Enter Your First Name',
+                          hintText: '',
+                          suffixText: null,
+                          textInputAction: TextInputAction.next,
+                          textInputType: TextInputType.name,
+                          textCapitalization: TextCapitalization.none,
+                          maxLength: 52,
+                          prefixIcon: null,
+                          requestFocusNode: null,
+                          obscureText: false,
+                          onFieldSubmitted: (value) {
+                          },
+                          onTap: () {
+                          },
+                          onChanged: (String value) {},
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Enter Your First Name';
+                            }
+                            return null;
+                          },
+                          onSaved: (String value) {
+                            Utils.customPrint(value);
+                            CustomLogger().logWithFile(Level.info, "First Name $value -> $page");
+                          }),
+                    ),
+                    SizedBox(height: displayHeight(context) * 0.01),
+                    Form(
+                      key: lastNameFormKey,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      child: CommonTextField(
+                          controller: lastNameController,
+                          focusNode: lastNameFocusNode,
+                          labelText: 'Enter Your Last Name',
+                          hintText: '',
+                          suffixText: null,
+                          textInputAction: TextInputAction.next,
+                          textInputType: TextInputType.name,
+                          textCapitalization: TextCapitalization.none,
+                          maxLength: 52,
+                          prefixIcon: null,
+                          requestFocusNode: null,
+                          obscureText: false,
+                          onFieldSubmitted: (value) {
+                          },
+                          onTap: () {
+                          },
+                          onChanged: (String value) {},
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Enter Your Last Name';
+                            }
+                            return null;
+                          },
+                          onSaved: (String value) {
+                            Utils.customPrint(value);
+                            CustomLogger().logWithFile(Level.info, "Last Name $value -> $page");
                           }),
                     ),
                     SizedBox(height: displayHeight(context) * 0.01),
@@ -635,7 +713,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     false,
                                     "",
                                     "",
-                                    scaffoldKey)
+                                    scaffoldKey, firstNameController.text.trim(), lastNameController.text.trim())
                                     .then((value) {
                                   setState(() {
                                     isRegistrationBtnClicked = false;
