@@ -187,7 +187,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 6),
                                   child: InkWell(
-                                    child: Icon(Icons.edit, size: 18,),
+                                    child: Icon(Icons.edit, size: 18,
+                                    color: blueColor,
+                                    ),
                                     onTap: (){
                                       showUpdateUserInfoDialog(context, scaffoldKey );
                                     },
@@ -917,7 +919,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 6),
                               child: InkWell(
-                                child: Icon(Icons.edit, size: 18,),
+                                child: Icon(Icons.edit, size: 18,
+                                color: blueColor,
+                                ),
                                 onTap: (){
                                   showUpdateUserInfoDialog(context, scaffoldKey );
                                 },
@@ -2410,6 +2414,8 @@ if(!isSyncSignoutClicked){
 
   showUpdateUserInfoDialog(
       BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) {
+        firstNameEditingController.text=commonProvider.loginModel!.userFirstName??'';
+        lastNameEditingController.text=commonProvider.loginModel!.userLastName??'';
     return showDialog(
         barrierDismissible: false,
         context: context,
@@ -2442,7 +2448,6 @@ if(!isSyncSignoutClicked){
                               ),
                               Column(
                                 children: [
-
                                   commonText(
                                       context: context,
                                       text: 'Edit Profile Details',
@@ -2548,6 +2553,7 @@ if(!isSyncSignoutClicked){
                                         )
                                       ],
                                     ),
+
                                   ),
                                 ],
                               ),
@@ -2555,6 +2561,7 @@ if(!isSyncSignoutClicked){
                               //   height: displayHeight(context) * 0.01,
                               // ),
                               Container(
+                                  padding:  EdgeInsets.only(left: 10.0, right: 10),
                                 width: displayWidth(context),
                                 margin: EdgeInsets.only(
                                   top: 8.0,
@@ -2563,12 +2570,10 @@ if(!isSyncSignoutClicked){
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Container(
-                                      width: displayWidth(context) * 0.3,
+                                    Expanded(
                                       child: InkWell(
                                         onTap: (){
-                                          Navigator.of(context)
-                                              .pop();
+                                          Navigator.of(context).pop();
                                           },
                                         child: commonText(
                                             context: context,
@@ -2579,108 +2584,110 @@ if(!isSyncSignoutClicked){
                                             textAlign: TextAlign.center),
                                       ),
                                     ),
-                                    isUploadStarted
-                                        ? Center(
-                                      child: Container(
-
-                                          child: Center(
-                                              child:
-                                              CircularProgressIndicator())),
-                                    )
-                                        : Container(
-                                            width: displayWidth(context) * 0.32,
-                                            decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(12),
-                                                color: blueColor
-                                            ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(top: 10, bottom: 10),
-                                            child: InkWell(
-                                              onTap: () async {
-                                                if (firstNameFormKey.currentState!.validate() && lastNameFormKey.currentState!.validate())
-                                                {
-                                                  bool internet =
-                                                  await Utils().check(scaffoldKey);
-                                                  setState(() {
-                                                    isSync = true;
-                                                  });
-                                                  if (internet) {
-                                                    if (mounted) {
-                                                      setDialogState(() {
-                                                        isUploadStarted = true;
-                                                      });
-
-                                                      commonProvider.updateUserInfo(
-                                                          context,
-                                                          commonProvider.loginModel!.token!,
-                                                          firstNameEditingController.text,
-                                                          lastNameEditingController.text,
-                                                          commonProvider.loginModel!.userId!,
-                                                          widget.scaffoldKey!).then((value)
-                                                      {
-                                                        if(value.status!)
-                                                        {
-                                                          isUploadStarted = false;
-                                                          Future.delayed(
-                                                              Duration(seconds: 2),
-                                                                  () {
-                                                                String? loginData =
-                                                                sharedPreferences!
-                                                                    .getString(
-                                                                    'loginData');
-                                                                if (loginData != null) {
-                                                                  LoginModel loginModel =
-                                                                  LoginModel.fromJson(
-                                                                      json.decode(
-                                                                          loginData));
-                                                                  loginModel
-                                                                      .userFirstName =
-                                                                      firstNameEditingController
-                                                                          .text
-                                                                          .trim();
-                                                                  loginModel
-                                                                      .userLastName =
-                                                                      lastNameEditingController
-                                                                          .text
-                                                                          .trim();
-                                                                  firstNameEditingController
-                                                                      .clear();
-                                                                  lastNameEditingController
-                                                                      .clear();
-                                                                  sharedPreferences!
-                                                                      .setString(
-                                                                      'loginData',
-                                                                      jsonEncode(
-                                                                          loginModel
-                                                                              .toJson()));
-                                                                  commonProvider.init();
-                                                                  setState(() {});
-                                                                }
-
-                                                                Navigator.of(context)
-                                                                    .pop();
-                                                              });
-                                                        }
-
-                                                      }).catchError((e){
-                                                        setState(() {
-                                                          isUploadStarted = false;
+                                    SizedBox(width: displayWidth(context) * 0.03,),
+                                    Expanded(
+                                      child: isUploadStarted
+                                          ? Center(
+                                        child: Container(
+                                            child: Center(
+                                                child:
+                                                CircularProgressIndicator())),
+                                      )
+                                          : Container(
+                                              width: displayWidth(context) * 0.32,
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(12),
+                                                  color: blueColor
+                                              ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(top: 10, bottom: 10),
+                                              child: InkWell(
+                                                onTap: () async {
+                                                  if (firstNameFormKey.currentState!.validate() && lastNameFormKey.currentState!.validate())
+                                                  {
+                                                    bool internet =
+                                                    await Utils().check(scaffoldKey);
+                                                    setState(() {
+                                                      isSync = true;
+                                                    });
+                                                    if (internet) {
+                                                      if (mounted) {
+                                                        setDialogState(() {
+                                                          isUploadStarted = true;
                                                         });
-                                                      });
+
+                                                        commonProvider.updateUserInfo(
+                                                            context,
+                                                            commonProvider.loginModel!.token!,
+                                                            firstNameEditingController.text,
+                                                            lastNameEditingController.text,
+                                                            commonProvider.loginModel!.userId!,
+                                                            widget.scaffoldKey!).then((value)
+                                                        {
+                                                          if(value.status!)
+                                                          {
+                                                            isUploadStarted = false;
+                                                            Future.delayed(
+                                                                Duration(seconds: 2),
+                                                                    () {
+                                                                  String? loginData =
+                                                                  sharedPreferences!
+                                                                      .getString(
+                                                                      'loginData');
+                                                                  if (loginData != null) {
+                                                                    LoginModel loginModel =
+                                                                    LoginModel.fromJson(
+                                                                        json.decode(
+                                                                            loginData));
+                                                                    loginModel
+                                                                        .userFirstName =
+                                                                        firstNameEditingController
+                                                                            .text
+                                                                            .trim();
+                                                                    loginModel
+                                                                        .userLastName =
+                                                                        lastNameEditingController
+                                                                            .text
+                                                                            .trim();
+                                                                    firstNameEditingController
+                                                                        .clear();
+                                                                    lastNameEditingController
+                                                                        .clear();
+                                                                    sharedPreferences!
+                                                                        .setString(
+                                                                        'loginData',
+                                                                        jsonEncode(
+                                                                            loginModel
+                                                                                .toJson()));
+                                                                    commonProvider.init();
+                                                                    setState(() {});
+                                                                  }
+
+                                                                  Navigator.of(context)
+                                                                      .pop();
+                                                                });
+                                                          }
+
+                                                        }).catchError((e){
+                                                          setState(() {
+                                                            isUploadStarted = false;
+                                                          });
+                                                        });
+                                                      }
                                                     }
                                                   }
-                                                }
-                                              },
-                                              child: commonText(
-                                              context: context,
-                                              text: 'Update',
-                                              textColor: Colors.white,
-                                              fontWeight: FontWeight.w500,
-                                              textSize: displayWidth(context) * 0.038,
-                                              textAlign: TextAlign.center),
+                                                },
+                                                child: commonText(
+                                                context: context,
+                                                text: 'Update',
+                                                textColor: Colors.white,
+                                                fontWeight: FontWeight.w500,
+                                                textSize: displayWidth(context) * 0.038,
+                                                textAlign: TextAlign.center),
+                                              ),
                                             ),
                                           ),
-                                        ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -2703,7 +2710,8 @@ if(!isSyncSignoutClicked){
                                     ? SizedBox()
                                     : InkWell(
                                     onTap: () {
-                                      Navigator.pop(ctx);
+                                      Navigator.of(context).pop();
+                                      //Navigator.pop(ctx);
                                       firstNameEditingController.clear();
                                       lastNameEditingController.clear();
                                     },

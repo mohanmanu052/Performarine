@@ -8,6 +8,7 @@ import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/custom_fleet_dailog.dart';
 import 'package:performarine/common_widgets/widgets/user_feed_back.dart';
 import 'package:performarine/pages/feedback_report.dart';
+import 'package:performarine/pages/fleet/send_invite_screen.dart';
 import 'package:screenshot/screenshot.dart';
 
 class MemberDetailsWidget extends StatefulWidget {
@@ -121,7 +122,7 @@ Container(
                     margin: EdgeInsets.only(left: 8,right: 2),
                     child: InkWell(
                       onTap: (){
-                        CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to  remove member from fleet?',subtext: fleetInviteData[index].email??'',description: 'Your permissions to their vessels will be removed & cannot be viewed',
+                        CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to remove this fleet member?',subtext: fleetInviteData[index].email??'',description: 'Your permissions to their vessels will be removed & cannot be viewed',
                         postiveButtonColor: deleteTripBtnColor,positiveButtonText: 'Remove',
                         
                         );
@@ -187,6 +188,7 @@ Container(
                                     borderColor: blueColor,
                                     onTap: (){
                                                     
+                                                    Navigator.push(context, MaterialPageRoute(builder: (_)=> SendInviteScreen()));
                                     },
                                     width: displayWidth(context)/1.3,
                                     height: displayHeight(context)*0.060
