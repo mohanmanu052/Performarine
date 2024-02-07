@@ -122,7 +122,7 @@ Container(
                     margin: EdgeInsets.only(left: 8,right: 2),
                     child: InkWell(
                       onTap: (){
-                        CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to  remove member from fleet?',subtext: fleetInviteData[index].email??'',description: 'Your permissions to their vessels will be removed & cannot be viewed',
+                        CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to remove this fleet member?',subtext: fleetInviteData[index].email??'',description: 'Your permissions to their vessels will be removed & cannot be viewed',
                         postiveButtonColor: deleteTripBtnColor,positiveButtonText: 'Remove',
                         
                         );

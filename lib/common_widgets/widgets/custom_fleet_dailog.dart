@@ -71,7 +71,7 @@ if(description.isNotEmpty)
                 ),
                 SizedBox(height: 10,),
 Container(
-  margin: EdgeInsets.only(bottom: 20),
+  margin: EdgeInsets.only(bottom: 20,right:15),
   child: Row(
     children: [
 

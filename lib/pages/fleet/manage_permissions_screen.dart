@@ -1,6 +1,7 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
+import 'package:performarine/pages/fleet/my_fleet_screen.dart';
 import 'package:screenshot/screenshot.dart';
 
 import '../../common_widgets/utils/colors.dart';
@@ -25,7 +26,13 @@ class _ManagePermissionsScreenState extends State<ManagePermissionsScreen> {
 
   List multipleSelected = [];
   bool isSelectAllEnabled = false;
-List<String> fleetData=['Fleet1','Fleet2','Fleet3','Fleet4'];
+//List<String> fleetData=['Fleet1','Fleet2','Fleet3','Fleet4'];
+
+
+List<FleetDataModel> fleetData=[FleetDataModel(name: 'Fleet1',createdBy: 'abhiram'),
+
+FleetDataModel(name: 'Fleet2',createdBy: 'mohan90'),FleetDataModel(name: 'Fleet3',createdBy: 'abcxyz'),FleetDataModel(name: 'Fleet4',createdBy: 'mmnkkklll'),FleetDataModel(name: 'Fleet5',createdBy: 'ppppqqqrrr')
+];
 String? fleetItem='Fleet1';
   List<ManageVesselModel> manageVesselList = [
     ManageVesselModel(vesselName: 'Vessel Name', id: 'ID: #165161656', type: 'Hybrid'),
@@ -132,14 +139,14 @@ String? fleetItem='Fleet1';
                         child: DropdownButtonFormField2<String>(
                             value: fleetItem,
     selectedItemBuilder: (BuildContext context) {
-      return fleetData!.map<Widget>((String item) {
+      return fleetData.map<Widget>((FleetDataModel item) {
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Display selected item
             commonText(
-             text: item,
+             text: item.name,
               fontWeight: FontWeight.w400,
               textSize: 16,
               textColor: buttonBGColor
@@ -154,7 +161,7 @@ String? fleetItem='Fleet1';
                   textColor: Colors.grey
                   ),
 
-                                    commonText(text: 'Abhiram',
+                                    commonText(text: item.createdBy,
                   textSize: 11,
                   fontWeight: FontWeight.w500,
                   textColor: buttonBGColor
@@ -275,16 +282,35 @@ String? fleetItem='Fleet1';
                                                                   .ellipsis,
                                                             ),
                                                           ),
-                            items:fleetData!
-                        .map((value) => DropdownMenuItem(
-                              child: commonText(text: value,
+                            items:fleetData
+                        . map((item) {
+                                                      return DropdownMenuItem(
+                              child:Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                               commonText(text: item.name,
                               fontWeight: FontWeight.w400,
                               textSize: 16,
                               textColor: buttonBGColor
                               
                               ),
-                              value: value,
-                            ))
+commonText(
+  text: 'Created By: ${item.createdBy}',
+                              fontWeight: FontWeight.w200,
+                              textSize: 12,
+                              textColor: Colors.black
+),
+                                ],
+                              ),
+                              
+                              
+
+
+                              value: item.name);
+                            
+  })
+  
                         .toList(),
                 
                             onChanged: (newValue) {
@@ -440,10 +466,10 @@ fleetItem=newValue;
                           borderColor: blueColor,
                           width: displayWidth(context),
                           onTap: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(builder: (context) => ManagePermissionsScreen()),
-                           // );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => MyFleetScreen(data: true,)),
+                           );
                           }),
                     ),
                     GestureDetector(
@@ -547,4 +573,11 @@ class ManageVesselModel
 {
   String? vesselName, id, type;
   ManageVesselModel({this.vesselName, this.id, this.type});
+}
+class FleetDataModel{
+  String? name;
+  String? createdBy;
+
+  FleetDataModel({this.createdBy,this.name});
+
 }
