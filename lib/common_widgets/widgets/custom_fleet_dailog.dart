@@ -71,12 +71,12 @@ if(description.isNotEmpty)
                 ),
                 SizedBox(height: 10,),
 Container(
-  margin: EdgeInsets.only(bottom: 20),
+  margin: EdgeInsets.only(bottom: 20,right:15),
   child: Row(
     children: [
 
                                   Flexible(
-                              flex: 2,
+                              flex: 3,
                               fit: FlexFit.tight,
                               child: CommonButtons.getAcceptButton(
                                 'Cancel',
@@ -113,7 +113,7 @@ Container(
                             ),
 
                             Flexible(
-                              flex: 3,
+                              flex: 4,
                               fit: FlexFit.tight,
                               child: Container(
                                 margin: EdgeInsets.symmetric(horizontal: 10),
@@ -126,7 +126,7 @@ Container(
                                         buttonPrimaryColor: postiveButtonColor??blueColor,
                                         borderColor:postiveButtonColor?? blueColor,
                                         onTap:onPostiveButtonTap??(){},
-                                        width: 200,
+                                        width: 170,
                                         height: displayHeight(context)*0.050,
                                         
                                         
@@ -150,7 +150,7 @@ Container(
 
     void showEditFleetDialog({List<String>? fleetData,BuildContext? context  })async{
   String selectedStatus= 'Active';
-
+  final _formKey = GlobalKey<FormState>();
     showDialog(
         context: context!,
 
@@ -321,32 +321,35 @@ Container(
 
 Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 4),
-  child: CommonTextField(
-                      //controller: nameController,
-                     // focusNode: nameFocusNode,
-                      labelText: 'Fleet Name',
-                      hintText: '',
-                      suffixText: null,
-                      textInputAction: TextInputAction.next,
-                      textInputType: TextInputType.text,
-                      textCapitalization: TextCapitalization.words,
-                      maxLength: 32,
-                      prefixIcon: null,
-                     // requestFocusNode: modelFocusNode,
-                      obscureText: false,
-                      onTap: () {},
-                      onChanged: (String value) {
-                      },
-                      validator: (value) {
-                        if (value!.trim().isEmpty) {
-                          return 'Enter Fleet Name';
-                        }
-                        return null;
-                      },
-                      onSaved: (String value) {
-                        // CustomLogger().logWithFile(Level.info, "vessel name $value -> $page");
-                        // Utils.customPrint(value);
-                      }),
+  child: Form(
+    key: _formKey,
+    child: CommonTextField(
+                        //controller: nameController,
+                       // focusNode: nameFocusNode,
+                        labelText: 'Fleet Name',
+                        hintText: '',
+                        suffixText: null,
+                        textInputAction: TextInputAction.next,
+                        textInputType: TextInputType.text,
+                        textCapitalization: TextCapitalization.words,
+                        maxLength: 32,
+                        prefixIcon: null,
+                       // requestFocusNode: modelFocusNode,
+                        obscureText: false,
+                        onTap: () {},
+                        onChanged: (String value) {
+                        },
+                        validator: (value) {
+                          if (value!.trim().isEmpty) {
+                            return 'Enter Fleet Name';
+                          }
+                          return null;
+                        },
+                        onSaved: (String value) {
+                          // CustomLogger().logWithFile(Level.info, "vessel name $value -> $page");
+                          // Utils.customPrint(value);
+                        }),
+  ),
 ), 
 
                     // SizedBox(
@@ -451,7 +454,12 @@ Padding(
                                         textColor: Colors.white,
                                         buttonPrimaryColor: blueColor,
                                         borderColor: blueColor,
-                                        onTap:(){},
+                                        onTap:(){
+                                          if(_formKey.currentState!.validate()){
+
+                                          }
+
+                                        },
                                         width: displayWidth(context)/1.3,
                                         height: displayHeight(context)*0.050,
                                         
