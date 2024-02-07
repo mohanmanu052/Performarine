@@ -32,6 +32,7 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
 
   final controller = ScreenshotController();
 
+
   List<MyFleetModel> myFleetList =  [
     MyFleetModel(fleetName: 'Fleet 011512', noOfVessel: '02', accepted: '02', pending: '02'),
     MyFleetModel(fleetName: 'Fleet 011513', noOfVessel: '02', accepted: '02', pending: '02'),
@@ -567,7 +568,7 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                                 children: [
                                                   InkWell(
                                                     onTap: (){
-                                                                              CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to Reject fleet Invite??',subtext: inviteList[index].fleetName??'',
+                                                      CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to Reject fleet Invite??',subtext: inviteList[index].fleetName??'',
                           postiveButtonColor: deleteTripBtnColor,positiveButtonText: 'Reject',
                           
                           );
@@ -683,7 +684,12 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                           children: [
                             SizedBox(height: displayHeight(context) * 0.01,),
                             InkWell(
-                              onTap: (){},
+                              onTap: (){
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => CreateNewFleetScreen()),
+                                );
+                              },
                               child: commonText(
                               context: context,
                               text: '+ Create Another Fleet',

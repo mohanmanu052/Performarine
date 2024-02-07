@@ -35,10 +35,15 @@ import 'feedback_report.dart';
 
 class VesselSingleView extends StatefulWidget {
   CreateVessel? vessel;
-  final bool? isCalledFromSuccessScreen;
+  final bool? isCalledFromSuccessScreen, isCalledFromFleetScreen;
   final VoidCallback? isTripDeleted;
 
-  VesselSingleView({this.vessel, this.isCalledFromSuccessScreen = false,this.isTripDeleted});
+  VesselSingleView(
+      {this.vessel,
+      this.isCalledFromSuccessScreen = false,
+      this.isTripDeleted,
+      this.isCalledFromFleetScreen = false});
+
   @override
   State createState() {
     return VesselSingleViewState();
@@ -86,19 +91,19 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     deviceDetails = Platform.isAndroid
         ? DeviceInfo(
-        board: androidDeviceInfo?.board,
-        deviceId: androidDeviceInfo?.id,
-        deviceType: androidDeviceInfo?.type,
-        make: androidDeviceInfo?.manufacturer,
-        model: androidDeviceInfo?.model,
-        version: androidDeviceInfo?.version.release)
+            board: androidDeviceInfo?.board,
+            deviceId: androidDeviceInfo?.id,
+            deviceType: androidDeviceInfo?.type,
+            make: androidDeviceInfo?.manufacturer,
+            model: androidDeviceInfo?.model,
+            version: androidDeviceInfo?.version.release)
         : DeviceInfo(
-        board: iosDeviceInfo?.utsname.machine,
-        deviceId: '',
-        deviceType: iosDeviceInfo?.utsname.machine,
-        make: iosDeviceInfo?.utsname.machine,
-        model: iosDeviceInfo?.model,
-        version: iosDeviceInfo?.utsname.release);
+            board: iosDeviceInfo?.utsname.machine,
+            deviceId: '',
+            deviceType: iosDeviceInfo?.utsname.machine,
+            make: iosDeviceInfo?.utsname.machine,
+            model: iosDeviceInfo?.model,
+            version: iosDeviceInfo?.utsname.release);
     Utils.customPrint("deviceDetails:${deviceDetails!.toJson().toString()}");
   }
 
@@ -135,7 +140,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
   String totalDistance = '0',
       avgSpeed = '0',
       tripsCount = '0',
-      totalDuration = "00:00:00", hullType = '-';
+      totalDuration = "00:00:00",
+      hullType = '-';
 
   @override
   void didUpdateWidget(covariant VesselSingleView oldWidget) {
@@ -148,12 +154,12 @@ class VesselSingleViewState extends State<VesselSingleView> {
   void initState() {
     // TODO: implement initState
     super.initState();
-SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     tripIsRunningOrNot();
 
     commonProvider = context.read<CommonProvider>();
 
-   // Utils.customPrint('VESSEL Image ${widget.vessel!.displacement!.isEmpty}');
+    // Utils.customPrint('VESSEL Image ${widget.vessel!.displacement!.isEmpty}');
 
     checkSensorAvailabelOrNot();
 
@@ -165,25 +171,21 @@ SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   /// To get hull types from secure storage
   getHullTypes() async {
     FlutterSecureStorage storage = FlutterSecureStorage();
-    String? hullTypes = await storage.read(
-        key: 'hullTypes'
-    );
+    String? hullTypes = await storage.read(key: 'hullTypes');
 
-    if(hullTypes != null){
+    if (hullTypes != null) {
       Map<String, dynamic> mapOfHullTypes = jsonDecode(hullTypes);
       Utils.customPrint('HHHHH MAP: ${mapOfHullTypes}');
       mapOfHullTypes.forEach((key, value) {
-        if(key == widget.vessel!.hullType.toString()){
+        if (key == widget.vessel!.hullType.toString()) {
           hullType = value;
         }
       });
-      setState(() {
-
-      });
+      setState(() {});
     }
   }
 
-@override
+  @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
@@ -208,11 +210,11 @@ SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   /// Check sensor is available or not
   checkSensorAvailabelOrNot() async {
     gyroscopeAvailable =
-    await s.SensorManager().isSensorAvailable(s.Sensors.GYROSCOPE);
+        await s.SensorManager().isSensorAvailable(s.Sensors.GYROSCOPE);
     accelerometerAvailable =
-    await s.SensorManager().isSensorAvailable(s.Sensors.ACCELEROMETER);
+        await s.SensorManager().isSensorAvailable(s.Sensors.ACCELEROMETER);
     magnetometerAvailable =
-    await s.SensorManager().isSensorAvailable(s.Sensors.MAGNETIC_FIELD);
+        await s.SensorManager().isSensorAvailable(s.Sensors.MAGNETIC_FIELD);
     userAccelerometerAvailable = await s.SensorManager()
         .isSensorAvailable(s.Sensors.LINEAR_ACCELERATION);
   }
@@ -267,13 +269,12 @@ SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
             elevation: 0.0,
             backgroundColor: backgroundColor,
             title: commonText(
-              context: context,
-              text: 'Vessel Details',
-              fontWeight: FontWeight.w600,
-              textColor: Colors.black87,
-              textSize: displayWidth(context) * 0.045,
-              fontFamily: outfit
-            ),
+                context: context,
+                text: 'Vessel Details',
+                fontWeight: FontWeight.w600,
+                textColor: Colors.black87,
+                textSize: displayWidth(context) * 0.045,
+                fontFamily: outfit),
             leading: IconButton(
               onPressed: () async {
                 await tripIsRunningOrNot();
@@ -298,15 +299,18 @@ SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
               Container(
                 margin: EdgeInsets.only(right: 8),
                 child: IconButton(
-                  onPressed: () async{
-                                     await   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                  onPressed: () async {
+                    await SystemChrome.setPreferredOrientations(
+                        [DeviceOrientation.portraitUp]);
 
                     Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (context) => BottomNavigation()),
+                        MaterialPageRoute(
+                            builder: (context) => BottomNavigation()),
                         ModalRoute.withName(""));
                   },
-                  icon: Image.asset('assets/icons/performarine_appbar_icon.png'),
+                  icon:
+                      Image.asset('assets/icons/performarine_appbar_icon.png'),
                   color: Theme.of(context).brightness == Brightness.dark
                       ? Colors.white
                       : Colors.black,
@@ -314,21 +318,26 @@ SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
               ),
             ],
           ),
-          bottomSheet:  Padding(
+          bottomSheet: Padding(
             padding: EdgeInsets.only(
-              bottom : displayHeight(context) * 0.01,
+              bottom: displayHeight(context) * 0.01,
             ),
             child: GestureDetector(
-                onTap: ()async{
+                onTap: () async {
                   final image = await controller.capture();
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
-                    imagePath: image.toString(),
-                    uIntList: image,)));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => FeedbackReport(
+                                imagePath: image.toString(),
+                                uIntList: image,
+                              )));
                 },
-                child: UserFeedback().getUserFeedback(context)
-            ),
+                child: UserFeedback().getUserFeedback(context)),
           ),
-          drawer: CustomDrawer(scaffoldKey: scaffoldKey,),
+          drawer: CustomDrawer(
+            scaffoldKey: scaffoldKey,
+          ),
           body: Stack(
             children: [
               SizedBox(
@@ -338,101 +347,110 @@ SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       ExpansionCard(
-                          scaffoldKey,
-                          widget.vessel,
-                              (value) async {
-                            var result = await Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (_) => AddNewVesselPage(
-                                  isEdit: true,
-                                  createVessel: widget.vessel,
-                                ),
-                                fullscreenDialog: true,
+                        scaffoldKey,
+                        widget.vessel,
+                        (value) async {
+                          var result = await Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => AddNewVesselPage(
+                                isEdit: true,
+                                createVessel: widget.vessel,
                               ),
-                            );
+                              fullscreenDialog: true,
+                            ),
+                          );
 
-                            if (result != null) {
-                              Utils.customPrint('RESULT 1 ${result[0]}');
-                              Utils.customPrint(
-                                  'RESULT 1 ${result[1] as CreateVessel}');
-                              setState(() {
-                                widget.vessel = result[1] as CreateVessel?;
-                                isDataUpdated = result[0];
-                              });
-                            }
-                          },
-                              (value) {},
-                              (value) {
-                            _onDeleteTripsByVesselID(value.id!);
-                            _onVesselDelete(value);
-                          },
-                          false,
-                      isCalledFromVesselSingleView: true,),
+                          if (result != null) {
+                            Utils.customPrint('RESULT 1 ${result[0]}');
+                            Utils.customPrint(
+                                'RESULT 1 ${result[1] as CreateVessel}');
+                            setState(() {
+                              widget.vessel = result[1] as CreateVessel?;
+                              isDataUpdated = result[0];
+                            });
+                          }
+                        },
+                        (value) {},
+                        (value) {
+                          _onDeleteTripsByVesselID(value.id!);
+                          _onVesselDelete(value);
+                        },
+                        false,
+                        isCalledFromVesselSingleView: true,
+                      ),
                       SizedBox(
                         height: 10,
                       ),
                       Container(
                         margin: EdgeInsets.symmetric(horizontal: 12),
                         decoration: BoxDecoration(
-                          color: Color(0xffECF3F9),
-                          borderRadius: BorderRadius.only(topRight: Radius.circular(15), topLeft: Radius.circular(15))
-                        ),
+                            color: Color(0xffECF3F9),
+                            borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(15),
+                                topLeft: Radius.circular(15))),
                         child: Column(
                           children: [
                             Container(
                               child: Padding(
-                                padding: const EdgeInsets.only(top: 0.0, left: 17, right: 17),
+                                padding: const EdgeInsets.only(
+                                    top: 0.0, left: 17, right: 17),
                                 child: Column(
                                   children: [
-Theme(
-                                      data: Theme.of(context).copyWith(
-                                          colorScheme: ColorScheme.light(
-                                            primary: Colors.black,
-                                          ),
-                                          dividerColor: Colors.transparent),
-                                      child:
-ExpansionTile(
-  collapsedIconColor: Colors.black,
-                                          tilePadding: EdgeInsets.zero,
-                                        childrenPadding: EdgeInsets.zero,
-iconColor: Colors.black,
-  title: commonText(
-                                            context: context,
-                                            text: 'Delegate access',
-                                            fontWeight: FontWeight.w500,
-                                            textColor: Colors.black,
-                                            textSize: displayWidth(context) * 0.036,
-                                            textAlign: TextAlign.start),
-                                            
-                                          children: [
-                                            Container(
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                commonText(text:'No Delegates',
-                                                fontWeight: FontWeight.w600,
-                                                textSize: 16,
-                                                textColor: delegateTextHeaderColor
-                                                ),
-                                                                                                InkWell(
-                                                                                                  onTap: (){
-                                                                                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>DelegatesScreen()));
-                                                                                                  },
-                                                                                                  child: commonText(text:'Manage Delegate Access',
-                                                                                                                                                  fontWeight: FontWeight.w400,
-                                                                                                                                                  textSize: 11,
-                                                                                                                                                  textColor: blueColor
-                                                                                                                                                  ),
-                                                                                                )
-
-                                              ],
+                                    /*Theme(
+                                        data: Theme.of(context).copyWith(
+                                            colorScheme: ColorScheme.light(
+                                              primary: Colors.black,
                                             ),
-                                          ),  
-                                  ])),
-
-
-
-
+                                            dividerColor: Colors.transparent),
+                                        child: ExpansionTile(
+                                            collapsedIconColor: Colors.black,
+                                            tilePadding: EdgeInsets.zero,
+                                            childrenPadding: EdgeInsets.zero,
+                                            iconColor: Colors.black,
+                                            title: commonText(
+                                                context: context,
+                                                text: 'Delegate access',
+                                                fontWeight: FontWeight.w500,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.036,
+                                                textAlign: TextAlign.start),
+                                            children: [
+                                              Container(
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    commonText(
+                                                        text: 'No Delegates',
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        textSize: 16,
+                                                        textColor:
+                                                            delegateTextHeaderColor),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        DelegatesScreen()));
+                                                      },
+                                                      child: commonText(
+                                                          text:
+                                                              'Manage Delegate Access',
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          textSize: 11,
+                                                          textColor: blueColor),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ])),*/
                                     Theme(
                                       data: Theme.of(context).copyWith(
                                           colorScheme: ColorScheme.light(
@@ -443,41 +461,56 @@ iconColor: Colors.black,
                                         trailing: Container(
                                           width: displayWidth(context) * 0.12,
                                           child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
                                               InkWell(
-                                              onTap:()async{
-                                                var result = await Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                    builder: (_) => AddNewVesselPage(
-                                                      isEdit: true,
-                                                      createVessel: widget.vessel,
+                                                onTap: () async {
+                                                  var result =
+                                                      await Navigator.of(
+                                                              context)
+                                                          .push(
+                                                    MaterialPageRoute(
+                                                      builder: (_) =>
+                                                          AddNewVesselPage(
+                                                        isEdit: true,
+                                                        createVessel:
+                                                            widget.vessel,
+                                                      ),
+                                                      fullscreenDialog: true,
                                                     ),
-                                                    fullscreenDialog: true,
-                                                  ),
-                                                );
+                                                  );
 
-                                                if (result != null) {
-                                                  Utils.customPrint('RESULT 1 ${result[0]}');
-                                                  Utils.customPrint(
-                                                      'RESULT 1 ${result[1] as CreateVessel}');
-                                                  setState(() {
-                                                    widget.vessel = result[1] as CreateVessel?;
-                                                    isDataUpdated = result[0];
-                                                  });
-                                                }
-                                                 },
-                                                child: Image.asset('assets/icons/Edit.png',
-                                                    width: displayWidth(context) * 0.045,
+                                                  if (result != null) {
+                                                    Utils.customPrint(
+                                                        'RESULT 1 ${result[0]}');
+                                                    Utils.customPrint(
+                                                        'RESULT 1 ${result[1] as CreateVessel}');
+                                                    setState(() {
+                                                      widget.vessel = result[1]
+                                                          as CreateVessel?;
+                                                      isDataUpdated = result[0];
+                                                    });
+                                                  }
+                                                },
+                                                child: Image.asset(
+                                                    'assets/icons/Edit.png',
+                                                    width:
+                                                        displayWidth(context) *
+                                                            0.045,
                                                     color: Colors.black),
                                               ),
-                                              !isPropulsionDetails ? Icon(
-                                                  Icons.keyboard_arrow_down_outlined,
-                                                  color: Colors.black,
-                                              ) : Icon(
-                                                  Icons.keyboard_arrow_up_outlined,
-                                                  color: Colors.black,
-                                              ),
+                                              !isPropulsionDetails
+                                                  ? Icon(
+                                                      Icons
+                                                          .keyboard_arrow_down_outlined,
+                                                      color: Colors.black,
+                                                    )
+                                                  : Icon(
+                                                      Icons
+                                                          .keyboard_arrow_up_outlined,
+                                                      color: Colors.black,
+                                                    ),
                                             ],
                                           ),
                                         ),
@@ -489,7 +522,8 @@ iconColor: Colors.black,
 
                                           Utils.customPrint(
                                               'EXPANSION CHANGE $isPropulsionDetails');
-                                          CustomLogger().logWithFile(Level.info, "EXPANSION CHANGE $isPropulsionDetails -> $page");
+                                          CustomLogger().logWithFile(Level.info,
+                                              "EXPANSION CHANGE $isPropulsionDetails -> $page");
                                         }),
                                         tilePadding: EdgeInsets.zero,
                                         childrenPadding: EdgeInsets.zero,
@@ -498,129 +532,194 @@ iconColor: Colors.black,
                                             text: 'Vessel Dimensions',
                                             fontWeight: FontWeight.w500,
                                             textColor: Colors.black,
-                                            textSize: displayWidth(context) * 0.036,
+                                            textSize:
+                                                displayWidth(context) * 0.036,
                                             textAlign: TextAlign.start),
                                         children: [
                                           Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
                                               Expanded(
                                                 child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
                                                   children: [
                                                     Row(
                                                       children: [
-                                                        Image.asset('assets/images/length.png',
-                                                            width: displayWidth(context) * 0.045,
-                                                            color: Colors.black),
+                                                        Image.asset(
+                                                            'assets/images/length.png',
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.045,
+                                                            color:
+                                                                Colors.black),
                                                         SizedBox(
-                                                            width: displayWidth(context) * 0.016),
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.016),
                                                         Flexible(
                                                           child: commonText(
                                                             context: context,
                                                             text:
-                                                            '${widget.vessel!.lengthOverall} $feet',
-                                                            fontWeight: FontWeight.w500,
-                                                            textColor: Colors.black,
+                                                                '${widget.vessel!.lengthOverall} $feet',
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            textColor:
+                                                                Colors.black,
                                                             textSize:
-                                                            displayWidth(context) * 0.034,
-                                                            textAlign: TextAlign.start,
+                                                                displayWidth(
+                                                                        context) *
+                                                                    0.034,
+                                                            textAlign:
+                                                                TextAlign.start,
                                                           ),
                                                         ),
                                                       ],
                                                     ),
                                                     SizedBox(
-                                                        height: displayHeight(context) * 0.006),
-
+                                                        height: displayHeight(
+                                                                context) *
+                                                            0.006),
                                                     commonText(
                                                         context: context,
                                                         text: 'Length(LOA)',
-                                                        fontWeight: FontWeight.w500,
+                                                        fontWeight:
+                                                            FontWeight.w500,
                                                         textColor: Colors.grey,
-                                                        textSize: displayWidth(context) * 0.024,
-                                                        textAlign: TextAlign.start),
+                                                        textSize: displayWidth(
+                                                                context) *
+                                                            0.024,
+                                                        textAlign:
+                                                            TextAlign.start),
                                                   ],
                                                 ),
                                               ),
-                                              SizedBox(width: displayWidth(context) * 0.015),
+                                              SizedBox(
+                                                  width: displayWidth(context) *
+                                                      0.015),
                                               Expanded(
                                                 child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
                                                   children: [
                                                     Row(
                                                       children: [
                                                         Image.asset(
                                                             'assets/images/free_board.png',
-                                                            width: displayWidth(context) * 0.045,
-                                                            color: Colors.black),
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.045,
+                                                            color:
+                                                                Colors.black),
                                                         SizedBox(
-                                                            width: displayWidth(context) * 0.016),
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.016),
                                                         Flexible(
                                                           child: commonText(
                                                               context: context,
                                                               text:
-                                                              '${widget.vessel!.freeBoard} $feet',
-                                                              fontWeight: FontWeight.w500,
-                                                              textColor: Colors.black,
+                                                                  '${widget.vessel!.freeBoard} $feet',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              textColor:
+                                                                  Colors.black,
                                                               textSize:
-                                                              displayWidth(context) * 0.034,
-                                                              textAlign: TextAlign.start),
+                                                                  displayWidth(
+                                                                          context) *
+                                                                      0.034,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start),
                                                         ),
                                                       ],
                                                     ),
                                                     SizedBox(
-                                                        height: displayHeight(context) * 0.006),
+                                                        height: displayHeight(
+                                                                context) *
+                                                            0.006),
                                                     commonText(
                                                         context: context,
                                                         text: 'Freeboard',
-                                                        fontWeight: FontWeight.w500,
+                                                        fontWeight:
+                                                            FontWeight.w500,
                                                         textColor: Colors.grey,
-                                                        textSize: displayWidth(context) * 0.024,
-                                                        textAlign: TextAlign.start),
+                                                        textSize: displayWidth(
+                                                                context) *
+                                                            0.024,
+                                                        textAlign:
+                                                            TextAlign.start),
                                                   ],
                                                 ),
                                               ),
-                                              SizedBox(width: displayWidth(context) * 0.015),
+                                              SizedBox(
+                                                  width: displayWidth(context) *
+                                                      0.015),
                                               Expanded(
                                                 child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
                                                   children: [
                                                     Row(
                                                       children: [
                                                         Image.asset(
                                                             'assets/icons/beam.png',
-                                                            width: displayWidth(context) * 0.048,
-                                                            color: Colors.black),
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.048,
+                                                            color:
+                                                                Colors.black),
                                                         SizedBox(
-                                                            width: displayWidth(context) * 0.016),
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.016),
                                                         Flexible(
                                                           child: commonText(
                                                               context: context,
-                                                              text: '${widget.vessel!.beam} $feet',
-                                                              fontWeight: FontWeight.w500,
-                                                              textColor: Colors.black,
+                                                              text:
+                                                                  '${widget.vessel!.beam} $feet',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              textColor:
+                                                                  Colors.black,
                                                               textSize:
-                                                              displayWidth(context) * 0.034,
-                                                              textAlign: TextAlign.start),
+                                                                  displayWidth(
+                                                                          context) *
+                                                                      0.034,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start),
                                                         ),
                                                       ],
                                                     ),
                                                     SizedBox(
-                                                        height: displayHeight(context) * 0.006),
+                                                        height: displayHeight(
+                                                                context) *
+                                                            0.006),
                                                     commonText(
                                                         context: context,
                                                         text: 'Beam',
-                                                        fontWeight: FontWeight.w500,
+                                                        fontWeight:
+                                                            FontWeight.w500,
                                                         textColor: Colors.grey,
-                                                        textSize: displayWidth(context) * 0.024,
-                                                        textAlign: TextAlign.start),
+                                                        textSize: displayWidth(
+                                                                context) *
+                                                            0.024,
+                                                        textAlign:
+                                                            TextAlign.start),
                                                   ],
                                                 ),
                                               ),
-                                              SizedBox(width: displayWidth(context) * 0.015),
+                                              SizedBox(
+                                                  width: displayWidth(context) *
+                                                      0.015),
                                               Expanded(
                                                 child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
                                                   children: [
                                                     Row(
                                                       children: [
@@ -628,32 +727,51 @@ iconColor: Colors.black,
                                                           quarterTurns: 2,
                                                           child: Image.asset(
                                                               'assets/images/free_board.png',
-                                                              width: displayWidth(context) * 0.045,
-                                                              color: Colors.black),
+                                                              width: displayWidth(
+                                                                      context) *
+                                                                  0.045,
+                                                              color:
+                                                                  Colors.black),
                                                         ),
                                                         SizedBox(
-                                                            width: displayWidth(context) * 0.016),
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.016),
                                                         Flexible(
                                                           child: commonText(
                                                               context: context,
-                                                              text: '${widget.vessel!.draft} $feet',
-                                                              fontWeight: FontWeight.w500,
-                                                              textColor: Colors.black,
+                                                              text:
+                                                                  '${widget.vessel!.draft} $feet',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              textColor:
+                                                                  Colors.black,
                                                               textSize:
-                                                              displayWidth(context) * 0.034,
-                                                              textAlign: TextAlign.start),
+                                                                  displayWidth(
+                                                                          context) *
+                                                                      0.034,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start),
                                                         ),
                                                       ],
                                                     ),
                                                     SizedBox(
-                                                        height: displayHeight(context) * 0.006),
+                                                        height: displayHeight(
+                                                                context) *
+                                                            0.006),
                                                     commonText(
                                                         context: context,
                                                         text: 'Draft',
-                                                        fontWeight: FontWeight.w500,
+                                                        fontWeight:
+                                                            FontWeight.w500,
                                                         textColor: Colors.grey,
-                                                        textSize: displayWidth(context) * 0.024,
-                                                        textAlign: TextAlign.start),
+                                                        textSize: displayWidth(
+                                                                context) *
+                                                            0.024,
+                                                        textAlign:
+                                                            TextAlign.start),
                                                   ],
                                                 ),
                                               ),
@@ -677,52 +795,72 @@ iconColor: Colors.black,
                                           trailing: Container(
                                             width: displayWidth(context) * 0.12,
                                             child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 InkWell(
-                                                  onTap:()async{
-                                                    var result = await Navigator.of(context).push(
+                                                  onTap: () async {
+                                                    var result =
+                                                        await Navigator.of(
+                                                                context)
+                                                            .push(
                                                       MaterialPageRoute(
-                                                        builder: (_) => AddNewVesselPage(
+                                                        builder: (_) =>
+                                                            AddNewVesselPage(
                                                           isEdit: true,
-                                                          createVessel: widget.vessel,
+                                                          createVessel:
+                                                              widget.vessel,
                                                         ),
                                                         fullscreenDialog: true,
                                                       ),
                                                     );
 
                                                     if (result != null) {
-                                                      Utils.customPrint('RESULT 1 ${result[0]}');
+                                                      Utils.customPrint(
+                                                          'RESULT 1 ${result[0]}');
                                                       Utils.customPrint(
                                                           'RESULT 1 ${result[1] as CreateVessel}');
                                                       setState(() {
-                                                        widget.vessel = result[1] as CreateVessel?;
-                                                        isDataUpdated = result[0];
+                                                        widget.vessel = result[
+                                                            1] as CreateVessel?;
+                                                        isDataUpdated =
+                                                            result[0];
                                                       });
                                                     }
                                                   },
-                                                  child: Image.asset('assets/icons/Edit.png',
-                                                      width: displayWidth(context) * 0.045,
+                                                  child: Image.asset(
+                                                      'assets/icons/Edit.png',
+                                                      width: displayWidth(
+                                                              context) *
+                                                          0.045,
                                                       color: Colors.black),
                                                 ),
-                                                !isVesselParticularExpanded ? Icon(
-                                                  Icons.keyboard_arrow_down_outlined,
-                                                  color: Colors.black,
-                                                ) : Icon(
-                                                  Icons.keyboard_arrow_up_outlined,
-                                                  color: Colors.black,
-                                                ),
+                                                !isVesselParticularExpanded
+                                                    ? Icon(
+                                                        Icons
+                                                            .keyboard_arrow_down_outlined,
+                                                        color: Colors.black,
+                                                      )
+                                                    : Icon(
+                                                        Icons
+                                                            .keyboard_arrow_up_outlined,
+                                                        color: Colors.black,
+                                                      ),
                                               ],
                                             ),
                                           ),
                                           onExpansionChanged: ((newState) {
                                             setState(() {
-                                              isVesselParticularExpanded = newState;
+                                              isVesselParticularExpanded =
+                                                  newState;
                                             });
 
                                             Utils.customPrint(
                                                 'EXPANSION CHANGE $isVesselParticularExpanded');
-                                            CustomLogger().logWithFile(Level.info, "EXPANSION CHANGE $isVesselParticularExpanded -> $page");
+                                            CustomLogger().logWithFile(
+                                                Level.info,
+                                                "EXPANSION CHANGE $isVesselParticularExpanded -> $page");
                                           }),
                                           tilePadding: EdgeInsets.zero,
                                           childrenPadding: EdgeInsets.zero,
@@ -731,96 +869,160 @@ iconColor: Colors.black,
                                               text: 'Propulsion Details',
                                               fontWeight: FontWeight.w500,
                                               textColor: Colors.black,
-                                              textSize: displayWidth(context) * 0.036,
+                                              textSize:
+                                                  displayWidth(context) * 0.036,
                                               textAlign: TextAlign.start),
                                           children: [
                                             Column(
                                               children: [
                                                 Row(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
                                                   children: [
                                                     Expanded(
                                                       child: Column(
                                                         crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          commonText(
+                                                              context: context,
+                                                              text: '130 $hp',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w700,
+                                                              textColor:
+                                                                  Colors.black,
+                                                              textSize:
+                                                                  displayWidth(
+                                                                          context) *
+                                                                      0.04,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start),
+                                                          SizedBox(
+                                                            height: 2,
+                                                          ),
+                                                          commonText(
+                                                              context: context,
+                                                              text:
+                                                                  'Diesel Engine\nPower',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              textColor:
+                                                                  Colors.grey,
+                                                              textSize:
+                                                                  displayWidth(
+                                                                          context) *
+                                                                      0.024,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
                                                         children: [
                                                           commonText(
                                                               context: context,
                                                               text:
-                                                              '130 $hp',
-                                                              fontWeight: FontWeight.w700,
-                                                              textColor: Colors.black,
+                                                                  '320 $kiloWattHour',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w700,
+                                                              textColor:
+                                                                  Colors.black,
                                                               textSize:
-                                                              displayWidth(context) * 0.04,
-                                                              textAlign: TextAlign.start),
-                                                          SizedBox(height: 2,),
+                                                                  displayWidth(
+                                                                          context) *
+                                                                      0.04,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start),
+                                                          SizedBox(
+                                                            height: 2,
+                                                          ),
                                                           commonText(
                                                               context: context,
-                                                              text: 'Diesel Engine\nPower' ,
-                                                              fontWeight: FontWeight.w500,
-                                                              textColor: Colors.grey,
+                                                              text:
+                                                                  'Electric Engine\nPower',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              textColor:
+                                                                  Colors.grey,
                                                               textSize:
-                                                              displayWidth(context) * 0.024,
-                                                              textAlign: TextAlign.start),
+                                                                  displayWidth(
+                                                                          context) *
+                                                                      0.024,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start),
                                                         ],
                                                       ),
                                                     ),
                                                     Expanded(
                                                       child: Column(
                                                         crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
+                                                            CrossAxisAlignment
+                                                                .start,
                                                         children: [
                                                           commonText(
                                                               context: context,
-                                                              text: '320 $kiloWattHour',
-                                                              fontWeight: FontWeight.w700,
-                                                              textColor: Colors.black,
+                                                              text: widget
+                                                                      .vessel!
+                                                                      .weight!
+                                                                      .isEmpty
+                                                                  ? '0 $pound'
+                                                                  : '${widget.vessel!.weight} $pound',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w700,
+                                                              textColor:
+                                                                  Colors.black,
                                                               textSize:
-                                                              displayWidth(context) * 0.04,
-                                                              textAlign: TextAlign.start),
-                                                          SizedBox(height: 2,),
+                                                                  displayWidth(
+                                                                          context) *
+                                                                      0.04,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start),
+                                                          SizedBox(
+                                                            height: 2,
+                                                          ),
                                                           commonText(
                                                               context: context,
-                                                              text: 'Electric Engine\nPower',
-                                                              fontWeight: FontWeight.w500,
-                                                              textColor: Colors.grey,
+                                                              text:
+                                                                  'Displacement',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              textColor:
+                                                                  Colors.grey,
                                                               textSize:
-                                                              displayWidth(context) * 0.024,
-                                                              textAlign: TextAlign.start),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                      child: Column(
-                                                        crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
-                                                        children: [
-                                                          commonText(
-                                                              context: context,
-                                                              text: widget.vessel!.weight!.isEmpty ? '0 $pound': '${widget.vessel!.weight} $pound',
-                                                              fontWeight: FontWeight.w700,
-                                                              textColor: Colors.black,
-                                                              textSize:
-                                                              displayWidth(context) *
-                                                                  0.04,
-                                                              textAlign: TextAlign.start),
-                                                          SizedBox(height: 2,),
-                                                          commonText(
-                                                              context: context,
-                                                              text: 'Displacement',
-                                                              fontWeight: FontWeight.w500,
-                                                              textColor: Colors.grey,
-                                                              textSize:
-                                                              displayWidth(context) * 0.024,
-                                                              textAlign: TextAlign.start),
+                                                                  displayWidth(
+                                                                          context) *
+                                                                      0.024,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start),
                                                         ],
                                                       ),
                                                     )
                                                   ],
                                                 ),
                                                 SizedBox(
-                                                  height: displayHeight(context) * 0.012,
+                                                  height:
+                                                      displayHeight(context) *
+                                                          0.012,
                                                 ),
                                                 Row(
                                                   //mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -829,26 +1031,42 @@ iconColor: Colors.black,
                                                       //flex: 01,
                                                       child: Column(
                                                         crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
+                                                            CrossAxisAlignment
+                                                                .start,
                                                         children: [
                                                           commonText(
                                                               context: context,
-                                                              text:
-                                                              hullType,
-                                                              fontWeight: FontWeight.w700,
-                                                              textColor: Colors.black,
+                                                              text: hullType,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w700,
+                                                              textColor:
+                                                                  Colors.black,
                                                               textSize:
-                                                              displayWidth(context) * 0.04,
-                                                              textAlign: TextAlign.start),
-                                                          SizedBox(height: 2,),
+                                                                  displayWidth(
+                                                                          context) *
+                                                                      0.04,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start),
+                                                          SizedBox(
+                                                            height: 2,
+                                                          ),
                                                           commonText(
                                                               context: context,
                                                               text: 'Hull Type',
-                                                              fontWeight: FontWeight.w500,
-                                                              textColor: Colors.grey,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              textColor:
+                                                                  Colors.grey,
                                                               textSize:
-                                                              displayWidth(context) * 0.024,
-                                                              textAlign: TextAlign.start),
+                                                                  displayWidth(
+                                                                          context) *
+                                                                      0.024,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start),
                                                         ],
                                                       ),
                                                     ),
@@ -856,36 +1074,63 @@ iconColor: Colors.black,
                                                       flex: 02,
                                                       child: Column(
                                                         crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
+                                                            CrossAxisAlignment
+                                                                .start,
                                                         children: [
                                                           widget.vessel!.mMSI! == ""
                                                               ? commonText(
-                                                              context: context,
-                                                              text: '-',
-                                                              fontWeight: FontWeight.w700,
-                                                              textColor: Colors.black,
-                                                              textSize:
-                                                              displayWidth(context) *
-                                                                  0.04,
-                                                              textAlign: TextAlign.start)
+                                                                  context:
+                                                                      context,
+                                                                  text: '-',
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w700,
+                                                                  textColor:
+                                                                      Colors
+                                                                          .black,
+                                                                  textSize:
+                                                                      displayWidth(context) *
+                                                                          0.04,
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .start)
                                                               : commonText(
-                                                              context: context,
-                                                              text: widget.vessel!.mMSI,
-                                                              fontWeight: FontWeight.w700,
-                                                              textColor: Colors.black,
-                                                              textSize:
-                                                              displayWidth(context) *
-                                                                  0.04,
-                                                              textAlign: TextAlign.start),
-                                                          SizedBox(height: 2,),
+                                                                  context:
+                                                                      context,
+                                                                  text: widget
+                                                                      .vessel!
+                                                                      .mMSI,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w700,
+                                                                  textColor:
+                                                                      Colors
+                                                                          .black,
+                                                                  textSize:
+                                                                      displayWidth(
+                                                                              context) *
+                                                                          0.04,
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .start),
+                                                          SizedBox(
+                                                            height: 2,
+                                                          ),
                                                           commonText(
                                                               context: context,
                                                               text: 'MMSI',
-                                                              fontWeight: FontWeight.w500,
-                                                              textColor: Colors.grey,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              textColor:
+                                                                  Colors.grey,
                                                               textSize:
-                                                              displayWidth(context) * 0.024,
-                                                              textAlign: TextAlign.start),
+                                                                  displayWidth(
+                                                                          context) *
+                                                                      0.024,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start),
                                                         ],
                                                       ),
                                                     )
@@ -939,23 +1184,24 @@ iconColor: Colors.black,
                                   children: [
                                     vesselAnalytics
                                         ? Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: CircularProgressIndicator(
-                                          color: blueColor,
-                                      ),
-                                    )
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: CircularProgressIndicator(
+                                              color: blueColor,
+                                            ),
+                                          )
                                         : vesselSingleViewVesselAnalytics(
-                                        context,
-                                        totalDuration,
-                                        totalDistance,
-                                        tripsCount,
-                                        avgSpeed),
+                                            context,
+                                            totalDuration,
+                                            totalDistance,
+                                            tripsCount,
+                                            avgSpeed),
                                   ],
                                 ),
                               ),
                             ),
-
-                            Theme(
+                            widget.isCalledFromFleetScreen!
+                            ? SizedBox(height: displayHeight(context) * 0.04,)
+                            : Theme(
                               data: Theme.of(context).copyWith(
                                   colorScheme: ColorScheme.light(
                                     primary: Colors.black,
@@ -982,7 +1228,7 @@ iconColor: Colors.black,
                                     scaffoldKey: scaffoldKey,
                                     vesselId: widget.vessel!.id,
                                     calledFrom: 'VesselSingleView',
-                                    isTripDeleted: ()async{
+                                    isTripDeleted: () async {
                                       setState(() {
                                         getVesselAnalytics(widget.vessel!.id!);
                                       });
@@ -993,11 +1239,14 @@ iconColor: Colors.black,
                                       setState(() {
                                         tripIsEnded = true;
                                       });
-                                      commonProvider.getTripsByVesselId(widget.vessel!.id!);
+                                      commonProvider.getTripsByVesselId(
+                                          widget.vessel!.id!);
                                       getVesselAnalytics(widget.vessel!.id!);
                                     },
                                   ),
-                                  SizedBox(height: displayHeight(context) * 0.023,),
+                                  SizedBox(
+                                    height: displayHeight(context) * 0.023,
+                                  ),
                                 ],
                               ),
                             ),
@@ -1026,7 +1275,7 @@ iconColor: Colors.black,
       });
     }
     List<String> analyticsData =
-    await _databaseService.getVesselAnalytics(vesselId);
+        await _databaseService.getVesselAnalytics(vesselId);
 
     setState(() {
       totalDistance = analyticsData[0];
