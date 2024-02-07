@@ -2447,7 +2447,7 @@ if(!isSyncSignoutClicked){
                                       context: context,
                                       text: 'Edit Profile Details',
                                       fontWeight: FontWeight.w500,
-                                      textSize: displayWidth(context) * 0.038,
+                                      textSize: displayWidth(context) * 0.04,
                                       textAlign: TextAlign.center),
                                   SizedBox(height: displayHeight(context) * 0.02,),
 
@@ -2555,6 +2555,7 @@ if(!isSyncSignoutClicked){
                               //   height: displayHeight(context) * 0.01,
                               // ),
                               Container(
+                                width: displayWidth(context),
                                 margin: EdgeInsets.only(
                                   top: 8.0,
                                 ),
@@ -2562,106 +2563,38 @@ if(!isSyncSignoutClicked){
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    InkWell(
-                                      onTap: () async {
-                                        if (firstNameFormKey.currentState!.validate() && lastNameFormKey.currentState!.validate())
-                                        {
-                                          bool internet =
-                                          await Utils().check(scaffoldKey);
-                                          setState(() {
-                                            isSync = true;
-                                          });
-                                          if (internet) {
-                                            if (mounted) {
-                                              setDialogState(() {
-                                                isUploadStarted = true;
-                                              });
-
-                                              commonProvider.updateUserInfo(
-                                                  context,
-                                                  commonProvider.loginModel!.token!,
-                                                  firstNameEditingController.text,
-                                                  lastNameEditingController.text,
-                                                  commonProvider.loginModel!.userId!,
-                                                  widget.scaffoldKey!).then((value)
-                                              {
-                                                if(value.status!)
-                                                {
-                                                  isUploadStarted = false;
-                                                  Future.delayed(
-                                                      Duration(seconds: 2),
-                                                          () {
-                                                        String? loginData =
-                                                        sharedPreferences!
-                                                            .getString(
-                                                            'loginData');
-                                                        if (loginData != null) {
-                                                          LoginModel loginModel =
-                                                          LoginModel.fromJson(
-                                                              json.decode(
-                                                                  loginData));
-                                                          loginModel
-                                                              .userFirstName =
-                                                              firstNameEditingController
-                                                                  .text
-                                                                  .trim();
-                                                          loginModel
-                                                              .userLastName =
-                                                              lastNameEditingController
-                                                                  .text
-                                                                  .trim();
-                                                          firstNameEditingController
-                                                              .clear();
-                                                          lastNameEditingController
-                                                              .clear();
-                                                          sharedPreferences!
-                                                              .setString(
-                                                              'loginData',
-                                                              jsonEncode(
-                                                                  loginModel
-                                                                      .toJson()));
-                                                          commonProvider.init();
-                                                          setState(() {});
-                                                        }
-
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      });
-                                                }
-
-                                              }).catchError((e){
-                                                setState(() {
-                                                  isUploadStarted = false;
-                                                });
-                                              });
-                                            }
-                                          }
-                                        }
-                                      },
-                                      child: commonText(
-                                          context: context,
-                                          text: 'Cancel',
-                                          textColor: primaryColor,
-                                          fontWeight: FontWeight.w500,
-                                          textSize: displayWidth(context) * 0.038,
-                                          textAlign: TextAlign.center),
+                                    Container(
+                                      width: displayWidth(context) * 0.3,
+                                      child: InkWell(
+                                        onTap: (){
+                                          Navigator.of(context)
+                                              .pop();
+                                          },
+                                        child: commonText(
+                                            context: context,
+                                            text: 'Cancel',
+                                            textColor: primaryColor,
+                                            fontWeight: FontWeight.w500,
+                                            textSize: displayWidth(context) * 0.038,
+                                            textAlign: TextAlign.center),
+                                      ),
                                     ),
-                                    SizedBox(width: displayWidth(context) * 0.05,),
                                     isUploadStarted
                                         ? Center(
                                       child: Container(
+
                                           child: Center(
                                               child:
                                               CircularProgressIndicator())),
                                     )
                                         : Container(
-                                            width: displayWidth(context) * 0.3,
+                                            width: displayWidth(context) * 0.32,
                                             decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(12),
                                                 color: blueColor
                                             ),
                                           child: Padding(
-                                            padding: const EdgeInsets.all(12.0),
+                                            padding: const EdgeInsets.only(top: 10, bottom: 10),
                                             child: InkWell(
                                               onTap: () async {
                                                 if (firstNameFormKey.currentState!.validate() && lastNameFormKey.currentState!.validate())
@@ -2762,7 +2695,7 @@ if(!isSyncSignoutClicked){
                             top: 2,
                             child: Container(
                               height: 35,
-                              width: 15,
+                              width: 25,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,),
                               child: Center(
@@ -2774,7 +2707,10 @@ if(!isSyncSignoutClicked){
                                       firstNameEditingController.clear();
                                       lastNameEditingController.clear();
                                     },
-                                    child:  Icon(Icons.close_rounded, color: buttonBGColor, size: displayWidth(context) * 0.05,)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Icon(Icons.close_rounded, color: buttonBGColor, size: displayWidth(context) * 0.05,),
+                                    )),
                               ),
                             ),
                           )
