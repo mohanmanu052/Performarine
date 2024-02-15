@@ -69,7 +69,7 @@ class CommonProvider with ChangeNotifier {
 
   init() {
     String? loginData = sharedPreferences!.getString('loginData');
-    Utils.customPrint('LOGIN DATA: $loginData');
+    //Utils.customPrint('LOGIN DATA: $loginData');
     if (loginData != null) {
       loginModel = LoginModel.fromJson(json.decode(loginData));
       // notifyListeners();

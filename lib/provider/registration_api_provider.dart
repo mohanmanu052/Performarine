@@ -49,8 +49,8 @@ class RegistrationApiProvider with ChangeNotifier {
         "loginType": "gmail",
         "socialLoginId": socialLoginId,
         "profileImage": profileImage,
-        "first_name": firstName ?? '',
-        "last_name": lastName ?? '',
+        "firstName": firstName ?? '',
+        "lastName": lastName ?? '',
       };
     } else {
       queryParameters = {
@@ -64,8 +64,8 @@ class RegistrationApiProvider with ChangeNotifier {
         "long": long,
         "loginType": "regular",
         "socialLoginId": "",
-        "first_name": firstName ?? '',
-        "last_name": lastName ?? '',
+        "firstName": firstName ?? '',
+        "lastName": lastName ?? '',
       };
     }
 

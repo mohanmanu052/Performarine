@@ -137,8 +137,8 @@ void callbackDispatcher() {
     }
     return Future.value(true);
   });
-}
 
+}
 registerBackgroundTask() async{
   await Workmanager().initialize(callbackDispatcher);
   await Workmanager().registerPeriodicTask(

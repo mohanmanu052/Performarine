@@ -20,14 +20,13 @@ class _FleetDetailsCardState extends State<FleetDetailsCard> {
 
   @override
   void initState() {
-            getVesselFuture = _databaseService.vessels();
-
+    getVesselFuture = _databaseService.vessels();
     // TODO: implement initState
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
-    return          SingleChildScrollView(
+    return SingleChildScrollView(
       child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -74,14 +73,14 @@ class _FleetDetailsCardState extends State<FleetDetailsCard> {
                                   itemCount: snapshot.data!.length,
                                   primary: false,
                                   shrinkWrap: true,
-                                  //physics: NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index) {
                                     final vessel = snapshot.data![index];
                                     return snapshot.data![index].vesselStatus == 1
                                         ? vesselSingleViewCard(context, vessel,
                                             (CreateVessel value) {
-                                              Navigator.push(context, MaterialPageRoute(builder: (context)=>VesselSingleView(
+                                              Navigator.push(context, MaterialPageRoute(builder: (context)=> VesselSingleView(
                                                 vessel: value,
+                                                isCalledFromFleetScreen: true,
                                               )));
       
                                             }, widget.scaffoldKey!,isOwnerNameVisible: true,ownerName: 'abc456@gmail.com',
