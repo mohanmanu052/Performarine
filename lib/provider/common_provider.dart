@@ -21,6 +21,7 @@ import 'package:performarine/provider/add_vessel_api_provider.dart';
 import 'package:performarine/provider/change_password_provider.dart';
 import 'package:performarine/provider/create_newfleet_provider.dart';
 import 'package:performarine/provider/delete_trip_api_provider.dart';
+import 'package:performarine/provider/fleet_sendinvite_provider.dart';
 import 'package:performarine/provider/get_user_config_api_provider.dart';
 import 'package:performarine/provider/login_api_provider.dart';
 import 'package:performarine/provider/registration_api_provider.dart';
@@ -475,4 +476,11 @@ Future<CreateFleetResponse> createNewFleet(String token, BuildContext context,Gl
   var response =CreateNewFleetProvider().createFleet(token, scaffoldKey,context,  data!);
 return response;
 }
+
+Future<CreateFleetResponse> sendFleetInvite(String token, BuildContext context,GlobalKey<ScaffoldState> scaffoldKey, Map<String,dynamic>? data)async{
+  var response =SendInviteProvider ().sendFleetInvite(token: token,context: context,scaffoldKey: scaffoldKey,data: data);
+return response;
+}
+
+
 }

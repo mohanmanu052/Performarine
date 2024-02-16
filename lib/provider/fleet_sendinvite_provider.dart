@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:io';
+import 'package:performarine/common_widgets/utils/urls.dart';
+import 'package:performarine/common_widgets/utils/utils.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
@@ -9,39 +12,37 @@ import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/log_level.dart';
 import 'package:performarine/models/create_fleet_response.dart';
 
-class CreateNewFleetProvider with ChangeNotifier{
-
-
-  Future<CreateFleetResponse> createFleet(      String token,
-      GlobalKey<ScaffoldState> scaffoldKey,BuildContext context,Map<String,dynamic> data)async{
-CreateFleetResponse? fleetResponse;
-    var headers = {
+class SendInviteProvider with ChangeNotifier{
+  Future<CreateFleetResponse> sendFleetInvite({String? token,BuildContext? context,GlobalKey<ScaffoldState> ?scaffoldKey, Map<String,dynamic>? data})async{
+   CreateFleetResponse? fleetResponse;
+    Map<String,String> headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
-      "x-access-token": token
+      "x-access-token": token!
     };
 
-    Uri uri = Uri.https(Urls.baseUrl, Urls.creteNewFleet);
+    Uri uri = Uri.https(Urls.baseUrl, Urls.inViteFleetMembers);
 
-    Utils.customPrint('Create Fleet  REQ $data');
-    CustomLogger().logWithFile(Level.info, "Create New Fleet REQ $data ");
+    Utils.customPrint('Invite Fleet Members REQ $data');
+    CustomLogger().logWithFile(Level.info, "Invite Fleet Members REQ $data ");
 
     try {
       final response = await http.post(uri,
           body: jsonEncode(data), headers: headers);
 
-      Utils.customPrint('Create Fleet REs : ' + response.body);
-      CustomLogger().logWithFile(Level.info, "Create Fleet REs : ' + ' ${response.body}");
+      Utils.customPrint('Invite Fleet Members RES : ' + response.body);
+      CustomLogger().logWithFile(Level.info, "Invite Fleet Members RES : ' + ' ${response.body}");
 
-      var decodedData = json.decode(response.body);
-
+var decodedData;
       if (response.statusCode == HttpStatus.ok) {
-        Utils.customPrint('Create Fleet  Response : ' + response.body);
-        CustomLogger().logWithFile(Level.info, "Create Fleet Response : ' + ${response.body}");
+               decodedData = json.decode(response.body);
+
+        Utils.customPrint('Invite Fleet Members  Response : ' + response.body);
+        CustomLogger().logWithFile(Level.info, "Invite Fleet Members Response : ' + ${response.body}");
         CustomLogger().logWithFile(Level.info, "API success of ${Urls.baseUrl}${Urls.creteNewFleet}  is: ${response.statusCode}->");
 
         fleetResponse = CreateFleetResponse.fromJson(json.decode(response.body));
 
-        Utils.showSnackBar(context,
+        Utils.showSnackBar(context!,
             scaffoldKey: scaffoldKey, message: decodedData['message']);
 
 
@@ -54,14 +55,14 @@ CreateFleetResponse? fleetResponse;
         CustomLogger().logWithFile(Level.error, "EXE RESP: $response");
 
         if (scaffoldKey != null) {
-          Utils.showSnackBar(context,
+          Utils.showSnackBar(context!,
               scaffoldKey: scaffoldKey, message: decodedData['message']);
         }
 
         fleetResponse = null;
       } else {
         if (scaffoldKey != null) {
-          Utils.showSnackBar(context,
+          Utils.showSnackBar(context!,
               scaffoldKey: scaffoldKey, message: decodedData['message']);
         }
 
@@ -71,21 +72,22 @@ CreateFleetResponse? fleetResponse;
         CustomLogger().logWithFile(Level.info, "EXE RESP STATUS CODE: ${response.statusCode} ->");
         CustomLogger().logWithFile(Level.info, "EXE RESP: $response");
       }
-      fleetResponse = null;
+     fleetResponse = null;
     } on SocketException catch (_) {
-      await Utils().check(scaffoldKey);
+      await Utils().check(scaffoldKey!);
 
       Utils.customPrint('Socket Exception');
       CustomLogger().logWithFile(Level.error, "Socket Exception ->");
 
-      fleetResponse = null;
+      //fleetResponse = null;
     } catch (exception, s) {
-      Utils.customPrint('error caught Crate New Fleet:- $exception \n $s');
+      Utils.customPrint('error caught Invite Fleet Members Fleet:- $exception \n $s');
       CustomLogger().logWithFile(Level.error, "error caught create Fleet:- $exception \n $s -> ");
       fleetResponse = null;
     }
-    return fleetResponse ?? CreateFleetResponse();
+    return 
+    fleetResponse ?? CreateFleetResponse();
   }
 
-  }
-//}
+  
+}
