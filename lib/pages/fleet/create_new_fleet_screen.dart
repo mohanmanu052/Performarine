@@ -2,12 +2,15 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:get/get.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_text_feild.dart';
 import 'package:performarine/pages/fleet/my_fleet_screen.dart';
 import 'package:performarine/pages/fleet/search_widget.dart';
+import 'package:performarine/provider/common_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
 import '../../common_widgets/utils/colors.dart';
@@ -28,14 +31,15 @@ class CreateNewFleetScreen extends StatefulWidget {
 class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   GlobalKey<FormState> formKey = GlobalKey();
-
+  CommonProvider? commonProvider;
   final TextEditingController fleetNameEditingController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController ownerNameEditingController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController emailEditingController = TextEditingController();
+  bool isLoading = false;
 
-  // List<String> inviteEmailList = [];
+// List<String> inviteEmailList = [];
 
   List<SearchWidget> searchWidgetList = [];
 
@@ -45,29 +49,20 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
   List<TextEditingController> textControllersList = [];
   List<bool> enableControllerKeyList = [];
   List<String> inviteEmailList = [];
-
-  /*2 list string and text editng
-
-  + add more - add text editing in list
-
-  listview- texteditiung.lenght
-
-  onfeildsubmit - done - onfield - focus gone
-  value add in email list list
-
-  remove - textediting controll list remove controller
-
-  validation - email validator*/
+  final fleetName_formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
-    // TODO: implement initState
+    commonProvider = context.read<CommonProvider>();
+
+// TODO: implement initState
     super.initState();
   }
 
+  List<Widget> children = [];
+
   @override
   Widget build(BuildContext context) {
-    List<Widget> children = [];
     for (int index = 0; index < fieldKeyList.length; index++) {
       children.add(
         Padding(
@@ -81,44 +76,50 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
                 fontFamily: outfit,
                 color: Colors.black),
             decoration: InputDecoration(
-              hintText: 'Email',
-              hintStyle: TextStyle(
-                  fontSize: displayWidth(context) * 0.038,
-                  fontFamily: outfit,
-                  color: Colors.grey),
-              filled: true,
-              fillColor: Colors.blue.shade50,
-              suffixIcon: InkWell(
-                child: Icon(
-                  Icons.close,
-                  color: Colors.black87,
-                ),
-                onTap: () {
-                  fieldKeyList.removeAt(index);
-                  textControllersList.removeAt(index);
-                  enableControllerKeyList.removeAt(index);
-
-                  if (inviteEmailList.length > index)
-                    inviteEmailList.removeAt(index);
-                  setState(() {});
-                  Future.delayed(Duration(milliseconds: 400), () {
+                hintText: 'Email',
+                hintStyle: TextStyle(
+                    fontSize: displayWidth(context) * 0.038,
+                    fontFamily: outfit,
+                    color: Colors.grey),
+                filled: true,
+                fillColor: Colors.blue.shade50,
+                suffixIcon: InkWell(
+                  child: Icon(
+                    Icons.close,
+                    color: Colors.black87,
+                  ),
+                  onTap: () {
+                    fieldKeyList.removeAt(index);
+                    textControllersList.removeAt(index);
+                    enableControllerKeyList.removeAt(index);
+                    if (inviteEmailList.length > index)
+                      inviteEmailList.removeAt(index);
                     setState(() {});
-                  });
-                },
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.blue.shade50),
-                borderRadius: BorderRadius.circular(18),
-              ),
-              disabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.blue.shade50),
-                borderRadius: BorderRadius.circular(18),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.blue.shade50),
-                borderRadius: BorderRadius.circular(18),
-              ),
-            ),
+                    Future.delayed(Duration(milliseconds: 400), () {
+                      setState(() {});
+                    });
+                  },
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.blue.shade50),
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                disabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.blue.shade50),
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.blue.shade50),
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.blue.shade50),
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.blue.shade50),
+                  borderRadius: BorderRadius.circular(18),
+                )),
             readOnly: enableControllerKeyList[index],
             validator: (value) {
               if (value!.isEmpty) {
@@ -145,23 +146,10 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
                   setState(() {});
                 }
               }
-              /*FocusScope.of(context).requestFocus(new FocusNode());
-              if (!inviteEmailList.contains(value)) {
-                inviteEmailList[index] = value;
-              }
-              else
-              {
-                fieldKeyList.removeAt(index);
-                inviteEmailList.removeAt(index);
-                setState(() {
-                });
-
-                Utils.showSnackBar(context, scaffoldKey: scaffoldKey, message: 'Email is already selected.');
-              }*/
             },
           ),
         ),
-        /* SearchWidget(
+/* SearchWidget(
         key: fieldKeyList[index],
         index: index,
         onSelect: (value) {
@@ -231,29 +219,41 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
         children: [
           SingleChildScrollView(
             child: Container(
-              //height: displayHeight(context),
+//height: displayHeight(context),
               margin: EdgeInsets.symmetric(horizontal: 17, vertical: 17),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextFormField(
-                    controller: fleetNameEditingController,
-                    decoration: InputDecoration(
-                      hintText: 'Fleet Name',
-                      hintStyle: TextStyle(
-                          fontSize: displayWidth(context) * 0.038,
-                          fontFamily: outfit,
-                          color: Colors.grey),
-                      filled: true,
-                      fillColor: Colors.blue.shade50,
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue.shade50),
-                        borderRadius: BorderRadius.circular(18),
+                  Form(
+                    key: fleetName_formKey,
+                    child: TextFormField(
+                      controller: fleetNameEditingController,
+                      decoration: InputDecoration(
+                        hintText: 'Fleet Name',
+                        hintStyle: TextStyle(
+                            fontSize: displayWidth(context) * 0.038,
+                            fontFamily: outfit,
+                            color: Colors.grey),
+                        filled: true,
+                        fillColor: Colors.blue.shade50,
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue.shade50),
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue.shade50),
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue.shade50),
+                          borderRadius: BorderRadius.circular(18),
+                        ),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue.shade50),
-                        borderRadius: BorderRadius.circular(18),
-                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter fleet name';
+                        }
+                      },
                     ),
                   ),
                   SizedBox(
@@ -275,7 +275,7 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       children:
-                      List.generate(textControllersList.length, (index1) {
+                          List.generate(textControllersList.length, (index1) {
                         return children[index1];
                       }).toList(),
                     ),
@@ -299,67 +299,67 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
                           left: 17, right: 17, top: 8, bottom: 12),
                       child: InkWell(
                         onTap: textControllersList
-                            .where((element) => element.text.isEmpty)
-                            .toList()
-                            .length >
-                            0
+                                    .where((element) => element.text.isEmpty)
+                                    .toList()
+                                    .length >
+                                0
                             ? null
                             : !(formKey.currentState?.validate() ?? true)
-                            ? null
-                            : () {
-                          if (enableControllerKeyList
-                              .contains(false)) {
-                            if (formKey.currentState!.validate()) {
-                              int index =
-                              enableControllerKeyList.indexWhere(
-                                      (element) => element == false);
-                              if (!inviteEmailList.contains(
-                                  textControllersList[index].text)) {
-                                inviteEmailList.add(
-                                    textControllersList[index].text);
-                                enableControllerKeyList[index] = true;
-                              } else {
-                                Utils.showSnackBar(context,
-                                    scaffoldKey: scaffoldKey,
-                                    message:
-                                    'Email is already added');
-                                textControllersList[index].clear();
-                                enableControllerKeyList[index] =
-                                false;
-                              }
-                            }
-                          } else {
-                            fieldKeyList.add(Key(
-                                Random().nextInt(9999).toString()));
-                            textControllersList
-                                .add(TextEditingController());
-                            enableControllerKeyList.add(false);
-                          }
+                                ? null
+                                : () {
+                                    if (enableControllerKeyList
+                                        .contains(false)) {
+                                      if (formKey.currentState!.validate()) {
+                                        int index =
+                                            enableControllerKeyList.indexWhere(
+                                                (element) => element == false);
+                                        if (!inviteEmailList.contains(
+                                            textControllersList[index].text)) {
+                                          inviteEmailList.add(
+                                              textControllersList[index].text);
+                                          enableControllerKeyList[index] = true;
+                                        } else {
+                                          Utils.showSnackBar(context,
+                                              scaffoldKey: scaffoldKey,
+                                              message:
+                                                  'Email is already added');
+                                          textControllersList[index].clear();
+                                          enableControllerKeyList[index] =
+                                              false;
+                                        }
+                                      }
+                                    } else {
+                                      fieldKeyList.add(Key(
+                                          Random().nextInt(9999).toString()));
+                                      textControllersList
+                                          .add(TextEditingController());
+                                      enableControllerKeyList.add(false);
+                                    }
 
-                          //inviteEmailList.add('');
+//inviteEmailList.add('');
 
-                          setState(() {});
-                          /*if (inviteCountList.isEmpty) {
+                                    setState(() {});
+/*if (inviteCountList.isEmpty) {
                           inviteCountList.add(0);
                           } else {
                           inviteCountList.add(inviteCountList.last + 1);
                           }
         */
-                        },
+                                  },
                         child: commonText(
                             context: context,
                             text: '+ Add More Invite',
                             fontWeight: FontWeight.w500,
                             textColor: textControllersList
-                                .where(
-                                    (element) => element.text.isEmpty)
-                                .toList()
-                                .length >
-                                0
+                                        .where(
+                                            (element) => element.text.isEmpty)
+                                        .toList()
+                                        .length >
+                                    0
                                 ? Colors.grey
                                 : !(formKey.currentState?.validate() ?? true)
-                                ? Colors.grey
-                                : blueColor,
+                                    ? Colors.grey
+                                    : blueColor,
                             textSize: displayWidth(context) * 0.038,
                             textAlign: TextAlign.start),
                       )),
@@ -373,7 +373,7 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
                         buttonPrimaryColor: blueColor,
                         borderColor: blueColor,
                         width: displayWidth(context),
-                        onTap: () {
+                        onTap: () async {
                           if (formKey.currentState!.validate()) {
                             print('IS EMPTY: ${inviteEmailList}');
                             if (enableControllerKeyList.contains(false)) {
@@ -393,13 +393,39 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
                               }
                             }
 
-                            // Navigator.pushReplacement(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //       builder: (context) => MyFleetScreen(
-                            //             data: true,
-                            //           )),
-                            // );
+                            if (fleetName_formKey.currentState!.validate()) {
+                              isLoading = true;
+                              setState(() {});
+                              List emailList = [];
+                              for (int i = 0;
+                                  i < textControllersList.length;
+                                  i++) {
+                                emailList.add(textControllersList[i].text);
+                              }
+                              var data = {
+                                'fleetName': fleetNameEditingController.text,
+                                'fleetmembers': emailList
+                              };
+
+                              var res = await commonProvider!.createNewFleet(
+                                  commonProvider!.loginModel!.token!,
+                                  context,
+                                  scaffoldKey,
+                                  data);
+                              if (res.statusCode == 200) {
+                                isLoading = false;
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => MyFleetScreen(
+                                            data: true,
+                                          )),
+                                );
+                              } else {
+                                isLoading = false;
+                                setState(() {});
+                              }
+                            }
                           }
                         }),
                   ),
@@ -411,9 +437,9 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => FeedbackReport(
-                                  imagePath: image.toString(),
-                                  uIntList: image,
-                                )));
+                                      imagePath: image.toString(),
+                                      uIntList: image,
+                                    )));
                       },
                       child: UserFeedback().getUserFeedback(context)),
                   SizedBox(
@@ -423,6 +449,10 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
               ),
             ),
           ),
+          if (isLoading)
+            Center(
+              child: CircularProgressIndicator(),
+            )
         ],
       ),
     );
