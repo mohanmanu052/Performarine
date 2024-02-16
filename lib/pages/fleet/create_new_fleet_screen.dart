@@ -2,12 +2,15 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:get/get.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_text_feild.dart';
 import 'package:performarine/pages/fleet/my_fleet_screen.dart';
 import 'package:performarine/pages/fleet/search_widget.dart';
+import 'package:performarine/provider/common_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
 import '../../common_widgets/utils/colors.dart';
@@ -28,33 +31,38 @@ class CreateNewFleetScreen extends StatefulWidget {
 class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   GlobalKey<FormState> formKey = GlobalKey();
-
+CommonProvider? commonProvider;
   final TextEditingController fleetNameEditingController =
   TextEditingController();
   final TextEditingController ownerNameEditingController =
   TextEditingController();
   final TextEditingController emailEditingController = TextEditingController();
-
+bool isLoading=false;
   // List<String> inviteEmailList = [];
 
   List<SearchWidget> searchWidgetList = [];
 
   final controller = ScreenshotController();
 
+
   List<Key> fieldKeyList = [];
   List<TextEditingController> textControllersList = [];
   List<bool> enableControllerKeyList = [];
   List<String> inviteEmailList = [];
+    final fleetName_formKey = GlobalKey<FormState>();
+
 
   @override
   void initState() {
+        commonProvider = context.read<CommonProvider>();
+
     // TODO: implement initState
     super.initState();
   }
+    List<Widget> children = [];
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> children = [];
     for (int index = 0; index < fieldKeyList.length; index++) {
       children.add(
         Padding(
@@ -75,8 +83,7 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
                   color: Colors.grey),
               filled: true,
               fillColor: Colors.blue.shade50,
-              suffixIcon: textControllersList[index].text.isNotEmpty
-                  ? InkWell(
+              suffixIcon:  InkWell(
                 child: Icon(
                   Icons.close,
                   color: Colors.black87,
@@ -88,9 +95,11 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
                   if (inviteEmailList.length > index)
                     inviteEmailList.removeAt(index);
                   setState(() {});
+
+                    
                 },
               )
-                  : null,
+                  ,
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.blue.shade50),
                 borderRadius: BorderRadius.circular(18),
@@ -138,19 +147,6 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
                   setState(() {});
                 }
               }
-              /*FocusScope.of(context).requestFocus(new FocusNode());
-              if (!inviteEmailList.contains(value)) {
-                inviteEmailList[index] = value;
-              }
-              else
-              {
-                fieldKeyList.removeAt(index);
-                inviteEmailList.removeAt(index);
-                setState(() {
-                });
-
-                Utils.showSnackBar(context, scaffoldKey: scaffoldKey, message: 'Email is already selected.');
-              }*/
             },
           ),
         ),
@@ -229,25 +225,39 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TextFormField(
-                    controller: fleetNameEditingController,
-                    decoration: InputDecoration(
-                      hintText: 'Fleet Name',
-                      hintStyle: TextStyle(
-                          fontSize: displayWidth(context) * 0.038,
-                          fontFamily: outfit,
-                          color: Colors.grey),
-                      filled: true,
-                      fillColor: Colors.blue.shade50,
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue.shade50),
-                        borderRadius: BorderRadius.circular(18),
+                  Form(
+                    key: fleetName_formKey,
+                    child: TextFormField(
+                      controller: fleetNameEditingController,
+                      decoration: InputDecoration(
+                        hintText: 'Fleet Name',
+                        hintStyle: TextStyle(
+                            fontSize: displayWidth(context) * 0.038,
+                            fontFamily: outfit,
+                            color: Colors.grey),
+                        filled: true,
+                        fillColor: Colors.blue.shade50,
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue.shade50),
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue.shade50),
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blue.shade50),
+                          borderRadius: BorderRadius.circular(18),
+                        ),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue.shade50),
-                        borderRadius: BorderRadius.circular(18),
-                      ),
+                      validator: (value) {
+                        if(value!.isEmpty){
+                          return 'Please enter fleet name';
+
+                        }
+                      },
                     ),
+                    
                   ),
                   SizedBox(
                     height: displayHeight(context) * 0.04,
@@ -366,7 +376,7 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
                         buttonPrimaryColor: blueColor,
                         borderColor: blueColor,
                         width: displayWidth(context),
-                        onTap: () {
+                        onTap: ()async {
                           if (formKey.currentState!.validate()) {
                             print('IS EMPTY: ${inviteEmailList}');
                             if (enableControllerKeyList.contains(false)) {
@@ -385,16 +395,45 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
                                 enableControllerKeyList[index] = false;
                               }
                             }
+                            
+                            if(fleetName_formKey.currentState!.validate()){
+                              isLoading=true;
+                              setState(() {
+                                
+                              });
+                              List emailList=[];
+                              for(int i=0;i<textControllersList.length;i++){
+emailList.add(textControllersList[i].text);
+                              }
+                           var data=   {
+                                'fleetName':fleetNameEditingController.text,
+                                'fleetmembers':emailList
+                              };
 
-                            Navigator.push(
+var res=await commonProvider!.createNewFleet(commonProvider!.loginModel!.token!, context, scaffoldKey, data);
+                          if(res.statusCode==200){
+                            isLoading=false;
+                                                        Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => MyFleetScreen(
                                         data: true,
                                       )),
+
+                            
+                            
                             );
+                          }else{
+isLoading=false;
+setState(() {
+  
+});
                           }
-                        }),
+                          
+                          
+
+                          }
+                        }}),
                   ),
                   GestureDetector(
                       onTap: () async {
@@ -416,6 +455,10 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
               ),
             ),
           ),
+if(isLoading)
+          Center(
+            child: CircularProgressIndicator(),
+          )
         ],
       ),
     );
