@@ -10,6 +10,7 @@ import 'package:performarine/models/common_model.dart';
 import 'package:performarine/models/create_fleet_response.dart';
 import 'package:performarine/models/delete_trip_model.dart';
 import 'package:performarine/models/export_report_model.dart';
+import 'package:performarine/models/fleet_dashboard_model.dart';
 import 'package:performarine/models/get_user_config_model.dart';
 import 'package:performarine/models/login_model.dart';
 import 'package:performarine/models/registration_model.dart';
@@ -21,6 +22,8 @@ import 'package:performarine/provider/add_vessel_api_provider.dart';
 import 'package:performarine/provider/change_password_provider.dart';
 import 'package:performarine/provider/create_newfleet_provider.dart';
 import 'package:performarine/provider/delete_trip_api_provider.dart';
+import 'package:performarine/provider/fleet_dashboard_api_provider.dart';
+import 'package:performarine/provider/fleet_member_invitation_api_provider.dart';
 import 'package:performarine/provider/fleet_sendinvite_provider.dart';
 import 'package:performarine/provider/get_user_config_api_provider.dart';
 import 'package:performarine/provider/login_api_provider.dart';
@@ -68,6 +71,8 @@ class CommonProvider with ChangeNotifier {
   int bottomNavIndex = 0;
   List<File?> selectedImageFiles = [];
   CommonModel? userInfoCommonModel;
+  FleetDashboardModel? fleetDashboardModel;
+  CommonModel? fleetMemberModel;
 
 
   init() {
@@ -481,6 +486,30 @@ Future<CreateFleetResponse> sendFleetInvite(String token, BuildContext context,G
   var response =SendInviteProvider ().sendFleetInvite(token: token,context: context,scaffoldKey: scaffoldKey,data: data);
 return response;
 }
+
+  Future<FleetDashboardModel> fleetDashboardDetails(
+      BuildContext context,
+      String token,
+      GlobalKey<ScaffoldState> scaffoldKey) async {
+    fleetDashboardModel = FleetDashboardModel();
+    fleetDashboardModel = await FleetDashboardApiProvider().fleetDashboardData(context, token, scaffoldKey);
+    notifyListeners();
+
+    return fleetDashboardModel!;
+  }
+
+  Future<CommonModel> fleetMemberInvitation(
+      BuildContext context,
+      String token,
+      String invitationToken,
+      String invitationFlag,
+      GlobalKey<ScaffoldState> scaffoldKey) async {
+    commonModel = CommonModel();
+    commonModel = await FleetMemberInvitationApiProvider().fleetMemberInvitation(context, token, invitationToken, invitationFlag, scaffoldKey);
+    notifyListeners();
+
+    return commonModel!;
+  }
 
 
 }
