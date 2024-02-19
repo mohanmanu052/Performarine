@@ -113,7 +113,9 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                     builder: (context, snapShot)
                     {
                       if (snapShot.connectionState == ConnectionState.waiting) {
-                        return Center(child: const CircularProgressIndicator());
+                        return SizedBox(
+                          height: displayHeight(context)/1.5,
+                            child: Center(child: const CircularProgressIndicator()));
                       }
                       else if (snapShot.data == null) {
                         return const Text('No data found.');
@@ -348,7 +350,7 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                         childrenPadding: EdgeInsets.zero,
                                         title: commonText(
                                             context: context,
-                                            text: 'Fleet I am In',
+                                            text: 'Fleets I am In',
                                             fontWeight: FontWeight.w500,
                                             textColor: blueColor,
                                             textSize: displayWidth(context) * 0.048,
