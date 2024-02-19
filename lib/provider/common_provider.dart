@@ -7,6 +7,7 @@ import 'package:performarine/lpr_device_handler.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/add_vessel_model.dart';
 import 'package:performarine/models/common_model.dart';
+import 'package:performarine/models/create_fleet_response.dart';
 import 'package:performarine/models/delete_trip_model.dart';
 import 'package:performarine/models/export_report_model.dart';
 import 'package:performarine/models/get_user_config_model.dart';
@@ -18,7 +19,9 @@ import 'package:performarine/models/upload_trip_model.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/provider/add_vessel_api_provider.dart';
 import 'package:performarine/provider/change_password_provider.dart';
+import 'package:performarine/provider/create_newfleet_provider.dart';
 import 'package:performarine/provider/delete_trip_api_provider.dart';
+import 'package:performarine/provider/fleet_sendinvite_provider.dart';
 import 'package:performarine/provider/get_user_config_api_provider.dart';
 import 'package:performarine/provider/login_api_provider.dart';
 import 'package:performarine/provider/registration_api_provider.dart';
@@ -468,5 +471,16 @@ Future<ExportDataModel> exportReportData(Map<String,dynamic>body,String token,Bu
 
     return userInfoCommonModel!;
   }
+
+Future<CreateFleetResponse> createNewFleet(String token, BuildContext context,GlobalKey<ScaffoldState> scaffoldKey, Map<String,dynamic>? data)async{
+  var response =CreateNewFleetProvider().createFleet(token, scaffoldKey,context,  data!);
+return response;
+}
+
+Future<CreateFleetResponse> sendFleetInvite(String token, BuildContext context,GlobalKey<ScaffoldState> scaffoldKey, Map<String,dynamic>? data)async{
+  var response =SendInviteProvider ().sendFleetInvite(token: token,context: context,scaffoldKey: scaffoldKey,data: data);
+return response;
+}
+
 
 }

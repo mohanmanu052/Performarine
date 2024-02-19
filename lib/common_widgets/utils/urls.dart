@@ -37,7 +37,9 @@ class Urls {
 
   // Update User Info
   static const updateUserInfo = '/api/auth/updateUserInfo';
-
+  //Create Fleet
+static const creteNewFleet='/api/createfleet';
+static const inViteFleetMembers='/api/addfleetmembers';
 
   static String baseUrlVersion = '';
 
