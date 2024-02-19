@@ -8,11 +8,14 @@ import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/custom_fleet_dailog.dart';
+import 'package:performarine/models/fleet_list_model.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
 import 'package:performarine/pages/fleet/widgets/fleet_details_card.dart';
 import 'package:performarine/pages/fleet/widgets/member_details_widget.dart';
+import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
+import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
 class FleetVesselScreen extends StatefulWidget {
@@ -25,13 +28,18 @@ int? tabIndex;
 class _FleetVesselScreenState extends State<FleetVesselScreen> with TickerProviderStateMixin{
 GlobalKey<ScaffoldState> _scafoldKey=GlobalKey();
   final DatabaseService _databaseService = DatabaseService();
-List<String> fleetData=['Fleet1','Fleet2','Fleet3','Fleet4'];
+List<String> fleetDataDummy=['Fleet1','Fleet2','Fleet3','Fleet4'];
   late Future<List<CreateVessel>> getVesselFuture;
   TabController?  _tabController;
+CommonProvider? commonProvider;
+  FleetListModel? fleetdata;
+ FleetData? selectedFleetvalue;
 
 int currentTabIndex=0;
 @override
   void initState() {
+        commonProvider= context.read<CommonProvider>();
+
  _tabController=    TabController(length: 2, vsync: this,initialIndex: widget.tabIndex??0);
  _tabController!.addListener(_handleTabSelection);
         getVesselFuture = _databaseService.vessels();
@@ -40,9 +48,24 @@ if(widget.tabIndex!=null){
   setState(() {
     
   });
+
 }
+  getFleetDetails();
+
     // TODO: implement initState
     super.initState();
+  }
+  void getFleetDetails()async{
+     fleetdata=await   commonProvider?.getFleetListdata(
+      token: commonProvider!.loginModel!.token,
+      scaffoldKey: _scafoldKey,
+      context: context
+    );
+
+setState(() {
+  
+});
+
   }
 
     void _handleTabSelection() {
@@ -97,7 +120,7 @@ Container(
   alignment: Alignment.center,
   child: InkWell(
     onTap: () {
-      CustomFleetDailog().showEditFleetDialog(context: context,fleetData: fleetData);
+      CustomFleetDailog().showEditFleetDialog(context: context,fleetData: fleetDataDummy);
     },
     child: commonText(text: 'Edit Fleet',
     
@@ -132,143 +155,146 @@ Container(
             children: [
               SizedBox(height: 20,),
           
-          DropdownButtonHideUnderline(
-                  child: DropdownButtonFormField2<String>(
-                      value: 'Fleet1',
-                      
-                    iconStyleData: IconStyleData(
-                      icon: Icon(Icons.keyboard_arrow_down,
-                      size: 30,
-                      )
-                    ),
-                                                    isExpanded: true,
-                                                    buttonStyleData: ButtonStyleData(
-                                                      height: 40,width: 40,
-
-                                                      padding: EdgeInsets.only(left: 20,right: 40)
-                                                    ),
-                                                    decoration: InputDecoration(
-                                                      //errorText: _showDropdownError1 ? 'Select Vessel' : null,
-
-                                                      contentPadding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 0,
-                                                              vertical:  10
-                                                                  ),
-
-                                                      focusedBorder: OutlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              width: 1.5,
-                                                              color: Colors
-                                                                  .transparent),
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          15))),
-                                                      enabledBorder: OutlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              width: 1.5,
-                                                              color: Colors
-                                                                  .transparent),
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          15))),
-                                                      errorBorder: OutlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              width: 1.5,
-                                                              color: Colors
-                                                                  .red.shade300
-                                                                  .withOpacity(
-                                                                      0.7)),
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          15))),
-                                                      errorStyle: TextStyle(
-                                                          fontFamily: inter,
-                                                          fontSize: displayWidth(
-                                                                      context) *
-                                                                  0.025
+          SizedBox(
+            child:fleetdata!=null&&fleetdata!.data!=null? DropdownButtonHideUnderline(
+                    child: DropdownButtonFormField2<FleetData>(
+                        value: selectedFleetvalue,
+                        
+                        
+                      iconStyleData: IconStyleData(
+                        icon: Icon(Icons.keyboard_arrow_down,
+                        size: 30,
+                        )
+                      ),
+                                                      isExpanded: true,
+                                                      buttonStyleData: ButtonStyleData(
+                                                        height: 40,width: 40,
+            
+                                                        padding: EdgeInsets.only(left: 20,right: 40)
                                                       ),
-                                                      focusedErrorBorder: OutlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              width: 1.5,
-                                                              color: Colors
-                                                                  .red.shade300
-                                                                  .withOpacity(
-                                                                      0.7)),
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          15))),
-                                                      fillColor:
-                                                          dropDownBackgroundColor,
-                                                      filled: true,
-
-                                                      hintStyle: TextStyle(
-                                                          color: Theme.of(context)
-                                                                      .brightness ==
-                                                                  Brightness
-                                                                      .dark
-                                                              ? "Filter By" ==
-                                                                      'User SubRole'
-                                                                  ? Colors
-                                                                      .black54
-                                                                  : Colors.white
-                                                              : Colors.black,
-                                                          fontSize:  displayWidth(
-                                                                      context) *
-                                                                  0.034
-                                                              ,
-                                                          fontFamily: outfit,
-                                                          fontWeight:
-                                                              FontWeight.w300),
-                                                    ),
-                                                    hint: Container(
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      margin: EdgeInsets.only(
-                                                        left: 15,
-                                                      ),
-                                                      child:
-                                                       Text(
-                                                        'Select Fleet',
-                                                        style: TextStyle(
-                                                            color: Colors.black,
+                                                      decoration: InputDecoration(
+                                                        //errorText: _showDropdownError1 ? 'Select Vessel' : null,
+            
+                                                        contentPadding:
+                                                            EdgeInsets.symmetric(
+                                                                horizontal: 0,
+                                                                vertical:  10
+                                                                    ),
+            
+                                                        focusedBorder: OutlineInputBorder(
+                                                            borderSide: BorderSide(
+                                                                width: 1.5,
+                                                                color: Colors
+                                                                    .transparent),
+                                                            borderRadius:
+                                                                BorderRadius.all(
+                                                                    Radius
+                                                                        .circular(
+                                                                            15))),
+                                                        enabledBorder: OutlineInputBorder(
+                                                            borderSide: BorderSide(
+                                                                width: 1.5,
+                                                                color: Colors
+                                                                    .transparent),
+                                                            borderRadius:
+                                                                BorderRadius.all(
+                                                                    Radius
+                                                                        .circular(
+                                                                            15))),
+                                                        errorBorder: OutlineInputBorder(
+                                                            borderSide: BorderSide(
+                                                                width: 1.5,
+                                                                color: Colors
+                                                                    .red.shade300
+                                                                    .withOpacity(
+                                                                        0.7)),
+                                                            borderRadius:
+                                                                BorderRadius.all(
+                                                                    Radius
+                                                                        .circular(
+                                                                            15))),
+                                                        errorStyle: TextStyle(
+                                                            fontFamily: inter,
+                                                            fontSize: displayWidth(
+                                                                        context) *
+                                                                    0.025
+                                                        ),
+                                                        focusedErrorBorder: OutlineInputBorder(
+                                                            borderSide: BorderSide(
+                                                                width: 1.5,
+                                                                color: Colors
+                                                                    .red.shade300
+                                                                    .withOpacity(
+                                                                        0.7)),
+                                                            borderRadius:
+                                                                BorderRadius.all(
+                                                                    Radius
+                                                                        .circular(
+                                                                            15))),
+                                                        fillColor:
+                                                            dropDownBackgroundColor,
+                                                        filled: true,
+            
+                                                        hintStyle: TextStyle(
+                                                            color: Theme.of(context)
+                                                                        .brightness ==
+                                                                    Brightness
+                                                                        .dark
+                                                                ? "Filter By" ==
+                                                                        'User SubRole'
+                                                                    ? Colors
+                                                                        .black54
+                                                                    : Colors.white
+                                                                : Colors.black,
                                                             fontSize:  displayWidth(
                                                                         context) *
-                                                                    0.032,
+                                                                    0.034
+                                                                ,
                                                             fontFamily: outfit,
                                                             fontWeight:
-                                                                FontWeight
-                                                                    .w400),
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
+                                                                FontWeight.w300),
                                                       ),
-                                                    ),
-                      items:fleetData
-                  .map((value) => DropdownMenuItem(
-                        child: commonText(text: value,
-                        fontWeight: FontWeight.w400,
-                        textSize: 16,
-                        textColor: buttonBGColor
-                        
-                        ),
-                        value: value,
-                      ))
-                  .toList(),
-          
-                      onChanged: (newValue) {
-                          setState(() {
-                          });
-                      },
-                  ),
-              ),
+                                                      hint: Container(
+                                                        alignment:
+                                                            Alignment.centerLeft,
+                                                        margin: EdgeInsets.only(
+                                                          left: 15,
+                                                        ),
+                                                        child:
+                                                         Text(
+                                                          'Select Fleet',
+                                                          style: TextStyle(
+                                                              color: Colors.black,
+                                                              fontSize:  displayWidth(
+                                                                          context) *
+                                                                      0.032,
+                                                              fontFamily: outfit,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        ),
+                                                      ),
+                        items:fleetdata!.data!
+                    .map((value) => DropdownMenuItem(
+                          child: commonText(text: value.fleetName,
+                          fontWeight: FontWeight.w400,
+                          textSize: 16,
+                          textColor: buttonBGColor
+                          
+                          ),
+                          value: value,
+                        ))
+                    .toList(),
+            
+                        onChanged: (newValue) {
+                            setState(() {
+                            });
+                        },
+                    ),
+                ):CircularProgressIndicator(),
+          ),
           
           SizedBox(height: 20,),
            

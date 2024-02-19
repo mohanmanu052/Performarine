@@ -386,7 +386,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              MyFleetScreen(bottomNavIndex: widget.bottomNavIndex, data: false,)),
+                                              MyFleetScreen(bottomNavIndex: widget.bottomNavIndex, data: true,)),
                                     );
                                   },
                                   child: commonText(
@@ -414,7 +414,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              MyFleetScreen(bottomNavIndex: widget.bottomNavIndex,data: false,)),
+                                              MyFleetScreen(bottomNavIndex: widget.bottomNavIndex,data: true,)),
                                     );
                                   },
                                   child: commonText(
@@ -442,7 +442,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              MyFleetScreen(bottomNavIndex: widget.bottomNavIndex,data: false,)),
+                                              MyFleetScreen(bottomNavIndex: widget.bottomNavIndex,data: true,)),
                                     );
                                   },
                                   child: commonText(
@@ -1112,7 +1112,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          MyFleetScreen(bottomNavIndex: widget.bottomNavIndex,data: false,)),
+                                          MyFleetScreen(bottomNavIndex: widget.bottomNavIndex,data: true,)),
                                 );
                               },
                               child: commonText(
