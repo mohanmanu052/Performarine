@@ -10,11 +10,13 @@ import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/log_level.dart';
 import 'package:http/http.dart' as http;
+import 'package:performarine/models/common_model.dart';
 
 
 class FleetAssignVesselsProvider with ChangeNotifier{
-  Future<dynamic> addVesselAndGrantAccess({String? token,BuildContext? context,GlobalKey<ScaffoldState> ?scaffoldKey,Map<String,dynamic>? data})async{
-   var response;
+  Future<CommonModel> addVesselAndGrantAccess({String? token,BuildContext? context,GlobalKey<ScaffoldState> ?scaffoldKey,Map<String,dynamic>? data})async{
+   
+   CommonModel? responseModel;
          Utils.customPrint('Fleet List RES : ' + jsonEncode(data));
 
     Map<String,String> headers = {
@@ -26,27 +28,27 @@ class FleetAssignVesselsProvider with ChangeNotifier{
 
 
     try {
-       response = await http.post(uri,
+      var response = await http.post(uri,
           body: jsonEncode(data), headers: headers);
 
-      Utils.customPrint('Fleet List RES : ' + response?.body);
+      Utils.customPrint('Fleet List RES : ' + response.body);
       CustomLogger().logWithFile(Level.info, "Fleet List RES : ' + ' ${response?.body}");
 
-var decodedData=json.decode(response?.body);
-      if (response?.statusCode == HttpStatus.ok) {
+var decodedData=json.decode(response.body);
+      if (response.statusCode == HttpStatus.ok) {
 
-        Utils.customPrint('Add Fleet Vessel  Response : ' + response?.body);
-        CustomLogger().logWithFile(Level.info, "Add Fleet Vessel  Response : ' + ${response?.body}");
-        CustomLogger().logWithFile(Level.info, "API success of ${Urls.baseUrl}${Urls.addFleetVessels}  is: ${response?.statusCode}->");
+        Utils.customPrint('Add Fleet Vessel  Response : ' + response.body);
+        CustomLogger().logWithFile(Level.info, "Add Fleet Vessel  Response : ' + ${response.body}");
+        CustomLogger().logWithFile(Level.info, "API success of ${Urls.baseUrl}${Urls.addFleetVessels}  is: ${response.statusCode}->");
 
-       // fleetResponse = FleetListModel.fromJson(json.decode(response.body));
+        responseModel = CommonModel.fromJson(json.decode(response.body));
 
         Utils.showSnackBar(context!,
             scaffoldKey: scaffoldKey, message: decodedData['message']);
 
 
-         return response;
-      } else if (response?.statusCode == HttpStatus.gatewayTimeout) {
+         return responseModel;
+      } else if (response.statusCode == HttpStatus.gatewayTimeout) {
         Utils.customPrint('EXE RESP STATUS CODE: ${response?.statusCode}');
         Utils.customPrint('EXE RESP: $response');
 
@@ -58,7 +60,7 @@ var decodedData=json.decode(response?.body);
               scaffoldKey: scaffoldKey, message: decodedData['message']);
         }
 
-        response = null;
+        responseModel = null;
       } else {
         if (scaffoldKey != null) {
           Utils.showSnackBar(context!,
@@ -71,21 +73,21 @@ var decodedData=json.decode(response?.body);
         CustomLogger().logWithFile(Level.info, "EXE RESP STATUS CODE: ${response?.statusCode} ->");
         CustomLogger().logWithFile(Level.info, "EXE RESP: $response");
       }
-     response = null;
+     responseModel = null;
     } on SocketException catch (_) {
       await Utils().check(scaffoldKey!);
 
       Utils.customPrint('Socket Exception');
       CustomLogger().logWithFile(Level.error, "Socket Exception ->");
 
-      response = null;
+      responseModel = null;
     } catch (exception, s) {
       Utils.customPrint('error caught Get Fleet List:- $exception \n $s');
       CustomLogger().logWithFile(Level.error, "error caught Get Fleet List:- $exception \n $s -> ");
-      response = null;
+      responseModel = null;
     }
     return 
-    response ;
+    responseModel??CommonModel() ;
   }
 
 

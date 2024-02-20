@@ -298,30 +298,53 @@ Container(
           
           SizedBox(height: 20,),
            
-           TabBar(
-             unselectedLabelColor: Colors.black,
-             labelColor: Colors.white,
+           Container(
+             child:Stack(
+              children: [
+
+                                Positioned(
+                  bottom: 0,
+                  child: Container(
+                  height: 1,
+                  color: Colors.black,
+                  margin: EdgeInsets.only(left: 20,right: 100, ),
+                  width: displayWidth(context)/1.2,
+                ),
+                
+                ),
+                
+
+
+                              TabBar(
+               unselectedLabelColor: Colors.black,
+               labelColor: Colors.white,
+             indicator: ShapeDecoration(
+               shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft:currentTabIndex==0? Radius.circular(20):Radius.circular(0),
+                bottomLeft:currentTabIndex==0? Radius.circular(20):Radius.circular(0),
+               topRight: currentTabIndex==1? Radius.circular(20):Radius.circular(0),
+               bottomRight: currentTabIndex==1? Radius.circular(20):Radius.circular(0)
+               )),
+               color: blueColor
+             ),
+               tabs: [
              
-           indicator: ShapeDecoration(
-             shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft:currentTabIndex==0? Radius.circular(20):Radius.circular(0),
-              bottomLeft:currentTabIndex==0? Radius.circular(20):Radius.circular(0),
-             topRight: currentTabIndex==1? Radius.circular(20):Radius.circular(0),
-             bottomRight: currentTabIndex==1? Radius.circular(20):Radius.circular(0)
-             )),
-             color: blueColor
+                 Tab(
+             child: Container(child: commonText(text: 'Members'),),
+                 ),
+                 Tab(
+             child: Container(child: commonText(text: 'Vessels'),),
+                 ),
+               ],
+               controller: _tabController,
+               indicatorSize: TabBarIndicatorSize.tab,
+             ),
+
+              ],
+             )
+             
+             
            ),
-             tabs: [
            
-               Tab(
-           child: Container(child: commonText(text: 'Members'),),
-               ),
-               Tab(
-           child: Container(child: commonText(text: 'Vessels'),),
-               ),
-             ],
-             controller: _tabController,
-             indicatorSize: TabBarIndicatorSize.tab,
-           ),
             Expanded(
               child: TabBarView(
                 physics: NeverScrollableScrollPhysics(),
@@ -353,82 +376,6 @@ Container(
         )
         
         
-        // SingleChildScrollView(
-        //   child: Column(
-        //     crossAxisAlignment: CrossAxisAlignment.center,
-        //     mainAxisAlignment: MainAxisAlignment.center,
-        //     children: [
-        //       Container(
-        //         color: backgroundColor,
-        //         child: FutureBuilder<List<CreateVessel>>(
-        //           future: getVesselFuture,
-        //           builder: (context, snapshot) {
-        //             if (snapshot.connectionState == ConnectionState.waiting) {
-        //               return Center(
-        //                 child: CircularProgressIndicator(
-        //                   valueColor:
-        //                       AlwaysStoppedAnimation<Color>(circularProgressColor),
-        //                 ),
-        //               );
-        //             }
-        //             Utils.customPrint('Fleet Vessel HAS DATA: ${snapshot.hasData}');
-        //             Utils.customPrint('Fleet Vessel Error: ${snapshot.error}');
-        //             Utils.customPrint('Fleet Vessel IsError: ${snapshot.hasError}');
-        //             if (snapshot.hasData) {
-        //               if (snapshot.data!.isEmpty) {
-        //                 return Padding(
-        //                   padding: EdgeInsets.only(top: displayHeight(context) * 0.43),
-        //                   child: Center(
-        //                     child: commonText(
-        //                         context: context,
-        //                         text: 'No vessels available'.toString(),
-        //                         fontWeight: FontWeight.w500,
-        //                         textColor: Colors.black,
-        //                         textSize: displayWidth(context) * 0.04,
-        //                         textAlign: TextAlign.start),
-        //                   ),
-        //                 );
-        //               } else {
-        //                 return Column(
-        //                   children: [
-        //                     Container(
-        //                       // height: displayHeight(context),
-        //                       color: backgroundColor,
-        //                       padding: const EdgeInsets.only(
-        //                           left: 8.0, right: 8.0, top: 8, bottom: 10),
-        //                       child: ListView.builder(
-        //                         itemCount: snapshot.data!.length,
-        //                         primary: false,
-        //                         shrinkWrap: true,
-        //                         //physics: NeverScrollableScrollPhysics(),
-        //                         itemBuilder: (context, index) {
-        //                           final vessel = snapshot.data![index];
-        //                           return snapshot.data![index].vesselStatus == 1
-        //                               ? vesselSingleViewCard(context, vessel,
-        //                                   (CreateVessel value) {
-
-        //                                   }, _scafoldKey)
-        //                               : SizedBox();
-        //                         },
-        //                       ),
-        //                     ),
-        //                   ],
-        //                 );
-        //               }
-        //             }
-        //             return Container();
-        //           },
-        //         ),
-        //       ),
-
-        //       SizedBox(
-        //         height: displayWidth(context) * 0.04,
-        //       )
-        //     ],
-        //   ),
-        // ),
-        
-
           );
 
   }

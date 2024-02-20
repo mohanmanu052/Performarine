@@ -491,7 +491,7 @@ Future<FleetListModel> getFleetListdata(
   var response=await FleetListProvider().getFleetDetails(context: context,token: token,scaffoldKey: scaffoldKey);
 return response;
 }
-Future<dynamic> addFleetVessels( {BuildContext? context,String? token,GlobalKey<ScaffoldState>? scaffoldKey,Map<String,dynamic>? data})async{
+Future<CommonModel> addFleetVessels( {BuildContext? context,String? token,GlobalKey<ScaffoldState>? scaffoldKey,Map<String,dynamic>? data})async{
 var res=await FleetAssignVesselsProvider().addVesselAndGrantAccess(context: context,token: token,scaffoldKey: scaffoldKey,data: data);
 return res;
 }

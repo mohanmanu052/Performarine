@@ -377,6 +377,7 @@ setState(() {
                           borderColor: blueColor,
                           width: displayWidth(context),
                           onTap: () async{
+                            if(selectedFleetvalue!=null){
                             if(textControllersList.isNotEmpty&&textControllersList!=null){
                             if(formKey.currentState!.validate()){
                               isLoading=true;
@@ -416,6 +417,9 @@ setState(() {
                           }
                           else{
   ScaffoldMessenger.maybeOf(context)!.showSnackBar(SnackBar(content:Text('Please Select Members')));
+}}else{
+    ScaffoldMessenger.maybeOf(context)!.showSnackBar(SnackBar(content:Text('Please Select Fleet')));
+
 }
 
                           

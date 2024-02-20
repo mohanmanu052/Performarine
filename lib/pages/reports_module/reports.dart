@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
+import 'package:performarine/models/fleet_list_model.dart';
 import 'package:performarine/models/get_user_config_model.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/new_trip_analytics_screen.dart';
@@ -161,6 +162,9 @@ class _ReportsModuleState extends State<ReportsModule>
 //   triSpeedList.length,
 //   (index) => Colors.black, // Initialize with a default color
 // );
+  FleetListModel? fleetdata;
+ FleetData? selectedFleetvalue;
+
 
   List<Color> barColors = [];
 
@@ -510,6 +514,9 @@ class _ReportsModuleState extends State<ReportsModule>
           Level.error, "issue while getting trip list data: $e -> $page");
     }
   }
+
+
+
 
   //Get reports data api to get all details about reports
   getReportsData(int caseType,
@@ -998,6 +1005,17 @@ class _ReportsModuleState extends State<ReportsModule>
           "Error while getting data from report api : $e \n $s -> $page");
     }
   }
+    void getFleetDetails()async{
+     fleetdata=await   commonProvider.getFleetListdata(
+      token: commonProvider.loginModel!.token,
+      scaffoldKey: scaffoldKey,
+      context: context
+    );
+
+setState(() {
+  
+});
+    }
 
   //To get format of HH:mm:ss
   String formatDurations(Duration duration) {
@@ -1084,6 +1102,10 @@ class _ReportsModuleState extends State<ReportsModule>
     });
     tripDurationButtonColor = true;
     addListenerToControllers();
+    if(widget.isTypeFleet??false){
+      getFleetDetails();
+
+    }
     super.initState();
   }
 
@@ -1179,7 +1201,7 @@ if(widget.isTypeFleet??false)
                                           alignment: Alignment.center,
                                           // height: orientation==Orientation.landscape?60:60,
                                           width: displayWidth(context) * 0.8,
-                                          child: Column(
+                                          child:fleetdata!=null&&fleetdata!.data!=null? Column(
                                             children: [
                                               IgnorePointer(
                                                 ignoring: isBtnClick ?? false,
@@ -1187,7 +1209,7 @@ if(widget.isTypeFleet??false)
                                                   child: FormField(
                                                     builder: (state) {
                                                       return DropdownButtonFormField2<
-                                                          DropdownItem>(
+                                                          FleetData>(
                                                         isExpanded: true,
                                                         decoration: InputDecoration(
                                                           //errorText: _showDropdownError1 ? 'Select Vessel' : null,
@@ -1325,11 +1347,11 @@ if(widget.isTypeFleet??false)
                                                                 .ellipsis,
                                                           ),
                                                         ),
-                                                        value: selectedFleet,
+                                                        value: selectedFleetvalue,
                                                         items:
-                                                            fleetList!.map((item) {
+                                                            fleetdata!.data!.map((item) {
                                                           return DropdownMenuItem<
-                                                              DropdownItem>(
+                                                              FleetData>(
                                                             value: item,
                                                             child: Container(
                                                               margin:
@@ -1337,7 +1359,7 @@ if(widget.isTypeFleet??false)
                                                                 left: 15,
                                                               ),
                                                               child: Text(
-                                                                item.name!,
+                                                                item.fleetName!,
                                                                 style: TextStyle(
                                                                     fontSize: orientation ==
                                                                             Orientation
@@ -1392,7 +1414,7 @@ if(widget.isTypeFleet??false)
                                                         onChanged: (item) {
                                                           if (item != null) {
                                                             if (item != null) {
-                                                              selectedFleet=item;
+                                                              selectedFleetvalue=item;
                                                               // Remove error for the first dropdown
                                                               _formKey.currentState
                                                                   ?.validate();
@@ -1529,7 +1551,8 @@ if(widget.isTypeFleet??false)
                                               ),
                                               SizedBox(height: 10,),
                                             ],
-                                          ),
+                                          ):Center(child: CircularProgressIndicator(),),
+                                        
                                         ),
                                       
 
