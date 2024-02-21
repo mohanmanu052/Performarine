@@ -315,7 +315,6 @@ class _BottomNavigationState extends State<BottomNavigation>
   @override
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
-
     var screensList = [
       Dashboard(
           tripData: widget.tripData,
@@ -332,6 +331,8 @@ class _BottomNavigationState extends State<BottomNavigation>
       Trips(),
       VesselsScreen()
     ];
+
+
 
     return WillPopScope(
         onWillPop: () async {
@@ -488,11 +489,11 @@ class _BottomNavigationState extends State<BottomNavigation>
                                 labelPadding: EdgeInsets.zero,
                                 onTap: (index) async {
                                   if (index == 1) {
-                                    // SystemChrome.setPreferredOrientations([
-                                    //   DeviceOrientation.portraitUp,
-                                    //   DeviceOrientation.landscapeLeft,
-                                    //   DeviceOrientation.landscapeRight,
-                                    // ]);
+                                    SystemChrome.setPreferredOrientations([
+                                      DeviceOrientation.portraitUp,
+                                      DeviceOrientation.landscapeLeft,
+                                      DeviceOrientation.landscapeRight,
+                                    ]);
                                   } else {
                                     // SystemChrome.setPreferredOrientations([
                                     //   DeviceOrientation.portraitUp,
@@ -607,7 +608,9 @@ class _BottomNavigationState extends State<BottomNavigation>
     return Padding(
       padding:
           EdgeInsets.only(top: orientation == Orientation.portrait ? 13 : 0),
-      child: AnimatedContainer(
+      child:
+
+      AnimatedContainer(
           width: orientation == Orientation.portrait
               ? displayWidth(context) * 0.13
               : displayWidth(context) * 0.11,

@@ -1551,7 +1551,9 @@ if(widget.isTypeFleet??false)
                                               ),
                                               SizedBox(height: 10,),
                                             ],
-                                          ):Center(child: CircularProgressIndicator(),),
+                                          ):Center(child: CircularProgressIndicator(
+                                            color: blueColor,
+                                          ),),
                                         
                                         ),
                                       

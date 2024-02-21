@@ -6,6 +6,7 @@ import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_text_feild.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/models/fleet_list_model.dart';
 
 class CustomFleetDailog {
 
@@ -147,7 +148,7 @@ Container(
   }
 
 
-    void showEditFleetDialog({List<String>? fleetData,BuildContext? context  })async{
+    void showEditFleetDialog({List<FleetData>? fleetData,BuildContext? context, bool isDropDownEnabled=true ,FleetData? selectedFleetValue})async{
   String selectedStatus= 'Active';
   final _formKey = GlobalKey<FormState>();
     showDialog(
@@ -177,8 +178,9 @@ Container(
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 4),
                 child: DropdownButtonHideUnderline(
-                        child: DropdownButtonFormField2<String>(
-                            value: fleetData![0],
+                  
+                        child: DropdownButtonFormField2<FleetData>(
+                            value:selectedFleetValue,
                             
                           iconStyleData: IconStyleData(
                             icon: Icon(Icons.keyboard_arrow_down,
@@ -297,7 +299,7 @@ Container(
                                                           ),
                             items:fleetData!
                         .map((value) => DropdownMenuItem(
-                              child: commonText(text: value,
+                              child: commonText(text: value.fleetName,
                               fontWeight: FontWeight.w400,
                               textSize: 16,
                               textColor: buttonBGColor
@@ -307,10 +309,14 @@ Container(
                             ))
                         .toList(),
                 
-                            onChanged: (newValue) {
+                            onChanged: isDropDownEnabled?
+                            
+                            
+                            (newValue) {
                                 setState(() {
+                                  selectedFleetValue=newValue;
                                 });
-                            },
+                            }:null,
                         ),
                     ),
               ),
@@ -479,7 +485,7 @@ Container(
                                  ,
                               Colors.transparent,
                               
-                                   primaryColor,
+                                   blueColor,
                                displayHeight(context!) * 0.018,
                                   
                               Colors.transparent,

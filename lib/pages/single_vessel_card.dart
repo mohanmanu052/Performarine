@@ -23,9 +23,9 @@ class _SingleVesselCardState extends State<SingleVesselCard> {
 
   @override
   void initState() {
-        SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
+    //     SystemChrome.setPreferredOrientations([
+    //   DeviceOrientation.portraitUp,
+    // ]);
 
     // TODO: implement initState
     super.initState();
