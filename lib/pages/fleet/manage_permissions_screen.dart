@@ -468,7 +468,7 @@ fleetItem=newValue;
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => MyFleetScreen(data: true,)),
+                              MaterialPageRoute(builder: (context) => MyFleetScreen()),
                            );
                           }),
                     ),

@@ -417,9 +417,7 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => MyFleetScreen(
-                                            data: true,
-                                          )),
+                                      builder: (context) => MyFleetScreen()),
                                 );
                               } else {
                                 isLoading = false;

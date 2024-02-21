@@ -38,7 +38,7 @@ class CustomFleetDailog {
                   ),
                   
                 ),
-if(subtext.isNotEmpty)
+              if(subtext.isNotEmpty)
 
                 Container(
                                     margin: EdgeInsets.symmetric(horizontal: 8),
@@ -53,8 +53,8 @@ if(subtext.isNotEmpty)
                   ),
                   
                 ),
-SizedBox(height: 5,),
-if(description.isNotEmpty)
+                SizedBox(height: 5,),
+                if(description.isNotEmpty)
 
                 Container(
                                     margin: EdgeInsets.symmetric(horizontal: 8),
@@ -121,11 +121,10 @@ Container(
                                         title: positiveButtonText,
                                         context: context,
                                         fontSize: 15,
-                                        
                                         textColor: Colors.white,
                                         buttonPrimaryColor: postiveButtonColor??blueColor,
                                         borderColor:postiveButtonColor?? blueColor,
-                                        onTap:onPostiveButtonTap??(){},
+                                        onTap:onPostiveButtonTap,
                                         width: 170,
                                         height: displayHeight(context)*0.050,
                                         
