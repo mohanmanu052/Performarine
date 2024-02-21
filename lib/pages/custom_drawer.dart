@@ -443,7 +443,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              MyFleetScreen(bottomNavIndex: widget.bottomNavIndex)),
+                                              FleetReports()),
                                     );
                                   },
                                   child: commonText(
@@ -1076,7 +1076,6 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             onTap: () {
                               CustomLogger().logWithFile(Level.info, "User Navigating to Search and Filter -> $page");
                               Navigator.of(context).pop();
-
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(

@@ -7,6 +7,7 @@ import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/custom_fleet_dailog.dart';
 import 'package:performarine/models/fleet_dashboard_model.dart';
+import 'package:performarine/models/fleet_list_model.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
 import 'package:performarine/pages/fleet/fleet_vessel_screen.dart';
 import 'package:performarine/pages/fleet/send_invite_screen.dart';
@@ -191,12 +192,12 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                                                   SizedBox(width: displayWidth(context) * 0.01,),
                                                                   InkWell(
                                                                       onTap: (){
-                                                                        /*List<String> fleetData=[];
-                                                                        for(MyFleetModel data in myFleetList){
-                                                                          fleetData.add(data.fleetName??'');
-
-                                                                        }
-                                                                        CustomFleetDailog().showEditFleetDialog(context: context,fleetData:fleetData );*/
+                                                                        FleetData data=FleetData(
+                                                                          fleetName: snapShot.data!.myFleets![index].fleetName,
+                                                                          id: snapShot.data!.myFleets![index].id,
+                                                                         // fleetOwnerId:snapShot. data!.myFleets![index].
+                                                                        );
+                                                                        CustomFleetDailog().showEditFleetDialog(context: context,fleetData:[data],selectedFleetValue: data,isDropDownEnabled: false );
                                                                       },
 
                                                                       child: Image.asset('assets/icons/Edit.png', height: displayHeight(context) * 0.018, color: blueColor,)),
@@ -678,7 +679,7 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                                                       onTap: (){
 
                                                                         CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to accept fleet Invite?',subtext: snapShot.data!.myFleets![index].fleetName??'',
-                                                                            postiveButtonColor: blueColor,positiveButtonText: 'Accept', negtiveButtuonColor: primaryColor,
+                                                                            postiveButtonColor: blueColor,positiveButtonText: 'Accept', negtiveButtuonColor: blueColor,
                                                                             onNgeitiveButtonTap: (){
                                                                               Navigator.of(context).pop();
                                                                             },

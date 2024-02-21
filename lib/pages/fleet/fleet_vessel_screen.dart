@@ -120,7 +120,7 @@ Container(
   alignment: Alignment.center,
   child: InkWell(
     onTap: () {
-      CustomFleetDailog().showEditFleetDialog(context: context,fleetData: fleetDataDummy);
+      CustomFleetDailog().showEditFleetDialog(context: context,fleetData: fleetdata!.data,selectedFleetValue: fleetdata!.data![0]);
     },
     child: commonText(text: 'Edit Fleet',
     
