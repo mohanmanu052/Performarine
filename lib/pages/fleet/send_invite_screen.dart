@@ -30,13 +30,13 @@ class SendInviteScreen extends StatefulWidget {
 class _SendInviteScreenState extends State<SendInviteScreen> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   final controller = ScreenshotController();
-CommonProvider? commonProvider;
+  CommonProvider? commonProvider;
   List<int> inviteCountList = [];
   List<String> inviteEmailList = [];
  FleetData? selectedFleetvalue;
   List<SearchWidget> searchWidgetList = [];
   List<Key> fieldKeyList = [];
-  bool isLoading=false;
+  bool isLoading = false;
   List<TextEditingController> textControllersList = [];
   List<bool> enableControllerKeyList = [];
   GlobalKey<FormState> formKey = GlobalKey();
@@ -65,93 +65,90 @@ setState(() {
   Widget build(BuildContext context) {
     List<Widget> children = [];
     for (int index = 0; index < fieldKeyList.length; index++) {
-      children.add(
-        Padding(
-          padding: const EdgeInsets.only(bottom: 14.0),
-          child: TextFormField(
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            key: fieldKeyList[index],
-            controller: textControllersList[index],
-            style: TextStyle(
-                fontSize: displayWidth(context) * 0.038,
-                fontFamily: outfit,
-                color: Colors.black),
-            decoration: InputDecoration(
-                hintText: 'Email',
-                hintStyle: TextStyle(
-                    fontSize: displayWidth(context) * 0.038,
-                    fontFamily: outfit,
-                    color: Colors.grey),
-                filled: true,
-                fillColor: Colors.blue.shade50,
-                suffixIcon: InkWell(
-                  child: Icon(
-                    Icons.close,
-                    color: Colors.black87,
-                  ),
-                  onTap: () {
-                    fieldKeyList.removeAt(index);
-                    textControllersList.removeAt(index);
-                    enableControllerKeyList.removeAt(index);
-                    if (inviteEmailList.length > index)
-                      inviteEmailList.removeAt(index);
-                    setState(() {});
-                    Future.delayed(Duration(milliseconds: 400), () {
-                      setState(() {});
-                    });
-                  },
+      children.add(Padding(
+        padding: const EdgeInsets.only(bottom: 14.0),
+        child: TextFormField(
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          key: fieldKeyList[index],
+          controller: textControllersList[index],
+          style: TextStyle(
+              fontSize: displayWidth(context) * 0.038,
+              fontFamily: outfit,
+              color: Colors.black),
+          decoration: InputDecoration(
+              hintText: 'Email',
+              hintStyle: TextStyle(
+                  fontSize: displayWidth(context) * 0.038,
+                  fontFamily: outfit,
+                  color: Colors.grey),
+              filled: true,
+              fillColor: Colors.blue.shade50,
+              suffixIcon: InkWell(
+                child: Icon(
+                  Icons.close,
+                  color: Colors.black87,
                 ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue.shade50),
-                  borderRadius: BorderRadius.circular(18),
-                ),
-                disabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue.shade50),
-                  borderRadius: BorderRadius.circular(18),
-                ),
-                focusedErrorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue.shade50),
-                  borderRadius: BorderRadius.circular(18),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue.shade50),
-                  borderRadius: BorderRadius.circular(18),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue.shade50),
-                  borderRadius: BorderRadius.circular(18),
-                )),
-            readOnly: enableControllerKeyList[index],
-            validator: (value) {
-              if (value!.isEmpty) {
-                return 'Please enter email';
-              } else if (!value.isEmail) {
-                return 'Please enter valid email';
-              } else {
-                return null;
-              }
-            },
-            onFieldSubmitted: (value) {
-              if (formKey.currentState!.validate()) {
-                FocusScope.of(context).unfocus();
-                if (!inviteEmailList.contains(value)) {
-                  inviteEmailList.add(value);
-                  setState(() {
-                    enableControllerKeyList[index] = true;
-                  });
-                } else {
-                  Utils.showSnackBar(context,
-                      scaffoldKey: scaffoldKey,
-                      message: 'Email is already added');
-                  textControllersList[index].clear();
+                onTap: () {
+                  fieldKeyList.removeAt(index);
+                  textControllersList.removeAt(index);
+                  enableControllerKeyList.removeAt(index);
+                  if (inviteEmailList.length > index)
+                    inviteEmailList.removeAt(index);
                   setState(() {});
-                }
+                  Future.delayed(Duration(milliseconds: 400), () {
+                    setState(() {});
+                  });
+                },
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.blue.shade50),
+                borderRadius: BorderRadius.circular(18),
+              ),
+              disabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.blue.shade50),
+                borderRadius: BorderRadius.circular(18),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.blue.shade50),
+                borderRadius: BorderRadius.circular(18),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.blue.shade50),
+                borderRadius: BorderRadius.circular(18),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.blue.shade50),
+                borderRadius: BorderRadius.circular(18),
+              )),
+          readOnly: enableControllerKeyList[index],
+          validator: (value) {
+            if (value!.isEmpty) {
+              return 'Please enter email';
+            } else if (!value.isEmail) {
+              return 'Please enter valid email';
+            } else {
+              return null;
+            }
+          },
+          onFieldSubmitted: (value) {
+            if (formKey.currentState!.validate()) {
+              FocusScope.of(context).unfocus();
+              if (!inviteEmailList.contains(value)) {
+                inviteEmailList.add(value);
+                setState(() {
+                  enableControllerKeyList[index] = true;
+                });
+              } else {
+                Utils.showSnackBar(context,
+                    scaffoldKey: scaffoldKey,
+                    message: 'Email is already added');
+                textControllersList[index].clear();
+                setState(() {});
               }
-            },
-          ),
-        ));
-
-
+            }
+          },
+        ),
+      ));
     }
     return Screenshot(
       controller: controller,
@@ -268,21 +265,21 @@ setState(() {
                       height: displayHeight(context) * 0.015,
                     ),
                     Form(
-                    key: formKey,
-                   child: ListView(
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      children: List.generate(children.length, (index1) {
-                        return children[index1];
-                      }).toList(),
-                    )),
+                        key: formKey,
+                        child: ListView(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          children: List.generate(children.length, (index1) {
+                            return children[index1];
+                          }).toList(),
+                        )),
                     Platform.isIOS
                         ? SizedBox(
-                      height: displayHeight(context) * 0.055,
-                    )
+                            height: displayHeight(context) * 0.055,
+                          )
                         : SizedBox(
-                      height: displayHeight(context) * 0.085,
-                    ),
+                            height: displayHeight(context) * 0.085,
+                          ),
                   ],
                 ),
               ),
@@ -299,75 +296,74 @@ setState(() {
                           left: 17, right: 17, top: 8, bottom: 0),
                       child: InkWell(
                         onTap: textControllersList
-                            .where((element) => element.text.isEmpty)
-                            .toList()
-                            .length >
-                            0
+                                    .where((element) => element.text.isEmpty)
+                                    .toList()
+                                    .length >
+                                0
                             ? null
                             : !(formKey.currentState?.validate() ?? true)
-                            ? null
-                            : () {
-                          if (enableControllerKeyList
-                              .contains(false)) {
-                            if (formKey.currentState!.validate()) {
-                              int index =
-                              enableControllerKeyList.indexWhere(
-                                      (element) => element == false);
-                              if (!inviteEmailList.contains(
-                                  textControllersList[index].text)) {
-                                inviteEmailList.add(
-                                    textControllersList[index].text);
-                                enableControllerKeyList[index] = true;
-                              } else {
-                                Utils.showSnackBar(context,
-                                    scaffoldKey: scaffoldKey,
-                                    message:
-                                    'Email is already added');
-                                textControllersList[index].clear();
-                                enableControllerKeyList[index] =
-                                false;
-                              }
-                            }
-                          } else {
-                            fieldKeyList.add(Key(
-                                Random().nextInt(9999).toString()));
-                            textControllersList
-                                .add(TextEditingController());
-                            enableControllerKeyList.add(false);
-                          }
+                                ? null
+                                : () {
+                                    if (enableControllerKeyList
+                                        .contains(false)) {
+                                      if (formKey.currentState!.validate()) {
+                                        int index =
+                                            enableControllerKeyList.indexWhere(
+                                                (element) => element == false);
+                                        if (!inviteEmailList.contains(
+                                            textControllersList[index].text)) {
+                                          inviteEmailList.add(
+                                              textControllersList[index].text);
+                                          enableControllerKeyList[index] = true;
+                                        } else {
+                                          Utils.showSnackBar(context,
+                                              scaffoldKey: scaffoldKey,
+                                              message:
+                                                  'Email is already added');
+                                          textControllersList[index].clear();
+                                          enableControllerKeyList[index] =
+                                              false;
+                                        }
+                                      }
+                                    } else {
+                                      fieldKeyList.add(Key(
+                                          Random().nextInt(9999).toString()));
+                                      textControllersList
+                                          .add(TextEditingController());
+                                      enableControllerKeyList.add(false);
+                                    }
 
-                          //inviteEmailList.add('');
+                                    //inviteEmailList.add('');
 
-                          setState(() {});
-                          /*if (inviteCountList.isEmpty) {
+                                    setState(() {});
+                                    /*if (inviteCountList.isEmpty) {
                           inviteCountList.add(0);
                           } else {
                           inviteCountList.add(inviteCountList.last + 1);
                           }
         */
-                        },
-
+                                  },
                         child: commonText(
                             context: context,
                             text: '+ Add Another Invite',
                             fontWeight: FontWeight.w500,
                             textColor: textControllersList
-                                .where(
-                                    (element) => element.text.isEmpty)
-                                .toList()
-                                .length >
-                                0
+                                        .where(
+                                            (element) => element.text.isEmpty)
+                                        .toList()
+                                        .length >
+                                    0
                                 ? Colors.grey
                                 : !(formKey.currentState?.validate() ?? true)
-                                ? Colors.grey
-                                : blueColor,
+                                    ? Colors.grey
+                                    : blueColor,
                             textSize: displayWidth(context) * 0.038,
                             textAlign: TextAlign.start),
                       ),
                     ),
                     Padding(
                       padding:
-                      const EdgeInsets.only(left: 17, right: 17, top: 12),
+                          const EdgeInsets.only(left: 17, right: 17, top: 12),
                       child: CommonButtons.getActionButton(
                           title: 'Invite Fleet',
                           context: context,
@@ -388,28 +384,7 @@ setState(() {
                               for(int i=0;i<textControllersList.length;i++){
 emailList.add(textControllersList[i].text);
                               }
-                           var data=   {
-                                'fleetId':selectedFleetvalue?.id,
-                                'fleetmembers':emailList
-                              };
-var res= await commonProvider!.sendFleetInvite(commonProvider!.loginModel!.token!, context, scaffoldKey, data);
-if(res.statusCode==200){
-isLoading=false;
-setState(() {
-  
-});
-
-Navigator.push(context, MaterialPageRoute(builder: (_)=> MyFleetScreen(data: true,)));
-}else{
-  isLoading=false;
-setState(() {
-  
-});
-
-}
-
-                            }
-                            /* Navigator.push(
+                              /* Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => MyDelegateInvitesScreen()),
@@ -433,9 +408,9 @@ setState(() {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => FeedbackReport(
-                                    imagePath: image.toString(),
-                                    uIntList: image,
-                                  )));
+                                        imagePath: image.toString(),
+                                        uIntList: image,
+                                      )));
                         },
                         child: UserFeedback().getUserFeedback(context)),
                     SizedBox(
@@ -445,8 +420,10 @@ setState(() {
                 ),
               ),
             ),
-            if(isLoading)
-            Center(child: CircularProgressIndicator(),),
+            if (isLoading)
+              Center(
+                child: CircularProgressIndicator(),
+              ),
           ],
         ),
       ),
@@ -456,5 +433,6 @@ setState(() {
 
 class EmailModel {
   String? email;
+
   EmailModel({this.email});
 }
