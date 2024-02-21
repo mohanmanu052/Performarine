@@ -398,7 +398,7 @@ emailList.add(textControllersList[i].text);
 }
 
                           
-  }),
+  }}),
                     ),
                     GestureDetector(
                         onTap: () async {
