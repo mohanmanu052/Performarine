@@ -149,7 +149,8 @@ Container(
                 child: Row(
                   children: [
                 Container(
-                  padding: EdgeInsets.only(right: 4),
+                  width: displayWidth(context) * 0.36,
+                 // padding: EdgeInsets.only(right: 4),
                   child: dateofJoin('Date of join:',fleetInviteData[index].dateOfJoin!, Colors.black)),
                
               if( fleetInviteData[index].numberofVessels!=null)
@@ -173,8 +174,11 @@ Container(
 
             Positioned(
               bottom: 0,
+              left: 0,
+              right: 0,
               child: Container(
                 color: Colors.white,
+                width: displayWidth(context),
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: Column(

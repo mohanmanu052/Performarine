@@ -48,6 +48,8 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
     // TODO: implement initState
     super.initState();
 
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
     commonProvider = context.read<CommonProvider>();
     future = commonProvider.fleetDashboardDetails(context, commonProvider.loginModel!.token!, scaffoldKey);
   }
@@ -118,7 +120,18 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                             child: Center(child: const CircularProgressIndicator()));
                       }
                       else if (snapShot.data == null) {
-                        return const Text('No data found.');
+                        return  Container(
+                          height: displayHeight(context)/ 1.4,
+                          child: Center(
+                            child: commonText(
+                                context: context,
+                                text: 'No data found',
+                                fontWeight: FontWeight.w500,
+                                textColor: Colors.black,
+                                textSize: displayWidth(context) * 0.05,
+                                textAlign: TextAlign.start),
+                          ),
+                        );
                       }
                       else
                         {
@@ -403,22 +416,29 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                                           SizedBox(height: 4,),
                                                           Row(
                                                             children: [
-                                                              commonText(
-                                                                  context: context,
-                                                                  text: 'DOJ: ',
-                                                                  fontWeight: FontWeight.w400,
-                                                                  textColor: Colors.grey,
-                                                                  textSize: displayWidth(context) * 0.028,
-                                                                  textAlign: TextAlign.start),
-                                                              commonText(
-                                                                  context: context,
-                                                                  text: DateFormat("yyyy-MM-dd").format(DateTime.parse(snapShot.data!.fleetsIamIn![index].fleetJoinedDate!)),
-                                                                  //text: snapShot.data!.fleetsIamIn![index].fleetJoinedDate,
-                                                                  fontWeight: FontWeight.w500,
-                                                                  textColor: Colors.black,
-                                                                  textSize: displayWidth(context) * 0.028,
-                                                                  textAlign: TextAlign.start),
-                                                              SizedBox(width: displayWidth(context) * 0.02,),
+                                                             Container(
+                                                               width: displayWidth(context) * 0.24,
+                                                               child: Row(
+                                                                 children: [
+                                                                   commonText(
+                                                                       context: context,
+                                                                       text: 'DOJ: ',
+                                                                       fontWeight: FontWeight.w400,
+                                                                       textColor: Colors.grey,
+                                                                       textSize: displayWidth(context) * 0.028,
+                                                                       textAlign: TextAlign.start),
+                                                                   commonText(
+                                                                       context: context,
+                                                                       text: DateFormat("yyyy-MM-dd").format(DateTime.parse(snapShot.data!.fleetsIamIn![index].fleetJoinedDate!)),
+                                                                       //text: snapShot.data!.fleetsIamIn![index].fleetJoinedDate,
+                                                                       fontWeight: FontWeight.w500,
+                                                                       textColor: Colors.black,
+                                                                       textSize: displayWidth(context) * 0.028,
+                                                                       textAlign: TextAlign.start),
+                                                                 ],
+                                                               ),
+                                                             ),
+                                                             // SizedBox(width: displayWidth(context) * 0.02,),
                                                               commonText(
                                                                   context: context,
                                                                   text: 'No of Vessels: ',
@@ -562,7 +582,7 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
 
                                                                 commonText(
                                                                     context: context,
-                                                                    text: snapShot.data!.fleetInvites![index].fleetCreatedBy,
+                                                                    text: 'Sent By ${snapShot.data!.fleetInvites![index].fleetCreatedBy}',
                                                                     fontWeight: FontWeight.w400,
                                                                     textColor: Colors.grey,
                                                                     textSize: displayWidth(context) * 0.028,
@@ -579,7 +599,7 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                                                   width: 30,
                                                                   child: Padding(
                                                                     padding: const EdgeInsets.all(2.0),
-                                                                    child: CircularProgressIndicator(color: primaryColor,strokeWidth: 3,),
+                                                                    child: CircularProgressIndicator(color: circularProgressColor,strokeWidth: 3,),
                                                                   ))
                                                                   : InkWell(
                                                                 onTap: (){
@@ -643,7 +663,7 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                                                   width: 30,
                                                                   child: Padding(
                                                                     padding: const EdgeInsets.all(2.0),
-                                                                    child: CircularProgressIndicator(color: primaryColor,strokeWidth: 3,),
+                                                                    child: CircularProgressIndicator(color: circularProgressColor,strokeWidth: 3,),
                                                                   ))
                                                                   : Container(
                                                                 width: displayWidth(context) * 0.18,

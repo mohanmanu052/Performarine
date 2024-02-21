@@ -59,10 +59,11 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
     super.initState();
   }
 
-  List<Widget> children = [];
+
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> children = [];
     for (int index = 0; index < fieldKeyList.length; index++) {
       children.add(
         Padding(
@@ -129,6 +130,23 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
               } else {
                 return null;
               }
+            },
+            onChanged: (value){
+              /*if (formKey.currentState!.validate()) {
+
+                if (!inviteEmailList.contains(value)) {
+                  inviteEmailList.add(value);
+                  setState(() {
+                    enableControllerKeyList[index] = true;
+                  });
+                } else {
+                  Utils.showSnackBar(context,
+                      scaffoldKey: scaffoldKey,
+                      message: 'Email is already added');
+                  textControllersList[index].clear();
+                  setState(() {});
+                }
+              }*/
             },
             onFieldSubmitted: (value) {
               if (formKey.currentState!.validate()) {

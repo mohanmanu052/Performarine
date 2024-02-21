@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -39,8 +40,8 @@ class FleetDashboardApiProvider with ChangeNotifier
       kReleaseMode ? null : Utils.customPrint('fleetDashboardData : ' + response.body);
       kReleaseMode
           ? null
-          : Utils.customPrint('Trip Status code : ' + response.statusCode.toString());
-      Utils.customPrint('Trip Status code 1: $decodedData');
+          : Utils.customPrint('Fleet Dashboard Status code : ' + response.statusCode.toString());
+      log('Fleet Dashboard Status code 1: $decodedData');
 
       if (response.statusCode == HttpStatus.ok) {
         fleetDashboardModel = FleetDashboardModel.fromJson(json.decode(response.body));
