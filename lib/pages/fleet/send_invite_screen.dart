@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
+import 'package:performarine/models/fleet_list_model.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
 import 'package:performarine/pages/feedback_report.dart';
 import 'package:performarine/pages/fleet/my_fleet_screen.dart';
@@ -32,45 +33,34 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
   CommonProvider? commonProvider;
   List<int> inviteCountList = [];
   List<String> inviteEmailList = [];
-
+ FleetData? selectedFleetvalue;
   List<SearchWidget> searchWidgetList = [];
   List<Key> fieldKeyList = [];
   bool isLoading = false;
   List<TextEditingController> textControllersList = [];
   List<bool> enableControllerKeyList = [];
   GlobalKey<FormState> formKey = GlobalKey();
-  List<FleetListModel> fleetList = [
-    FleetListModel(
-      fleetName: 'Fleet 011513',
-      id: '65c3fecba83688a610e1c8da',
-    ),
-    FleetListModel(
-      fleetName: 'Fleet 011514',
-      id: '65c3fecba83688a610e1c8da',
-    ),
-    FleetListModel(
-      fleetName: 'Fleet 011515',
-      id: '65c3fecba83688a610e1c8da',
-    ),
-    FleetListModel(
-      fleetName: 'Fleet 011516',
-      id: '65c3fecba83688a610e1c8da',
-    ),
-    FleetListModel(
-      fleetName: 'Fleet 011511',
-      id: '65c3fecba83688a610e1c8da',
-    ),
-  ];
-  FleetListModel? selectedFleetvalue;
+  FleetListModel? fleetdata;
 
   @override
   void initState() {
-    selectedFleetvalue = fleetList[0];
-    commonProvider = context.read<CommonProvider>();
+    //selectedFleetvalue=fleetList[0];
+    commonProvider= context.read<CommonProvider>();
+    getFleetList();
     // TODO: implement initState
     super.initState();
   }
 
+void getFleetList()async{
+ fleetdata=await   commonProvider?.getFleetListdata(
+      token: commonProvider!.loginModel!.token,
+      scaffoldKey: scaffoldKey,
+      context: context
+    );
+setState(() {
+  
+});
+}
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
@@ -232,31 +222,34 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
                     SizedBox(
                       height: displayHeight(context) * 0.03,
                     ),
-                    Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                      decoration: BoxDecoration(
-                        color: Colors.blue.shade50,
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                      child: DropdownButton<FleetListModel>(
-                        value: selectedFleetvalue ?? fleetList[0],
-                        onChanged: (FleetListModel? newValue) =>
-                            setState(() => selectedFleetvalue = newValue!),
-                        items: fleetList.map((item) {
-                          return DropdownMenuItem<FleetListModel>(
+                    SizedBox(
+                      child:fleetdata!=null&&fleetdata!.data!=null? Container(
+                        padding:
+                        EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.shade50,
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        child: DropdownButton<FleetData>(
+                          value: selectedFleetvalue,
+                          hint: Text('Select Fleet'),
+                          onChanged: (FleetData? newValue) =>
+                              setState(() => selectedFleetvalue = newValue!),
+                        items: fleetdata!.data!.map((item) {
+                          return DropdownMenuItem<FleetData>(
                             value: item,
-                            child: Text(item.fleetName ?? ''),
+                            child: Text(item.fleetName??''),
                           );
                         }).toList(),
-
-                        // add extra sugar..
-                        icon: Icon(Icons.keyboard_arrow_down_rounded),
-                        iconSize: 24,
-                        underline: SizedBox(),
-                        isExpanded: true,
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                      ),
+                      
+                          // add extra sugar..
+                          icon: Icon(Icons.keyboard_arrow_down_rounded),
+                          iconSize: 24,
+                          underline: SizedBox(),
+                          isExpanded: true,
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                        ),
+                      ):Center(child: CircularProgressIndicator()),
                     ),
                     SizedBox(
                       height: displayHeight(context) * 0.03,
@@ -379,51 +372,33 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
                           buttonPrimaryColor: blueColor,
                           borderColor: blueColor,
                           width: displayWidth(context),
-                          onTap: () async {
-                            if (textControllersList.isNotEmpty &&
-                                textControllersList != null) {
-                              if (formKey.currentState!.validate()) {
-                                isLoading = true;
-                                setState(() {});
-                                List emailList = [];
-                                for (int i = 0;
-                                    i < textControllersList.length;
-                                    i++) {
-                                  emailList.add(textControllersList[i].text);
-                                }
-                                var data = {
-                                  'fleetId': selectedFleetvalue?.id,
-                                  'fleetmembers': emailList
-                                };
-                                var res = await commonProvider!.sendFleetInvite(
-                                    commonProvider!.loginModel!.token!,
-                                    context,
-                                    scaffoldKey,
-                                    data);
-                                if (res.statusCode == 200) {
-                                  isLoading = false;
-                                  setState(() {});
-
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) => MyFleetScreen()));
-                                } else {
-                                  isLoading = false;
-                                  setState(() {});
-                                }
+                          onTap: () async{
+                            if(selectedFleetvalue!=null){
+                            if(textControllersList.isNotEmpty&&textControllersList!=null){
+                            if(formKey.currentState!.validate()){
+                              isLoading=true;
+                              setState(() {
+                                
+                              });
+                              List emailList=[];
+                              for(int i=0;i<textControllersList.length;i++){
+emailList.add(textControllersList[i].text);
                               }
                               /* Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => MyDelegateInvitesScreen()),
                             );*/
-                            } else {
-                              ScaffoldMessenger.maybeOf(context)!.showSnackBar(
-                                  SnackBar(
-                                      content: Text('Please Select Members')));
-                            }
-                          }),
+                          }
+                          else{
+  ScaffoldMessenger.maybeOf(context)!.showSnackBar(SnackBar(content:Text('Please Select Members')));
+}}else{
+    ScaffoldMessenger.maybeOf(context)!.showSnackBar(SnackBar(content:Text('Please Select Fleet')));
+
+}
+
+                          
+  }}),
                     ),
                     GestureDetector(
                         onTap: () async {
@@ -460,11 +435,4 @@ class EmailModel {
   String? email;
 
   EmailModel({this.email});
-}
-
-class FleetListModel {
-  String? id;
-  String? fleetName;
-
-  FleetListModel({this.fleetName, this.id});
 }

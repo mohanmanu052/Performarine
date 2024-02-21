@@ -1,7 +1,12 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
+import 'package:performarine/models/fleet_list_model.dart';
+import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/fleet/my_fleet_screen.dart';
+import 'package:performarine/provider/common_provider.dart';
+import 'package:performarine/services/database_service.dart';
+import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
 import '../../common_widgets/utils/colors.dart';
@@ -23,66 +28,56 @@ class ManagePermissionsScreen extends StatefulWidget {
 class _ManagePermissionsScreenState extends State<ManagePermissionsScreen> {
 
   final controller = ScreenshotController();
+  CommonProvider? commonProvider;
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
+ FleetData? selectedFleetvalue;
+  final DatabaseService _databaseService = DatabaseService();
 
   List multipleSelected = [];
   bool isSelectAllEnabled = false;
+  bool isLoading=false;
 //List<String> fleetData=['Fleet1','Fleet2','Fleet3','Fleet4'];
+  FleetListModel? fleetdata;
+List<CreateVessel>? vesselsData;
+List<bool>?  checkListItems=[];
+@override
+  void initState() {
 
+    commonProvider= context.read<CommonProvider>();
+getFleetDetails();
+getVesselData();
+    // TODO: implement initState
+    super.initState();
+  }
 
-List<FleetDataModel> fleetData=[FleetDataModel(name: 'Fleet1',createdBy: 'abhiram'),
+void getVesselData()async{
+ vesselsData= await _databaseService.vessels();
+           checkListItems = List.generate(vesselsData!.length, (index) => false);
 
-FleetDataModel(name: 'Fleet2',createdBy: 'mohan90'),FleetDataModel(name: 'Fleet3',createdBy: 'abcxyz'),FleetDataModel(name: 'Fleet4',createdBy: 'mmnkkklll'),FleetDataModel(name: 'Fleet5',createdBy: 'ppppqqqrrr')
-];
-String? fleetItem='Fleet1';
-  List<ManageVesselModel> manageVesselList = [
-    ManageVesselModel(vesselName: 'Vessel Name', id: 'ID: #165161656', type: 'Hybrid'),
-    ManageVesselModel(vesselName: 'Vessel Name', id: 'ID: #116165645', type: 'Electric'),
-    ManageVesselModel(vesselName: 'Vessel Name', id: 'ID: #165116566', type: 'Combustion'),
-  ];
+setState(() {
+  
+});
+}
 
-  List checkListItems = [
-    {
-      "id": 0,
-      "value": false,
-      "title": "Sunday",
-    },
-    {
-      "id": 1,
-      "value": false,
-      "title": "Monday",
-    },
-    {
-      "id": 2,
-      "value": false,
-      "title": "Tuesday",
-    },
-    {
-      "id": 3,
-      "value": false,
-      "title": "Wednesday",
-    },
-    {
-      "id": 4,
-      "value": false,
-      "title": "Thursday",
-    },
-    {
-      "id": 5,
-      "value": false,
-      "title": "Friday",
-    },
-    {
-      "id": 6,
-      "value": false,
-      "title": "Saturday",
-    },
-  ];
+  void getFleetDetails()async{
+     fleetdata=await   commonProvider?.getFleetListdata(
+      token: commonProvider!.loginModel!.token,
+      scaffoldKey: scaffoldKey,
+      context: context
+    );
+
+setState(() {
+  
+});
+
+  }
 
   @override
   Widget build(BuildContext context) {
     return Screenshot(
       controller: controller,
       child: Scaffold(
+        key: scaffoldKey,
         backgroundColor: Colors.white,
         appBar: AppBar(
           elevation: 0.0,
@@ -135,18 +130,21 @@ String? fleetItem='Fleet1';
 
                                   Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 4),
-                child: DropdownButtonHideUnderline(
-                        child: DropdownButtonFormField2<String>(
-                            value: fleetItem,
+                child:fleetdata!=null&&fleetdata!.data!=null?
+                
+                
+                 DropdownButtonHideUnderline(
+                        child: DropdownButtonFormField2<FleetData>(
+                            value: selectedFleetvalue,
     selectedItemBuilder: (BuildContext context) {
-      return fleetData.map<Widget>((FleetDataModel item) {
+      return fleetdata!.data!.map<Widget>((FleetData item) {
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Display selected item
             commonText(
-             text: item.name,
+             text: item.fleetName,
               fontWeight: FontWeight.w400,
               textSize: 16,
               textColor: buttonBGColor
@@ -282,14 +280,14 @@ String? fleetItem='Fleet1';
                                                                   .ellipsis,
                                                             ),
                                                           ),
-                            items:fleetData
+                            items:fleetdata!.data!
                         . map((item) {
                                                       return DropdownMenuItem(
                               child:Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                               commonText(text: item.name,
+                               commonText(text: item.fleetName,
                               fontWeight: FontWeight.w400,
                               textSize: 16,
                               textColor: buttonBGColor
@@ -307,7 +305,7 @@ commonText(
                               
 
 
-                              value: item.name);
+                              value: item);
                             
   })
   
@@ -315,11 +313,11 @@ commonText(
                 
                             onChanged: (newValue) {
                                 setState(() {
-fleetItem=newValue;
+selectedFleetvalue=newValue;
                                 });
                             },
                         ),
-                    ),
+                    ):Center(child: CircularProgressIndicator(),),
                                   ),
                     // SizedBox(height: displayHeight(context) * 0.05,),
                     // Align(
@@ -369,72 +367,82 @@ fleetItem=newValue;
                             label: 'Select All',
                             value: isSelectAllEnabled,
                             onChanged: (value) {
-                              setState(() {
                                 isSelectAllEnabled = !isSelectAllEnabled;
                                 if(isSelectAllEnabled){
-                                  for (var element in checkListItems){
-                                    element["value"] = true;
-                                    multipleSelected.add(element);
-                                  }
-                                }
+                                  for (int i=0;i<  vesselsData!.length;i++){
+                                    checkListItems![i]=true;
+                                    multipleSelected.add(vesselsData![i].id);
+                                  
+                                }}
                                 else{
-                                  for (var element in checkListItems){
-                                    element["value"] = false;
-                                    multipleSelected.remove(element);
+                                  for (int i=0;i<  vesselsData!.length;i++){
+                                                                        checkListItems![i]=false;
+
+                                    multipleSelected.clear();
                                   }
                                 }
-                                return;
-                                multipleSelected.clear();
-                                for (var element in checkListItems) {
-                                  if (element["value"] == false) {
-                                    element["value"] = true;
-                                    multipleSelected.add(element);
-                                  } else {
-                                    element["value"] = false;
-                                    multipleSelected.remove(element);
-                                  }
-                                }
-                              });
+                            
+                                // multipleSelected.clear();
+                                // checkListItems!.clear();
+
+                                // for (var element in checkListItems) {
+                                //   if (element["value"] == false) {
+                                //     element["value"] = true;
+                                //     multipleSelected.add(element);
+                                //   } else {
+                                //     element["value"] = false;
+                                //     multipleSelected.remove(element);
+                                //   }
+                               // }
+                               setState(() {
+                                 
+                               });
+                              
                             },
                             checkboxType: CheckboxType.Parent,
                             activeColor: blueColor,
                           ),
-                       
-                       ListView.builder(
-                        shrinkWrap: true,
-                        itemCount:manageVesselList.length ,
-                          itemBuilder:(context,index){
-                         // manageVesselList.length,
-                              //(index) =>
-                              
-                              
-                              return Container(
-                                margin: EdgeInsets.symmetric(vertical: 4),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                                                  color: reportTripsListColor,
-
-                                ),
-                                child: CheckboxListTile(
-                                  activeColor: blueColor,
-                                                            controlAffinity: ListTileControlAffinity.leading,
-                                                            contentPadding: EdgeInsets.symmetric(horizontal: 4),
-                                                            dense: true,
-                                                            title: checkBoxCard(manageVesselList[index]),
-                                                            value: checkListItems[index]["value"],
-                                                            onChanged: (value) {
-                                setState(() {
-                                  checkListItems[index]["value"] = value;
-                                  if (multipleSelected.contains(checkListItems[index])) {
-                                    multipleSelected.remove(checkListItems[index]);
-                                  } else {
-                                    multipleSelected.add(checkListItems[index]);
-                                  }
-                                });
-                                                            },
-                                                                            ),
-                              );
-                          })
+                       if(vesselsData!=null)
+                       Container(
+                        height: displayHeight(context)/1.5,
+                         child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount:vesselsData!.length ,
+                            itemBuilder:(context,index){
+                           // manageVesselList.length,
+                                //(index) =>
+                                
+                                
+                                return Container(
+                                  margin: EdgeInsets.symmetric(vertical: 4),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                                                    color: reportTripsListColor,
+                         
+                                  ),
+                                  child: CheckboxListTile(
+                                    activeColor: blueColor,
+                                                              controlAffinity: ListTileControlAffinity.leading,
+                                                              contentPadding: EdgeInsets.symmetric(horizontal: 4),
+                                                              dense: true,
+                                                              title: checkBoxCard(vesselsData![index]),
+                                                              value: 
+                                                              
+                                                              checkListItems?[index]??false,
+                                                              onChanged: (value) {
+                                  setState(() {
+                                   checkListItems![index] = value!;
+                                    if (multipleSelected.contains(vesselsData![index].id)) {
+                                      multipleSelected.remove(vesselsData![index].id);
+                                    } else {
+                                      multipleSelected.add(vesselsData![index].id);
+                                    }
+                                  });
+                                                              },
+                                                                              ),
+                                );
+                            }),
+                       )
                         
                       
                       
@@ -465,11 +473,42 @@ fleetItem=newValue;
                           buttonPrimaryColor: blueColor,
                           borderColor: blueColor,
                           width: displayWidth(context),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => MyFleetScreen()),
-                           );
+                          onTap: ()async {
+                            print('the selected ids was ----'+multipleSelected.toString());
+                            if(selectedFleetvalue!=null){
+                              if(multipleSelected.isNotEmpty){
+                                isLoading=true;
+                                setState(() {
+                                  
+                                });
+Map<String,dynamic> data={
+  'fleetId':selectedFleetvalue!.id,
+  'fleetVessels':multipleSelected.toSet().toList()
+};
+
+var res= await commonProvider?.addFleetVessels(scaffoldKey: scaffoldKey,data: data,context: context,token: commonProvider!.loginModel!.token);
+
+if(res!=null){
+                                isLoading=false;
+
+}else{
+                                  isLoading=false;
+
+}
+setState(() {
+  
+});
+                              }else{
+                                ScaffoldMessenger.maybeOf(context)!.showSnackBar(SnackBar(content: Text('Please Select Vessels')));
+                              }
+                            }else{
+                                                              ScaffoldMessenger.maybeOf(context)!.showSnackBar(SnackBar(content: Text('Please Select Fleet')));
+
+                            }
+                          //   Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(builder: (context) => MyFleetScreen(data: true,)),
+                          //  );
                           }),
                     ),
                     GestureDetector(
@@ -487,13 +526,18 @@ fleetItem=newValue;
                 ),
               ),
             ),
+            if(isLoading)
+            Center(
+              child: CircularProgressIndicator(),
+            )
           ],
         ),
+     
       ),
     );
   }
 
-  checkBoxCard(ManageVesselModel manageVesselList){
+  checkBoxCard(CreateVessel vesselData){
 
     return IntrinsicHeight(
       child: Row(
@@ -512,25 +556,29 @@ fleetItem=newValue;
                     )),
               )),
           SizedBox(width: 8,),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              commonText(
-                  context: context,
-                  text: manageVesselList.vesselName,
-                  fontWeight: FontWeight.w500,
-                  textColor: Colors.black,
-                  textSize: displayWidth(context) * 0.038,
-                  textAlign: TextAlign.start),
-              commonText(
-                  context: context,
-                  text: manageVesselList.id,
-                  fontWeight: FontWeight.w500,
-                  textColor: Colors.grey,
-                  textSize: displayWidth(context) * 0.028,
-                  textAlign: TextAlign.start),
-            ],
+          Flexible(
+            flex: 3,
+            fit: FlexFit.tight,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                commonText(
+                    context: context,
+                    text: vesselData.name,
+                    fontWeight: FontWeight.w500,
+                    textColor: Colors.black,
+                    textSize: displayWidth(context) * 0.038,
+                    textAlign: TextAlign.start),
+                commonText(
+                    context: context,
+                    text: vesselData.id,
+                    fontWeight: FontWeight.w500,
+                    textColor: Colors.grey,
+                    textSize: displayWidth(context) * 0.028,
+                    textAlign: TextAlign.start),
+              ],
+            ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -541,13 +589,17 @@ fleetItem=newValue;
               endIndent: 10,
             ),
           ),
-          Column(
+                  Flexible(
+            flex: 2,
+            fit: FlexFit.tight,
+
+        child:  Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               commonText(
                   context: context,
-                  text: manageVesselList.type,
+                  text: vesselData.engineType,
                   fontWeight: FontWeight.w500,
                   textColor: Colors.black,
                   textSize: displayWidth(context) * 0.038,
@@ -561,6 +613,7 @@ fleetItem=newValue;
                   textAlign: TextAlign.start),
             ],
           ),
+                  )
         ],
       ),
     );
@@ -573,11 +626,4 @@ class ManageVesselModel
 {
   String? vesselName, id, type;
   ManageVesselModel({this.vesselName, this.id, this.type});
-}
-class FleetDataModel{
-  String? name;
-  String? createdBy;
-
-  FleetDataModel({this.createdBy,this.name});
-
 }
