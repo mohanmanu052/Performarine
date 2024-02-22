@@ -343,28 +343,34 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               SizedBox(
                                 height: displayHeight(context) * 0.02,
                               ),
-                           /*   InkWell(
-                                onTap: () {
-                                  CustomLogger().logWithFile(Level.info, "User Navigating to Search and Filter -> $page");
-                                  Navigator.of(context).pop();
+                              Container(
+                                width: displayWidth(context),
+                                child: InkWell(
+                                  onTap: ()async {
+                                   // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                    Navigator.of(context).pop();
 
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ReportsModule()),
-                                  );
-                                },
-                                child: commonText(
-                                    context: context,
-                                    text: 'Reports',
-                                    fontWeight: FontWeight.w500,
-                                    textColor: Colors.black54,
-                                    textSize: textSize,
-                                    textAlign: TextAlign.start),
+                              CustomLogger().logWithFile(Level.info, "User Navigating to Search and Filter -> $page");
+                              Navigator.of(context).pop();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => BottomNavigation(tabIndex: 1,)),
+                              
+                                    );
+                                  },
+                                  child: commonText(
+                                      context: context,
+                                      text: 'My Reports',
+                                      fontWeight: FontWeight.w400,
+                                      textColor: Colors.black54,
+                                      textSize: textSize,
+                                      textAlign: TextAlign.start),
+                                ),
                               ),
                               SizedBox(
                                 height: displayHeight(context) * 0.02,
-                              ), */
+                              ),
 
                               Padding(
                                 padding: EdgeInsets.only(right: displayWidth(context)* 0.1, bottom: displayHeight(context) * 0.01),
@@ -443,7 +449,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              FleetReports()),
+                                              FleetReports(bottomNavIndex:widget.bottomNavIndex ,)),
                                     );
                                   },
                                   child: commonText(
@@ -1169,7 +1175,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          FleetReports()),
+                                          FleetReports(bottomNavIndex: widget.bottomNavIndex,)),
                                 );
                               },
                               child: commonText(
