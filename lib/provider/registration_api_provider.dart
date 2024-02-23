@@ -73,8 +73,7 @@ class RegistrationApiProvider with ChangeNotifier {
       Utils.customPrint('REGISTER REQ 1 ${jsonEncode(queryParameters)}');
       CustomLogger().logWithFile(Level.info, "Register REQ $queryParameters -> $page");
 
-      final response = await http.post(uri,
-          body: jsonEncode(queryParameters), headers: headers);
+      final response = await http.post(uri, body: jsonEncode(queryParameters), headers: headers);
 
       Utils.customPrint('REGISTER REQ : ' + response.body);
       CustomLogger().logWithFile(Level.info, "REGISTER REs : ' + ${response.body} -> $page");

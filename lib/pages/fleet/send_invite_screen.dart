@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
@@ -125,9 +126,15 @@ setState(() {
           validator: (value) {
             if (value!.isEmpty) {
               return 'Please enter email';
-            } else if (!value.isEmail) {
+            } else if (!EmailValidator.validate(value)) {
               return 'Please enter valid email';
-            } else {
+            } else if(EmailValidator.validate(value)){
+              String emailExt = value.split(".").last;
+              if(!['com', 'in', 'us'].contains(emailExt)){
+                return 'Please enter valid email';
+              }
+            }
+            else {
               return null;
             }
           },
@@ -270,6 +277,7 @@ setState(() {
                           
                             ),
                             padding: EdgeInsets.symmetric(horizontal: 10),
+
                           );
                                                 
                                                 
@@ -418,6 +426,7 @@ emailList.add(textControllersList[i].text);
                                   builder: (context) => MyDelegateInvitesScreen()),
                             );*/
                           }
+
 }else{
   ScaffoldMessenger.maybeOf(context)!.showSnackBar(SnackBar(content: Text('Please Select Members')));
 }

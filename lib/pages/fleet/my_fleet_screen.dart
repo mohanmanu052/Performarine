@@ -562,6 +562,7 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                               itemCount: snapShot.data!.fleetInvites!.length,
                                               itemBuilder: (context, index)
                                               {
+
                                                 return Padding(
                                                   padding: const EdgeInsets.only(bottom: 8.0),
                                                   child: Column(

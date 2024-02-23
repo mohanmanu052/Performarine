@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
@@ -65,6 +66,7 @@ class LoginApiProvider with ChangeNotifier {
         CustomLogger().logWithFile(Level.info, "API success of ${Urls.baseUrl}${Urls.loginUrl}  is: ${response.statusCode}-> $page");
 
         final pref = await Utils.initSharedPreferences();
+        final storage = new FlutterSecureStorage();
 
         loginModel = LoginModel.fromJson(json.decode(response.body));
         if(loginModel == null){
@@ -73,8 +75,10 @@ class LoginApiProvider with ChangeNotifier {
 
         if (loginModel!.status!) {
           pref.setBool('isUserLoggedIn', true);
-          pref.setString('loginData', response.body);
-          pref.setString('loginModel', loginModel.toString());
+          await storage.write(key: 'loginModel', value: loginModel.toString());
+          await storage.write(key: 'loginData', value: response.body);
+          //pref.setString('loginData', response.body);
+          //pref.setString('loginModel', loginModel.toString());
         }
 
         Utils.showSnackBar(context,

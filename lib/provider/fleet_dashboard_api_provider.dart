@@ -33,7 +33,7 @@ class FleetDashboardApiProvider with ChangeNotifier
 
     try {
       final response =
-      await client.post(uri, headers: headers,);
+      await client.get(uri, headers: headers,);
 
       var decodedData = json.decode(response.body);
 
