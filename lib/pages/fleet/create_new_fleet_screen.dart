@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -125,9 +126,15 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
             validator: (value) {
               if (value!.isEmpty) {
                 return 'Please enter email';
-              } else if (!value.isEmail) {
+              } else if (!EmailValidator.validate(value)) {
                 return 'Please enter valid email';
-              } else {
+              } else if(EmailValidator.validate(value)){
+                String emailExt = value.split(".").last;
+                if(!['com', 'in', 'us'].contains(emailExt)){
+                  return 'Please enter valid email';
+                }
+              }
+              else {
                 return null;
               }
             },

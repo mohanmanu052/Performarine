@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/lpr_device_handler.dart';
 import 'package:performarine/main.dart';
@@ -78,8 +79,10 @@ class CommonProvider with ChangeNotifier {
   CommonModel? fleetMemberModel;
 
 
-  init() {
-    String? loginData = sharedPreferences!.getString('loginData');
+  init()async {
+    final storage = new FlutterSecureStorage();
+    String? loginData = await storage.read(key: 'loginData');
+    //String? loginData = sharedPreferences!.getString('loginData');
     //Utils.customPrint('LOGIN DATA: $loginData');
     if (loginData != null) {
       loginModel = LoginModel.fromJson(json.decode(loginData));

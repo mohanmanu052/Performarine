@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
@@ -124,9 +125,15 @@ setState(() {
           validator: (value) {
             if (value!.isEmpty) {
               return 'Please enter email';
-            } else if (!value.isEmail) {
+            } else if (!EmailValidator.validate(value)) {
               return 'Please enter valid email';
-            } else {
+            } else if(EmailValidator.validate(value)){
+              String emailExt = value.split(".").last;
+              if(!['com', 'in', 'us'].contains(emailExt)){
+                return 'Please enter valid email';
+              }
+            }
+            else {
               return null;
             }
           },
@@ -232,13 +239,18 @@ setState(() {
                         ),
                         child: DropdownButton<FleetData>(
                           value: selectedFleetvalue,
-                          hint: Text('Select Fleet'),
+                          hint: Text('Select Fleet', style: TextStyle(
+                              fontSize: displayWidth(context) * 0.04
+                          )),
                           onChanged: (FleetData? newValue) =>
                               setState(() => selectedFleetvalue = newValue!),
                         items: fleetdata!.data!.map((item) {
                           return DropdownMenuItem<FleetData>(
                             value: item,
-                            child: Text(item.fleetName??''),
+                            child: Text(item.fleetName??'',
+                            style: TextStyle(
+                              fontSize: displayWidth(context) * 0.04
+                            ),),
                           );
                         }).toList(),
                       
@@ -393,7 +405,7 @@ emailList.add(textControllersList[i].text);
                           else{
   ScaffoldMessenger.maybeOf(context)!.showSnackBar(SnackBar(content:Text('Please Select Members')));
 }}else{
-    ScaffoldMessenger.maybeOf(context)!.showSnackBar(SnackBar(content:Text('Please Select Fleet')));
+    ScaffoldMessenger.maybeOf(context)!.showSnackBar(SnackBar(content:Text('Please add members')));
 
 }
 
