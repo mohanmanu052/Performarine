@@ -40,7 +40,7 @@ class Urls {
   //Create Fleet
 static const creteNewFleet='/api/createfleet';
 static const inViteFleetMembers='/api/addfleetmembers';
-static const fleetList='/api/fleetLists';
+static const fleetList='/api/fleets';
 static const addFleetVessels='/api/addfleetVessels';
 static const fleetDashboardApi ='/api/fleetdashboard';
 static const fleetMember ='/fleetmember';

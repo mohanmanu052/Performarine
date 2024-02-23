@@ -25,10 +25,17 @@ class FleetMemberInvitationApiProvider with ChangeNotifier
       HttpHeaders.contentTypeHeader: 'application/json',
       "x_access_token": '$accessToken',
     };
-    Uri uri = Uri.https(Urls.baseUrl, Urls.fleetMember);
+/*
+    var queryParameters = {
+      "verify": invitationToken,
+      "flag" : invitationFlag
+    };*/
+    var body = {
+      "verify": invitationToken,
+      "flag" : invitationFlag
+    };
 
-    var body = {"verify": invitationToken,
-    "flag" : invitationFlag};
+    Uri uri = Uri.https(Urls.baseUrl, Urls.fleetMember);
 
     try {
       final response =

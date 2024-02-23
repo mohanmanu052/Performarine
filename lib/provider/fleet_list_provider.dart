@@ -22,8 +22,8 @@ class FleetListProvider with ChangeNotifier{
 
 
     try {
-      final response = await http.post(uri,
-          body: jsonEncode({}), headers: headers);
+      final response = await http.get(uri,
+         /* body: jsonEncode({})*/ headers: headers);
 
       Utils.customPrint('Fleet List RES : ' + response.body);
       CustomLogger().logWithFile(Level.info, "Fleet List RES : ' + ' ${response.body}");
