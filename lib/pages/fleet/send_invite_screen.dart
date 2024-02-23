@@ -41,6 +41,7 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
   List<bool> enableControllerKeyList = [];
   GlobalKey<FormState> formKey = GlobalKey();
   FleetListModel? fleetdata;
+  GlobalKey<FormState> selectVesselFormKey=GlobalKey();
 
   @override
   void initState() {
@@ -230,26 +231,51 @@ setState(() {
                           color: Colors.blue.shade50,
                           borderRadius: BorderRadius.circular(18),
                         ),
-                        child: DropdownButton<FleetData>(
-                          value: selectedFleetvalue,
-                          hint: Text('Select Fleet'),
-                          onChanged: (FleetData? newValue) =>
-                              setState(() => selectedFleetvalue = newValue!),
-                        items: fleetdata!.data!.map((item) {
-                          return DropdownMenuItem<FleetData>(
-                            value: item,
-                            child: Text(item.fleetName??''),
+                        child:Form(
+                          key: selectVesselFormKey,
+                          child: FormField(
+                            autovalidateMode:AutovalidateMode.onUserInteraction,
+                                                      builder: (state) {
+                                                        
+                          
+                                                return    DropdownButtonFormField<FleetData>(
+                          
+                            value: selectedFleetvalue,
+                            hint: Text('Select Fleet'),
+                            onChanged: (FleetData? newValue){
+                                setState(() => selectedFleetvalue = newValue!);
+                                selectVesselFormKey.currentState!.validate();
+                                
+                                },
+                          items: fleetdata!.data!.map((item) {
+                            return DropdownMenuItem<FleetData>(
+                              value: item,
+                              child: Text(item.fleetName??''),
+                            );
+                          }).toList(),
+                                                                                        validator: (value) {
+                                                            if (value == null) {
+                                                              return 'Select Fleet';
+                                                            }
+                                                            return null;
+                                                          },
+                                               
+                            // add extra sugar..
+                            icon: Icon(Icons.keyboard_arrow_down_rounded),
+                            iconSize: 24,
+                            //underline: SizedBox(),
+                            isExpanded: true,
+                            decoration: InputDecoration(
+                                  border: InputBorder.none,
+                          
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 10),
                           );
-                        }).toList(),
-                      
-                          // add extra sugar..
-                          icon: Icon(Icons.keyboard_arrow_down_rounded),
-                          iconSize: 24,
-                          underline: SizedBox(),
-                          isExpanded: true,
-                          padding: EdgeInsets.symmetric(horizontal: 10),
-                        ),
-                      ):Center(child: CircularProgressIndicator()),
+                                                
+                                                
+                            }),
+                        ))
+                      :Center(child: CircularProgressIndicator()),
                     ),
                     SizedBox(
                       height: displayHeight(context) * 0.03,
@@ -373,7 +399,7 @@ setState(() {
                           borderColor: blueColor,
                           width: displayWidth(context),
                           onTap: () async{
-                            if(selectedFleetvalue!=null){
+                            if(selectVesselFormKey.currentState!.validate()){
                             if(textControllersList.isNotEmpty&&textControllersList!=null){
                             if(formKey.currentState!.validate()){
                               isLoading=true;
@@ -383,6 +409,8 @@ setState(() {
                               List emailList=[];
                               for(int i=0;i<textControllersList.length;i++){
 emailList.add(textControllersList[i].text);
+                            
+                            
                               }
                               /* Navigator.push(
                               context,
@@ -390,11 +418,8 @@ emailList.add(textControllersList[i].text);
                                   builder: (context) => MyDelegateInvitesScreen()),
                             );*/
                           }
-                          else{
-  ScaffoldMessenger.maybeOf(context)!.showSnackBar(SnackBar(content:Text('Please Select Members')));
-}}else{
-    ScaffoldMessenger.maybeOf(context)!.showSnackBar(SnackBar(content:Text('Please Select Fleet')));
-
+}else{
+  ScaffoldMessenger.maybeOf(context)!.showSnackBar(SnackBar(content: Text('Please Select Members')));
 }
 
                           
