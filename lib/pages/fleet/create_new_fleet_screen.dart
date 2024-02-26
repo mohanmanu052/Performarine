@@ -439,11 +439,12 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
                                   data);
                               if (res.statusCode == 200) {
                                 isLoading = false;
-                                Navigator.push(
+                                Navigator.of(context).pop(true);
+                                /*Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => MyFleetScreen()),
-                                );
+                                );*/
                               } else {
                                 isLoading = false;
                                 setState(() {});
