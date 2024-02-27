@@ -625,6 +625,8 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                                                             setState(() {
                                                                               isRejectBtnClicked = false;
                                                                             });
+
+                                                                            future = commonProvider.fleetDashboardDetails(context, commonProvider.loginModel!.token!, scaffoldKey);
                                                                           }
                                                                           else
                                                                             {
@@ -699,6 +701,8 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                                                                                         setState(() {
                                                                                           isAcceptBtnClicked = false;
                                                                                         });
+
+                                                                                        future = commonProvider.fleetDashboardDetails(context, commonProvider.loginModel!.token!, scaffoldKey);
                                                                                       }
                                                                                     else
                                                                                       {
@@ -792,22 +796,42 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                           buttonPrimaryColor: blueColor,
                           borderColor: blueColor,
                           width: displayWidth(context),
-                          onTap: () {
-                            Navigator.push(
+                          onTap: ()async {
+                            var result = await Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => SendInviteScreen()),
                             );
+
+                            if(result != null)
+                              {
+                                if(result)
+                                  {
+                                    setState(() {
+                                      future = commonProvider.fleetDashboardDetails(context, commonProvider.loginModel!.token!, scaffoldKey);
+                                    });
+                                  }
+                              }
                           }),
                     ),
                     Column(
                       children: [
                         SizedBox(height: displayHeight(context) * 0.01,),
                         InkWell(
-                          onTap: (){
-                            Navigator.push(
+                          onTap: ()async {
+                            var result = await Navigator.push(
                               context,
                               MaterialPageRoute(builder: (context) => CreateNewFleetScreen()),
                             );
+
+                            if(result != null)
+                            {
+                              if(result)
+                              {
+                                setState(() {
+                                  future = commonProvider.fleetDashboardDetails(context, commonProvider.loginModel!.token!, scaffoldKey);
+                                });
+                              }
+                            }
 
                           },
                           child: commonText(
