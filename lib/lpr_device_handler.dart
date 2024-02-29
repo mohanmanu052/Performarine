@@ -208,8 +208,9 @@ dataCharacteristic.setNotifyValue(true);
                       String dataLine = utf8.decode(event);
 
                       debugPrint("LPR DATA WRITING CODE $dataLine ");
-
+//Saving The Data Into The File
   DownloadTrip().saveLPRData(dataLine);
+  //Call Back Returning the data we can use this globally
                                callBackLprStreamingData!(dataLine);
 
 
