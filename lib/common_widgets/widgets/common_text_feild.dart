@@ -29,7 +29,7 @@ class CommonTextField extends StatefulWidget {
   Function(String)? onSaved;
   Function()? onTap;
   FilteringTextInputFormatter? inputFormatter;
-  bool? isForDecimal = false, isForCustomDrawer = false;
+  bool? isForDecimal = false;
   Color? fillColor;
   double? circularRadius;
   // GlobalKey<FormFieldState>? formFieldKey;
@@ -61,7 +61,6 @@ class CommonTextField extends StatefulWidget {
         this.inputFormatter,
         this.maxLines = 1,
         this.isForDecimal = false,
-        this.isForCustomDrawer = false,
       })
       : super(key: key);
 
@@ -119,7 +118,6 @@ class _CommonTextFieldState extends State<CommonTextField> {
             hintText: widget.hintText,
             labelText: widget.labelText,
             suffixText: widget.suffixText,
-            floatingLabelBehavior: widget.isForCustomDrawer! ? FloatingLabelBehavior.never : FloatingLabelBehavior.always,
             hintStyle: TextStyle(
                 color: Theme.of(context).brightness == Brightness.dark
                     ? Colors.white

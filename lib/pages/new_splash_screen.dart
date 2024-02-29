@@ -10,6 +10,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/pages/fleet/my_fleet_screen.dart';
 import 'package:performarine/pages/new_intro_screen.dart';
 import '../common_widgets/widgets/log_level.dart';
 import '../main.dart';
@@ -417,6 +418,36 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
               });
             }
           }
+          else if (initialLink.queryParameters['fleetmember'] != null) {
+            Utils.customPrint(
+                "fleetmember: ${initialLink.queryParameters['fleetmember'].toString()}");
+            CustomLogger().logWithFile(Level.info,
+                "fleetmember: ${initialLink.queryParameters['fleetmember'].toString()} -> $page");
+            bool? isUserLoggedIn = await sharedPreferences!.getBool('isUserLoggedIn');
+
+            Utils.customPrint("isUserLoggedIn: $isUserLoggedIn");
+            CustomLogger().logWithFile(
+                Level.info, "isUserLoggedIn: $isUserLoggedIn-> $page");
+
+            Map<String, dynamic> arguments = {
+              "isComingFromReset": true,
+              "token": initialLink.queryParameters['fleetmember'].toString()
+            };
+            if (isUserLoggedIn != null) {
+              if (isUserLoggedIn) {
+                isComingFromUnilinkMain = true;
+               // sharedPreferences!.setBool('reset_dialog_opened', false);
+                Get.offAll(
+                    MyFleetScreen(),
+                    arguments: arguments);
+              }
+            } else {
+              Future.delayed(Duration(seconds: 2), () {
+                isComingFromUnilinkMain = true;
+                MyFleetScreen();
+              });
+            }
+          }
         } else {
           checkIfTripIsRunning();
           Future.delayed(Duration(seconds: 4), () {
@@ -464,6 +495,33 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
                     BottomNavigation(
                         isComingFromReset: true,
                         token: uri.queryParameters['verify'].toString(),
+                        isAppKilled: true),
+                    arguments: arguments);
+              }
+            } else {}
+          }
+          else if (uri.queryParameters['fleetmember'] != null) {
+            Utils.customPrint(
+                "reset: ${uri.queryParameters['fleetmember'].toString()}");
+            CustomLogger().logWithFile(Level.info,
+                "reset: ${uri.queryParameters['fleetmember'].toString()} -> $page");
+            bool? isUserLoggedIn =
+            await sharedPreferences!.getBool('isUserLoggedIn');
+
+            Utils.customPrint("isUserLoggedIn: $isUserLoggedIn");
+            CustomLogger().logWithFile(
+                Level.info, "isUserLoggedIn: $isUserLoggedIn -> $page");
+            Map<String, dynamic> arguments = {
+              "isComingFromReset": true,
+              "token": uri.queryParameters['fleetmember'].toString()
+            };
+            if (isUserLoggedIn != null) {
+              if (isUserLoggedIn) {
+                //sharedPreferences!.setBool('reset_dialog_opened', false);
+                Get.offAll(
+                    BottomNavigation(
+                        isComingFromReset: true,
+                        token: uri.queryParameters['fleetmember'].toString(),
                         isAppKilled: true),
                     arguments: arguments);
               }
