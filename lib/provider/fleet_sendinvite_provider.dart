@@ -32,9 +32,8 @@ class SendInviteProvider with ChangeNotifier{
       Utils.customPrint('Invite Fleet Members RES : ' + response.body);
       CustomLogger().logWithFile(Level.info, "Invite Fleet Members RES : ' + ' ${response.body}");
 
-var decodedData;
+var decodedData=json.decode(response.body);
       if (response.statusCode == HttpStatus.ok) {
-               decodedData = json.decode(response.body);
 
         Utils.customPrint('Invite Fleet Members  Response : ' + response.body);
         CustomLogger().logWithFile(Level.info, "Invite Fleet Members Response : ' + ${response.body}");

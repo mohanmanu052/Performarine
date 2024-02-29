@@ -132,10 +132,10 @@ class StartTrip {
     Utils.customPrint("BEFORE PORT LISTEN");
     CustomLogger().logWithFile(Level.info, "BEFORE PORT LISTEN-> $page");
 
-    var activeNotifications = await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.getActiveNotifications();
+    // var activeNotifications = await flutterLocalNotificationsPlugin
+    //     .resolvePlatformSpecificImplementation<
+    //         AndroidFlutterLocalNotificationsPlugin>()
+    //     ?.getActiveNotifications();
 
 //Todo: Notification spanning on port listen it will generate the notification continuously
 
@@ -149,8 +149,8 @@ class StartTrip {
       /// Conversion of events coming from port into LocationDto(POJO class)
       LocationDto? locationDto =
           data != null ? LocationDto.fromJson(data) : null;
-
-      Utils.customPrint("LOCATION DTO $locationDto");
+print('coming to location DTO');
+     // Utils.customPrint("LOCATION DTO $locationDto");
       CustomLogger().logWithFile(Level.info, "LOCATION DTO $locationDto -> $page");
 
       if (locationDto != null) {
@@ -314,11 +314,11 @@ class StartTrip {
 
         /// To get files path
         String filePath = await GetFile().getFile(tripId, mobileFileName);
-        String lprFilePath = await GetFile().getFile(tripId, lprFileName);
+        String lprFilePath = await GetFile().getlprFile(tripId, lprFileName);
         File file = File(filePath);
         File lprFile = File(lprFilePath);
         int fileSize = await GetFile().checkFileSize(file);
-        int lprFileSize = await GetFile().checkFileSize(lprFile);
+        int lprFileSize = await GetFile().checkLPRFileSize(lprFile);
 
         /// CHECK FOR ONLY 10 KB FOR Testing PURPOSE
         /// Now File Size is 200000
@@ -334,6 +334,7 @@ class StartTrip {
 
           /// STOP WRITING & CREATE NEW FILE
         } else {
+
           Utils.customPrint('WRITING');
           String gyro = '', acc = '', mag = '', uacc = '';
 
@@ -371,7 +372,6 @@ class StartTrip {
           /// Creating csv file Strings by combining all the values
           finalString = '$acc\n$uacc\n$gyro\n$mag\n$gps';
 
-print('the data was---------------------'+finalString);
           /// Writing into a csv file
           file.writeAsString('$finalString\n', mode: FileMode.append);
           Utils.customPrint('GPS $gps');

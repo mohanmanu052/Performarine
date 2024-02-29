@@ -10,6 +10,25 @@ class GetFile {
     return sensorDataFile.path;
   }
 
+  Future<String> getlprFile(String tripId, String fileName) async {
+    String folderPath = await GetOrCreateFolder().getOrCreateFolder(tripId);
+
+    File lprFile = File('$folderPath/$fileName');
+    return lprFile.path;
+  }
+
+ int checkLPRFileSize(File file){
+      if (file.existsSync()) {
+      var bytes = file.lengthSync();
+      double sizeInKB = bytes / 1024;
+      return sizeInKB.toInt();
+    } else {
+      return -1;
+    }
+  }
+
+ 
+
   int checkFileSize(File file) {
     if (file.existsSync()) {
       var bytes = file.lengthSync();
@@ -18,5 +37,6 @@ class GetFile {
     } else {
       return -1;
     }
-  }
+  
+}
 }

@@ -33,6 +33,7 @@ class FleetData {
   DateTime? createdAt;
   DateTime? updatedAt;
   String? id;
+  String? fleetOwner;
 
   FleetData({
     this.updatedBy,
@@ -43,6 +44,7 @@ class FleetData {
     this.createdAt,
     this.updatedAt,
     this.id,
+    this.fleetOwner
   });
 
   factory FleetData.fromJson(Map<String, dynamic> json) => FleetData(
@@ -57,7 +59,7 @@ class FleetData {
         updatedAt: json['updatedAt'] != null
             ? DateTime.parse(json['updatedAt'])
             : null,
-        id: json['id'],
+        id: json['_id'],
+        fleetOwner: json['fleetOwner']
       );
 }
-

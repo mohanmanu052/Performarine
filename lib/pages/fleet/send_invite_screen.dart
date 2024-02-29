@@ -420,6 +420,28 @@ emailList.add(textControllersList[i].text);
                             
                             
                               }
+Map<String,dynamic> data={
+    "fleetId": selectedFleetvalue?.id,
+    "fleetmembers": emailList
+        
+};
+
+
+                     var res=      await   commonProvider?.sendFleetInvite(commonProvider!.loginModel!.token!, context, scaffoldKey, data);
+                     if(res!.statusCode==200){
+print('invitation sent sucessfully');
+                              isLoading=false;
+                              setState(() {
+                                
+                              });
+
+                     }else{
+                                                    isLoading=false;
+                              setState(() {
+                                
+                              });
+
+                     }
                               /* Navigator.push(
                               context,
                               MaterialPageRoute(

@@ -159,7 +159,7 @@ setState(() {
                   textColor: Colors.grey
                   ),
 
-                                    commonText(text: item.createdBy,
+                                    commonText(text: item.fleetOwner,
                   textSize: 11,
                   fontWeight: FontWeight.w500,
                   textColor: buttonBGColor
@@ -294,7 +294,7 @@ setState(() {
                               
                               ),
 commonText(
-  text: 'Created By: ${item.createdBy}',
+  text: 'Created By: ${item.fleetOwner}',
                               fontWeight: FontWeight.w200,
                               textSize: 12,
                               textColor: Colors.black

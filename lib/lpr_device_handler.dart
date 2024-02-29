@@ -176,9 +176,9 @@ IOSink?
 //Setting the lprfile name
        lprFileName = 'lpr_$fileIndex.csv';
        //Getting The Path Of the File
-      String lprFilePath = await GetFile().getFile(tripId, lprFileName!);
+      String lprFilePath = await GetFile().getlprFile(tripId, lprFileName!);
       //Creating the file
-lprFile=new File(lprFilePath);
+lprFile=  File(lprFilePath);
   //Opening the stream to push data (Opening the file)
 lprFileSink = lprFile?.openWrite(mode: FileMode.append);
 
@@ -192,30 +192,43 @@ callBackconnectedDeviceName!(connectedDevice!.platformName);
     try {
     //This Will Check LprService element UUID Matches With LPRTransparentServiceUUID 
   services.forEach((element) {
-                  if (element.uuid == _lprTransparentServiceUUID) {
+               //   if (element.uuid == _lprTransparentServiceUUID) {
                     lprService=element;
                               callBackLprTanspernetserviecIdStatus!('Connected');
 
               lprService!.characteristics.forEach((dataCharacteristic) {
-                if (dataCharacteristic.uuid == _lprUartTX) {
+              //  if (dataCharacteristic.uuid == _lprUartTX) {
       callBackLprUartTxStatus!('Connected');
 dataCharacteristic.setNotifyValue(true);
                   //Start listening to the incoming data
-                  dataCharacteristic.value.listen((event) {
+                  dataCharacteristic.value.listen((event)async {
                     if (!event.isEmpty) {
                       String dataLine = utf8.decode(event);
                              callBackLprStreamingData!(dataLine);
 
-                     // debugPrint("LPR DATA WRITING CODE $dataLine ");
+                      debugPrint("LPR DATA WRITING CODE $dataLine ");
 
-                DownloadTrip().saveLPRData(dataLine??"" ,lprFile!,lprFileSink!);
+               //DownloadTrip().saveLPRData(dataLine);
+
+                    }
+                    else{
+
+DownloadTrip().saveLPRData('test LPR',lprFile!,lprFileSink!);
+
+//                       String fileContent = await rootBundle.loadString('assets/map/lpr_dummy_data.txt');
+// List<String> lines = fileContent.split('\n');
+
+// for (String line in lines) {
+//   //Utils.customPrint('Lpr file local data: $line');
+//   callBackLprStreamingData!(line);
+// }
 
                     }
                   });
-                }
+               // }
               });
                   
-                  }
+              // }
       
     });
       // lprService = services.singleWhere((element) =>

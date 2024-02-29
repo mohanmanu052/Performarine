@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
+import 'package:performarine/lpr_device_handler.dart';
 import 'package:performarine/new_trip_analytics_screen.dart';
 import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
@@ -60,6 +61,14 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
   bool tripIsRunning = false, isuploadTrip = false, isTripEnded = false, isEndTripBtnClicked = false, isDataUpdated = false;
 
   late CommonProvider commonProvider;
+
+  String? lprTransperntServiceId;
+  String? lprTransperntServiceIdStatus;
+  String? lprUartTX;
+  String? lprUartTxStatus;
+  String? connectedBluetoothDeviceName;
+  String? lprStreamingData='No Lpr Streaming Data Found';
+
 
   @override
   void initState() {
@@ -118,6 +127,28 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
         });
       }
     });
+
+    LPRDeviceHandler().listenToDeviceConnectionState(
+      callBackLprTanspernetserviecId: (String lprTransperntServiceId1,String lprUartTX1){
+        lprTransperntServiceId=lprTransperntServiceId1;
+        lprUartTX=lprUartTX1;
+
+      },
+      callBackconnectedDeviceName: (bluetoothDeviceName1) {
+        connectedBluetoothDeviceName=bluetoothDeviceName1;
+      },
+      callBackLprTanspernetserviecIdStatus: (String status ){
+        lprTransperntServiceIdStatus=status;
+      },
+
+      callBackLprUartTxStatus: (status) {
+        lprUartTxStatus=status;
+      },
+      callBackLprStreamingData: (lprSteamingData1) {
+
+        lprStreamingData=lprSteamingData1;
+      },
+    );
   }
 
   getData() async {
