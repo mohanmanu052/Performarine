@@ -28,6 +28,7 @@ import 'package:performarine/pages/fleet/fleet_reports.dart';
 import 'package:performarine/pages/fleet/fleet_vessel_screen.dart';
 import 'package:performarine/pages/fleet/my_fleet_screen.dart';
 import 'package:performarine/pages/home_page.dart';
+import 'package:performarine/pages/lpr_data_stream.dart';
 import 'package:performarine/pages/retired_vessels_screen.dart';
 import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
 import 'package:performarine/pages/sync_data_cloud_to_mobile_screen.dart';
@@ -458,6 +459,33 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   child: commonText(
                                       context: context,
                                       text: 'Fleet Reports',
+                                      fontWeight: FontWeight.w400,
+                                      textColor: Colors.black54,
+                                      textSize: textSize,
+                                      textAlign: TextAlign.start),
+                                ),
+                              ),
+                              SizedBox(
+                                height: displayHeight(context) * 0.02,
+                              ),
+
+                                                            Container(
+                                width: displayWidth(context),
+                                child: InkWell(
+                                  onTap: ()async {
+                                    // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                    Navigator.of(context).pop();
+
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              LprDataStream()),
+                                    );
+                                  },
+                                  child: commonText(
+                                      context: context,
+                                      text: 'LPR Data',
                                       fontWeight: FontWeight.w400,
                                       textColor: Colors.black54,
                                       textSize: textSize,
@@ -1193,6 +1221,36 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           SizedBox(
                             height: displayHeight(context) * 0.02,
                           ),
+
+                                                            Container(
+                                width: displayWidth(context),
+                                child: InkWell(
+                                  onTap: ()async {
+                                    // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                    Navigator.of(context).pop();
+
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              LprDataStream()),
+                                    );
+                                  },
+                                  child: commonText(
+                                      context: context,
+                                      text: 'LPR Data',
+                                      fontWeight: FontWeight.w400,
+                                      textColor: Colors.black54,
+                                      textSize: textSize,
+                                      textAlign: TextAlign.start),
+                                ),
+                              ),
+                              SizedBox(
+                                height: displayHeight(context) * 0.02,
+                              ),
+
+
+
                          /* Container(
                             width: displayWidth(context),
                             child: InkWell(

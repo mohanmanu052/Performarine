@@ -467,8 +467,66 @@ class DownloadTrip {
     return cloudTripPath;
   }
 
-    Future<void> saveLPRData(String data,File lprFile,IOSink lprFileSink)async{
-String? lprFileName;
+//     Future<void> saveLPRData(String data,File lprFile,IOSink lprFileSink)async{
+// String? lprFileName;
+//         int lprFileSize = await GetFile().checkLPRFileSize(lprFile);
+
+//         /// CHECK FOR ONLY 10 KB FOR Testing PURPOSE
+//         /// Now File Size is 200000
+//         if (lprFileSize >= 200000) {
+//           Utils.customPrint('STOPPED WRITING');
+//           Utils.customPrint('CREATING NEW FILE');
+
+//           CustomLogger().logWithFile(Level.info, "STOPPED WRITING -> $page");
+//           CustomLogger().logWithFile(Level.info, "CREATING NEW FILE -> $page");
+//       fileIndex = fileIndex + 1;
+//       lprFileName = 'lpr_$fileIndex.csv';
+
+//       // Close the existing file and open a new one
+//       lprFileSink.close();
+//       lprFile=File(lprFileName);
+//       lprFileSink=lprFile.openWrite(mode: FileMode.append);
+      
+//      // lprFileSink = null;
+
+//           /// STOP WRITING & CREATE NEW FILE
+//         } else {
+//           Utils.customPrint('LPR WRITING');
+
+//           // String finalString = '';
+
+//           // /// Creating csv file Strings by combining all the values
+//           //  var todayDate = DateTime.now().toUtc();
+//           // finalString = '${data} ${todayDate}';
+
+//           /// Writing into a csv file
+//       lprFileSink.write('$data');
+//       Utils.customPrint('LPR Data $data');
+//       Utils.customPrint('LPR Path Was ' + lprFile.path);
+
+
+//         }
+//       }
+
+
+  Future<void> saveLPRData(String data,)async{
+        String tripId = '';
+
+        int fileIndex = 0;
+            List<String>? tripData =
+    sharedPreferences!
+        .getStringList('trip_data');
+    if (tripData != null) {
+      tripId = tripData[0];
+    }
+
+
+
+    String lprFileName = 'lpr_$fileIndex.csv';
+        String lprFilePath = await GetFile().getlprFile(tripId, lprFileName);
+      //  File file = File(filePath);
+        File lprFile = File(lprFilePath);
+       // int fileSize = await GetFile().checkFileSize(file);
         int lprFileSize = await GetFile().checkLPRFileSize(lprFile);
 
         /// CHECK FOR ONLY 10 KB FOR Testing PURPOSE
@@ -479,85 +537,27 @@ String? lprFileName;
 
           CustomLogger().logWithFile(Level.info, "STOPPED WRITING -> $page");
           CustomLogger().logWithFile(Level.info, "CREATING NEW FILE -> $page");
-      fileIndex = fileIndex + 1;
-      lprFileName = 'lpr_$fileIndex.csv';
-
-      // Close the existing file and open a new one
-      lprFileSink.close();
-      lprFile=File(lprFileName);
-      lprFileSink=lprFile.openWrite(mode: FileMode.append);
-      
-     // lprFileSink = null;
+          fileIndex = fileIndex + 1;
+          lprFileName = 'lpr_$fileIndex.csv';
 
           /// STOP WRITING & CREATE NEW FILE
         } else {
-          Utils.customPrint('LPR WRITING');
+          Utils.customPrint('WRITING');
 
-          // String finalString = '';
+          String finalString = '';
 
-          // /// Creating csv file Strings by combining all the values
-          //  var todayDate = DateTime.now().toUtc();
-          // finalString = '${data} ${todayDate}';
+          /// Creating csv file Strings by combining all the values
+          finalString = data;
 
           /// Writing into a csv file
-      lprFileSink.write('$data');
-      Utils.customPrint('LPR Data $data');
-      Utils.customPrint('LPR Path Was ' + lprFile.path);
+          lprFile.writeAsString('$finalString', mode: FileMode.append);
+
+          Utils.customPrint('LPR Data $data');
+                    Utils.customPrint('LPR Path Wsa '+lprFile.path);
 
 
         }
       }
-
-
-  // Future<void> saveLPRData(String data,)async{
-  //       String tripId = '';
-
-  //       int fileIndex = 0;
-  //           List<String>? tripData =
-  //   sharedPreferences!
-  //       .getStringList('trip_data');
-  //   if (tripData != null) {
-  //     tripId = tripData[0];
-  //   }
-
-
-
-  //   String lprFileName = 'lpr_$fileIndex.csv';
-  //       String lprFilePath = await GetFile().getlprFile(tripId, lprFileName);
-  //     //  File file = File(filePath);
-  //       File lprFile = File(lprFilePath);
-  //      // int fileSize = await GetFile().checkFileSize(file);
-  //       int lprFileSize = await GetFile().checkLPRFileSize(lprFile);
-
-  //       /// CHECK FOR ONLY 10 KB FOR Testing PURPOSE
-  //       /// Now File Size is 200000
-  //       if (lprFileSize >= 200000) {
-  //         Utils.customPrint('STOPPED WRITING');
-  //         Utils.customPrint('CREATING NEW FILE');
-
-  //         CustomLogger().logWithFile(Level.info, "STOPPED WRITING -> $page");
-  //         CustomLogger().logWithFile(Level.info, "CREATING NEW FILE -> $page");
-  //         fileIndex = fileIndex + 1;
-  //         lprFileName = 'lpr_$fileIndex.csv';
-
-  //         /// STOP WRITING & CREATE NEW FILE
-  //       } else {
-  //         Utils.customPrint('WRITING');
-
-  //         String finalString = '';
-
-  //         /// Creating csv file Strings by combining all the values
-  //         finalString = data;
-
-  //         /// Writing into a csv file
-  //         lprFile.writeAsString('$finalString', mode: FileMode.append);
-
-  //         Utils.customPrint('LPR Data $data');
-  //                   Utils.customPrint('LPR Path Wsa '+lprFile.path);
-
-
-  //       }
-  //     }
       // Future<void> closeLprFile()async{
       //   if(lprFileSink!=null){
       //     //lprFileSink?.flush();
