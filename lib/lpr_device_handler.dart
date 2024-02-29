@@ -132,6 +132,7 @@ callBackconnectedDeviceName??=(String name){
 
 //This Function will return the LPR Transpernt ServiceId LPR UARTX ID In The Maps Screen To Show IDs Info
   callBackLprTanspernetserviecId(_lprTransparentServiceUUID.toString(),_lprUartTX.toString());
+                                String fileContent = await rootBundle.loadString('assets/map/lpr_dummy_data.txt');
 
 String? lprFileName;
 IOSink?
@@ -173,14 +174,15 @@ IOSink?
               onDeviceDisconnectCallback!.call();
           }
         } else if (event == BluetoothConnectionState.connected) {
+
 //Setting the lprfile name
-       lprFileName = 'lpr_$fileIndex.csv';
-       //Getting The Path Of the File
-      String lprFilePath = await GetFile().getlprFile(tripId, lprFileName!);
-      //Creating the file
-lprFile=  File(lprFilePath);
-  //Opening the stream to push data (Opening the file)
-lprFileSink = lprFile?.openWrite(mode: FileMode.append);
+//        lprFileName = 'lpr_$fileIndex.csv';
+//        //Getting The Path Of the File
+//       String lprFilePath = await GetFile().getlprFile(tripId, lprFileName!);
+//       //Creating the file
+// lprFile=  File(lprFilePath);
+//   //Opening the stream to push data (Opening the file)
+// lprFileSink = lprFile?.openWrite(mode: FileMode.append);
 
 
 
@@ -192,43 +194,46 @@ callBackconnectedDeviceName!(connectedDevice!.platformName);
     try {
     //This Will Check LprService element UUID Matches With LPRTransparentServiceUUID 
   services.forEach((element) {
-               //   if (element.uuid == _lprTransparentServiceUUID) {
+                  if (element.uuid == _lprTransparentServiceUUID) {
                     lprService=element;
                               callBackLprTanspernetserviecIdStatus!('Connected');
 
               lprService!.characteristics.forEach((dataCharacteristic) {
-              //  if (dataCharacteristic.uuid == _lprUartTX) {
+               if (dataCharacteristic.uuid == _lprUartTX) {
       callBackLprUartTxStatus!('Connected');
 dataCharacteristic.setNotifyValue(true);
                   //Start listening to the incoming data
                   dataCharacteristic.value.listen((event)async {
                     if (!event.isEmpty) {
                       String dataLine = utf8.decode(event);
-                             callBackLprStreamingData!(dataLine);
 
                       debugPrint("LPR DATA WRITING CODE $dataLine ");
 
-               //DownloadTrip().saveLPRData(dataLine);
+  DownloadTrip().saveLPRData(dataLine);
+                               callBackLprStreamingData!(dataLine);
+
 
                     }
                     else{
 
-DownloadTrip().saveLPRData('test LPR',lprFile!,lprFileSink!);
+//DownloadTrip().saveLPRData('test LPR',lprFile!,lprFileSink!);
 
-//                       String fileContent = await rootBundle.loadString('assets/map/lpr_dummy_data.txt');
 // List<String> lines = fileContent.split('\n');
 
 // for (String line in lines) {
 //   //Utils.customPrint('Lpr file local data: $line');
-//   callBackLprStreamingData!(line);
+//   DownloadTrip().saveLPRData(line);
+//     callBackLprStreamingData!(line);
+
+
 // }
 
                     }
                   });
-               // }
+               }
               });
                   
-              // }
+              }
       
     });
       // lprService = services.singleWhere((element) =>
