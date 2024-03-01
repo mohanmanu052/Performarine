@@ -398,6 +398,9 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
               "isComingFromReset": true,
               "token": initialLink.queryParameters['verify'].toString()
             };
+
+            Utils.customPrint("ARGUMENTS: $arguments");
+
             if (isUserLoggedIn != null) {
               if (isUserLoggedIn) {
                 isComingFromUnilinkMain = true;

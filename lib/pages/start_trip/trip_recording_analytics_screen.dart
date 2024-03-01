@@ -72,12 +72,12 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
 
   @override
   void initState() {
+    // TODO: implement initState
+    super.initState();
+
         SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-
-    // TODO: implement initState
-    super.initState();
 
     commonProvider = context.read<CommonProvider>();
 
@@ -89,6 +89,17 @@ class _TripRecordingAnalyticsScreenState extends State<TripRecordingAnalyticsScr
     if (tripIsRunning) {
       getRealTimeTripDetails();
       Wakelock.enable();
+      if (widget.isAppKilled) {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          Future.delayed(Duration(milliseconds: 100), () {
+            bool isOpened =
+                sharedPreferences!.getBool("key_lat_time_dialog_open") ?? false;
+            if (!isOpened) {
+              showEndTripDialogBox(context);
+            }
+          });
+        });
+      }
     }
   }
 
