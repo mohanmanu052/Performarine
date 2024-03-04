@@ -382,7 +382,7 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
           Utils.customPrint('Deep link received: $initialLink');
           CustomLogger().logWithFile(
               Level.info, "Deep link received: $initialLink -> $page");
-          if (initialLink.queryParameters['verify'] != null) {
+          if (initialLink.path=='/reset') {
             Utils.customPrint(
                 "reset: ${initialLink.queryParameters['verify'].toString()}");
             CustomLogger().logWithFile(Level.info,
@@ -421,7 +421,7 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
               });
             }
           }
-          else if (initialLink.queryParameters['fleetmember'] != null) {
+          else if (initialLink.path=='/fleetmember') {
             Utils.customPrint(
                 "fleetmember: ${initialLink.queryParameters['fleetmember'].toString()}");
             CustomLogger().logWithFile(Level.info,
@@ -433,7 +433,7 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
                 Level.info, "isUserLoggedIn: $isUserLoggedIn-> $page");
 
             Map<String, dynamic> arguments = {
-              "isComingFromReset": true,
+              "isComingFromReset": false,
               "token": initialLink.queryParameters['fleetmember'].toString()
             };
             if (isUserLoggedIn != null) {
@@ -445,7 +445,7 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
                     arguments: arguments);
               }
             } else {
-              Future.delayed(Duration(seconds: 2), () {
+              Future.delayed(Duration(seconds: 3), () {
                 isComingFromUnilinkMain = true;
                 MyFleetScreen();
               });
@@ -453,7 +453,7 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
           }
         } else {
           checkIfTripIsRunning();
-          Future.delayed(Duration(seconds: 4), () {
+          Future.delayed(Duration(seconds: 1), () {
             checkIfUserIsLoggedIn();
           });
         }
@@ -476,7 +476,7 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
         if (uri != null) {
           Utils.customPrint('Deep link received: $uri');
           CustomLogger().logWithFile(Level.info, "Deep link received-> $page");
-          if (uri.queryParameters['verify'] != null) {
+          if (uri.path=='/reset') {
             Utils.customPrint(
                 "reset: ${uri.queryParameters['verify'].toString()}");
             CustomLogger().logWithFile(Level.info,
@@ -501,13 +501,15 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
                         isAppKilled: true),
                     arguments: arguments);
               }
-            } else {}
+            } else {
+
+            }
           }
-          else if (uri.queryParameters['fleetmember'] != null) {
+          else if (uri.path=='/fleetmember') {
             Utils.customPrint(
-                "reset: ${uri.queryParameters['fleetmember'].toString()}");
+                "reset: ${uri.queryParameters['verify'].toString()}");
             CustomLogger().logWithFile(Level.info,
-                "reset: ${uri.queryParameters['fleetmember'].toString()} -> $page");
+                "reset: ${uri.queryParameters['verify'].toString()} -> $page");
             bool? isUserLoggedIn =
             await sharedPreferences!.getBool('isUserLoggedIn');
 
@@ -515,24 +517,21 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
             CustomLogger().logWithFile(
                 Level.info, "isUserLoggedIn: $isUserLoggedIn -> $page");
             Map<String, dynamic> arguments = {
-              "isComingFromReset": true,
-              "token": uri.queryParameters['fleetmember'].toString()
+              "isComingFromReset": false,
+              "token": uri.queryParameters['verify'].toString()
             };
             if (isUserLoggedIn != null) {
               if (isUserLoggedIn) {
                 //sharedPreferences!.setBool('reset_dialog_opened', false);
                 Get.offAll(
-                    BottomNavigation(
-                        isComingFromReset: true,
-                        token: uri.queryParameters['fleetmember'].toString(),
-                        isAppKilled: true),
+                    MyFleetScreen(isComingFromUnilink: true,),
                     arguments: arguments);
               }
             } else {}
           }
         } else {
           checkIfTripIsRunning();
-          Future.delayed(Duration(seconds: 4), () {
+          Future.delayed(Duration(seconds: 1), () {
             checkIfUserIsLoggedIn();
           });
         }

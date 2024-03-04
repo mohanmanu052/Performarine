@@ -26,7 +26,8 @@ import 'manage_permissions_screen.dart';
 
 class MyFleetScreen extends StatefulWidget {
   int?bottomNavIndex;
-  MyFleetScreen({super.key, this.bottomNavIndex});
+  bool? isComingFromUnilink;
+  MyFleetScreen({super.key, this.bottomNavIndex,this.isComingFromUnilink});
 
   @override
   State<MyFleetScreen> createState() => _MyFleetScreenState();
@@ -68,7 +69,12 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
           backgroundColor: Colors.white,
           leading: IconButton(
             onPressed: () {
+              if(widget.isComingFromUnilink??false){
+                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder:((context) =>  BottomNavigation())), (route) => false);
+              }else{
               Navigator.of(context).pop();
+
+              }
             },
             icon: const Icon(Icons.arrow_back),
             color: Theme.of(context).brightness == Brightness.dark
