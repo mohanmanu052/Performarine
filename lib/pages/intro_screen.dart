@@ -19,7 +19,9 @@ import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/pages/auth_new/reset_password.dart';
 import 'package:performarine/pages/auth_new/sign_in_screen.dart';
+import 'package:performarine/pages/fleet/my_fleet_screen.dart';
 import 'package:performarine/pages/home_page.dart';
+import 'package:performarine/pages/new_intro_screen.dart';
 import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
 import 'package:performarine/pages/sync_data_cloud_to_mobile_screen.dart';
 import 'package:performarine/pages/trip_analytics.dart';
@@ -399,7 +401,7 @@ class _IntroScreenState extends State<IntroScreen> {
         {
         Utils.customPrint('Deep link received: $initialLink');
           CustomLogger().logWithFile(Level.info, "Deep link received: $initialLink -> $page");
-          if(initialLink.queryParameters['verify'] != null){
+          if(initialLink.path== '/reset'){
         Utils.customPrint("reset: ${initialLink.queryParameters['verify'].toString()}");
             CustomLogger().logWithFile(Level.info, "reset: ${initialLink.queryParameters['verify'].toString()} -> $page");
             bool? isUserLoggedIn = await sharedPreferences!.getBool('isUserLoggedIn');
@@ -449,7 +451,7 @@ class _IntroScreenState extends State<IntroScreen> {
         if (uri != null) {
         Utils.customPrint('Deep link received: $uri');
           CustomLogger().logWithFile(Level.info, "Deep link received-> $page");
-          if(uri.queryParameters['verify'] != null){
+          if(uri.path=='/reset'){
         Utils.customPrint("reset: ${uri.queryParameters['verify'].toString()}");
             CustomLogger().logWithFile(Level.info, "reset: ${uri.queryParameters['verify'].toString()} -> $page");
             bool? isUserLoggedIn = await sharedPreferences!.getBool('isUserLoggedIn');
@@ -473,6 +475,38 @@ class _IntroScreenState extends State<IntroScreen> {
             {
             }
 
+          }
+                    else if (uri.path=='/fleetmember') {
+            Utils.customPrint(
+                "reset: ${uri.queryParameters['verify'].toString()}");
+            CustomLogger().logWithFile(Level.info,
+                "reset: ${uri.queryParameters['verify'].toString()} -> $page");
+            bool? isUserLoggedIn =
+            await sharedPreferences!.getBool('isUserLoggedIn');
+
+            Utils.customPrint("isUserLoggedIn: $isUserLoggedIn");
+            CustomLogger().logWithFile(
+                Level.info, "isUserLoggedIn: $isUserLoggedIn -> $page");
+            Map<String, dynamic> arguments = {
+              "isComingFromReset": false,
+              "token": uri.queryParameters['fleetmember'].toString()
+            };
+            if (isUserLoggedIn != null) {
+              if (isUserLoggedIn) {
+                //sharedPreferences!.setBool('reset_dialog_opened', false);
+                Get.offAll(
+                    MyFleetScreen(isComingFromUnilink: true,),
+                    arguments: arguments);
+              }
+            } else {
+              Future.delayed(Duration(seconds: 2), () {
+                //isComingFromUnilinkMain = true;
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const NewIntroScreen()),
+                    ModalRoute.withName(""));
+              });
+            }
           }
         }
         else

@@ -29,6 +29,8 @@ import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/lpr_device_handler.dart';
+import 'package:performarine/pages/auth/sign_in_screen.dart';
+import 'package:performarine/pages/fleet/my_fleet_screen.dart';
 import 'package:performarine/pages/new_splash_screen.dart';
 import 'package:performarine/new_trip_analytics_screen.dart';
 import 'package:performarine/pages/auth/reset_password.dart';
@@ -387,6 +389,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Future<void> initDeepLinkListener() async {
 
     try {
+      print('coming to init deeplink-------');
       _sub = uriLinkStream.listen((Uri? uri) async{
 
        setState(() {
@@ -398,8 +401,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         if (uri != null) {
           Utils.customPrint('Deep link received 2: $uri');
           CustomLogger().logWithFile(Level.info, "Deep link received -> $page ");
-
-          if(uri.queryParameters['verify'] != null){
+          if(uri.path=='/reset'){
             Utils.customPrint("reset: ${uri.queryParameters['verify'].toString()}");
             CustomLogger().logWithFile(Level.info, "reset: ${uri.queryParameters['verify'].toString()} -> $page ");
             bool? isUserLoggedIn = await sharedPreferences!.getBool('isUserLoggedIn');
@@ -429,6 +431,45 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               }
 
           }
+
+                    else if (uri.path=='/fleetmember') {
+            Utils.customPrint(
+                "fleetmember: ${uri.queryParameters['verify'].toString()}");
+            CustomLogger().logWithFile(Level.info,
+                "fleetmember: ${uri.queryParameters['verify'].toString()} -> $page");
+            bool? isUserLoggedIn = await sharedPreferences!.getBool('isUserLoggedIn');
+
+            Utils.customPrint("isUserLoggedIn: $isUserLoggedIn");
+            CustomLogger().logWithFile(
+                Level.info, "isUserLoggedIn: $isUserLoggedIn-> $page");
+
+            Map<String, dynamic> arguments = {
+              "isComingFromReset": false,
+              "token": uri.queryParameters['verify'].toString()
+            };
+            if (isUserLoggedIn != null) {
+              if (isUserLoggedIn) {
+                print('coming to init deeplink-------111111');
+
+                isComingFromUnilinkMain = true;
+               // sharedPreferences!.setBool('reset_dialog_opened', false);
+                Get.offAll(
+                    MyFleetScreen(isComingFromUnilink: true,),
+                    arguments: arguments);
+              }
+            } else {
+
+
+              Future.delayed(Duration(seconds: 2), () {
+                //isComingFromUnilinkMain = true;
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const NewIntroScreen()),
+                    ModalRoute.withName(""));
+              });
+            }
+          }
+
         }
       }, onError: (err) {
         Utils.customPrint('Error handling deep link: $err');
