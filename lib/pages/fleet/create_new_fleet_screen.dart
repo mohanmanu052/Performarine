@@ -475,7 +475,7 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
           ),
           if (isLoading)
             Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(color: circularProgressColor),
             )
         ],
       ),
