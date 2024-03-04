@@ -441,13 +441,16 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
                 isComingFromUnilinkMain = true;
                // sharedPreferences!.setBool('reset_dialog_opened', false);
                 Get.offAll(
-                    MyFleetScreen(),
+                    MyFleetScreen(isComingFromUnilink:true),
                     arguments: arguments);
               }
             } else {
-              Future.delayed(Duration(seconds: 3), () {
-                isComingFromUnilinkMain = true;
-                MyFleetScreen();
+              Future.delayed(Duration(seconds: 2), () {
+                //isComingFromUnilinkMain = true;
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const NewIntroScreen()),
+                    ModalRoute.withName(""));
               });
             }
           }
@@ -527,7 +530,17 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
                     MyFleetScreen(isComingFromUnilink: true,),
                     arguments: arguments);
               }
-            } else {}
+            } else {
+              Future.delayed(Duration(seconds: 2), ()
+              {
+                //isComingFromUnilinkMain = true;
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const NewIntroScreen()),
+                    ModalRoute.withName(""));
+              });
+            }
           }
         } else {
           checkIfTripIsRunning();

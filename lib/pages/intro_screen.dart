@@ -21,6 +21,7 @@ import 'package:performarine/pages/auth_new/reset_password.dart';
 import 'package:performarine/pages/auth_new/sign_in_screen.dart';
 import 'package:performarine/pages/fleet/my_fleet_screen.dart';
 import 'package:performarine/pages/home_page.dart';
+import 'package:performarine/pages/new_intro_screen.dart';
 import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
 import 'package:performarine/pages/sync_data_cloud_to_mobile_screen.dart';
 import 'package:performarine/pages/trip_analytics.dart';
@@ -497,7 +498,15 @@ class _IntroScreenState extends State<IntroScreen> {
                     MyFleetScreen(isComingFromUnilink: true,),
                     arguments: arguments);
               }
-            } else {}
+            } else {
+              Future.delayed(Duration(seconds: 2), () {
+                //isComingFromUnilinkMain = true;
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const NewIntroScreen()),
+                    ModalRoute.withName(""));
+              });
+            }
           }
         }
         else
