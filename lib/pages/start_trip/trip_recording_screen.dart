@@ -368,14 +368,7 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>
               TabBarView(
                 controller: tabController,
                 children: [
-                  // MapScreen(
-                  //     calledFrom: widget.calledFrom,
-                  //     scaffoldKey: scaffoldKey,
-                  //     tripId: widget.tripId,
-                  //     vesselId: widget.vesselId,
-                  //     tripIsRunningOrNot: widget.tripIsRunningOrNot,
-                  //     context: context,
-                  //     isAppKilled: widget.isAppKilled),
+
                   TripRecordingAnalyticsScreen(
                       calledFrom: widget.calledFrom,
                       scaffoldKey: scaffoldKey,
@@ -384,6 +377,15 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>
                       tripIsRunningOrNot: widget.tripIsRunningOrNot,
                       context: context,
                       isAppKilled: widget.isAppKilled),
+
+                  // MapScreen(
+                  //     calledFrom: widget.calledFrom,
+                  //     scaffoldKey: scaffoldKey,
+                  //     tripId: widget.tripId,
+                  //     vesselId: widget.vesselId,
+                  //     tripIsRunningOrNot: widget.tripIsRunningOrNot,
+                  //     context: context,
+                  //     isAppKilled: widget.isAppKilled),
                 ],
               ),
               Positioned(

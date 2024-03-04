@@ -2529,54 +2529,6 @@ if(!isSyncSignoutClicked){
                                               padding:  EdgeInsets.only(left: 8.0, right: 8),
                                               child: Column(
                                                 children: [
-                                                 /* Form(
-                                                    key: firstNameFormKey,
-                                                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                                                    child: Container(
-                                                      height: orientation==Orientation.portrait ? displayHeight(context) * 0.07 : displayHeight(context) * 0.13,
-                                                      child: TextFormField(
-                                                        controller: firstNameEditingController,
-                                                        textCapitalization: TextCapitalization.words,
-                                                        inputFormatters: [
-                                                          LengthLimitingTextInputFormatter(32),
-                                                        ],
-                                                        style: TextStyle(fontFamily: outfit, fontSize: orientation==Orientation.portrait ? displayWidth(context) * 0.036 : displayWidth(context) * 0.02),
-                                                        decoration: InputDecoration(
-                                                          hintText: 'First Name',
-                                                          hintStyle: TextStyle(fontFamily: outfit, fontSize: orientation==Orientation.portrait ? displayWidth(context) * 0.036 : displayWidth(context) * 0.02, color: Colors.grey),
-                                                          filled: true,
-                                                          fillColor: Colors.blue.shade50,
-                                                          enabledBorder: OutlineInputBorder(
-                                                            borderSide: BorderSide(color: Colors.blue.shade50),
-                                                            borderRadius: BorderRadius.circular(18),
-                                                          ),
-                                                          focusedBorder: OutlineInputBorder(
-                                                            borderSide: BorderSide(color: Colors.blue.shade50),
-                                                            borderRadius: BorderRadius.circular(18),
-                                                          ),
-                                                          focusedErrorBorder: OutlineInputBorder(
-                                                            borderSide: BorderSide(color: Colors.blue.shade50),
-                                                            borderRadius: BorderRadius.circular(18),
-                                                          ),
-                                                          errorBorder: OutlineInputBorder(
-                                                            borderSide: BorderSide(color: Colors.blue.shade50),
-                                                            borderRadius: BorderRadius.circular(18),
-                                                          ),
-                                                        ),
-                                                        validator: (value) {
-                                                          if (value!.isEmpty) {
-                                                            return 'Enter First Name';
-                                                          }
-
-                                                          return null;
-                                                        },
-                                                        focusNode: firstNameFocusNode,
-                                                        onFieldSubmitted: (value) {
-                                                          FocusScope.of(context).requestFocus(lastNameFocusNode);
-                                                        },
-                                                      ),
-                                                    ),
-                                                  ),*/
                                                   Form(
                                                     key: firstNameFormKey,
                                                     autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -2616,7 +2568,7 @@ if(!isSyncSignoutClicked){
                                                         labelText: 'Last Name',
                                                         hintText: '',
                                                         suffixText: null,
-                                                        textInputAction: TextInputAction.next,
+                                                        textInputAction: TextInputAction.done,
                                                         textInputType: TextInputType.text,
                                                         textCapitalization: TextCapitalization.words,
                                                         maxLength: 32,
@@ -2658,6 +2610,9 @@ if(!isSyncSignoutClicked){
                                               Expanded(
                                                 child: InkWell(
                                                   onTap: (){
+                                                    setDialogState(() {
+                                                      isUploadStarted = false;
+                                                    });
                                                     Navigator.of(context).pop();
                                                   },
                                                   child: commonText(
@@ -2676,7 +2631,7 @@ if(!isSyncSignoutClicked){
                                                   child: Container(
                                                       child: Center(
                                                           child:
-                                                          CircularProgressIndicator())),
+                                                          CircularProgressIndicator(color: circularProgressColor,))),
                                                 )
                                                     : Container(
                                                   width: displayWidth(context) * 0.32,
@@ -2718,11 +2673,10 @@ if(!isSyncSignoutClicked){
                                                                     });
                                                                     Future.delayed(
                                                                         Duration(seconds: 2),
-                                                                            () {
-                                                                          String? loginData =
-                                                                          sharedPreferences!
-                                                                              .getString(
-                                                                              'loginData');
+                                                                            ()async {
+                                                                              final storage = new FlutterSecureStorage();
+                                                                          //String? loginData = sharedPreferences!.getString('loginData');
+                                                                              String? loginData = await storage.read(key: 'loginData');
                                                                           if (loginData != null) {
                                                                             LoginModel loginModel =
                                                                             LoginModel.fromJson(
@@ -2742,12 +2696,8 @@ if(!isSyncSignoutClicked){
                                                                                 .clear();
                                                                             lastNameEditingController
                                                                                 .clear();
-                                                                            sharedPreferences!
-                                                                                .setString(
-                                                                                'loginData',
-                                                                                jsonEncode(
-                                                                                    loginModel
-                                                                                        .toJson()));
+                                                                            // sharedPreferences!.setString('loginData', jsonEncode(loginModel.toJson()));
+                                                                            await storage.write(key: 'loginData', value: jsonEncode(loginModel.toJson()));
                                                                             commonProvider.init();
                                                                             setState(() {});
                                                                           }

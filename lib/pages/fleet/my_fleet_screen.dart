@@ -118,7 +118,7 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
                       if (snapShot.connectionState == ConnectionState.waiting) {
                         return SizedBox(
                           height: displayHeight(context)/1.5,
-                            child: Center(child: const CircularProgressIndicator()));
+                            child: Center(child: const CircularProgressIndicator(color: circularProgressColor,)));
                       }
                       else if (snapShot.data == null) {
                         return  Container(
