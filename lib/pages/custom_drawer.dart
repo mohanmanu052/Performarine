@@ -17,6 +17,7 @@ import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_text_feild.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/connect_ble_devices.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/login_model.dart';
 import 'package:performarine/models/trip.dart';
@@ -480,7 +481,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              LprDataStream()),
+                                              ConnectBLEDevices()),
                                     );
                                   },
                                   child: commonText(
@@ -1233,7 +1234,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              LprDataStream()),
+                                              ConnectBLEDevices()),
                                     );
                                   },
                                   child: commonText(
