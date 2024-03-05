@@ -29,7 +29,7 @@ import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/lpr_device_handler.dart';
-import 'package:performarine/pages/auth/sign_in_screen.dart';
+import 'package:performarine/pages/auth_new/sign_in_screen.dart';
 import 'package:performarine/pages/fleet/my_fleet_screen.dart';
 import 'package:performarine/pages/new_splash_screen.dart';
 import 'package:performarine/new_trip_analytics_screen.dart';
@@ -449,7 +449,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             };
             if (isUserLoggedIn != null) {
               if (isUserLoggedIn) {
-                print('coming to init deeplink-------111111');
 
                 isComingFromUnilinkMain = true;
                // sharedPreferences!.setBool('reset_dialog_opened', false);
@@ -462,10 +461,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
               Future.delayed(Duration(seconds: 2), () {
                 //isComingFromUnilinkMain = true;
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => const NewIntroScreen()),
-                    ModalRoute.withName(""));
+                Get.offAll(
+                    SignInScreen(),
+                    );
               });
             }
           }

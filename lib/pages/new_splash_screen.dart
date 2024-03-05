@@ -15,7 +15,7 @@ import 'package:performarine/pages/new_intro_screen.dart';
 import '../common_widgets/widgets/log_level.dart';
 import '../main.dart';
 import 'auth/reset_password.dart';
-import 'auth/sign_in_screen.dart';
+import 'package:performarine/pages/auth_new/sign_in_screen.dart';
 import 'bottom_navigation.dart';
 import 'start_trip/trip_recording_screen.dart';
 import 'sync_data_cloud_to_mobile_screen.dart';
@@ -534,11 +534,8 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
               Future.delayed(Duration(seconds: 2), ()
               {
                 //isComingFromUnilinkMain = true;
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const NewIntroScreen()),
-                    ModalRoute.withName(""));
+Get.offAll( const SignInScreen());
+                    
               });
             }
           }

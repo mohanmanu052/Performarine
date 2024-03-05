@@ -503,7 +503,7 @@ class _IntroScreenState extends State<IntroScreen> {
                 //isComingFromUnilinkMain = true;
                 Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => const NewIntroScreen()),
+                    MaterialPageRoute(builder: (context) => const SignInScreen()),
                     ModalRoute.withName(""));
               });
             }
