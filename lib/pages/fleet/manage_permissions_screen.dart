@@ -491,6 +491,10 @@ var res= await commonProvider?.addFleetVessels(scaffoldKey: scaffoldKey,data: da
 if(res!=null){
                                 isLoading=false;
 
+                                if(res.statusCode==200){
+                                  Navigator.push(context, MaterialPageRoute(builder: ((context) => MyFleetScreen())));
+                                }
+
 }else{
                                   isLoading=false;
 
