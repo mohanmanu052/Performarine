@@ -41,9 +41,9 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
 
   late CommonProvider commonProvider;
 
-  late Future<FleetDashboardModel> future;
+  late Future<FleetDashboardModel>? future;
 
-  bool? isAcceptBtnClicked = false, isRejectBtnClicked = false;
+  bool? isAcceptBtnClicked = false, isRejectBtnClicked = false, isFleetIsEmpty = false;
 String? token;
   @override
   void initState() {
@@ -176,6 +176,13 @@ return false;
                             return StatefulBuilder(
                                 builder: (BuildContext context, StateSetter setter)
                                 {
+                                  /*if(snapShot.data!.myFleets!.isNotEmpty)
+                                    {
+                                      setter(() {
+                                        isFleetIsEmpty = true;
+                                      });
+                                    }*/
+
                                   //debugPrint("My Fleet ${snapShot.data!.myFleets!.isEmpty}");
                                   return Column(
                                     mainAxisSize: MainAxisSize.min,
@@ -642,7 +649,7 @@ return false;
                                                                     ))
                                                                     : InkWell(
                                                                   onTap: (){
-                                                                    CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to Reject fleet Invite??',subtext: snapShot.data!.myFleets![index].fleetName??'',
+                                                                    CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to Reject fleet Invite??',subtext: snapShot.data!.fleetInvites![index].fleetName??'',
                                                                       postiveButtonColor: deleteTripBtnColor, positiveButtonText: 'Reject',
                                                                     onNgeitiveButtonTap: (){
                                                                       Navigator.of(context).pop();
@@ -718,7 +725,7 @@ return false;
                                                                       child:  InkWell(
                                                                         onTap: (){
 
-                                                                          CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to accept fleet Invite?',subtext: snapShot.data!.myFleets![index].fleetName??'',
+                                                                          CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to accept fleet Invite?',subtext: snapShot.data!.fleetInvites![index].fleetName??'',
                                                                               postiveButtonColor: blueColor,positiveButtonText: 'Accept', negtiveButtuonColor: blueColor,
                                                                               onNgeitiveButtonTap: (){
                                                                                 Navigator.of(context).pop();
@@ -826,14 +833,32 @@ return false;
                       Padding(
                         padding: const EdgeInsets.only(left: 17, right: 17, top: 8),
                         child: CommonButtons.getActionButton(
-                            title:'Invite to Fleet',
+                            title: commonProvider.isMyFleetEmpty ? 'Create New Fleet' : 'Invite to Fleet',
                             context: context,
                             fontSize: displayWidth(context) * 0.042,
                             textColor: Colors.white,
                             buttonPrimaryColor: blueColor,
                             borderColor: blueColor,
                             width: displayWidth(context),
-                            onTap: ()async {
+                            onTap:  commonProvider.isMyFleetEmpty
+                              ? ()async {
+                              var result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => CreateNewFleetScreen()),
+                              );
+
+                              if(result != null)
+                              {
+                                if(result)
+                                {
+                                  setState(() {
+                                    future = commonProvider.fleetDashboardDetails(context, commonProvider.loginModel!.token!, scaffoldKey);
+                                  });
+                                }
+                              }
+
+                            }
+                                : ()async {
                               var result = await Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) => SendInviteScreen()),
@@ -850,7 +875,9 @@ return false;
                                 }
                             }),
                       ),
-                      Column(
+                      commonProvider.isMyFleetEmpty ?
+                          SizedBox()
+                          :Column(
                         children: [
                           SizedBox(height: displayHeight(context) * 0.01,),
                           InkWell(

@@ -450,7 +450,7 @@ print('invitation sent sucessfully');
                           }
 
 }else{
-  ScaffoldMessenger.maybeOf(context)!.showSnackBar(SnackBar(content: Text('Please Select Members')));
+  ScaffoldMessenger.maybeOf(context)!.showSnackBar(SnackBar(backgroundColor: Colors.blue, content: Text('Please Select Members')));
 }
 
                           

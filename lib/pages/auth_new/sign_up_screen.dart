@@ -411,7 +411,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           textCapitalization: TextCapitalization.none,
                           maxLength: 52,
                           prefixIcon: null,
-                          requestFocusNode: null,
+                          requestFocusNode: lastNameFocusNode,
                           obscureText: false,
                           onFieldSubmitted: (value) {
                           },
@@ -444,7 +444,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           textCapitalization: TextCapitalization.none,
                           maxLength: 52,
                           prefixIcon: null,
-                          requestFocusNode: null,
+                          requestFocusNode: emailFocusNode,
                           obscureText: false,
                           onFieldSubmitted: (value) {
                           },
@@ -689,7 +689,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         borderColor: blueColor,
                         width: displayWidth(context),
                         onTap: () async {
-                          if (countyFormKey.currentState!.validate() && zipCodeFormKey.currentState!.validate() && emailFormKey.currentState!.validate()
+                          if (countyFormKey.currentState!.validate() && zipCodeFormKey.currentState!.validate() && firstNameFormKey.currentState!.validate() && lastNameFormKey.currentState!.validate() && emailFormKey.currentState!.validate()
                               && phoneFormKey.currentState!.validate() && createPassFormKey.currentState!.validate() && confirmPassFormKey.currentState!.validate()) {
                             if(isChecked){
                               bool check = await Utils().check(scaffoldKey);
