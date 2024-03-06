@@ -43,7 +43,7 @@ class _LPRBluetoothListState extends State<LPRBluetoothList> {
               dialogContext: widget.dialogContext,
               setSetter: widget.setDialogSet,
               connectedDeviceId: widget.connectedDeviceId,
-              connectedBluetoothDevice: widget.connectedBluetoothDevice,
+              connectedBluetoothDevice: widget.connectedBluetoothDevice??d.device,
               onSingleDeviceTapped: (bool value) {
                 widget.setDialogSet!(() {
                   isConnectToDevice = value;

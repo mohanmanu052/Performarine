@@ -53,9 +53,11 @@ class LPRCallbackHandler{
     this.callBackLprUartTxStatus,
     this.callBackconnectedDeviceName,
     this.callBackLprStreamingData,
+    this.connectedDevice
   });
 
   void listenToDeviceConnectionState() async {
+    print('coming to listen device connection state');
     // Your existing method code...
         Map<String,dynamic> lpConfigValues= await    getLPRConfigartion();
 final Guid? _lprUartTX;
@@ -83,12 +85,12 @@ callBackconnectedDeviceName!(connectedDevice!.platformName);
     try {
     //This Will Check LprService element UUID Matches With LPRTransparentServiceUUID 
   services.forEach((element) {
-                  if (element.uuid == _lprTransparentServiceUUID) {
+                //  if (element.uuid == _lprTransparentServiceUUID) {
                     lprService=element;
                               callBackLprTanspernetserviecIdStatus!('Connected');
 
               lprService!.characteristics.forEach((dataCharacteristic) {
-               if (dataCharacteristic.uuid == _lprUartTX) {
+              // if (dataCharacteristic.uuid == _lprUartTX) {
       callBackLprUartTxStatus!('Connected');
 dataCharacteristic.setNotifyValue(true);
                   //Start listening to the incoming data
@@ -119,10 +121,10 @@ dataCharacteristic.setNotifyValue(true);
 
                     }
                   });
-               }
+            //   }
               });
                   
-              }
+           //   }
       
     });
       // lprService = services.singleWhere((element) =>

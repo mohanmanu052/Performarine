@@ -16,7 +16,7 @@ import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/location_permission_dialog.dart';
-import 'package:performarine/lpr_device_handler.dart';
+import 'package:performarine/lpr_data/lpr_callback_handler.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
 import 'package:performarine/pages/lpr_bluetooth_list.dart';
@@ -103,11 +103,12 @@ class _ConnectBLEDevicesState extends State<ConnectBLEDevices> {
                   children: [
                     Expanded(
                       child: Text(
-                        FlutterBluePlus
-                            .connectedDevices
-                            .isEmpty
-                            ? 'LPR'
-                            : '${FlutterBluePlus.connectedDevices.first.platformName.isEmpty ? FlutterBluePlus.connectedDevices.first.remoteId.str : FlutterBluePlus.connectedDevices.first.platformName}',
+                        bluetoothName??'LPR',
+                        // FlutterBluePlus
+                        //     .connectedDevices
+                        //     .isEmpty
+                        //     ? 'LPR'
+                        //     : '${FlutterBluePlus.connectedDevices.first.platformName.isEmpty ? FlutterBluePlus.connectedDevices.first.remoteId.str : FlutterBluePlus.connectedDevices.first.platformName}',
                         textAlign:
                         TextAlign
                             .start,
@@ -1160,12 +1161,7 @@ class _ConnectBLEDevicesState extends State<ConnectBLEDevices> {
                     ScanResult r = storedDeviceIdResultList.first;
                     r.device.connect().then((value) {
                       Utils.customPrint('CONNECTED TO DEVICE BLE');
-                      LPRDeviceHandler().setLPRDevice(r.device);
-                      LPRDeviceHandler().setDeviceDisconnectCallback(() {
-                        if (mounted) {
-                          setState(() {});
-                        }
-                      });
+                      LPRCallbackHandler(connectedDevice: r.device).listenToDeviceConnectionState();
                       setState(() {});
                     }).catchError((onError) {
                       Utils.customPrint('ERROR BLE: $onError');
@@ -1198,12 +1194,12 @@ class _ConnectBLEDevicesState extends State<ConnectBLEDevices> {
                     if (lprNameResultList.isNotEmpty) {
                       ScanResult r = lprNameResultList.first;
                       r.device.connect().then((value) {
-                        LPRDeviceHandler().setLPRDevice(r.device);
-                        LPRDeviceHandler().setDeviceDisconnectCallback(() {
-                          if (mounted) {
-                            setState(() {});
-                          }
-                        });
+                      LPRCallbackHandler(connectedDevice: r.device).listenToDeviceConnectionState();
+                        // LPRDeviceHandler().setDeviceDisconnectCallback(() {
+                        //   if (mounted) {
+                        //     setState(() {});
+                        //   }
+                        // });
                         setState(() {});
                       });
                       bluetoothName = r.device.platformName.isEmpty
@@ -1243,12 +1239,12 @@ class _ConnectBLEDevicesState extends State<ConnectBLEDevices> {
                   if (lprNameResultList.isNotEmpty) {
                     ScanResult r = lprNameResultList.first;
                     r.device.connect().then((value) {
-                      LPRDeviceHandler().setLPRDevice(r.device);
-                      LPRDeviceHandler().setDeviceDisconnectCallback(() {
-                        if (mounted) {
-                          setState(() {});
-                        }
-                      });
+                      LPRCallbackHandler(connectedDevice: r.device).listenToDeviceConnectionState();
+                      // LPRDeviceHandler().setDeviceDisconnectCallback(() {
+                      //   if (mounted) {
+                      //     setState(() {});
+                      //   }
+                      // });
                       setState(() {});
                     });
                     bluetoothName = r.device.platformName.isEmpty
@@ -1300,13 +1296,13 @@ class _ConnectBLEDevicesState extends State<ConnectBLEDevices> {
             ? connectedDevicesList.first.platformName
             : connectedDevicesList.first.remoteId.str;
       });
-      LPRDeviceHandler().setLPRDevice(connectedDevicesList.first);
-      LPRDeviceHandler().setDeviceDisconnectCallback(() {
-        if (mounted) {
-          setState(() {});
-        }
-      });
-    }
+                      LPRCallbackHandler(connectedDevice: connectedDevicesList.first).listenToDeviceConnectionState();
+    //   LPRDeviceHandler().setDeviceDisconnectCallback(() {
+    //     if (mounted) {
+    //       setState(() {});
+    //     }
+    //   });
+     }
   }
 
   void showLocationDailog(){
@@ -1586,16 +1582,18 @@ class _ConnectBLEDevicesState extends State<ConnectBLEDevices> {
                                   setState(() {
                                     bluetoothName = value;
                                   });
+                                                                      LPRCallbackHandler(connectedDevice: connectedBluetoothDevice).listenToDeviceConnectionState();
+
                                 }
                                 Future.delayed(Duration(seconds: 1), () {
                                   setState(() {});
                                 });
-                                LPRDeviceHandler()
-                                    .setDeviceDisconnectCallback(() {
-                                  if (mounted) {
-                                    setState(() {});
-                                  }
-                                });
+                                // LPRDeviceHandler()
+                                //     .setDeviceDisconnectCallback(() {
+                                //   if (mounted) {
+                                //     setState(() {});
+                                //   }
+                                // });
                               },
                               onBluetoothConnection: (value) {
                                 if (mounted) {
@@ -1608,12 +1606,12 @@ class _ConnectBLEDevicesState extends State<ConnectBLEDevices> {
                                 Future.delayed(Duration(seconds: 1), () {
                                   setState(() {});
                                 });
-                                LPRDeviceHandler()
-                                    .setDeviceDisconnectCallback(() {
-                                  if (mounted) {
-                                    setState(() {});
-                                  }
-                                });
+                                // LPRDeviceHandler()
+                                //     .setDeviceDisconnectCallback(() {
+                                //   if (mounted) {
+                                //     setState(() {});
+                                //   }
+                                // });
                               },
                             ))
                             : Container(
@@ -1623,23 +1621,26 @@ class _ConnectBLEDevicesState extends State<ConnectBLEDevices> {
                               dialogContext: dialogContext,
                               setDialogSet: setDialogState,
                               connectedDeviceId: connectedDeviceId,
+                              
                               connectedBluetoothDevice:
                               connectedBluetoothDevice,
                               onSelected: (value) {
                                 if (mounted) {
                                   setState(() {
                                     bluetoothName = value;
+
+                                    LPRCallbackHandler(connectedDevice: connectedBluetoothDevice).listenToDeviceConnectionState();
                                   });
                                 }
                                 Future.delayed(Duration(seconds: 1), () {
                                   setState(() {});
                                 });
-                                LPRDeviceHandler()
-                                    .setDeviceDisconnectCallback(() {
-                                  if (mounted) {
-                                    setState(() {});
-                                  }
-                                });
+                                // LPRDeviceHandler()
+                                //     .setDeviceDisconnectCallback(() {
+                                //   if (mounted) {
+                                //     setState(() {});
+                                //   }
+                                // });
                               },
                               onBluetoothConnection: (value) {
                                 if (mounted) {
@@ -1652,12 +1653,12 @@ class _ConnectBLEDevicesState extends State<ConnectBLEDevices> {
                                 Future.delayed(Duration(seconds: 1), () {
                                   setState(() {});
                                 });
-                                LPRDeviceHandler()
-                                    .setDeviceDisconnectCallback(() {
-                                  if (mounted) {
-                                    setState(() {});
-                                  }
-                                });
+                                // LPRDeviceHandler()
+                                //     .setDeviceDisconnectCallback(() {
+                                //   if (mounted) {
+                                //     setState(() {});
+                                //   }
+                                // });
                               },
                             )),
                       ),
@@ -1797,13 +1798,13 @@ class _ConnectBLEDevicesState extends State<ConnectBLEDevices> {
         var pref = await Utils.initSharedPreferences();
 
         isClickedOnForgetDevice = true;
-        LPRDeviceHandler().isSelfDisconnected = true;
+       // LPRDeviceHandler().isSelfDisconnected = true;
         Navigator.of(context).pop();
         EasyLoading.show(
             status: 'Disconnecting...', maskType: EasyLoadingMaskType.black);
         for (int i = 0; i < FlutterBluePlus.connectedDevices.length; i++) {
           await FlutterBluePlus.connectedDevices[i].disconnect().then((value) {
-            LPRDeviceHandler().isSelfDisconnected = false;
+          //  LPRDeviceHandler().isSelfDisconnected = false;
             pref.setBool('device_forget', true);
           });
         }
@@ -1889,12 +1890,12 @@ class _ConnectBLEDevicesState extends State<ConnectBLEDevices> {
                   'STORED ID: $lprDeviceId - ${r.device.remoteId.str}');
               if (r.device.remoteId.str == lprDeviceId) {
                 r.device.connect().then((value) {
-                  LPRDeviceHandler().setLPRDevice(connectedDevicesList.first);
-                  LPRDeviceHandler().setDeviceDisconnectCallback(() {
-                    if (mounted) {
-                      setState(() {});
-                    }
-                  });
+                  LPRCallbackHandler(connectedDevice: connectedDevicesList.first).listenToDeviceConnectionState();
+                  // LPRDeviceHandler().setDeviceDisconnectCallback(() {
+                  //   if (mounted) {
+                  //     setState(() {});
+                  //   }
+                  // });
                   Utils.customPrint('CONNECTED TO DEVICE BLE');
                 }).catchError((onError) {
                   Utils.customPrint('ERROR BLE: $onError');
@@ -1922,12 +1923,12 @@ class _ConnectBLEDevicesState extends State<ConnectBLEDevices> {
               } else {
                 if (r.device.platformName.toLowerCase().contains("lpr")) {
                   r.device.connect().then((value) {
-                    LPRDeviceHandler().setLPRDevice(connectedDevicesList.first);
-                    LPRDeviceHandler().setDeviceDisconnectCallback(() {
-                      if (mounted) {
-                        setState(() {});
-                      }
-                    });
+                  LPRCallbackHandler(connectedDevice: connectedDevicesList.first).listenToDeviceConnectionState();
+                    // LPRDeviceHandler().setDeviceDisconnectCallback(() {
+                    //   if (mounted) {
+                    //     setState(() {});
+                    //   }
+                    // });
                   });
                   bluetoothName = r.device.platformName.isEmpty
                       ? r.device.remoteId.str
@@ -1953,12 +1954,12 @@ class _ConnectBLEDevicesState extends State<ConnectBLEDevices> {
             } else {
               if (r.device.platformName.toLowerCase().contains("lpr")) {
                 r.device.connect().then((value) {
-                  LPRDeviceHandler().setLPRDevice(connectedDevicesList.first);
-                  LPRDeviceHandler().setDeviceDisconnectCallback(() {
-                    if (mounted) {
-                      setState(() {});
-                    }
-                  });
+                  LPRCallbackHandler(connectedDevice: connectedDevicesList.first).listenToDeviceConnectionState();
+                  // LPRDeviceHandler().setDeviceDisconnectCallback(() {
+                  //   if (mounted) {
+                  //     setState(() {});
+                  //   }
+                  // });
                 });
                 bluetoothName = r.device.platformName.isEmpty
                     ? r.device.remoteId.str
