@@ -48,6 +48,12 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
   void initState() {
     //selectedFleetvalue=fleetList[0];
     commonProvider= context.read<CommonProvider>();
+                                          fieldKeyList.add(Key(
+                                          Random().nextInt(9999).toString()));
+                                      textControllersList
+                                          .add(TextEditingController());
+                                      enableControllerKeyList.add(false);
+
     getFleetList();
     // TODO: implement initState
     super.initState();
@@ -434,6 +440,8 @@ print('invitation sent sucessfully');
                               setState(() {
                                 
                               });
+
+                              Navigator.push(context, MaterialPageRoute(builder: (_)=>MyFleetScreen()));
 
                      }else{
                                                     isLoading=false;
