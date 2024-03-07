@@ -8,6 +8,8 @@ class LPRBluetoothList extends StatefulWidget {
   final Function(bool)? onBluetoothConnection;
   final StateSetter? setDialogSet;
   final String? connectedDeviceId;
+  final Function(BluetoothDevice)? selectedBluetoothDevice;
+  String? comingFrom;
   final BluetoothDevice? connectedBluetoothDevice;
   LPRBluetoothList(
       {Key? key,
@@ -16,6 +18,8 @@ class LPRBluetoothList extends StatefulWidget {
         this.onBluetoothConnection,
         this.connectedDeviceId,
         this.connectedBluetoothDevice,
+        this.comingFrom,
+        this.selectedBluetoothDevice,
         this.setDialogSet})
       : super(key: key);
   @override
@@ -42,6 +46,8 @@ class _LPRBluetoothListState extends State<LPRBluetoothList> {
               onBluetoothConnection: widget.onBluetoothConnection,
               dialogContext: widget.dialogContext,
               setSetter: widget.setDialogSet,
+              comingFrom: widget.comingFrom,
+              selectedBluettothDevice: widget.selectedBluetoothDevice,
               connectedDeviceId: widget.connectedDeviceId,
               connectedBluetoothDevice: widget.connectedBluetoothDevice??d.device,
               onSingleDeviceTapped: (bool value) {

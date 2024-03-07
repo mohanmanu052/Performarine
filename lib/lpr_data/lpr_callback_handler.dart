@@ -7,29 +7,21 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 
+
+
+
+
+
 class LPRCallbackHandler{
-  static LPRCallbackHandler? _instance;
+  static final LPRCallbackHandler _instance = LPRCallbackHandler._internal();
 
-  // Private constructor
-  LPRCallbackHandler._internal({
-    this.callBackLprTanspernetserviecId,
-    this.callBackLprTanspernetserviecIdStatus,
-    this.callBackLprUartTxStatus,
-    this.callBackconnectedDeviceName,
-    this.callBackLprStreamingData,
-  });
+  factory LPRCallbackHandler() => _instance;
 
-  // Public method to get the singleton instance
-  static LPRCallbackHandler get instance {
-    _instance ??= LPRCallbackHandler._internal();
-    return _instance!;
+  LPRCallbackHandler._internal() {
+    //this.context = Get.context;
   }
 
-
-  // Method to reset the singleton instance if needed
-  static void resetInstance() {
-    _instance = null;
-  }
+  LPRCallbackHandler get instance => _instance;
 
 
     Function(String, String)? callBackLprTanspernetserviecId;
@@ -44,60 +36,88 @@ class LPRCallbackHandler{
   StreamSubscription<BluetoothConnectionState>? bluetoothConnectionStateListener;
 
   // Expose a StreamController to broadcast the Bluetooth data
-  final StreamController<String> _lprDataStreamController = StreamController<String>();
-  Stream<String> get lprDataStream => _lprDataStreamController.stream;
+  //tream<String> get lprDataStream => _lprDataStreamController.stream;
 
-  LPRCallbackHandler({
-    this.callBackLprTanspernetserviecId,
-    this.callBackLprTanspernetserviecIdStatus,
-    this.callBackLprUartTxStatus,
-    this.callBackconnectedDeviceName,
-    this.callBackLprStreamingData,
-    this.connectedDevice
-  });
+  // LPRCallbackHandler({
+  //   this.callBackLprTanspernetserviecId,
+  //   this.callBackLprTanspernetserviecIdStatus,
+  //   this.callBackLprUartTxStatus,
+  //   this.callBackconnectedDeviceName,
+  //   this.callBackLprStreamingData,
+  //   this.connectedDevice
+  // });
 
-  void listenToDeviceConnectionState() async {
+  void listenToDeviceConnectionState(  {  Function(String lprTransperntServiceId, String lprUartTX)?callBackLprTanspernetserviecId,
+    Function(String status)?callBackLprTanspernetserviecIdStatus,
+        Function(String status)?callBackLprUartTxStatus,
+Function(String bluetoothDeviceName)? callBackconnectedDeviceName,
+Function(String lprSteamingData)? callBackLprStreamingData,
+  BluetoothDevice? connectedDevice
+
+}) async {
     print('coming to listen device connection state');
+
+      callBackLprTanspernetserviecId ??= (String lprTransperntServiceId, String lprUartTx) {
+  };
+    callBackLprStreamingData ??= (String lprTransperntServiceId) {
+  };
+callBackLprUartTxStatus ??= ( String status) {
+  };
+callBackconnectedDeviceName??=(String name){
+
+};
+  callBackLprTanspernetserviecIdStatus ??= (String transperntStats) {
+  };
+                                String fileContent = await rootBundle.loadString('assets/map/lpr_dummy_data.txt');
+
+
     // Your existing method code...
         Map<String,dynamic> lpConfigValues= await    getLPRConfigartion();
-final Guid? _lprUartTX;
-final Guid? _lprUartRX; 
-  final Guid _lprTransparentServiceUUID = Guid(lpConfigValues['lprTransparentServiceUUID']??"49535343-FE7D-4AE5-8FA9-9FAFD205E455");
+
+//Assigning The default Callbacks
+      
+ Guid? _lprUartTX;
+ Guid? _lprUartRX; 
+   Guid _lprTransparentServiceUUID = Guid(lpConfigValues['lprTransparentServiceUUID']??"49535343-FE7D-4AE5-8FA9-9FAFD205E455");
 
          _lprUartTX = Guid( lpConfigValues['lprUartTX']?? "49535343-1E4D-4BD9-BA61-23C647249616");
   // RX Characteristic, Write and Write without response
   _lprUartRX = Guid(lpConfigValues['lprUartRX'] ??  "49535343-8841-43F4-A8D4-ECBE34729BB3");
+  //Testing Purpose Only
+_lprTransparentServiceUUID=Guid('00001801-0000-1000-8000-00805f9b34fb');
+ _lprUartTX=Guid('00002a05-0000-1000-8000-00805f9b34fb');
+
+
     if (connectedDevice != null) {
       bluetoothConnectionStateListener =
           connectedDevice!.connectionState.listen((event) async {
         if (event == BluetoothConnectionState.disconnected) {
-          // if(lprFileSink!=null){
-          //   lprFileSink?.close();
-          // }
           
         } else if (event == BluetoothConnectionState.connected) {
 
 List<BluetoothService> services =await  connectedDevice!.discoverServices();
 //This Function Will Return The Connected BlueTooth Name On Map Screen
-callBackconnectedDeviceName!(connectedDevice!.platformName);
+callBackconnectedDeviceName!(connectedDevice.platformName);
       callBackLprUartTxStatus!('Not Connected');
 
     try {
     //This Will Check LprService element UUID Matches With LPRTransparentServiceUUID 
   services.forEach((element) {
-                //  if (element.uuid == _lprTransparentServiceUUID) {
+                 if (element.uuid == _lprTransparentServiceUUID) {
                     lprService=element;
                               callBackLprTanspernetserviecIdStatus!('Connected');
 
               lprService!.characteristics.forEach((dataCharacteristic) {
-              // if (dataCharacteristic.uuid == _lprUartTX) {
+                print('the data character uuid is -----'+dataCharacteristic.uuid.str128.toString());
+                                print('the data character uuid is1111 -----'+_lprUartTX!.str128.toString());
+
+               if (dataCharacteristic.uuid == _lprUartTX) {
       callBackLprUartTxStatus!('Connected');
 dataCharacteristic.setNotifyValue(true);
                   //Start listening to the incoming data
                   dataCharacteristic.value.listen((event)async {
                     if (!event.isEmpty) {
                       String dataLine = utf8.decode(event);
-
                       debugPrint("LPR DATA WRITING CODE $dataLine ");
 //Saving The Data Into The File
   //Call Back Returning the data we can use this globally
@@ -107,24 +127,21 @@ dataCharacteristic.setNotifyValue(true);
                     }
                     else{
 
-//DownloadTrip().saveLPRData('test LPR',lprFile!,lprFileSink!);
 
-// List<String> lines = fileContent.split('\n');
+List<String> dataline = fileContent.split('\n');
 
-// for (String line in lines) {
-//   //Utils.customPrint('Lpr file local data: $line');
-//   DownloadTrip().saveLPRData(line);
-//     callBackLprStreamingData!(line);
+for (String data in dataline) {
 
+    callBackLprStreamingData!(data);
 
-// }
+}
 
                     }
                   });
-            //   }
+              }
               });
                   
-           //   }
+             }
       
     });
       // lprService = services.singleWhere((element) =>
@@ -160,7 +177,6 @@ dataCharacteristic.setNotifyValue(true);
 
   // Dispose the stream controller to avoid memory leaks
   void dispose() {
-    _lprDataStreamController.close();
   }
 Future<Map<String,dynamic>>  getLPRConfigartion()async  {
     FlutterSecureStorage storage = FlutterSecureStorage();
