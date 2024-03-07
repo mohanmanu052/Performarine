@@ -253,6 +253,9 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
                     key: fleetName_formKey,
                     child: TextFormField(
                       controller: fleetNameEditingController,
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(32),
+                      ],
                       decoration: InputDecoration(
                         hintText: 'Fleet Name',
                         hintStyle: TextStyle(

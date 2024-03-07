@@ -155,7 +155,7 @@ return false;
                         if (snapShot.connectionState == ConnectionState.waiting) {
                           return SizedBox(
                             height: displayHeight(context)/1.5,
-                              child: Center(child: const CircularProgressIndicator()));
+                              child: Center(child: const CircularProgressIndicator(color: circularProgressColor)));
                         }
                         else if (snapShot.data == null) {
                           return  Container(
@@ -176,14 +176,6 @@ return false;
                             return StatefulBuilder(
                                 builder: (BuildContext context, StateSetter setter)
                                 {
-                                  /*if(snapShot.data!.myFleets!.isNotEmpty)
-                                    {
-                                      setter(() {
-                                        isFleetIsEmpty = true;
-                                      });
-                                    }*/
-
-                                  //debugPrint("My Fleet ${snapShot.data!.myFleets!.isEmpty}");
                                   return Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
@@ -219,154 +211,171 @@ return false;
                                                       children: [
 
                                                         Row(
-                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                         // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                           children: [
-                                                            Column(
-                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                              children: [
-                                                                Row(
-                                                                  children: [
-                                                                    commonText(
-                                                                      context: context,
-                                                                      text: snapShot.data!.myFleets![index].fleetName,
-                                                                      fontWeight: FontWeight.w500,
-                                                                      textColor: Colors.black,
-                                                                      textSize: displayWidth(context) * 0.04,
-                                                                      textAlign: TextAlign.start,),
-                                                                    SizedBox(width: displayWidth(context) * 0.01,),
-                                                                    InkWell(
-                                                                        onTap: (){
-                                                                          FleetData data=FleetData(
-                                                                            fleetName: snapShot.data!.myFleets![index].fleetName,
-                                                                            id: snapShot.data!.myFleets![index].id,
-                                                                           // fleetOwnerId:snapShot. data!.myFleets![index].
-                                                                          );
-                                                                          CustomFleetDailog().showEditFleetDialog(context: context,fleetData:[data],selectedFleetValue: data,isDropDownEnabled: false );
-                                                                        },
+                                                            Expanded(
+                                                              child: Column(
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  Row(
+                                                                    children: [
+                                                                      Flexible(
+                                                                        child: Text(
+                                                                          snapShot.data!.myFleets![index].fleetName!,
+                                                                          style: TextStyle(
+                                                                            fontSize: displayWidth(context) * 0.04,
+                                                                            fontWeight: FontWeight.w500,
+                                                                            color: Colors.black,
+                                                                            fontFamily: outfit
+                                                                          ),
+                                                                          textAlign: TextAlign.start,
+                                                                          softWrap: true,
+                                                                          overflow: TextOverflow.ellipsis,
+                                                                        ),
+                                                                      ),
 
-                                                                        child: Image.asset('assets/icons/Edit.png', height: displayHeight(context) * 0.018, color: blueColor,)),
-                                                                  ],
-                                                                ),
-                                                                SizedBox(height: displayHeight(context) * 0.005,),
-                                                                Row(
-                                                                  children: [
-                                                                    commonText(
-                                                                        context: context,
-                                                                        text: 'No of Vessels: ',
-                                                                        fontWeight: FontWeight.w400,
-                                                                        textColor: Colors.grey,
-                                                                        textSize: displayWidth(context) * 0.028,
-                                                                        textAlign: TextAlign.start),
-                                                                    commonText(
-                                                                        context: context,
-                                                                        text: snapShot.data!.myFleets![index].vesselCount.toString(),
-                                                                        fontWeight: FontWeight.w500,
-                                                                        textColor: Colors.black,
-                                                                        textSize: displayWidth(context) * 0.028,
-                                                                        textAlign: TextAlign.start),
-                                                                  ],
-                                                                ),
+                                                                      SizedBox(width: displayWidth(context) * 0.01,),
+                                                                      InkWell(
+                                                                          onTap: (){
+                                                                            FleetData data=FleetData(
+                                                                              fleetName: snapShot.data!.myFleets![index].fleetName,
+                                                                              id: snapShot.data!.myFleets![index].id,
+                                                                             // fleetOwnerId:snapShot. data!.myFleets![index].
+                                                                            );
+                                                                            CustomFleetDailog().showEditFleetDialog(context: context,fleetData:[data],selectedFleetValue: data,isDropDownEnabled: false );
+                                                                          },
 
-                                                              ],
+                                                                          child: Image.asset('assets/icons/Edit.png', height: displayHeight(context) * 0.018, color: blueColor,)),
+                                                                    ],
+                                                                  ),
+                                                                  SizedBox(height: displayHeight(context) * 0.005,),
+                                                                  Row(
+                                                                    children: [
+                                                                      commonText(
+                                                                          context: context,
+                                                                          text: 'No of Vessels: ',
+                                                                          fontWeight: FontWeight.w400,
+                                                                          textColor: Colors.grey,
+                                                                          textSize: displayWidth(context) * 0.028,
+                                                                          textAlign: TextAlign.start),
+                                                                      commonText(
+                                                                          context: context,
+                                                                          text: snapShot.data!.myFleets![index].vesselCount.toString(),
+                                                                          fontWeight: FontWeight.w500,
+                                                                          textColor: Colors.black,
+                                                                          textSize: displayWidth(context) * 0.028,
+                                                                          textAlign: TextAlign.start),
+                                                                    ],
+                                                                  ),
+
+                                                                ],
+                                                              ),
                                                             ),
-                                                            Column(
-                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                                              children: [
-                                                                Center(
-                                                                  child: commonText(
+                                                            Expanded(
+                                                              child: Column(
+                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                                children: [
+                                                                  commonText(
                                                                     context: context,
                                                                     text: 'Member Details',
                                                                     fontWeight: FontWeight.w300,
                                                                     textColor: Colors.black,
                                                                     textSize: displayWidth(context) * 0.03,
-                                                                    textAlign: TextAlign.start,),
-                                                                ),
+                                                                    textAlign: TextAlign.center,),
 
-                                                                Row(
-                                                                  children: [
-                                                                    Column(
-                                                                      children: [
-                                                                        commonText(
-                                                                          context: context,
-                                                                          text: 'Accepted',
-                                                                          fontWeight: FontWeight.w300,
-                                                                          textColor: Colors.grey,
-                                                                          textSize: displayWidth(context) * 0.03,
-                                                                          textAlign: TextAlign.start,),
+                                                                  Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                                    children: [
+                                                                      Column(
 
-                                                                        commonText(
-                                                                          context: context,
-                                                                          text: snapShot.data!.myFleets![index].acceptedCount.toString(),
-                                                                          fontWeight: FontWeight.w300,
-                                                                          textColor: Colors.black,
-                                                                          textSize: displayWidth(context) * 0.03,
-                                                                          textAlign: TextAlign.start,),
-                                                                      ],
-                                                                    ),
-                                                                    SizedBox(width: displayWidth(context) * 0.01,),
-
-                                                                    Column(
-                                                                      children: [
-                                                                        commonText(
-                                                                          context: context,
-                                                                          text: 'Pending',
-                                                                          fontWeight: FontWeight.w300,
-                                                                          textColor: Colors.grey,
-                                                                          textSize: displayWidth(context) * 0.03,
-                                                                          textAlign: TextAlign.start,),
-
-                                                                        commonText(
-                                                                          context: context,
-                                                                          text: snapShot.data!.myFleets![index].pendingCount.toString(),
-                                                                          fontWeight: FontWeight.w300,
-                                                                          textColor: Colors.black,
-                                                                          textSize: displayWidth(context) * 0.03,
-                                                                          textAlign: TextAlign.start,),
-                                                                      ],
-                                                                    )
-                                                                  ],
-                                                                )
-                                                              ],
-                                                            ),
-                                                            Row(
-                                                              children: [
-                                                                InkWell(
-                                                                  onTap: (){
-                                                                    Navigator.push(context, MaterialPageRoute(builder: ((context) => FleetVesselScreen(
-                                                                      tabIndex: 1,
-                                                                    ))));
-                                                                  },
-                                                                  child: Container(
-                                                                    width: displayWidth(context) * 0.22,
-                                                                    decoration: BoxDecoration(
-                                                                        color: blueColor,
-                                                                        borderRadius: BorderRadius.circular(8)
-                                                                    ),
-                                                                    child: Center(
-                                                                      child: Padding(
-                                                                        padding: const EdgeInsets.only(top: 8, bottom: 8),
-                                                                        child: commonText(
+                                                                        children: [
+                                                                          commonText(
                                                                             context: context,
-                                                                            text: 'Fleet Details',
+                                                                            text: 'Accepted',
                                                                             fontWeight: FontWeight.w300,
-                                                                            textColor: Colors.white,
+                                                                            textColor: Colors.grey,
                                                                             textSize: displayWidth(context) * 0.03,
-                                                                            textAlign: TextAlign.start,  fontFamily: poppins),
+                                                                            textAlign: TextAlign.start,),
+
+                                                                          commonText(
+                                                                            context: context,
+                                                                            text: snapShot.data!.myFleets![index].acceptedCount.toString(),
+                                                                            fontWeight: FontWeight.w300,
+                                                                            textColor: Colors.black,
+                                                                            textSize: displayWidth(context) * 0.03,
+                                                                            textAlign: TextAlign.start,),
+                                                                        ],
+                                                                      ),
+                                                                      SizedBox(width: displayWidth(context) * 0.01,),
+
+                                                                      Column(
+                                                                        children: [
+                                                                          commonText(
+                                                                            context: context,
+                                                                            text: 'Pending',
+                                                                            fontWeight: FontWeight.w300,
+                                                                            textColor: Colors.grey,
+                                                                            textSize: displayWidth(context) * 0.03,
+                                                                            textAlign: TextAlign.start,),
+
+                                                                          commonText(
+                                                                            context: context,
+                                                                            text: snapShot.data!.myFleets![index].pendingCount.toString(),
+                                                                            fontWeight: FontWeight.w300,
+                                                                            textColor: Colors.black,
+                                                                            textSize: displayWidth(context) * 0.03,
+                                                                            textAlign: TextAlign.start,),
+                                                                        ],
+                                                                      )
+                                                                    ],
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            Expanded(
+                                                              child: Row(
+                                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                children: [
+                                                                  InkWell(
+                                                                    onTap: (){
+                                                                      Navigator.push(context, MaterialPageRoute(builder: ((context) => FleetVesselScreen(
+                                                                        tabIndex: 1,
+                                                                      ))));
+                                                                    },
+                                                                    child: Container(
+                                                                      width: displayWidth(context) * 0.22,
+                                                                      decoration: BoxDecoration(
+                                                                          color: blueColor,
+                                                                          borderRadius: BorderRadius.circular(8)
+                                                                      ),
+                                                                      child: Center(
+                                                                        child: Padding(
+                                                                          padding: const EdgeInsets.only(top: 8, bottom: 8),
+                                                                          child: commonText(
+                                                                              context: context,
+                                                                              text: 'Fleet Details',
+                                                                              fontWeight: FontWeight.w300,
+                                                                              textColor: Colors.white,
+                                                                              textSize: displayWidth(context) * 0.03,
+                                                                              textAlign: TextAlign.start,  fontFamily: poppins),
+                                                                        ),
                                                                       ),
                                                                     ),
                                                                   ),
-                                                                ),
-                                                                SizedBox(width: displayWidth(context) * 0.02,),
-                                                                InkWell(
-                                                                    onTap: (){
-                                                                      CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to leave this fleet?',subtext: snapShot.data!.myFleets![index].fleetName??'',description: 'If you leave the fleet your fleet manager cannot view your vessels & Reports',
-                                                                          postiveButtonColor: deleteTripBtnColor,positiveButtonText: 'Leave');
+                                                                  SizedBox(width: displayWidth(context) * 0.02,),
+                                                                  InkWell(
+                                                                      onTap: (){
+                                                                        CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to leave this fleet?',subtext: snapShot.data!.myFleets![index].fleetName??'',description: 'If you leave the fleet your fleet manager cannot view your vessels & Reports',
+                                                                            postiveButtonColor: deleteTripBtnColor,positiveButtonText: 'Leave');
 
-                                                                    },
+                                                                      },
 
-                                                                    child: Image.asset('assets/images/Trash.png', height: displayHeight(context) * 0.02, color: Colors.red,)),
-                                                              ],
+                                                                      child: Image.asset('assets/images/Trash.png', height: displayHeight(context) * 0.02, color: Colors.red,)),
+                                                                ],
+                                                              ),
                                                             )
                                                           ],
                                                         ),
@@ -833,15 +842,31 @@ return false;
                       Padding(
                         padding: const EdgeInsets.only(left: 17, right: 17, top: 8),
                         child: CommonButtons.getActionButton(
-                            title: commonProvider.isMyFleetEmpty ? 'Create New Fleet' : 'Invite to Fleet',
+                            title: commonProvider.isMyFleetNotEmpty ? 'Invite to Fleet' : 'Create New Fleet',
                             context: context,
                             fontSize: displayWidth(context) * 0.042,
                             textColor: Colors.white,
                             buttonPrimaryColor: blueColor,
                             borderColor: blueColor,
                             width: displayWidth(context),
-                            onTap:  commonProvider.isMyFleetEmpty
+                            onTap:  commonProvider.isMyFleetNotEmpty
                               ? ()async {
+                              var result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => SendInviteScreen()),
+                              );
+
+                              if(result != null)
+                                {
+                                  if(result)
+                                    {
+                                      setState(() {
+                                        future = commonProvider.fleetDashboardDetails(context, commonProvider.loginModel!.token!, scaffoldKey);
+                                      });
+                                    }
+                                }
+                            }
+                            : ()async {
                               var result = await Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) => CreateNewFleetScreen()),
@@ -857,27 +882,10 @@ return false;
                                 }
                               }
 
-                            }
-                                : ()async {
-                              var result = await Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => SendInviteScreen()),
-                              );
-
-                              if(result != null)
-                                {
-                                  if(result)
-                                    {
-                                      setState(() {
-                                        future = commonProvider.fleetDashboardDetails(context, commonProvider.loginModel!.token!, scaffoldKey);
-                                      });
-                                    }
-                                }
                             }),
                       ),
-                      commonProvider.isMyFleetEmpty ?
-                          SizedBox()
-                          :Column(
+                      commonProvider.isMyFleetNotEmpty ?
+                      Column(
                         children: [
                           SizedBox(height: displayHeight(context) * 0.01,),
                           InkWell(
@@ -908,7 +916,8 @@ return false;
                           ),
                           SizedBox(height: displayHeight(context) * 0.01,),
                         ],
-                      ),
+                      )
+                          :SizedBox(),
 
                       GestureDetector(
                           onTap: ()async{

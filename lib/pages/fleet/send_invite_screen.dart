@@ -289,7 +289,7 @@ setState(() {
                                                 
                             }),
                         ))
-                      :Center(child: CircularProgressIndicator()),
+                      :Center(child: CircularProgressIndicator(color: circularProgressColor)),
                     ),
                     SizedBox(
                       height: displayHeight(context) * 0.03,
@@ -486,7 +486,7 @@ print('invitation sent sucessfully');
             ),
             if (isLoading)
               Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(color: circularProgressColor),
               ),
           ],
         ),

@@ -69,7 +69,7 @@ class CommonProvider with ChangeNotifier {
   ForgotPasswordModel? forgotPasswordModel;
   ResetPasswordModel? resetPasswordModel;
   ChangePasswordModel? changePasswordModel;
-  bool isBluetoothEnabled = false, isMyFleetEmpty = false;
+  bool isBluetoothEnabled = false, isMyFleetNotEmpty = false;
   UserFeedbackModel? userFeedbackModel;
   DeleteTripModel? deleteTripModel;
   int bottomNavIndex = 0;
@@ -510,9 +510,9 @@ return res;
     fleetDashboardModel = FleetDashboardModel();
     fleetDashboardModel = await FleetDashboardApiProvider().fleetDashboardData(context, token, scaffoldKey);
 
-    if(fleetDashboardModel!.myFleets!.isEmpty)
+    if(fleetDashboardModel!.myFleets!.isNotEmpty)
       {
-        isMyFleetEmpty = true;
+        isMyFleetNotEmpty = true;
       }
     notifyListeners();
 

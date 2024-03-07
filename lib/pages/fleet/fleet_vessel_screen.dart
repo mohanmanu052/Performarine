@@ -293,7 +293,7 @@ Container(
                             });
                         },
                     ),
-                ):CircularProgressIndicator(),
+                ):CircularProgressIndicator(color: circularProgressColor),
           ),
           
           SizedBox(height: 20,),

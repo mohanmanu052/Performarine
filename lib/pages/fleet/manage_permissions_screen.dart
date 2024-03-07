@@ -317,7 +317,7 @@ selectedFleetvalue=newValue;
                                 });
                             },
                         ),
-                    ):Center(child: CircularProgressIndicator(),),
+                    ):Center(child: CircularProgressIndicator(color: circularProgressColor),),
                                   ),
                     // SizedBox(height: displayHeight(context) * 0.05,),
                     // Align(
@@ -503,10 +503,10 @@ setState(() {
   
 });
                               }else{
-                                ScaffoldMessenger.maybeOf(context)!.showSnackBar(SnackBar(content: Text('Please Select Vessels')));
+                                ScaffoldMessenger.maybeOf(context)!.showSnackBar(SnackBar(backgroundColor: Colors.blue, content: Text('Please Select Vessels')));
                               }
                             }else{
-                                                              ScaffoldMessenger.maybeOf(context)!.showSnackBar(SnackBar(content: Text('Please Select Fleet')));
+                                                              ScaffoldMessenger.maybeOf(context)!.showSnackBar(SnackBar(backgroundColor: Colors.blue, content: Text('Please Select Fleet')));
 
                             }
                           //   Navigator.push(
@@ -532,7 +532,7 @@ setState(() {
             ),
             if(isLoading)
             Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(color: circularProgressColor),
             )
           ],
         ),
