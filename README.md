@@ -76,3 +76,90 @@
    Engine • revision 54a7145303
    Tools • Dart 3.2.3 
     DevTools 2.28.4   
+
+
+
+    #LPR Docs 
+
+
+    LPR CallBack Handler 
+
+Overview 
+
+The LPRCallbackHandler class serves as a central handler for managing callbacks and streaming data related to a Bluetooth Low Energy (BLE) device with specific UUIDs for services and characteristics. This handler allows you to establish and manage connections, receive data, and handle disconnections for a BLE device. 
+
+
+Class Structure 
+
+Singleton Design Pattern  
+
+The class follows the Singleton design pattern, ensuring that only one instance of LPRCallbackHandler can exist in the application. This is achieved through a private constructor and a static instance _instance. 
+
+LPRCallbackHandler._internal();  
+
+factory LPRCallbackHandler() => _instance; 
+
+Public Properties and Methods 
+
+Properties 
+
+callBackLprTanspernetserviecId: A callback function for LPR Transparent Service ID and UART TX. 
+
+callBackLprTanspernetserviecIdStatus: A callback function for the status of the LPR Transparent Service ID. 
+
+callBackLprUartTxStatus: A callback function for the status of the LPR UART TX. 
+
+callBackconnectedDeviceName: A callback function for the connected Bluetooth device's name. 
+
+callBackLprStreamingData: A callback function for streaming LPR data. 
+
+onDeviceDisconnectCallback: A callback function triggered upon device disconnection. 
+
+lprService: Represents the Bluetooth service for LPR communication. 
+
+lprDataStream: A stream of lists containing LPR data. 
+
+Methods 
+
+listenToDeviceConnectionState: Establishes and manages the connection to a BLE device. It listens for changes in the device's connection state, discovers services, and sets up data characteristics for streaming LPR data. 
+
+void listenToDeviceConnectionState({/* ... */}) async; 
+ 
+
+dispose: 
+
+ Closes the stream controller to avoid memory leaks when the LPRCallbackHandler instance is no longer needed. 
+
+void dispose(); 
+
+ 
+
+getLPRConfigartion: Retrieves LPR configuration values stored securely. 
+ 
+
+Future<Map<String, dynamic>> getLPRConfigartion() async; 
+
+ 
+
+Usage Example 
+
+// Initialize the LPRCallbackHandler LPRCallbackHandler lprHandler = LPRCallbackHandler().instance; // Set up callbacks l 
+
+prHandler.callBackLprStreamingData = (data) {  
+
+// Handle LPR data streaming };  
+
+// Connect to a BLE device 
+
+ lprHandler.listenToDeviceConnectionState( callBackLprStreamingData:lprHandler.callBackLprStreamingData, connectedDevice: /* BluetoothDevice instance */, );  
+
+// Dispose of the handler when no longer needed  
+
+lprHandler.dispose(); 
+
+
+Important Notes 
+
+The listenToDeviceConnectionState method assumes specific UUIDs for LPR services and characteristics. Ensure these UUIDs match your device's specifications. 
+
+Handle the callbacks appropriately based on your application's requirements. 
