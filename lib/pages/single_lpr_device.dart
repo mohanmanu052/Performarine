@@ -7,6 +7,7 @@ import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/lpr_data/lpr_callback_handler.dart';
 import 'package:performarine/lpr_device_handler.dart';
 
 import '../common_widgets/utils/common_size_helper.dart';
@@ -22,8 +23,11 @@ class SingleLPRDevice extends StatefulWidget {
   final Function(bool)? onBluetoothConnection;
   final StateSetter? setSetter;
   final Function(bool)? onSingleDeviceTapped;
+  final Function(BluetoothDevice)? selectedBluettothDevice;
   String? connectedDeviceId;
   BluetoothDevice? connectedBluetoothDevice;
+  String? comingFrom;
+
 
   SingleLPRDevice(
       {Key? key,
@@ -34,6 +38,8 @@ class SingleLPRDevice extends StatefulWidget {
       this.setSetter,
       this.connectedDeviceId,
       this.connectedBluetoothDevice,
+      this.comingFrom,
+      this.selectedBluettothDevice,
       this.onSingleDeviceTapped})
       : super(key: key);
 
@@ -82,7 +88,22 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
               //  await storage.write(key: 'lprDeviceId', value: widget.device!.remoteId.str);
               debugPrint("SINGLE SELECTED BLE ID ${widget.device!.remoteId.str}");
               widget.device!.connect().then((value) {
+
+                if(widget.comingFrom=='lpr_test'){
+                                widget.selectedBluettothDevice!(widget.device!);
+
+// LPRCallbackHandler().listenToDeviceConnectionState(
+//   connectedDevice: widget.device,
+// callBackLprStreamingData: (lprSteamingData) {
+  
+// },
+
+// );
+
+                }else{
                 LPRDeviceHandler().setLPRDevice(widget.device!);
+
+                }
               }).catchError((onError) {
                 Utils.customPrint('CONNECT ERROR: $onError');
                 EasyLoading.dismiss();
@@ -123,7 +144,20 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
           //  await storage.write(key: 'lprDeviceId', value: widget.device!.remoteId.str);
           debugPrint("SINGLE SELECTED BLE ID ${widget.device!.remoteId.str}");
           widget.device!.connect().then((value) {
+            if(widget.comingFrom=='lpr_test'){
+              widget.selectedBluettothDevice!(widget.device!);
+// LPRCallbackHandler().listenToDeviceConnectionState(
+//   connectedDevice: widget.device,
+  
+// callBackLprStreamingData: (lprSteamingData) {
+  
+// },
+
+// );
+            }else{
             LPRDeviceHandler().setLPRDevice(widget.device!);
+
+            }
           }).catchError((onError) {
             Utils.customPrint('CONNECT ERROR: $onError');
             EasyLoading.dismiss();
