@@ -163,3 +163,296 @@ Important Notes
 The listenToDeviceConnectionState method assumes specific UUIDs for LPR services and characteristics. Ensure these UUIDs match your device's specifications. 
 
 Handle the callbacks appropriately based on your application's requirements. 
+
+
+Connect Bluetooth Device 
+
+Overview 
+
+The ConnectBLEDevices widget is a Flutter StatefulWidget that provides a user interface for connecting to a Bluetooth Low Energy (BLE) device, specifically an LPR device. It integrates with the LPRCallbackHandler class to manage BLE connections and handle LPR data streaming. 
+
+ 
+
+Widget Structure 
+
+ 
+
+ConnectBLEDevices 
+
+Description: A stateful widget for managing BLE connections and displaying LPR data. 
+
+Constructor: ConnectBLEDevices({super.key}) 
+
+State Class: _ConnectBLEDevicesState 
+
+ 
+
+_ConnectBLEDevicesState 
+
+Description: The state class that manages the internal state and behavior of the ConnectBLEDevices widget. 
+
+ 
+
+Properties: 
+
+scaffoldKey: A GlobalKey for managing the state of a Scaffold widget. 
+
+ 
+
+ 
+
+openedSettingsPageForPermission: A boolean flag indicating whether the settings page for permissions has been opened. 
+
+ 
+
+isLocationPermitted, isStartButton, isScanningBluetooth, isLocationDialogBoxOpen, isBluetoothPermitted, isBluetoothSearching, isRefreshList, isClickedOnForgetDevice: Boolean flags to control various states and actions. 
+
+ 
+
+lprHandler: An instance of the LPRCallbackHandler class. 
+
+ 
+
+bluetoothName: The name of the Bluetooth device, default is 'LPR'. 
+
+ 
+
+autoConnectStreamSubscription, autoConnectIsScanningStreamSubscription: Stream 	subscriptions for auto-connect events. 
+
+ 
+
+lprTanspernetserviecIdStatus, lprUartTxStatus, bluettothDeviceName, transperentServiceId, lprUartTXId: Strings to store various connection-related status and information. 
+
+ 
+
+ 
+
+Methods: 
+
+initState(): Initializes the state of the widget, checks permissions, and sets up necessary dependencies. 
+
+ 
+
+dispose(): Disposes of resources and disconnects from connected BLE devices when the widget is disposed. 
+
+ 
+
+build(BuildContext context): Builds the UI of the widget. 
+
+ 
+
+Other utility methods for handling Bluetooth connections, permissions, and UI interactions. 
+
+ 
+
+Important Notes 
+
+ 
+
+Customize the UI and behavior according to your application requirements. 
+
+Permissions and Bluetooth settings handling may vary between iOS and Android platforms. 
+
+ 
+
+Widgets Using In ConnectionBluetoothCalss 
+
+ 
+
+LPRBluetoothList: 
+
+ 
+
+Overview 
+
+ 
+
+The LPRBluetoothList widget is a customizable component designed to display a list of available Bluetooth devices and provide functionality for selecting a device, starting the connection, and listening to LPR  data. It interacts with the LPRCallbackHandler class to manage Bluetooth connections and handle LPR data streaming. 
+
+ 
+
+Widget Structure 
+
+ 
+
+LPRBluetoothList 
+
+Description: A configurable widget for displaying and interacting with Bluetooth devices. 
+
+ 
+
+ 
+
+Properties: 
+
+selectedBluetoothDevice: Callback function called when a Bluetooth device is selected. It initiates the connection and sets up data streaming using the LPRCallbackHandler. 
+
+ 
+
+comingFrom: A string identifier indicating the source or context of the widget. 
+
+ 
+
+dialogContext: The BuildContext associated with the dialog. 
+
+ 
+
+setDialogSet: A function for setting the dialog state. 
+
+ 
+
+connectedDeviceId: The ID of the currently connected Bluetooth device. 
+
+ 
+
+connectedBluetoothDevice: The Bluetooth device that is currently connected. 
+
+ 
+
+onSelected: Callback function called when a Bluetooth device is selected. 
+
+ 
+
+onBluetoothConnection: Callback function called when there is a change in Bluetooth connection status. 
+
+ 
+
+Other properties for customizing the appearance and behavior of the widget. 
+
+ 
+
+Methods: 
+
+Utility methods for handling Bluetooth connections, selecting devices, and updating UI state. 
+
+ 
+
+Usage:  
+
+LPRBluetoothList( 
+
+  selectedBluetoothDevice: (bluetoothDevice) { 
+
+    LPRCallbackHandler().listenToDeviceConnectionState( 
+
+      connectedDevice: bluetoothDevice, 
+
+      // ... other connection state callbacks 
+
+    ); 
+
+  }, 
+
+  comingFrom: 'lpr_test', 
+
+  dialogContext: dialogContext, 
+
+  setDialogSet: setDialogState, 
+
+  connectedDeviceId: connectedDeviceId, 
+
+  connectedBluetoothDevice: connectedBluetoothDevice, 
+
+  onSelected: (value) { 
+
+    // Handle selected Bluetooth device 
+
+  }, 
+
+  onBluetoothConnection: (value) { 
+
+    // Handle Bluetooth connection status change 
+
+  }, 
+
+  // ... other properties 
+
+) 
+
+ 
+
+StreamBuilder: 
+
+ 
+
+The StreamBuilder widget in the provided code snippet is used to asynchronously listen to a stream of LPR data. It updates the UI whenever new data is available in the stream. Below is the documentation for this part of the code: 
+
+ 
+
+Widget Structure 
+
+ 
+
+StreamBuilder<List<String>> 
+
+ 
+
+Description: A Flutter widget that listens to a stream and rebuilds the UI with the latest data received from the stream. 
+
+ 
+
+Properties: 
+
+stream: The stream to which the widget subscribes for data updates. In this case, it is the lprHandler.lprDataStream. 
+
+builder: A callback function that specifies how to rebuild the UI when new data is available in the stream. It takes the current BuildContext and a snapshot of the most recent interaction with the stream. 
+
+snapshot: A representation of the most recent data received from the stream, including its connection state, error, and the data itself. 
+
+Usage: 
+
+The StreamBuilder is utilized to create a responsive UI that updates whenever new LPR data is received. 
+
+ 
+
+ 
+
+Expanded( 
+
+  child: StreamBuilder<List<String>>( 
+
+    stream: lprHandler.lprDataStream, 
+
+    builder: (context, snapshot) { 
+
+      if (snapshot.hasData) { 
+
+        // If there is data in the stream, display it using a ListView 
+
+        return ListView.builder( 
+
+          itemCount: snapshot.data!.length, 
+
+          shrinkWrap: true, 
+
+          itemBuilder: (context, index) { 
+
+            // Build a Text widget for each item in the LPR data list 
+
+            return Text(snapshot.data![index].toString()); 
+
+          }, 
+
+        ); 
+
+      } else { 
+
+        // If there is no data in the stream, display a message 
+
+        return Center( 
+
+          child: Text('No LPR data available'), 
+
+        ); 
+
+      } 
+
+    }, 
+
+  ), 
+
+), 
+
+ 
+
+ 
