@@ -45,7 +45,11 @@ static const addFleetVessels='/api/addfleetVessels';
 static const fleetDashboardApi ='/api/fleetdashboard';
 static const fleetMember ='/fleetmember';
 
+static const fleetDetails ='/api/fleetDetails';
+static const deleteFleet ='/api/deleteFleet';
+static const leaveFleet ='/api/leaveFleet';
 
-  static String baseUrlVersion = '';
+
+static String baseUrlVersion = '';
 
 }
