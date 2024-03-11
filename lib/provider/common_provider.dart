@@ -90,6 +90,18 @@ class CommonProvider with ChangeNotifier {
     }
   }
 
+
+  Future<void>getToken()async{
+    final storage = new FlutterSecureStorage();
+    String? loginData = await storage.read(key: 'loginData');
+    //String? loginData = sharedPreferences!.getString('loginData');
+    //Utils.customPrint('LOGIN DATA: $loginData');
+    if (loginData != null) {
+      loginModel = LoginModel.fromJson(json.decode(loginData));
+       notifyListeners();
+    }
+  }
+
   /// to check if bluetooth is enabled or not
   Future<dynamic> checkIfBluetoothIsEnabled(GlobalKey<ScaffoldState> scaffoldKey, VoidCallback showBluetoothDialog) async{
 

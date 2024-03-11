@@ -10,8 +10,11 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
+import 'package:performarine/common_widgets/widgets/log_level.dart';
 import 'package:performarine/lpr_device_handler.dart';
 import 'package:performarine/new_trip_analytics_screen.dart';
 import 'package:performarine/pages/add_vessel_new/add_new_vessel_screen.dart';
@@ -39,6 +42,8 @@ import '../provider/common_provider.dart';
 import '../services/database_service.dart';
 import 'Vessels_screen.dart';
 import 'package:performarine/pages/trips/Trips.dart';
+
+import 'auth_new/sign_in_screen.dart';
 
 class BottomNavigation extends StatefulWidget {
   List<String> tripData;
@@ -149,14 +154,52 @@ class _BottomNavigationState extends State<BottomNavigation>
       Utils.customPrint('HomeScreen did update');
     }
   }
+  checkCurrentUser() {
+    if(Get.arguments!=null){
+    Map<String, dynamic> arguments = Get.arguments as Map<String, dynamic>;
+    if (arguments != null) {
+      if(arguments['isLoggedinUser']!=null&&arguments['isLoggedinUser']==false){
+        Future.delayed(Duration(seconds: 1)).then((value) {showNotCurrentUserDailog(context);
+        } );
 
+        ;
+      }}
+//   if(arguments[])
+// }
+    }
+  }
+  signOut() async {
+    var vesselDelete = await _databaseService.deleteDataFromVesselTable();
+    var tripsDelete = await _databaseService.deleteDataFromTripTable();
+
+    Utils.customPrint('DELETE $vesselDelete');
+    Utils.customPrint('DELETE $tripsDelete');
+    CustomLogger().logWithFile(Level.info, "DELETE $vesselDelete' -> $page");
+    CustomLogger().logWithFile(Level.info, "DELETE $tripsDelete' -> $page");
+
+    sharedPreferences!.clear();
+    GoogleSignIn googleSignIn = GoogleSignIn(
+      scopes: <String>[
+        'email',
+        'https://www.googleapis.com/auth/userinfo.profile',
+      ],
+    );
+
+    googleSignIn.signOut();
+
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const SignInScreen(calledFrom: 'sideMenu',)),
+        ModalRoute.withName(""));
+  }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-
+print('the get arguments was----'+Get.arguments.toString());
     WidgetsBinding.instance.addObserver(this);
+    checkCurrentUser();
 
     _tabController =
         TabController(vsync: this, length: 5, initialIndex: widget.tabIndex);
@@ -927,6 +970,94 @@ class _BottomNavigationState extends State<BottomNavigation>
 
   bool isThereCurrentDialogShowing(BuildContext context) =>
       ModalRoute.of(context)?.isCurrent != true;
+
+
+
+  showNotCurrentUserDailog(BuildContext context){
+    return showDialog(
+        barrierDismissible: true,
+        context: context,
+
+        builder: (BuildContext dialogContext) {
+
+          return
+            Dialog(
+              shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+          ),
+
+       child:     Container(
+           height: displayHeight(context) * 0.28,
+
+          // color: Colors.white60,
+            padding: EdgeInsets.all(16),
+            child:                         Padding(
+              padding: const EdgeInsets.only(left: 10.0, right: 10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  commonText(
+                      context: context,
+                      text:
+                      'You are not currently signed in with other account. Please sign in to continue.',
+                      fontWeight: FontWeight.w500,
+                      textColor: Colors.black,
+                      textSize: displayWidth(context) * 0.04,
+                      textAlign: TextAlign.center),
+
+
+
+            SizedBox(
+              height: displayHeight(context) * 0.014,
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                top: 8.0,
+              ),
+              child: Column(
+                children: [
+                  Center(
+                    child: CommonButtons.getAcceptButton(
+                        'Signout', context, blueColor, () async {
+
+signOut();
+                    },
+                        displayWidth(context) * 0.65,
+                        displayHeight(context) * 0.054,
+                        primaryColor,
+                        Colors.white,
+                        displayHeight(context) * 0.018,
+                        blueColor,
+                        '',
+                        fontWeight: FontWeight.w500),
+                  ),
+                    SizedBox(height: 4,),
+                              Center(
+                                child: CommonButtons.getAcceptButton(
+                                    'Cancel', context, Colors.transparent,
+                                        () async {
+Navigator.pop(context);
+                                    },
+                                    displayWidth(context) * 0.65,
+                                    displayHeight(context) * 0.054,
+                                    Colors.transparent,
+                                    blueColor,
+                                    displayHeight(context) * 0.018,
+                                    Colors.transparent,
+                                    '',
+                                    fontWeight: FontWeight.w500),
+                              ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: displayHeight(context) * 0.01,
+            ),
+]
+            )
+            )         ));
+    });
+  }
 
   showEndTripDialogBox(BuildContext context) {
     if (sharedPreferences != null) {

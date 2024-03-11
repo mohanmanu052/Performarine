@@ -45,7 +45,7 @@ List<bool>?  checkListItems=[];
   void initState() {
 
     commonProvider= context.read<CommonProvider>();
-getFleetDetails();
+    getToken();
 getVesselData();
     // TODO: implement initState
     super.initState();
@@ -60,17 +60,26 @@ setState(() {
 });
 }
 
+void getToken()async{
+  if(commonProvider!.loginModel==null){
+    await commonProvider!.getToken();
+    getFleetDetails();
+  }else{
+    getFleetDetails();
+  }
+
+}
   void getFleetDetails()async{
      fleetdata=await   commonProvider?.getFleetListdata(
       token: commonProvider!.loginModel!.token,
       scaffoldKey: scaffoldKey,
       context: context
     );
+if(mounted) {
+  setState(() {
 
-setState(() {
-  
-});
-
+  });
+}
   }
 
   @override
@@ -136,7 +145,7 @@ setState(() {
               SingleChildScrollView(
                 child: Container(
                   height: displayHeight(context),
-                  margin: EdgeInsets.symmetric(horizontal: 17, vertical: 17),
+                  margin: EdgeInsets.symmetric(horizontal: 17, vertical: 0),
                   child:Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -296,23 +305,28 @@ setState(() {
                               items:fleetdata!.data!
                           . map((item) {
                                                         return DropdownMenuItem(
-                                child:Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                 commonText(text: item.fleetName,
-                                fontWeight: FontWeight.w400,
-                                textSize: 16,
-                                textColor: buttonBGColor
+                                child:
+                                
+                                SingleChildScrollView(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                   commonText(text: item.fleetName,
+                                  maxLines: 1,
+                                  fontWeight: FontWeight.w400,
+                                  textSize: 16,
+                                  textColor: buttonBGColor
 
-                                ),
+                                  ),
       commonText(
         text: 'Created By: ${item.fleetOwner}',
-                                fontWeight: FontWeight.w200,
-                                textSize: 12,
-                                textColor: Colors.black
+                                  fontWeight: FontWeight.w200,
+                                  textSize: 12,
+                                  textColor: Colors.black
       ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
 
 
@@ -417,7 +431,7 @@ setState(() {
                             ),
                          if(vesselsData!=null)
                          Container(
-                          height: displayHeight(context)/1.5,
+                          height: displayHeight(context)/1.7,
                            child: ListView.builder(
                             shrinkWrap: true,
                             itemCount:vesselsData!.length ,
