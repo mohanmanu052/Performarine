@@ -10,6 +10,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/common_widgets/utils/jwt_utils.dart';
 import 'package:performarine/pages/fleet/manage_permissions_screen.dart';
 import 'package:performarine/pages/fleet/my_fleet_screen.dart';
 import 'package:performarine/pages/new_intro_screen.dart';
@@ -435,15 +436,30 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
 
             Map<String, dynamic> arguments = {
               "isComingFromReset": false,
-              "token": initialLink.queryParameters['fleetmember'].toString()
+              "token": initialLink.queryParameters['verify'].toString()
             };
             if (isUserLoggedIn != null) {
               if (isUserLoggedIn) {
                 isComingFromUnilinkMain = true;
-               // sharedPreferences!.setBool('reset_dialog_opened', false);
-                Get.offAll(
-                    ManagePermissionsScreen(isComingFromUnilink:true),
-                    arguments: arguments);
+        bool isSameUser=await        JwtUtils.getDecodedData(initialLink.queryParameters['verify'].toString());
+if(isSameUser){
+  Get.offAll(
+      ManagePermissionsScreen(isComingFromUnilink:true),
+      arguments: arguments);
+}else{
+  Map<String, dynamic> arguments = {
+    "isComingFromReset": false,
+    "token": initialLink.queryParameters['verify'].toString(),
+    'isLoggedinUser':false
+  };
+  Get.offAll(
+      BottomNavigation(
+          isComingFromReset: false,
+          isAppKilled: true),
+      arguments: arguments);
+}
+                // sharedPreferences!.setBool('reset_dialog_opened', false);
+
               }
             } else {
               Future.delayed(Duration(seconds: 2), () {
@@ -516,7 +532,6 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
                 "reset: ${uri.queryParameters['verify'].toString()} -> $page");
             bool? isUserLoggedIn =
             await sharedPreferences!.getBool('isUserLoggedIn');
-
             Utils.customPrint("isUserLoggedIn: $isUserLoggedIn");
             CustomLogger().logWithFile(
                 Level.info, "isUserLoggedIn: $isUserLoggedIn -> $page");
@@ -527,9 +542,23 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
             if (isUserLoggedIn != null) {
               if (isUserLoggedIn) {
                 //sharedPreferences!.setBool('reset_dialog_opened', false);
-                Get.offAll(
-                    ManagePermissionsScreen(isComingFromUnilink: true,),
-                    arguments: arguments);
+                bool isSameUser=await        JwtUtils.getDecodedData(uri!.queryParameters['verify'].toString());
+                if(isSameUser){
+                  Get.offAll(
+                      ManagePermissionsScreen(isComingFromUnilink:true),
+                      arguments: arguments);
+                }else{
+                  Map<String, dynamic> arguments = {
+                    "isComingFromReset": false,
+                    "token": uri.queryParameters['verify'].toString(),
+                    'isLoggedinUser':false
+                  };
+                  Get.offAll(
+                      BottomNavigation(
+                          isComingFromReset: false,
+                          isAppKilled: true),
+                      arguments: arguments);
+                }
               }
             } else {
               Future.delayed(Duration(seconds: 2), ()

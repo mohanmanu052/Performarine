@@ -24,12 +24,14 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/common_widgets/utils/jwt_utils.dart';
 import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/lpr_device_handler.dart';
 import 'package:performarine/pages/auth_new/sign_in_screen.dart';
+import 'package:performarine/pages/fleet/manage_permissions_screen.dart';
 import 'package:performarine/pages/fleet/my_fleet_screen.dart';
 import 'package:performarine/pages/new_splash_screen.dart';
 import 'package:performarine/new_trip_analytics_screen.dart';
@@ -451,10 +453,23 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               if (isUserLoggedIn) {
 
                 isComingFromUnilinkMain = true;
-               // sharedPreferences!.setBool('reset_dialog_opened', false);
-                Get.offAll(
-                    MyFleetScreen(isComingFromUnilink: true,),
-                    arguments: arguments);
+                bool isSameUser=await        JwtUtils.getDecodedData(uri.queryParameters['verify'].toString());
+                if(isSameUser){
+                  Get.offAll(
+                      ManagePermissionsScreen(isComingFromUnilink:true),
+                      arguments: arguments);
+                }else{
+                  Map<String, dynamic> arguments = {
+                    "isComingFromReset": false,
+                    "token": uri.queryParameters['verify'].toString(),
+                    'isLoggedinUser':false
+                  };
+                  Get.offAll(
+                      BottomNavigation(
+                          isComingFromReset: false,
+                          isAppKilled: true),
+                      arguments: arguments);
+                }
               }
             } else {
 
