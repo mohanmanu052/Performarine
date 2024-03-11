@@ -46,7 +46,7 @@ class FleetDashboardApiProvider with ChangeNotifier
       if (response.statusCode == HttpStatus.ok) {
         fleetDashboardModel = FleetDashboardModel.fromJson(json.decode(response.body));
 
-        Utils.showSnackBar(context, scaffoldKey: scaffoldKey, message: fleetDashboardModel!.message);
+        //Utils.showSnackBar(context, scaffoldKey: scaffoldKey, message: fleetDashboardModel!.message);
         return fleetDashboardModel!;
       } else if (response.statusCode == HttpStatus.gatewayTimeout) {
         kReleaseMode

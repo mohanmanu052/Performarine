@@ -56,8 +56,6 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
     }
     getFleetDetails();
 
-
-
     // TODO: implement initState
     super.initState();
   }
@@ -66,20 +64,7 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
     fleetdata = await commonProvider?.getFleetListdata(
         token: commonProvider.loginModel!.token,
         scaffoldKey: _scafoldKey,
-        context: context).then((value)
-    {
-      if(value != null)
-        {
-          if(value.status!)
-            {
-              debugPrint("FLEET VESSEL DATA ${value.data![0].id}");
-
-              //future = commonProvider.getFleetDetailsData(context, commonProvider.loginModel!.token!, value.data![0].id!, _scafoldKey);
-            }
-        }
-    });
-
-    setState(() {});
+        context: context);
   }
 
   void _handleTabSelection() {
