@@ -1723,7 +1723,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                           ?
                                            Container(
                                               height:orientation==Orientation.portrait? displayHeight(context) * 0.055:displayHeight(context) * 0.085,
-                                          child: Center(child: CircularProgressIndicator(color: blueColor,)))
+                                          child: Center(child: CircularProgressIndicator(color: circularProgressColor,)))
                                           : 
                                           Center(
                                         child:
@@ -1942,7 +1942,7 @@ if(!isSyncSignoutClicked){
                                               child: Center(
                                                   child:
                                                   CircularProgressIndicator(
-                                                    color: blueColor,
+                                                    color: circularProgressColor,
                                                   ))),
                                         )
                                             : CommonButtons.getAcceptButton(

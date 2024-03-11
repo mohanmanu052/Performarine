@@ -61,7 +61,7 @@ setState(() {
 }
 
   void getFleetDetails()async{
-     fleetdata=await   commonProvider?.getFleetListdata(
+     fleetdata = await commonProvider?.getFleetListdata(
       token: commonProvider!.loginModel!.token,
       scaffoldKey: scaffoldKey,
       context: context
@@ -75,17 +75,19 @@ setState(() {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: ()async{
-        if(widget.isComingFromUnilink??false){
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder:((context) =>  BottomNavigation())), (route) => true);
-          return false;
-        }else{
-          Navigator.of(context).pop();
-          return false;
-        }
-        return false;
+    return PopScope(
+        canPop: false,
+        onPopInvoked: (didPop){
+          if(didPop)  return;
 
+          if(widget.isComingFromUnilink!)
+            {
+              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder:((context) =>  BottomNavigation())), (route) => true);
+            }
+          else
+            {
+              Navigator.of(context).pop();
+            }
       },
       child: Screenshot(
         controller: controller,
@@ -97,7 +99,19 @@ setState(() {
             backgroundColor: Colors.white,
             leading: IconButton(
               onPressed: () {
-                Navigator.of(context).pop();
+
+                if(widget.isComingFromUnilink!)
+                  {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => BottomNavigation()),
+                        ModalRoute.withName(""));
+                  }
+                else
+                  {
+                    Navigator.of(context).pop();
+                  }
+
               },
               icon: const Icon(Icons.arrow_back),
               color: Theme.of(context).brightness == Brightness.dark
