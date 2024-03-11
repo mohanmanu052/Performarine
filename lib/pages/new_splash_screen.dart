@@ -10,6 +10,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
+import 'package:performarine/pages/fleet/manage_permissions_screen.dart';
 import 'package:performarine/pages/fleet/my_fleet_screen.dart';
 import 'package:performarine/pages/new_intro_screen.dart';
 import '../common_widgets/widgets/log_level.dart';
@@ -441,7 +442,7 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
                 isComingFromUnilinkMain = true;
                // sharedPreferences!.setBool('reset_dialog_opened', false);
                 Get.offAll(
-                    MyFleetScreen(isComingFromUnilink:true),
+                    ManagePermissionsScreen(isComingFromUnilink:true),
                     arguments: arguments);
               }
             } else {
@@ -527,7 +528,7 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
               if (isUserLoggedIn) {
                 //sharedPreferences!.setBool('reset_dialog_opened', false);
                 Get.offAll(
-                    MyFleetScreen(isComingFromUnilink: true,),
+                    ManagePermissionsScreen(isComingFromUnilink: true,),
                     arguments: arguments);
               }
             } else {

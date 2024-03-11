@@ -17,7 +17,7 @@ import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_text_feild.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
-import 'package:performarine/connect_ble_devices.dart';
+import 'package:performarine/lpr_data/connect_ble_devices.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/login_model.dart';
 import 'package:performarine/models/trip.dart';
@@ -1723,7 +1723,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                           ?
                                            Container(
                                               height:orientation==Orientation.portrait? displayHeight(context) * 0.055:displayHeight(context) * 0.085,
-                                          child: Center(child: CircularProgressIndicator(color: blueColor,)))
+                                          child: Center(child: CircularProgressIndicator(color: circularProgressColor,)))
                                           : 
                                           Center(
                                         child:
@@ -1942,7 +1942,7 @@ if(!isSyncSignoutClicked){
                                               child: Center(
                                                   child:
                                                   CircularProgressIndicator(
-                                                    color: blueColor,
+                                                    color: circularProgressColor,
                                                   ))),
                                         )
                                             : CommonButtons.getAcceptButton(

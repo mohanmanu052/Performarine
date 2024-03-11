@@ -332,14 +332,14 @@ class _BottomNavigationState extends State<BottomNavigation>
       VesselsScreen()
     ];
 
+    return PopScope(
+        canPop: false,
+        onPopInvoked: (didPop){
+          if(didPop)  return;
 
-
-    return WillPopScope(
-        onWillPop: () async {
-          if (isComingFromUnilinkMain || widget.isComingFromReset!) {
-            return false;
-          } else {
-            return Utils.onAppExitCallBack(context, scaffoldKey);
+          if(!isComingFromUnilinkMain || !widget.isComingFromReset!)
+          {
+            Utils.onAppExitCallBack(context, scaffoldKey);
           }
         },
         child: OrientationBuilder(

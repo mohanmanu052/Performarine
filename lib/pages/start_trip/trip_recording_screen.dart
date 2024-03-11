@@ -117,70 +117,37 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>
     commonProvider = context.watch<CommonProvider>();
     return Screenshot(
       controller: controller,
-      child: WillPopScope(
-        onWillPop: () async {
+      child: PopScope(
+        canPop: false,
+        onPopInvoked: (didPop) async
+        {
+          if(didPop)  return;
+
           print('XXXXXX: ${widget.calledFrom}');
           Wakelock.disable().then((value) async {
             if (widget.calledFrom != null) {
               if (widget.calledFrom!.isNotEmpty) {
                 if (widget.calledFrom == 'bottom_nav' ||
                     widget.calledFrom == 'notification') {
-                  //               await      SystemChrome.setPreferredOrientations([
-
-                  //   DeviceOrientation.portraitUp
-
-                  // ]);
                   Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BottomNavigation(
-                                    tabIndex:
-                                        widget.calledFrom == 'notification'
-                                            ? 0
-                                            : commonProvider.bottomNavIndex,
-                                  )),
-                          ModalRoute.withName(""))
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BottomNavigation(
+                            tabIndex:
+                            widget.calledFrom == 'notification'
+                                ? 0
+                                : commonProvider.bottomNavIndex,
+                          )),
+                      ModalRoute.withName(""))
                       .then((value) => SystemChrome.setPreferredOrientations([
-                            DeviceOrientation.portraitUp,
-                          ]));
+                    DeviceOrientation.portraitUp,
+                  ]));
                   ;
                   ;
                 } else {
                   Navigator.of(context).pop();
                 }
-                /*else if(widget.calledFrom == 'VesselSingleView')
-                {
-                  CreateVessel? vesselData = await DatabaseService()
-                      .getVesselFromVesselID(widget.vesselId!);
-
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => VesselSingleView(
-                      vessel: vesselData,
-                      isCalledFromSuccessScreen: true,
-                    )),);
-                }
-                else if(widget.calledFrom == 'tripList')
-                {
-                  CreateVessel? vesselData = await DatabaseService()
-                      .getVesselFromVesselID(widget.vesselId!);
-
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => BottomNavigation(
-                        tabIndex: commonProvider.bottomNavIndex,
-                      )),
-                      ModalRoute.withName(""));
-                }*/
               } else {
-                /*if(mounted){
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => BottomNavigation(
-                        tabIndex: 0,
-                      )),
-                      ModalRoute.withName(""));
-                }*/
                 Navigator.of(context).pop();
               }
               return false;
@@ -189,7 +156,6 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>
               return false;
             }
           });
-          return false;
         },
         child: Scaffold(
           key: scaffoldKey,

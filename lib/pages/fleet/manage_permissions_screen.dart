@@ -19,7 +19,8 @@ import '../bottom_navigation.dart';
 import '../feedback_report.dart';
 
 class ManagePermissionsScreen extends StatefulWidget {
-  const ManagePermissionsScreen({super.key});
+  bool? isComingFromUnilink;
+  ManagePermissionsScreen({super.key, this.isComingFromUnilink = false});
 
   @override
   State<ManagePermissionsScreen> createState() => _ManagePermissionsScreenState();
@@ -60,7 +61,7 @@ setState(() {
 }
 
   void getFleetDetails()async{
-     fleetdata=await   commonProvider?.getFleetListdata(
+     fleetdata = await commonProvider?.getFleetListdata(
       token: commonProvider!.loginModel!.token,
       scaffoldKey: scaffoldKey,
       context: context
@@ -74,469 +75,496 @@ setState(() {
 
   @override
   Widget build(BuildContext context) {
-    return Screenshot(
-      controller: controller,
-      child: Scaffold(
-        key: scaffoldKey,
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          elevation: 0.0,
-          backgroundColor: Colors.white,
-          leading: IconButton(
-            onPressed: () {
+    return PopScope(
+        canPop: false,
+        onPopInvoked: (didPop){
+          if(didPop)  return;
+
+          if(widget.isComingFromUnilink!)
+            {
+              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder:((context) =>  BottomNavigation())), (route) => true);
+            }
+          else
+            {
               Navigator.of(context).pop();
-            },
-            icon: const Icon(Icons.arrow_back),
-            color: Theme.of(context).brightness == Brightness.dark
-                ? Colors.white
-                : Colors.black,
-          ),
-          centerTitle: false,
-          title: commonText(
-              context: context,
-              
-              text: 'Assign Vessels',
-              fontWeight: FontWeight.w600,
-              textColor: Colors.black,
-              textSize: displayWidth(context) * 0.05,
-              textAlign: TextAlign.start),
-          actions: [
-            Container(
-              margin: EdgeInsets.only(right: 8),
-              child: IconButton(
-                onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => BottomNavigation()),
-                      ModalRoute.withName(""));
-                },
-                icon: Image.asset('assets/icons/performarine_appbar_icon.png'),
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? Colors.white
-                    : Colors.black,
-              ),
-            )
-          ],
-        ),
-        body: Stack(
-          children: [
-            SingleChildScrollView(
-              child: Container(
-                height: displayHeight(context),
-                margin: EdgeInsets.symmetric(horizontal: 17, vertical: 17),
-                child:Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+            }
+      },
+      child: Screenshot(
+        controller: controller,
+        child: Scaffold(
+          key: scaffoldKey,
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            elevation: 0.0,
+            backgroundColor: Colors.white,
+            leading: IconButton(
+              onPressed: () {
 
-                                  Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 4),
-                child:fleetdata!=null&&fleetdata!.data!=null?
-                
-                
-                 DropdownButtonHideUnderline(
-                        child: DropdownButtonFormField2<FleetData>(
-                            value: selectedFleetvalue,
-    selectedItemBuilder: (BuildContext context) {
-      return fleetdata!.data!.map<Widget>((FleetData item) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Display selected item
-            commonText(
-             text: item.fleetName,
-              fontWeight: FontWeight.w400,
-              textSize: 16,
-              textColor: buttonBGColor
+                if(widget.isComingFromUnilink!)
+                  {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => BottomNavigation()),
+                        ModalRoute.withName(""));
+                  }
+                else
+                  {
+                    Navigator.of(context).pop();
+                  }
+
+              },
+              icon: const Icon(Icons.arrow_back),
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
             ),
-            // Add any additional information or text here
-            Container(
-              child: Row(
-                children: [
-                  commonText(text: 'Created By:',
-                  textSize: 11,
-                  fontWeight: FontWeight.w400,
-                  textColor: Colors.grey
-                  ),
+            centerTitle: false,
+            title: commonText(
+                context: context,
 
-                                    commonText(text: item.fleetOwner,
-                  textSize: 11,
-                  fontWeight: FontWeight.w500,
-                  textColor: buttonBGColor
-                  ),
-
-                  
-                ],
+                text: 'Assign Vessels',
+                fontWeight: FontWeight.w600,
+                textColor: Colors.black,
+                textSize: displayWidth(context) * 0.05,
+                textAlign: TextAlign.start),
+            actions: [
+              Container(
+                margin: EdgeInsets.only(right: 8),
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => BottomNavigation()),
+                        ModalRoute.withName(""));
+                  },
+                  icon: Image.asset('assets/icons/performarine_appbar_icon.png'),
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black,
+                ),
               )
-            ),
-          ],
-        );
-      }).toList();
-                            },
-                          iconStyleData: IconStyleData(
-                            icon: Icon(Icons.keyboard_arrow_down,
-                            size: 30,
-                            )
-                          ),
-                                                          isExpanded: true,
-                                                          buttonStyleData: ButtonStyleData(
-                                                            height: 40,width: 40,
-                            
-                                                            padding: EdgeInsets.only(left: 20,right: 40)
-                                                          ),
-                                                          decoration: InputDecoration(
-                                                            //errorText: _showDropdownError1 ? 'Select Vessel' : null,
-                            
-                                                            contentPadding:
-                                                                EdgeInsets.symmetric(
-                                                                    horizontal: 0,
-                                                                    vertical:  10
-                                                                        ),
-                            
-                                                            focusedBorder: OutlineInputBorder(
-                                                                borderSide: BorderSide(
-                                                                    width: 1.5,
-                                                                    color: Colors
-                                                                        .transparent),
-                                                                borderRadius:
-                                                                    BorderRadius.all(
-                                                                        Radius
-                                                                            .circular(
-                                                                                15))),
-                                                            enabledBorder: OutlineInputBorder(
-                                                                borderSide: BorderSide(
-                                                                    width: 1.5,
-                                                                    color: Colors
-                                                                        .transparent),
-                                                                borderRadius:
-                                                                    BorderRadius.all(
-                                                                        Radius
-                                                                            .circular(
-                                                                                15))),
-                                                            errorBorder: OutlineInputBorder(
-                                                                borderSide: BorderSide(
-                                                                    width: 1.5,
-                                                                    color: Colors
-                                                                        .red.shade300
-                                                                        .withOpacity(
-                                                                            0.7)),
-                                                                borderRadius:
-                                                                    BorderRadius.all(
-                                                                        Radius
-                                                                            .circular(
-                                                                                15))),
-                                                            errorStyle: TextStyle(
-                                                                fontFamily: inter,
-                                                                fontSize: displayWidth(
-                                                                            context) *
-                                                                        0.025
+            ],
+          ),
+          body: Stack(
+            children: [
+              SingleChildScrollView(
+                child: Container(
+                  height: displayHeight(context),
+                  margin: EdgeInsets.symmetric(horizontal: 17, vertical: 17),
+                  child:Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+
+                                    Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 4),
+                  child:fleetdata!=null&&fleetdata!.data!=null?
+
+
+                   DropdownButtonHideUnderline(
+                          child: DropdownButtonFormField2<FleetData>(
+                              value: selectedFleetvalue,
+      selectedItemBuilder: (BuildContext context) {
+        return fleetdata!.data!.map<Widget>((FleetData item) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Display selected item
+              commonText(
+               text: item.fleetName,
+                fontWeight: FontWeight.w400,
+                textSize: 16,
+                textColor: buttonBGColor
+              ),
+              // Add any additional information or text here
+              Container(
+                child: Row(
+                  children: [
+                    commonText(text: 'Created By:',
+                    textSize: 11,
+                    fontWeight: FontWeight.w400,
+                    textColor: Colors.grey
+                    ),
+
+                                      commonText(text: item.fleetOwner,
+                    textSize: 11,
+                    fontWeight: FontWeight.w500,
+                    textColor: buttonBGColor
+                    ),
+
+
+                  ],
+                )
+              ),
+            ],
+          );
+        }).toList();
+                              },
+                            iconStyleData: IconStyleData(
+                              icon: Icon(Icons.keyboard_arrow_down,
+                              size: 30,
+                              )
+                            ),
+                                                            isExpanded: true,
+                                                            buttonStyleData: ButtonStyleData(
+                                                              height: 40,width: 40,
+
+                                                              padding: EdgeInsets.only(left: 20,right: 40)
                                                             ),
-                                                            focusedErrorBorder: OutlineInputBorder(
-                                                                borderSide: BorderSide(
-                                                                    width: 1.5,
-                                                                    color: Colors
-                                                                        .red.shade300
-                                                                        .withOpacity(
-                                                                            0.7)),
-                                                                borderRadius:
-                                                                    BorderRadius.all(
-                                                                        Radius
-                                                                            .circular(
-                                                                                15))),
-                                                            fillColor:
-                                                                dropDownBackgroundColor,
-                                                            filled: true,
-                            
-                                                            hintStyle: TextStyle(
-                                                                color:  
-                                                                     Colors.black,
-                                                                fontSize:  displayWidth(
-                                                                            context) *
-                                                                        0.034
-                                                                    ,
-                                                                fontFamily: outfit,
-                                                                fontWeight:
-                                                                    FontWeight.w300),
-                                                          ),
-                                                          hint: Container(
-                                                            alignment:
-                                                                Alignment.centerLeft,
-                                                            margin: EdgeInsets.only(
-                                                              left: 15,
-                                                            ),
-                                                            child:
-                                                             Text(
-                                                              'Select Fleet',
-                                                              style: TextStyle(
-                                                                  color: Colors.black,
+                                                            decoration: InputDecoration(
+                                                              //errorText: _showDropdownError1 ? 'Select Vessel' : null,
+
+                                                              contentPadding:
+                                                                  EdgeInsets.symmetric(
+                                                                      horizontal: 0,
+                                                                      vertical:  10
+                                                                          ),
+
+                                                              focusedBorder: OutlineInputBorder(
+                                                                  borderSide: BorderSide(
+                                                                      width: 1.5,
+                                                                      color: Colors
+                                                                          .transparent),
+                                                                  borderRadius:
+                                                                      BorderRadius.all(
+                                                                          Radius
+                                                                              .circular(
+                                                                                  15))),
+                                                              enabledBorder: OutlineInputBorder(
+                                                                  borderSide: BorderSide(
+                                                                      width: 1.5,
+                                                                      color: Colors
+                                                                          .transparent),
+                                                                  borderRadius:
+                                                                      BorderRadius.all(
+                                                                          Radius
+                                                                              .circular(
+                                                                                  15))),
+                                                              errorBorder: OutlineInputBorder(
+                                                                  borderSide: BorderSide(
+                                                                      width: 1.5,
+                                                                      color: Colors
+                                                                          .red.shade300
+                                                                          .withOpacity(
+                                                                              0.7)),
+                                                                  borderRadius:
+                                                                      BorderRadius.all(
+                                                                          Radius
+                                                                              .circular(
+                                                                                  15))),
+                                                              errorStyle: TextStyle(
+                                                                  fontFamily: inter,
+                                                                  fontSize: displayWidth(
+                                                                              context) *
+                                                                          0.025
+                                                              ),
+                                                              focusedErrorBorder: OutlineInputBorder(
+                                                                  borderSide: BorderSide(
+                                                                      width: 1.5,
+                                                                      color: Colors
+                                                                          .red.shade300
+                                                                          .withOpacity(
+                                                                              0.7)),
+                                                                  borderRadius:
+                                                                      BorderRadius.all(
+                                                                          Radius
+                                                                              .circular(
+                                                                                  15))),
+                                                              fillColor:
+                                                                  dropDownBackgroundColor,
+                                                              filled: true,
+
+                                                              hintStyle: TextStyle(
+                                                                  color:
+                                                                       Colors.black,
                                                                   fontSize:  displayWidth(
                                                                               context) *
-                                                                          0.032,
+                                                                          0.034
+                                                                      ,
                                                                   fontFamily: outfit,
                                                                   fontWeight:
-                                                                      FontWeight
-                                                                          .w400),
-                                                              overflow: TextOverflow
-                                                                  .ellipsis,
+                                                                      FontWeight.w300),
                                                             ),
-                                                          ),
-                            items:fleetdata!.data!
-                        . map((item) {
-                                                      return DropdownMenuItem(
-                              child:Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                               commonText(text: item.fleetName,
-                              fontWeight: FontWeight.w400,
-                              textSize: 16,
-                              textColor: buttonBGColor
-                              
-                              ),
-commonText(
-  text: 'Created By: ${item.fleetOwner}',
-                              fontWeight: FontWeight.w200,
-                              textSize: 12,
-                              textColor: Colors.black
-),
-                                ],
-                              ),
-                              
-                              
+                                                            hint: Container(
+                                                              alignment:
+                                                                  Alignment.centerLeft,
+                                                              margin: EdgeInsets.only(
+                                                                left: 15,
+                                                              ),
+                                                              child:
+                                                               Text(
+                                                                'Select Fleet',
+                                                                style: TextStyle(
+                                                                    color: Colors.black,
+                                                                    fontSize:  displayWidth(
+                                                                                context) *
+                                                                            0.032,
+                                                                    fontFamily: outfit,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400),
+                                                                overflow: TextOverflow
+                                                                    .ellipsis,
+                                                              ),
+                                                            ),
+                              items:fleetdata!.data!
+                          . map((item) {
+                                                        return DropdownMenuItem(
+                                child:Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                 commonText(text: item.fleetName,
+                                fontWeight: FontWeight.w400,
+                                textSize: 16,
+                                textColor: buttonBGColor
+
+                                ),
+      commonText(
+        text: 'Created By: ${item.fleetOwner}',
+                                fontWeight: FontWeight.w200,
+                                textSize: 12,
+                                textColor: Colors.black
+      ),
+                                  ],
+                                ),
 
 
-                              value: item);
-                            
-  })
-  
-                        .toList(),
-                
-                            onChanged: (newValue) {
-                                setState(() {
-selectedFleetvalue=newValue;
-                                });
-                            },
-                        ),
-                    ):Center(child: CircularProgressIndicator(color: circularProgressColor),),
-                                  ),
-                    // SizedBox(height: displayHeight(context) * 0.05,),
-                    // Align(
-                    //   alignment: Alignment.center,
-                    //   child: commonText(
-                    //       context: context,
-                    //       text: 'Assign Vessels',
-                    //       fontWeight: FontWeight.w600,
-                    //       textColor: Colors.black,
-                    //       textSize: displayWidth(context) * 0.05,
-                    //       textAlign: TextAlign.start),
-                    // ),
 
-                    // SizedBox(height: displayHeight(context) * 0.03,),
 
-                    // Container(
-                    //   width: displayWidth(context),
-                    //   decoration: BoxDecoration(
-                    //     color: Colors.blue.withOpacity(.1),
-                    //     borderRadius: BorderRadius.circular(18)
-                    //   ),
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 18),
-                    //     child: commonText(
-                    //         context: context,
-                    //         text: 'abhiram90@gmail.com',
-                    //         fontWeight: FontWeight.w500,
-                    //         textColor: Colors.black87,
-                    //         textSize: displayWidth(context) * 0.038,
-                    //         textAlign: TextAlign.start),
-                    //   ),
-                    // ),
+                                value: item);
 
-                    SizedBox(height: displayHeight(context) * 0.02,),
+        })
 
-                    Container(
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(15,
-                      
-                      
-                      ),
-                      color: reportTripsListBackColor
-                      
-                      ),
-                      child: Column(
-                        children: [
-                          CustomLabeledCheckbox(
-                            label: 'Select All',
-                            value: isSelectAllEnabled,
-                            onChanged: (value) {
-                                isSelectAllEnabled = !isSelectAllEnabled;
-                                if(isSelectAllEnabled){
-                                  for (int i=0;i<  vesselsData!.length;i++){
-                                    checkListItems![i]=true;
-                                    multipleSelected.add(vesselsData![i].id);
-                                  
-                                }}
-                                else{
-                                  for (int i=0;i<  vesselsData!.length;i++){
-                                                                        checkListItems![i]=false;
+                          .toList(),
 
-                                    multipleSelected.clear();
-                                  }
-                                }
-                            
-                                // multipleSelected.clear();
-                                // checkListItems!.clear();
-
-                                // for (var element in checkListItems) {
-                                //   if (element["value"] == false) {
-                                //     element["value"] = true;
-                                //     multipleSelected.add(element);
-                                //   } else {
-                                //     element["value"] = false;
-                                //     multipleSelected.remove(element);
-                                //   }
-                               // }
-                               setState(() {
-                                 
-                               });
-                              
-                            },
-                            checkboxType: CheckboxType.Parent,
-                            activeColor: blueColor,
-                          ),
-                       if(vesselsData!=null)
-                       Container(
-                        height: displayHeight(context)/1.5,
-                         child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount:vesselsData!.length ,
-                            itemBuilder:(context,index){
-                           // manageVesselList.length,
-                                //(index) =>
-                                
-                                
-                                return Container(
-                                  margin: EdgeInsets.symmetric(vertical: 4),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                                                    color: reportTripsListColor,
-                         
-                                  ),
-                                  child: CheckboxListTile(
-                                    activeColor: blueColor,
-                                                              controlAffinity: ListTileControlAffinity.leading,
-                                                              contentPadding: EdgeInsets.symmetric(horizontal: 4),
-                                                              dense: true,
-                                                              title: checkBoxCard(vesselsData![index]),
-                                                              value: 
-                                                              
-                                                              checkListItems?[index]??false,
-                                                              onChanged: (value) {
+                              onChanged: (newValue) {
                                   setState(() {
-                                   checkListItems![index] = value!;
-                                    if (multipleSelected.contains(vesselsData![index].id)) {
-                                      multipleSelected.remove(vesselsData![index].id);
-                                    } else {
-                                      multipleSelected.add(vesselsData![index].id);
-                                    }
+      selectedFleetvalue=newValue;
                                   });
-                                                              },
-                                                                              ),
-                                );
-                            }),
-                       )
-                        
-                      
-                      
-                                        ],
-                                        ),
-                    ),
-                  ]
+                              },
+                          ),
+                      ):Center(child: CircularProgressIndicator(color: circularProgressColor),),
+                                    ),
+                      // SizedBox(height: displayHeight(context) * 0.05,),
+                      // Align(
+                      //   alignment: Alignment.center,
+                      //   child: commonText(
+                      //       context: context,
+                      //       text: 'Assign Vessels',
+                      //       fontWeight: FontWeight.w600,
+                      //       textColor: Colors.black,
+                      //       textSize: displayWidth(context) * 0.05,
+                      //       textAlign: TextAlign.start),
+                      // ),
+
+                      // SizedBox(height: displayHeight(context) * 0.03,),
+
+                      // Container(
+                      //   width: displayWidth(context),
+                      //   decoration: BoxDecoration(
+                      //     color: Colors.blue.withOpacity(.1),
+                      //     borderRadius: BorderRadius.circular(18)
+                      //   ),
+                      //   child: Padding(
+                      //     padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 18),
+                      //     child: commonText(
+                      //         context: context,
+                      //         text: 'abhiram90@gmail.com',
+                      //         fontWeight: FontWeight.w500,
+                      //         textColor: Colors.black87,
+                      //         textSize: displayWidth(context) * 0.038,
+                      //         textAlign: TextAlign.start),
+                      //   ),
+                      // ),
+
+                      SizedBox(height: displayHeight(context) * 0.02,),
+
+                      Container(
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(15,
+
+
+                        ),
+                        color: reportTripsListBackColor
+
+                        ),
+                        child: Column(
+                          children: [
+                            CustomLabeledCheckbox(
+                              label: 'Select All',
+                              value: isSelectAllEnabled,
+                              onChanged: (value) {
+                                  isSelectAllEnabled = !isSelectAllEnabled;
+                                  if(isSelectAllEnabled){
+                                    for (int i=0;i<  vesselsData!.length;i++){
+                                      checkListItems![i]=true;
+                                      multipleSelected.add(vesselsData![i].id);
+
+                                  }}
+                                  else{
+                                    for (int i=0;i<  vesselsData!.length;i++){
+                                                                          checkListItems![i]=false;
+
+                                      multipleSelected.clear();
+                                    }
+                                  }
+
+                                  // multipleSelected.clear();
+                                  // checkListItems!.clear();
+
+                                  // for (var element in checkListItems) {
+                                  //   if (element["value"] == false) {
+                                  //     element["value"] = true;
+                                  //     multipleSelected.add(element);
+                                  //   } else {
+                                  //     element["value"] = false;
+                                  //     multipleSelected.remove(element);
+                                  //   }
+                                 // }
+                                 setState(() {
+
+                                 });
+
+                              },
+                              checkboxType: CheckboxType.Parent,
+                              activeColor: blueColor,
+                            ),
+                         if(vesselsData!=null)
+                         Container(
+                          height: displayHeight(context)/1.5,
+                           child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount:vesselsData!.length ,
+                              itemBuilder:(context,index){
+                             // manageVesselList.length,
+                                  //(index) =>
+
+
+                                  return Container(
+                                    margin: EdgeInsets.symmetric(vertical: 4),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                                                      color: reportTripsListColor,
+
+                                    ),
+                                    child: CheckboxListTile(
+                                      activeColor: blueColor,
+                                                                controlAffinity: ListTileControlAffinity.leading,
+                                                                contentPadding: EdgeInsets.symmetric(horizontal: 4),
+                                                                dense: true,
+                                                                title: checkBoxCard(vesselsData![index]),
+                                                                value:
+
+                                                                checkListItems?[index]??false,
+                                                                onChanged: (value) {
+                                    setState(() {
+                                     checkListItems![index] = value!;
+                                      if (multipleSelected.contains(vesselsData![index].id)) {
+                                        multipleSelected.remove(vesselsData![index].id);
+                                      } else {
+                                        multipleSelected.add(vesselsData![index].id);
+                                      }
+                                    });
+                                                                },
+                                                                                ),
+                                  );
+                              }),
+                         )
+
+
+
+                                          ],
+                                          ),
+                      ),
+                    ]
+                  ),
                 ),
               ),
-            ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
 
-                color: Colors.white,
-                child: Column(
-                  children: [
+                  color: Colors.white,
+                  child: Column(
+                    children: [
 
-                    Padding(
-                      padding: const EdgeInsets.only(left: 17, right: 17, top: 8),
-                      child: CommonButtons.getActionButton(
-                          title: 'Grant/Update Access',
-                          context: context,
-                          fontSize: displayWidth(context) * 0.042,
-                          textColor: Colors.white,
-                          buttonPrimaryColor: blueColor,
-                          borderColor: blueColor,
-                          width: displayWidth(context),
-                          onTap: ()async {
-                            print('the selected ids was ----'+multipleSelected.toString());
-                            if(selectedFleetvalue!=null){
-                              if(multipleSelected.isNotEmpty){
-                                isLoading=true;
-                                setState(() {
-                                  
-                                });
-Map<String,dynamic> data={
-  'fleetId':selectedFleetvalue!.id,
-  'fleetVessels':multipleSelected.toSet().toList()
-};
+                      Padding(
+                        padding: const EdgeInsets.only(left: 17, right: 17, top: 8),
+                        child: CommonButtons.getActionButton(
+                            title: 'Grant/Update Access',
+                            context: context,
+                            fontSize: displayWidth(context) * 0.042,
+                            textColor: Colors.white,
+                            buttonPrimaryColor: blueColor,
+                            borderColor: blueColor,
+                            width: displayWidth(context),
+                            onTap: ()async {
+                              print('the selected ids was ----'+multipleSelected.toString());
+                              if(selectedFleetvalue!=null){
+                                if(multipleSelected.isNotEmpty){
+                                  isLoading=true;
+                                  setState(() {
 
-var res= await commonProvider?.addFleetVessels(scaffoldKey: scaffoldKey,data: data,context: context,token: commonProvider!.loginModel!.token);
+                                  });
+      Map<String,dynamic> data={
+        'fleetId':selectedFleetvalue!.id,
+        'fleetVessels':multipleSelected.toSet().toList()
+      };
 
-if(res!=null){
-                                isLoading=false;
+      var res= await commonProvider?.addFleetVessels(scaffoldKey: scaffoldKey,data: data,context: context,token: commonProvider!.loginModel!.token);
 
-                                if(res.statusCode==200){
-                                  Navigator.push(context, MaterialPageRoute(builder: ((context) => MyFleetScreen())));
-                                }
-
-}else{
+      if(res!=null){
                                   isLoading=false;
 
-}
-setState(() {
-  
-});
+                                  if(res.statusCode==200){
+                                    Navigator.push(context, MaterialPageRoute(builder: ((context) => MyFleetScreen())));
+                                  }
+
+      }else{
+                                    isLoading=false;
+
+      }
+      setState(() {
+
+      });
+                                }else{
+                                  ScaffoldMessenger.maybeOf(context)!.showSnackBar(SnackBar(backgroundColor: Colors.blue, content: Text('Please Select Vessels')));
+                                }
                               }else{
-                                ScaffoldMessenger.maybeOf(context)!.showSnackBar(SnackBar(backgroundColor: Colors.blue, content: Text('Please Select Vessels')));
+                                                                ScaffoldMessenger.maybeOf(context)!.showSnackBar(SnackBar(backgroundColor: Colors.blue, content: Text('Please Select Fleet')));
+
                               }
-                            }else{
-                                                              ScaffoldMessenger.maybeOf(context)!.showSnackBar(SnackBar(backgroundColor: Colors.blue, content: Text('Please Select Fleet')));
+                            //   Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(builder: (context) => MyFleetScreen(data: true,)),
+                            //  );
+                            }),
+                      ),
+                      GestureDetector(
+                          onTap: ()async{
+                            final image = await controller.capture();
 
-                            }
-                          //   Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(builder: (context) => MyFleetScreen(data: true,)),
-                          //  );
-                          }),
-                    ),
-                    GestureDetector(
-                        onTap: ()async{
-                          final image = await controller.capture();
-
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
-                            imagePath: image.toString(),
-                            uIntList: image,)));
-                        },
-                        child: UserFeedback().getUserFeedback(context)
-                    ),
-                    SizedBox(height: 4,)
-                  ],
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
+                              imagePath: image.toString(),
+                              uIntList: image,)));
+                          },
+                          child: UserFeedback().getUserFeedback(context)
+                      ),
+                      SizedBox(height: 4,)
+                    ],
+                  ),
                 ),
               ),
-            ),
-            if(isLoading)
-            Center(
-              child: CircularProgressIndicator(color: circularProgressColor),
-            )
-          ],
+              if(isLoading)
+              Center(
+                child: CircularProgressIndicator(color: circularProgressColor),
+              )
+            ],
+          ),
+
         ),
-     
       ),
     );
   }
