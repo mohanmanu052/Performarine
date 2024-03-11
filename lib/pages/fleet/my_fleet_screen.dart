@@ -663,10 +663,10 @@ return false;
                                                                   onTap: (){
                                                                     CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to Reject fleet Invite??',subtext: snapShot.data!.fleetInvites![index].fleetName??'',
                                                                       postiveButtonColor: deleteTripBtnColor, positiveButtonText: 'Reject',
-                                                                    onNgeitiveButtonTap: (){
+                                                                      onNegativeButtonTap: (){
                                                                       Navigator.of(context).pop();
                                                                     },
-                                                                      onPostiveButtonTap: (){
+                                                                        onPositiveButtonTap: (){
                                                                         setState(() {
                                                                           isRejectBtnClicked = true;
                                                                         });
@@ -739,10 +739,10 @@ return false;
 
                                                                           CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to accept fleet Invite?',subtext: snapShot.data!.fleetInvites![index].fleetName??'',
                                                                               postiveButtonColor: blueColor,positiveButtonText: 'Accept', negtiveButtuonColor: blueColor,
-                                                                              onNgeitiveButtonTap: (){
+                                                                              onNegativeButtonTap: (){
                                                                                 Navigator.of(context).pop();
                                                                               },
-                                                                              onPostiveButtonTap: (){
+                                                                              onPositiveButtonTap: (){
                                                                             setState(() {
                                                                               isAcceptBtnClicked = true;
                                                                             });

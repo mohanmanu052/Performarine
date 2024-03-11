@@ -56,6 +56,8 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
     }
     getFleetDetails();
 
+
+
     // TODO: implement initState
     super.initState();
   }
@@ -64,7 +66,18 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
     fleetdata = await commonProvider?.getFleetListdata(
         token: commonProvider.loginModel!.token,
         scaffoldKey: _scafoldKey,
-        context: context);
+        context: context).then((value)
+    {
+      if(value != null)
+        {
+          if(value.status!)
+            {
+              debugPrint("FLEET VESSEL DATA ${value.data![0].id}");
+
+              //future = commonProvider.getFleetDetailsData(context, commonProvider.loginModel!.token!, value.data![0].id!, _scafoldKey);
+            }
+        }
+    });
 
     setState(() {});
   }
@@ -119,6 +132,7 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
                       context: context,
                       fleetData: fleetdata!.data,
                       selectedFleetValue: fleetdata!.data![0]);
+
                 },
                 child: commonText(
                     text: 'Edit Fleet',
@@ -245,6 +259,7 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
                                   ))
                               .toList(),
                           onChanged: (newValue) {
+                            debugPrint("SELECTED FLEET ID ${newValue}");
                             setState(() {});
                           },
                         ),
@@ -316,24 +331,10 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
                     FleetDetailsCard(
                       scaffoldKey: _scafoldKey,
                     )
-                    //Container(child: Center(child: Text('people'))),
-                    // Text('Person')
                   ],
                   controller: _tabController,
                 ),
               ),
-              //  ],
-              //  ),
-              //  ),
-
-              // TabBarView(
-
-              //   children: [
-              //   MemberDetailsWidget(),
-              //   Container(
-              //     color: Colors.red,
-              //   )
-              // ],),
             ],
           ),
         ));
