@@ -8,6 +8,7 @@ import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/status_tage.dart';
+import 'package:performarine/models/fleet_details_model.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/services/database_service.dart';
@@ -1275,6 +1276,510 @@ Widget OldVesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                         ),
                       ],
                     ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget fleetVesselSingleViewCard(BuildContext context, FleetVessels vesselData,
+    Function(FleetVessels) onTap, GlobalKey<ScaffoldState> scaffoldKey,
+    {bool isTripIsRunning = false,bool isOwnerNameVisible=false,String ownerName=''}) {
+  Utils.customPrint("IMAGE FROM HOME SINGLE WIDGET ${vesselData.vesselInfo!.imageURLs}");
+  CustomLogger().logWithFile(Level.info, "IMAGE FROM HOME SINGLE WIDGET ${vesselData.vesselInfo!.imageURLs}");
+
+  return GestureDetector(
+    onTap: () {
+      onTap(vesselData);
+    },
+    child: Card(
+      //color: Colors.black,
+      elevation: 3.0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      child: Stack(
+        children: [
+          SizedBox(
+            width: displayWidth(context),
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: vesselData.vesselInfo!.imageURLs == null ||
+                    vesselData.vesselInfo!.imageURLs!.isEmpty ||
+                    vesselData.vesselInfo!.imageURLs == 'string' ||
+                    vesselData.vesselInfo!.imageURLs == ''
+                    ? Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Center(
+                        child: Container(
+                          // height: displayHeight(context) * 0.22,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            //color: Colors.white,
+                          ),
+                          child: Image.asset(
+                            'assets/images/vessel_default_img.png',
+                            width: displayWidth(context) * 0.65,
+                            height: displayHeight(context) * 0.24,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                        bottom: 0,
+                        right: 0,
+                        left: 0,
+                        child: Container(
+                          height: displayHeight(context) * 0.14,
+                          width: displayWidth(context),
+                          padding: const EdgeInsets.only(top: 20),
+                          decoration: BoxDecoration(boxShadow: [
+                            BoxShadow(
+                                color: Colors.black.withOpacity(0.5),
+                                blurRadius: 50,
+                                spreadRadius: 5,
+                                offset: const Offset(0, 50))
+                          ]),
+                        ))
+                  ],
+                )
+                    : Stack(
+                  children: [
+                    //Image.memory(bytes)
+                    Image.file(
+                      File(vesselData.vesselInfo!.imageURLs!.first),
+                      fit: BoxFit.cover,
+                      height: displayHeight(context) * 0.24,
+                      width: displayWidth(context),
+                      errorBuilder: (context, error, stackTrace) {
+                        return Stack(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Center(
+                                child: Container(
+                                  // height: displayHeight(context) * 0.22,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    //color: Colors.white,
+                                  ),
+                                  child: Image.asset(
+                                    'assets/images/vessel_default_img.png',
+                                    width: displayWidth(context) * 0.65,
+                                    height: displayHeight(context) * 0.24,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                                bottom: 0,
+                                right: 0,
+                                left: 0,
+                                child: Container(
+                                  height: displayHeight(context) * 0.14,
+                                  width: displayWidth(context),
+                                  padding: const EdgeInsets.only(top: 20),
+                                  decoration: BoxDecoration(boxShadow: [
+                                    BoxShadow(
+                                        color: Colors.black.withOpacity(0.5),
+                                        blurRadius: 50,
+                                        spreadRadius: 5,
+                                        offset: const Offset(0, 50))
+                                  ]),
+                                ))
+                          ],
+                        );
+                      },
+                    ),
+                    Positioned(
+                        bottom: 0,
+                        right: 0,
+                        left: 0,
+                        child: Container(
+                          height: displayHeight(context) * 0.14,
+                          width: displayWidth(context),
+                          padding: const EdgeInsets.only(top: 20),
+                          decoration: BoxDecoration(boxShadow: [
+                            BoxShadow(
+                                color: Colors.black.withOpacity(0.5),
+                                blurRadius: 50,
+                                spreadRadius: 5,
+                                offset: const Offset(0, 50))
+                          ]),
+                        ))
+                  ],
+                )),
+          ),
+          Positioned(
+            top: 10,
+            right: 0,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+
+                isTripIsRunning
+                    ? CustomPaint(
+                  painter: StatusTag(color: Color(0XFFFDBF21)),
+                  child: Container(
+                    margin: EdgeInsets.only(
+                        left: displayWidth(context) * 0.05),
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: commonText(
+                            context: context,
+                            text: "In Progress",
+                            fontWeight: FontWeight.w500,
+                            textColor: Colors.white,
+                            textSize: displayWidth(context) * 0.03,
+                            fontFamily: poppins
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+                    : SizedBox(),
+
+                Container(
+                  alignment: Alignment.centerRight,
+                  padding: EdgeInsets.only(right: 10, top: 5),
+                  //width: displayWidth(context) * 0.28,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      vesselData.vesselInfo!.engineType!.isEmpty
+                          ? const SizedBox()
+                          : vesselData.vesselInfo!.engineType!.toLowerCase() ==
+                          'combustion'
+                          ? vesselData.vesselInfo!.fuelCapacity == null
+                          ? const SizedBox()
+                          : Column(
+                        crossAxisAlignment:
+                        CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.start,
+                            children: [
+                              Image.asset(
+                                'assets/images/fuel.png',
+                                width: displayWidth(context) *
+                                    0.045,
+                                color: backgroundColor,
+                              ),
+                              SizedBox(
+                                width: displayWidth(context) *
+                                    0.02,
+                              ),
+                              commonText(
+                                  context: context,
+                                  text:
+                                  '${vesselData.vesselInfo!.fuelCapacity!} $liters'
+                                      .toString(),
+                                  fontWeight: FontWeight.w500,
+                                  textColor: backgroundColor,
+                                  textSize:
+                                  displayWidth(context) *
+                                      0.03,
+                                  textAlign: TextAlign.start,
+                                  fontFamily: poppins),
+                            ],
+                          ),
+                          SizedBox(
+                            height:
+                            displayHeight(context) * 0.005,
+                          ),
+                          Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.start,
+                            children: [
+                              Image.asset(
+                                'assets/images/combustion_engine.png',
+                                width: displayWidth(context) * 0.045,
+                                color: backgroundColor,
+                              ),
+                              SizedBox(
+                                width: displayWidth(context) *
+                                    0.02,
+                              ),
+                              commonText(
+                                  context: context,
+                                  text: vesselData.vesselInfo!.engineType!,
+                                  fontWeight: FontWeight.w500,
+                                  textColor: backgroundColor,
+                                  textSize:
+                                  displayWidth(context) *
+                                      0.03,
+                                  textAlign: TextAlign.start),
+                            ],
+                          )
+                        ],
+                      )
+                          : vesselData.vesselInfo!.engineType!.toLowerCase() ==
+                          'electric'
+                          ? vesselData.vesselInfo!.batteryCapacity == null
+                          ? const SizedBox()
+                          : Column(
+                        crossAxisAlignment:
+                        CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                  margin:
+                                  const EdgeInsets.only(
+                                      left: 4),
+                                  child: Image.asset(
+                                    'assets/images/battery.png',
+                                    width: displayWidth(
+                                        context) *
+                                        0.027,
+                                    color: backgroundColor,
+                                  )),
+                              SizedBox(
+                                width:
+                                displayWidth(context) *
+                                    0.02,
+                              ),
+                              commonText(
+                                  context: context,
+                                  text:
+                                  ' ${vesselData.vesselInfo!.batteryCapacity!} $kiloWattHour'
+                                      .toString(),
+                                  fontWeight:
+                                  FontWeight.w500,
+                                  textColor: backgroundColor,
+                                  textSize: displayWidth(
+                                      context) *
+                                      0.03,
+                                  textAlign:
+                                  TextAlign.start, fontFamily: poppins),
+                            ],
+                          ),
+                          SizedBox(
+                            height: displayHeight(context) *
+                                0.005,
+                          ),
+                          Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.start,
+                            children: [
+                              Image.asset(
+                                'assets/images/electric_engine.png',
+                                width:
+                                displayWidth(context) *
+                                    0.045,
+                                color: backgroundColor,
+                              ),
+                              SizedBox(
+                                width:
+                                displayWidth(context) *
+                                    0.02,
+                              ),
+                              commonText(
+                                  context: context,
+                                  text: vesselData
+                                      .vesselInfo!.engineType!,
+                                  fontWeight:
+                                  FontWeight.w500,
+                                  textColor: backgroundColor,
+                                  textSize: displayWidth(
+                                      context) *
+                                      0.03,
+                                  textAlign:
+                                  TextAlign.start,
+                                  fontFamily: poppins),
+                            ],
+                          )
+                        ],
+                      )
+                          : Column(
+                        crossAxisAlignment:
+                        CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.start,
+                            children: [
+                              Image.asset(
+                                'assets/images/fuel.png',
+                                width: displayWidth(context) *
+                                    0.045,
+                                color: backgroundColor,
+                              ),
+                              SizedBox(
+                                width: displayWidth(context) *
+                                    0.02,
+                              ),
+                              commonText(
+                                  context: context,
+                                  text: vesselData
+                                      .vesselInfo!.fuelCapacity ==
+                                      null
+                                      ? '-'
+                                      : '${vesselData.vesselInfo!.fuelCapacity!} $liters'
+                                      .toString(),
+                                  fontWeight: FontWeight.w500,
+                                  textColor: backgroundColor,
+                                  textSize:
+                                  displayWidth(context) *
+                                      0.03,
+                                  textAlign: TextAlign.start,
+                                  fontFamily: poppins),
+                            ],
+                          ),
+                          SizedBox(
+                            height:
+                            displayHeight(context) * 0.005,
+                          ),
+                          Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                  margin: const EdgeInsets.only(
+                                      left: 4),
+                                  child: Image.asset(
+                                    'assets/images/battery.png',
+                                    width:
+                                    displayWidth(context) *
+                                        0.027,
+                                    color: backgroundColor,
+                                  )),
+                              SizedBox(
+                                width: displayWidth(context) *
+                                    0.02,
+                              ),
+                              commonText(
+                                  context: context,
+                                  text:
+                                  ' ${vesselData.vesselInfo!.batteryCapacity!} $kiloWattHour'
+                                      .toString(),
+                                  fontWeight: FontWeight.w500,
+                                  textColor: backgroundColor,
+                                  textSize:
+                                  displayWidth(context) *
+                                      0.03,
+                                  textAlign: TextAlign.start,
+                                  fontFamily: poppins),
+                            ],
+                          ),
+                          SizedBox(
+                            height:
+                            displayHeight(context) * 0.005,
+                          ),
+                          Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.start,
+                            children: [
+                              Image.asset(
+                                'assets/images/hybrid_engine.png',
+                                width: displayWidth(context) *
+                                    0.045,
+                                color: backgroundColor,
+                              ),
+                              SizedBox(
+                                width: displayWidth(context) *
+                                    0.02,
+                              ),
+                              commonText(
+                                  context: context,
+                                  text: vesselData.vesselInfo!.engineType!,
+                                  fontWeight: FontWeight.w500,
+                                  textColor: backgroundColor,
+                                  textSize:
+                                  displayWidth(context) *
+                                      0.03,
+                                  textAlign: TextAlign.start,fontFamily: poppins),
+                            ],
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: 8,
+            left: 0,
+            right: 0,
+            child: Container(
+              width: displayWidth(context),
+              margin: const EdgeInsets.only(left: 8, right: 0, bottom: 0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          vesselData.vesselInfo!.name == "" ? '-' : vesselData.vesselInfo!.name!,
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                            fontSize: displayWidth(context) * 0.045,
+                            color: Colors.white,
+                            fontFamily: outfit,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: true,
+                          //maxLines: 2,
+                        ),
+                        Container(
+                          padding: EdgeInsets.symmetric(vertical: 8),
+                          child: Text(
+                            'Owner : ${vesselData.vesselOwner == "" ? '-' : vesselData.vesselOwner}',
+                            textAlign: TextAlign.start,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.white,
+                              fontFamily: poppins,
+                              fontWeight: FontWeight.w400,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: true,
+                            //maxLines: 2,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: displayWidth(context) * 0.04,
+                  ),
+                  Container(
+                    child: CommonButtons.getActionButton(
+                        title: 'View Details',
+                        context: context,
+                        fontSize: displayWidth(context) * 0.03,
+                        textColor: Colors.white,
+                        buttonPrimaryColor: blueColor,
+                        borderColor: blueColor,
+                        width: displayWidth(context) * 0.26,
+                        height: displayHeight(context) * 0.045,
+                        onTap: () async {
+                          onTap(vesselData);
+                        }),
+                  ),
+                  SizedBox(
+                    width: displayWidth(context) * 0.02,
                   ),
                 ],
               ),

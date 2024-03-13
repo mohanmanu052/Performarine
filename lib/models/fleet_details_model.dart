@@ -152,25 +152,25 @@ class VesselInfo {
   String? regNumber;
   String? mMSI;
   String? engineType;
-  int? fuelCapacity;
-  int? batteryCapacity;
+  dynamic fuelCapacity;
+  dynamic batteryCapacity;
   String? weight;
   List<String>? imageURLs;
-  int? freeBoard;
-  int? lengthOverall;
-  int? beam;
-  int? depth;
+  dynamic freeBoard;
+  dynamic lengthOverall;
+  dynamic beam;
+  dynamic depth;
   String? vesselSize;
   String? capacity;
-  int? builtYear;
-  int? vesselStatus;
+  dynamic builtYear;
+  dynamic vesselStatus;
   String? createdBy;
   String? createdAt;
   String? updatedBy;
   String? updatedAt;
   String? syncCreatedAt;
   String? syncUpdatedAt;
-  int? hullShape;
+  dynamic hullShape;
 
   VesselInfo(
       {this.sId,

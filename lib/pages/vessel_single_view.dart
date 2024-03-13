@@ -377,6 +377,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                         },
                         false,
                         isCalledFromVesselSingleView: true,
+                        isCalledFromFleetScreen: widget.isCalledFromFleetScreen
                       ),
                       SizedBox(
                         height: 10,

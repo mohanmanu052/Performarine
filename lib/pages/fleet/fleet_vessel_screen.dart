@@ -40,7 +40,7 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
 
   int currentTabIndex = 0;
 
-  late Future<FleetDetailsModel> future;
+  Future<FleetDetailsModel>? future;
 
   @override
   void initState() {
@@ -65,6 +65,11 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
         token: commonProvider.loginModel!.token,
         scaffoldKey: _scafoldKey,
         context: context);
+
+    selectedFleetvalue = fleetdata!.data!.first;
+
+    future = commonProvider.getFleetDetailsData(context, commonProvider.loginModel!.token!, fleetdata!.data!.first.id!, _scafoldKey);
+    setState(() {});
   }
 
   void _handleTabSelection() {
@@ -84,6 +89,7 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
 
   @override
   Widget build(BuildContext context) {
+    //debugPrint("FLEET DATA ${fleetdata! == null}");
     return Scaffold(
         key: _scafoldKey,
         backgroundColor: backgroundColor,
@@ -244,7 +250,9 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
                                   ))
                               .toList(),
                           onChanged: (newValue) {
-                            debugPrint("SELECTED FLEET ID ${newValue}");
+                            debugPrint("SELECTED FLEET ID ${newValue!.fleetName}");
+
+                            future = commonProvider.getFleetDetailsData(context, commonProvider.loginModel!.token!, newValue.id!, _scafoldKey);
                             setState(() {});
                           },
                         ),
@@ -308,18 +316,58 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
                 ],
               )),
 
-              Expanded(
-                child: TabBarView(
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    MemberDetailsWidget(),
-                    FleetDetailsCard(
-                      scaffoldKey: _scafoldKey,
-                    )
-                  ],
-                  controller: _tabController,
+              fleetdata != null && fleetdata!.data != null
+              ? Expanded(
+                child: FutureBuilder<FleetDetailsModel>(
+                  future: future,
+                  builder: (context, snapShot)
+                  {
+                    if (snapShot.connectionState == ConnectionState.waiting) {
+                      return SizedBox(
+                          height: displayHeight(context)/1.5,
+                          child: Center(child: const CircularProgressIndicator(color: circularProgressColor)));
+                    }
+                    else if (snapShot.data == null) {
+                      return  Container(
+                        height: displayHeight(context)/ 1.4,
+                        child: Center(
+                          child: commonText(
+                              context: context,
+                              text: 'No data found',
+                              fontWeight: FontWeight.w500,
+                              textColor: Colors.black,
+                              textSize: displayWidth(context) * 0.05,
+                              textAlign: TextAlign.start),
+                        ),
+                      );
+                    }
+                    else
+                    {
+                      return StatefulBuilder(
+                          builder: (BuildContext context, StateSetter setter)
+                          {
+                            debugPrint("MEMBERS ${snapShot.data!.myFleets!.isEmpty}");
+                            return TabBarView(
+                              physics: NeverScrollableScrollPhysics(),
+                              children: [
+                                MemberDetailsWidget(memberList: snapShot.data!.myFleets!.isEmpty ? [] : snapShot.data!.myFleets![0].members ?? []),
+                                FleetDetailsCard(
+                                  scaffoldKey: _scafoldKey,
+                                    fleetVesselsList: snapShot.data!.myFleets!.isEmpty ? [] : snapShot.data!.myFleets![0].fleetVessels! ?? []
+                                )
+                              ],
+                              controller: _tabController,
+                            );
+                          }
+                      );
+                    }
+
+                  },
                 ),
-              ),
+              )
+              : Container(
+                height: displayHeight(context) / 2,
+                  child: Center(child: CircularProgressIndicator(color: circularProgressColor,))),
             ],
           ),
         ));

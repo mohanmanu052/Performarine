@@ -23,7 +23,7 @@ class MyFleetSingleCard extends StatefulWidget {
 
 class _MyFleetSingleCardState extends State<MyFleetSingleCard> {
 
-  bool leaveFleetBtn = false;
+  bool deleteFleetBtn = false;
 
   late CommonProvider commonProvider;
 
@@ -209,35 +209,35 @@ class _MyFleetSingleCardState extends State<MyFleetSingleCard> {
                                   Navigator.of(context).pop();
 
                                   setState(() {
-                                    leaveFleetBtn = true;
+                                    deleteFleetBtn = true;
                                   });
-                                  commonProvider.leaveFleet(context, commonProvider.loginModel!.token!, widget.myFleets!.id!, widget.scaffoldKey!).then((value)
+                                  commonProvider.deleteFleet(context, commonProvider.loginModel!.token!, widget.myFleets!.id!, widget.scaffoldKey!).then((value)
                                   {
                                     if(value != null)
                                     {
                                       if(value.status!)
                                       {
                                         setState(() {
-                                          leaveFleetBtn = false;
+                                          deleteFleetBtn = false;
                                         });
                                         widget.onTap!.call();
                                       }
                                       else
                                         {
                                           setState(() {
-                                            leaveFleetBtn = false;
+                                            deleteFleetBtn = false;
                                           });
                                         }
                                     }
                                     else
                                       {
                                         setState(() {
-                                          leaveFleetBtn = false;
+                                          deleteFleetBtn = false;
                                         });
                                       }
                                   }).catchError((e) {
                                     setState(() {
-                                      leaveFleetBtn = false;
+                                      deleteFleetBtn = false;
                                     });
                                   });
                                 },
@@ -247,7 +247,7 @@ class _MyFleetSingleCardState extends State<MyFleetSingleCard> {
                             );
 
                           },
-                          child: leaveFleetBtn!
+                          child: deleteFleetBtn!
                               ? Container(
                               height: 20,
                               width: 20,

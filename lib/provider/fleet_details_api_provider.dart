@@ -53,8 +53,7 @@ class FleetDetailsApiProvider with ChangeNotifier
 
         fleetDetailsModel = FleetDetailsModel.fromJson(json.decode(response.body));
 
-        Utils.showSnackBar(scaffoldKey.currentContext!,
-            scaffoldKey: scaffoldKey, message: fleetDetailsModel!.message, status: fleetDetailsModel!.status!);
+        //Utils.showSnackBar(scaffoldKey.currentContext!, scaffoldKey: scaffoldKey, message: fleetDetailsModel!.message, status: fleetDetailsModel!.status!);
 
         return fleetDetailsModel!;
       } else if (response.statusCode == HttpStatus.gatewayTimeout) {

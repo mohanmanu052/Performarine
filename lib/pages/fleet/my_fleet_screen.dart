@@ -11,6 +11,7 @@ import 'package:performarine/models/fleet_list_model.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
 import 'package:performarine/pages/fleet/fleet_vessel_screen.dart';
 import 'package:performarine/pages/fleet/send_invite_screen.dart';
+import 'package:performarine/pages/fleet/widgets/fleets_im_in_single_card.dart';
 import 'package:performarine/pages/fleet/widgets/my_fleet_single_card.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:provider/provider.dart';
@@ -258,146 +259,15 @@ setState(() {
                                                 itemCount: snapShot.data!.fleetsIamIn!.length,
                                                 itemBuilder: (context, index)
                                                 {
-                                                  return Padding(
-                                                    padding: const EdgeInsets.only(bottom: 8.0),
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                      children: [
-                                                        Column(
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            commonText(
-                                                              context: context,
-                                                              text: snapShot.data!.fleetsIamIn![index].fleetName,
-                                                              fontWeight: FontWeight.w500,
-                                                              textColor: Colors.black,
-                                                              textSize: displayWidth(context) * 0.04,
-                                                              textAlign: TextAlign.start,),
-                                                            SizedBox(height: 4,),
-                                                            Row(
-                                                              children: [
-                                                                commonText(
-                                                                    context: context,
-                                                                    text: 'Created By: ',
-                                                                    fontWeight: FontWeight.w400,
-                                                                    textColor: Colors.grey,
-                                                                    textSize: displayWidth(context) * 0.028,
-                                                                    textAlign: TextAlign.start),
-                                                                commonText(
-                                                                    context: context,
-                                                                    text: snapShot.data!.fleetsIamIn![index].fleetName,
-                                                                    fontWeight: FontWeight.w500,
-                                                                    textColor: Colors.black,
-                                                                    textSize: displayWidth(context) * 0.028,
-                                                                    textAlign: TextAlign.start),
-                                                                SizedBox(width: displayWidth(context) * 0.03,),
-                                                              ],
-                                                            ),
-                                                            SizedBox(height: 4,),
-                                                            Row(
-                                                              children: [
-                                                               Container(
-                                                                 width: displayWidth(context) * 0.24,
-                                                                 child: Row(
-                                                                   children: [
-                                                                     commonText(
-                                                                         context: context,
-                                                                         text: 'DOJ: ',
-                                                                         fontWeight: FontWeight.w400,
-                                                                         textColor: Colors.grey,
-                                                                         textSize: displayWidth(context) * 0.028,
-                                                                         textAlign: TextAlign.start),
-                                                                     commonText(
-                                                                         context: context,
-                                                                         text: DateFormat("yyyy-MM-dd").format(DateTime.parse(snapShot.data!.fleetsIamIn![index].fleetJoinedDate!)),
-                                                                         //text: snapShot.data!.fleetsIamIn![index].fleetJoinedDate,
-                                                                         fontWeight: FontWeight.w500,
-                                                                         textColor: Colors.black,
-                                                                         textSize: displayWidth(context) * 0.028,
-                                                                         textAlign: TextAlign.start),
-                                                                   ],
-                                                                 ),
-                                                               ),
-                                                               // SizedBox(width: displayWidth(context) * 0.02,),
-                                                                commonText(
-                                                                    context: context,
-                                                                    text: 'No of Vessels: ',
-                                                                    fontWeight: FontWeight.w400,
-                                                                    textColor: Colors.grey,
-                                                                    textSize: displayWidth(context) * 0.028,
-                                                                    textAlign: TextAlign.start),
-                                                                commonText(
-                                                                    context: context,
-                                                                    text: snapShot.data!.fleetsIamIn![index].vesselCount.toString(),
-                                                                    fontWeight: FontWeight.w500,
-                                                                    textColor: Colors.black,
-                                                                    textSize: displayWidth(context) * 0.028,
-                                                                    textAlign: TextAlign.start),
-                                                                SizedBox(width: displayWidth(context) * 0.015,),
 
-
-                                                              ],
-                                                            ),
-                                                            SizedBox(height: 4,),
-                                                            Divider(
-                                                              color: Colors.grey.shade300,
-                                                              thickness: 2,
-                                                            )
-                                                          ],
-                                                        ),
-
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          children: [
-                                                            InkWell(
-                                                              onTap: (){
-                                                                CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to leave this fleet?',subtext: snapShot.data!.myFleets![index].fleetName??'',description: 'If you leave the fleet your fleet manager cannot view your vessels & Reports',
-                                                                  postiveButtonColor: deleteTripBtnColor,positiveButtonText: 'Leave',
-
-                                                                );
-
-
-                                                              },
-                                                              child: commonText(
-                                                                  context: context,
-                                                                  text: 'Leave',
-                                                                  fontWeight: FontWeight.w500,
-                                                                  textColor: Colors.red,
-                                                                  textSize: displayWidth(context) * 0.03,
-                                                                  textAlign: TextAlign.start,
-                                                                  fontFamily: poppins),
-                                                            ),
-                                                            SizedBox(width: displayWidth(context) * 0.04,),
-                                                            Container(
-                                                              width: displayWidth(context) * 0.25,
-                                                              decoration: BoxDecoration(
-                                                                  color: blueColor,
-                                                                  borderRadius: BorderRadius.circular(8)
-                                                              ),
-                                                              child: Center(
-                                                                child: InkWell(
-                                                                  onTap: (){
-                                                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>ManagePermissionsScreen()));
-                                                                  },
-                                                                  child: Padding(
-                                                                    padding: const EdgeInsets.only(top: 8, bottom: 8),
-                                                                    child: commonText(
-                                                                        context: context,
-                                                                        text: 'Assign Vessel',
-                                                                        fontWeight: FontWeight.w300,
-                                                                        textColor: Colors.white,
-                                                                        textSize: displayWidth(context) * 0.03,
-                                                                        textAlign: TextAlign.start,
-                                                                        fontFamily: poppins),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        )
-                                                      ],
-                                                    ),
+                                                  return FleetsImInSingleCard(
+                                                    fleetsIamIn: snapShot.data!.fleetsIamIn![index],
+                                                    scaffoldKey: scaffoldKey,
+                                                    onTap: (){
+                                                      setter(() {
+                                                        future = commonProvider.fleetDashboardDetails(context, commonProvider.loginModel!.token!, scaffoldKey);
+                                                      });
+                                                    },
                                                   );
                                                 }
                                             )

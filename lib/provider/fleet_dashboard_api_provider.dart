@@ -29,6 +29,7 @@ class FleetDashboardApiProvider with ChangeNotifier
       HttpHeaders.contentTypeHeader: 'application/json',
       "x_access_token": '$accessToken',
     };
+
     Uri uri = Uri.https(Urls.baseUrl, Urls.fleetDashboardApi);
 
     try {
