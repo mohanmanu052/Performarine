@@ -527,7 +527,7 @@ setState(() {
                                                           children: [
                                                             InkWell(
                                                               onTap: (){
-                                                                CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to leave this fleet?',subtext: snapShot.data!.myFleets![index].fleetName??'',description: 'If you leave the fleet your fleet manager cannot view your vessels & Reports',
+                                                                CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to leave this fleet?',subtext: snapShot.data!.fleetsIamIn![index].fleetName??'',description: 'If you leave the fleet your fleet manager cannot view your vessels & Reports',
                                                                   postiveButtonColor: deleteTripBtnColor,positiveButtonText: 'Leave',
 
                                                                 );
