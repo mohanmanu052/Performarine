@@ -40,7 +40,7 @@ class _FleetDetailsCardState extends State<FleetDetailsCard> {
                         return Center(
                           child: CircularProgressIndicator(
                             valueColor:
-                                AlwaysStoppedAnimation<Color>(circularProgressColor),
+                                AlwaysStoppedAnimation<Color>(blueColor),
                           ),
                         );
                       }

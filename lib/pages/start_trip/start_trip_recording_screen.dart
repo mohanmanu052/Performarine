@@ -1109,9 +1109,11 @@ showLocationDailog();
 
     return Screenshot(
       controller: controller,
-      child: WillPopScope(
+      child: PopScope(
+        canPop: false,
         key: tripState,
-        onWillPop: () async {
+        onPopInvoked: (didPop) async {
+          if(didPop) return;
           if (commonProvider.bottomNavIndex == 1) {
             SystemChrome.setPreferredOrientations([
               DeviceOrientation.portraitUp,
@@ -1130,8 +1132,6 @@ showLocationDailog();
                   .then((value) {});
             }
           }
-
-          return true;
         },
         child: SafeArea(
           child: Scaffold(

@@ -728,9 +728,11 @@ class _OldCustomDrawerState extends State<OldCustomDrawer> {
         barrierDismissible: false,
         context: context,
         builder: (BuildContext dialogBoxContext) {
-          return WillPopScope(
-            onWillPop: ()async {
-              return isUploadStarted ? false : true;
+          return PopScope(
+            canPop: false,
+            onPopInvoked: (didPop){
+              if(didPop) return;
+              isUploadStarted ? false : true;
             },
             child: Dialog(
               shape: RoundedRectangleBorder(

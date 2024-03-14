@@ -10,135 +10,123 @@ import 'package:screenshot/screenshot.dart';
 
 class FleetReports extends StatefulWidget {
   int? bottomNavIndex;
-   FleetReports({super.key,this.bottomNavIndex});
+  FleetReports({super.key, this.bottomNavIndex});
 
   @override
   State<FleetReports> createState() => _FleetReportsState();
 }
 
 class _FleetReportsState extends State<FleetReports> {
-    ScreenshotController screen_shot_controller = ScreenshotController();
+  ScreenshotController screen_shot_controller = ScreenshotController();
 
-    @override
+  @override
   void initState() {
-        SystemChrome.setPreferredOrientations([
+    SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp
     ]);
 
-
     // TODO: implement initState
     super.initState();
   }
 
-@override
+  @override
   void dispose() {
-    if(widget.bottomNavIndex==1){
-
-    }else{
-              SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.portraitUp
-    ]);
-
+    if (widget.bottomNavIndex == 1) {
+    } else {
+      SystemChrome.setPreferredOrientations(
+          [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
     }
     // TODO: implement dispose
     super.dispose();
   }
 
-  
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: ()async{
-        if(widget.bottomNavIndex==1){
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        if (didPop) return;
+        if (widget.bottomNavIndex == 1) {
           Navigator.pop(context);
-        }else{
-                        SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.portraitUp
-    ]);
+        } else {
+          SystemChrome.setPreferredOrientations(
+              [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
           Navigator.pop(context);
-
         }
-return Future.value(true);
+        return Future.value(true);
       },
       child: Screenshot(
         controller: screen_shot_controller,
         child: Scaffold(
-                  backgroundColor: Colors.white,
-            appBar: AppBar(
-              elevation: 0.0,
-              backgroundColor: Colors.white,
-              leading: IconButton(
-                onPressed: () {
-if(widget.bottomNavIndex==1){
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            elevation: 0.0,
+            backgroundColor: Colors.white,
+            leading: IconButton(
+              onPressed: () {
+                if (widget.bottomNavIndex == 1) {
+                } else {
+                  SystemChrome.setPreferredOrientations([
+                    DeviceOrientation.portraitDown,
+                    DeviceOrientation.portraitUp
+                  ]);
+                }
 
-}else{
-                                          SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.portraitUp
-    ]);
-
-
-}
-
-                  Navigator.of(context).pop();
-                },
-                icon: const Icon(Icons.arrow_back),
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? Colors.white
-                    : Colors.black,
-              ),
-              centerTitle: false,
-              title: commonText(
-                  context: context,
-                  
-                  text: 'Fleet Reports',
-                  fontWeight: FontWeight.w600,
-                  textColor: Colors.black,
-                  textSize: 18,
-                  textAlign: TextAlign.start),
-              actions: [
-                Container(
-                  margin: EdgeInsets.only(right: 8),
-                  child: IconButton(
-                    onPressed: () {
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => BottomNavigation()),
-                          ModalRoute.withName(""));
-                    },
-                    icon: Image.asset('assets/icons/performarine_appbar_icon.png'),
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.white
-                        : Colors.black,
-                  ),
-                )
-              ],
+                Navigator.of(context).pop();
+              },
+              icon: const Icon(Icons.arrow_back),
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
             ),
-        
+            centerTitle: false,
+            title: commonText(
+                context: context,
+                text: 'Fleet Reports',
+                fontWeight: FontWeight.w600,
+                textColor: Colors.black,
+                textSize: 18,
+                textAlign: TextAlign.start),
+            actions: [
+              Container(
+                margin: EdgeInsets.only(right: 8),
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => BottomNavigation()),
+                        ModalRoute.withName(""));
+                  },
+                  icon:
+                      Image.asset('assets/icons/performarine_appbar_icon.png'),
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black,
+                ),
+              )
+            ],
+          ),
           body: Column(
-        children: [
-        Expanded(child: ReportsModule(isTypeFleet: true,
-        onScreenShotCaptureCallback: (() {
-          captureScreenShot();
-        }),
-        
-        
-        ))
-        ],
-          
-        ),
-          
+            children: [
+              Expanded(
+                  child: ReportsModule(
+                isTypeFleet: true,
+                onScreenShotCaptureCallback: (() {
+                  captureScreenShot();
+                }),
+              ))
+            ],
+          ),
         ),
       ),
     );
   }
 
-    void captureScreenShot() async {
+  void captureScreenShot() async {
     final image = await screen_shot_controller.capture();
     Utils.customPrint("Image is: ${image.toString()}");
     Navigator.push(
@@ -149,6 +137,4 @@ if(widget.bottomNavIndex==1){
                   uIntList: image,
                 )));
   }
-
-
 }

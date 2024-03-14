@@ -234,9 +234,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
   @override
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
-    return WillPopScope(
-      onWillPop: () async {
-        return Utils.onAppExitCallBack(context, scaffoldKey);
+    return PopScope(
+      canPop:false,
+      onPopInvoked: (didPop) async {
+        if(didPop) return;
+
+        Utils.onAppExitCallBack(context, scaffoldKey);
       },
       child: DefaultTabController(
         length: 2,

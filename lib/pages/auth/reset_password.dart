@@ -62,24 +62,25 @@ class _ResetPasswordState extends State<ResetPassword> {
   @override
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+     onPopInvoked: (didPop)
+      {
+        if(didPop)  return;
         if(widget.isCalledFrom == "Main")
-          {
-            Get.offAll(SignInScreen(calledFrom:'ResetPassword'));
-            return false;
-          }
+        {
+          Get.offAll(SignInScreen(calledFrom:'ResetPassword'));
+        }
         else if(widget.isCalledFrom == 'Dashboard'){
           isComingFromUnilinkMain = true;
           Get.offAll(BottomNavigation(isComingFromReset: false,));
-          return false;
+
         }
         else
-          {
-            Navigator.of(context).pop();
-            return false;
-          }
-    },
+        {
+          Navigator.of(context).pop();
+        }
+      },
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: commonBackgroundColor,
@@ -119,12 +120,13 @@ class _ResetPasswordState extends State<ResetPassword> {
               textSize: displayWidth(context) * 0.05,
               textAlign: TextAlign.start),
         ),
-        body: WillPopScope(
-          onWillPop: ()async{
+        body: PopScope(
+          canPop: false,
+          onPopInvoked: (didPop)async{
+            if(didPop) return;
             if(sharedPreferences != null){
               sharedPreferences!.setBool('reset_dialog_opened',true);
             }
-            return true;
           },
           child: Stack(
             children: [

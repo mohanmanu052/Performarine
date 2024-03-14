@@ -63,17 +63,19 @@ class _ResetPasswordState extends State<ResetPassword> {
   @override
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        if(didPop) return;
         if(widget.isCalledFrom == "Main")
         {
           Get.offAll(SignInScreen());
-          return false;
+
         }
         else
         {
           Navigator.of(context).pop();
-          return false;
+
         }
       },
         child: Scaffold(
