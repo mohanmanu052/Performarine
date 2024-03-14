@@ -368,7 +368,7 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
               )
               : Container(
                 height: displayHeight(context) / 2,
-                  child: Center(child: CircularProgressIndicator(color: circularProgressColor,))),
+                  child: Center(child: CircularProgressIndicator(color: blueColor,))),
             ],
           ),
         ));
