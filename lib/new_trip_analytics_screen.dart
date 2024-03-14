@@ -138,8 +138,10 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
 
     commonProvider = context.watch<CommonProvider>();
 
-    return WillPopScope(
-      onWillPop: ()async {
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        if(didPop) return;
         if(widget.calledFrom=='End Trip'){
                                                             Navigator.pushAndRemoveUntil(
                                                                     context,
@@ -1343,10 +1345,12 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
         barrierDismissible: false,
         context: context,
         builder: (BuildContext dialogContext) {
-          return WillPopScope(
-            onWillPop: ()async
+          return PopScope(
+            canPop: false,
+            onPopInvoked: (didPop)async
             {
-              return isBtnClick ? false : true;
+              if(didPop) return;
+               isBtnClick ? false : true;
             },
             child: Dialog(
               shape: RoundedRectangleBorder(

@@ -85,9 +85,11 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
 
 
     commonProvider = context.watch<CommonProvider>();
-    return WillPopScope(
-      onWillPop: () async {
-        return Utils.onAppExitCallBack(context, scaffoldKey);
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        if(didPop) return;
+         Utils.onAppExitCallBack(context, scaffoldKey);
       },
         child: Screenshot(
           controller: controller,

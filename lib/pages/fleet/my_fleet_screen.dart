@@ -11,6 +11,7 @@ import 'package:performarine/models/fleet_list_model.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
 import 'package:performarine/pages/fleet/fleet_vessel_screen.dart';
 import 'package:performarine/pages/fleet/send_invite_screen.dart';
+import 'package:performarine/pages/fleet/widgets/fleet_invites_single_card.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
@@ -78,16 +79,17 @@ setState(() {
   @override
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
-    return WillPopScope(
-      onWillPop: ()async{
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop)async{
+        if(didPop) return;
         if(widget.isComingFromUnilink??false){
           Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder:((context) =>  BottomNavigation())), (route) => true);
-          return false;
+
         }else{
           Navigator.of(context).pop();
-          return false;
+
         }
-        return false;
 
       },
       child: Screenshot(
@@ -155,7 +157,7 @@ setState(() {
                         if (snapShot.connectionState == ConnectionState.waiting) {
                           return SizedBox(
                             height: displayHeight(context)/1.5,
-                              child: Center(child: const CircularProgressIndicator(color: circularProgressColor)));
+                              child: Center(child: const CircularProgressIndicator(color: blueColor)));
                         }
                         else if (snapShot.data == null) {
                           return  Container(
@@ -616,189 +618,14 @@ setState(() {
                                                 itemBuilder: (context, index)
                                                 {
 
-                                                  return Padding(
-                                                    padding: const EdgeInsets.only(bottom: 8.0),
-                                                    child: Column(
-                                                      children: [
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                          children: [
-                                                            Flexible(
-                                                              child: Column(
-                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                children: [
-                                                                  commonText(
-                                                                    context: context,
-                                                                    text: snapShot.data!.fleetInvites![index].fleetName,
-                                                                    fontWeight: FontWeight.w500,
-                                                                    textColor: Colors.black,
-                                                                    textSize: displayWidth(context) * 0.04,
-                                                                    textAlign: TextAlign.start,),
-
-                                                                  commonText(
-                                                                      context: context,
-                                                                      text: 'Sent By ${snapShot.data!.fleetInvites![index].fleetCreatedBy}',
-                                                                      fontWeight: FontWeight.w400,
-                                                                      textColor: Colors.grey,
-                                                                      textSize: displayWidth(context) * 0.028,
-                                                                      textAlign: TextAlign.start),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            SizedBox(width: 4,),
-                                                            Row(
-                                                              children: [
-                                                                isRejectBtnClicked!
-                                                                    ? Container(
-                                                                    height: 30,
-                                                                    width: 30,
-                                                                    child: Padding(
-                                                                      padding: const EdgeInsets.all(2.0),
-                                                                      child: CircularProgressIndicator(color: circularProgressColor,strokeWidth: 3,),
-                                                                    ))
-                                                                    : InkWell(
-                                                                  onTap: (){
-                                                                    CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to Reject fleet Invite??',subtext: snapShot.data!.fleetInvites![index].fleetName??'',
-                                                                      postiveButtonColor: deleteTripBtnColor, positiveButtonText: 'Reject',
-                                                                    onNgeitiveButtonTap: (){
-                                                                      Navigator.of(context).pop();
-                                                                    },
-                                                                      onPostiveButtonTap: (){
-                                                                        setState(() {
-                                                                          isRejectBtnClicked = true;
-                                                                        });
-                                                                        Navigator.of(context).pop();
-
-                                                                        commonProvider.fleetMemberInvitation(context, commonProvider.loginModel!.token!,
-                                                                            snapShot.data!.fleetInvites![index].invitationToken!, 'false', scaffoldKey).then((value) {
-                                                                          if(value != null)
-                                                                          {
-                                                                            if(value.status!)
-                                                                            {
-                                                                              setState(() {
-                                                                                isRejectBtnClicked = false;
-                                                                              });
-
-                                                                              future = commonProvider.fleetDashboardDetails(context, commonProvider.loginModel!.token!, scaffoldKey);
-                                                                            }
-                                                                            else
-                                                                              {
-                                                                                setState(() {
-                                                                                isRejectBtnClicked = false;
-                                                                              });
-
-                                                                              }
-                                                                          }
-                                                                          else
-                                                                            {
-                                                                              setState(() {
-                                                                                isRejectBtnClicked = false;
-                                                                              });
-                                                                            }
-                                                                        }).catchError((e){
-                                                                          setState(() {
-                                                                            isRejectBtnClicked = false;
-                                                                          });
-                                                                        });
-                                                                      }
-                                                                    );
-
-                                                                  },
-                                                                  child: commonText(
-                                                                      context: context,
-                                                                      text: 'Reject',
-                                                                      fontWeight: FontWeight.w300,
-                                                                      textColor: Colors.red,
-                                                                      textSize: displayWidth(context) * 0.03,
-                                                                      textAlign: TextAlign.start,
-                                                                      fontFamily: poppins),
-                                                                ),
-                                                                SizedBox(width: displayWidth(context) * 0.04,),
-                                                                isAcceptBtnClicked!
-                                                                    ? Container(
-                                                                    height: 30,
-                                                                    width: 30,
-                                                                    child: Padding(
-                                                                      padding: const EdgeInsets.all(2.0),
-                                                                      child: CircularProgressIndicator(color: circularProgressColor,strokeWidth: 3,),
-                                                                    ))
-                                                                    : Container(
-                                                                  width: displayWidth(context) * 0.18,
-                                                                  decoration: BoxDecoration(
-                                                                      color: blueColor,
-                                                                      borderRadius: BorderRadius.circular(20)
-                                                                  ),
-                                                                  child: Center(
-                                                                    child: Padding(
-                                                                      padding: const EdgeInsets.only(top: 4, bottom: 4),
-                                                                      child:  InkWell(
-                                                                        onTap: (){
-
-                                                                          CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to accept fleet Invite?',subtext: snapShot.data!.fleetInvites![index].fleetName??'',
-                                                                              postiveButtonColor: blueColor,positiveButtonText: 'Accept', negtiveButtuonColor: blueColor,
-                                                                              onNgeitiveButtonTap: (){
-                                                                                Navigator.of(context).pop();
-                                                                              },
-                                                                              onPostiveButtonTap: (){
-                                                                            setState(() {
-                                                                              isAcceptBtnClicked = true;
-                                                                            });
-                                                                            Navigator.of(context).pop();
-
-                                                                            commonProvider.fleetMemberInvitation(context, commonProvider.loginModel!.token!,
-                                                                                snapShot.data!.fleetInvites![index].invitationToken!, 'true', scaffoldKey).then((value) {
-                                                                                  if(value != null)
-                                                                                    {
-                                                                                      if(value.status!)
-                                                                                        {
-                                                                                          setState(() {
-                                                                                            isAcceptBtnClicked = false;
-                                                                                          });
-
-                                                                                          future = commonProvider.fleetDashboardDetails(context, commonProvider.loginModel!.token!, scaffoldKey);
-                                                                                        }
-                                                                                      else
-                                                                                        {
-                                                                                          setState(() {
-                                                                                            isAcceptBtnClicked = false;
-                                                                                          });
-                                                                                        }
-                                                                                    }
-                                                                                  else
-                                                                                    {
-                                                                                      setState(() {
-                                                                                        isAcceptBtnClicked = false;
-                                                                                      });
-                                                                                    }
-                                                                            }).catchError((e){
-                                                                              setState(() {
-                                                                                isAcceptBtnClicked = false;
-                                                                              });
-                                                                            });
-                                                                              });
-                                                                        },
-                                                                        child: commonText(
-                                                                            context: context,
-                                                                            text: 'Accept',
-                                                                            fontWeight: FontWeight.w300,
-                                                                            textColor: Colors.white,
-                                                                            textSize: displayWidth(context) * 0.03,
-                                                                            textAlign: TextAlign.start,
-                                                                            fontFamily: poppins),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            )
-                                                          ],
-                                                        ),
-                                                        Divider(
-                                                          color: Colors.grey.shade200,
-                                                          thickness: 2,
-                                                        )
-                                                      ],
-                                                    ),
+                                                  return FleetInvitesSingleCard(
+                                                    fleetInvites: snapShot.data!.fleetInvites![index],
+                                                    scaffoldKey: scaffoldKey,
+                                                    onTap: (){
+                                                      setter(() {
+                                                        future = commonProvider.fleetDashboardDetails(context, commonProvider.loginModel!.token!, scaffoldKey);
+                                                      });
+                                                    },
                                                   );
                                                 }
                                             )

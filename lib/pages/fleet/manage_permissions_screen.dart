@@ -358,7 +358,7 @@ if(mounted) {
                                   });
                               },
                           ),
-                      ):Center(child: CircularProgressIndicator(color: circularProgressColor),),
+                      ):Center(child: CircularProgressIndicator(color: blueColor),),
                                     ),
                       // SizedBox(height: displayHeight(context) * 0.05,),
                       // Align(
@@ -573,7 +573,7 @@ if(mounted) {
               ),
               if(isLoading)
               Center(
-                child: CircularProgressIndicator(color: circularProgressColor),
+                child: CircularProgressIndicator(color: blueColor),
               )
             ],
           ),

@@ -1723,7 +1723,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                           ?
                                            Container(
                                               height:orientation==Orientation.portrait? displayHeight(context) * 0.055:displayHeight(context) * 0.085,
-                                          child: Center(child: CircularProgressIndicator(color: circularProgressColor,)))
+                                          child: Center(child: CircularProgressIndicator(color: blueColor,)))
                                           : 
                                           Center(
                                         child:
@@ -1942,7 +1942,7 @@ if(!isSyncSignoutClicked){
                                               child: Center(
                                                   child:
                                                   CircularProgressIndicator(
-                                                    color: circularProgressColor,
+                                                    color: blueColor,
                                                   ))),
                                         )
                                             : CommonButtons.getAcceptButton(
@@ -2484,9 +2484,11 @@ if(!isSyncSignoutClicked){
         barrierDismissible: false,
         context: context,
         builder: (BuildContext dialogBoxContext) {
-          return WillPopScope(
-              onWillPop: ()async {
-                return isUploadStarted ? false : true;
+          return PopScope(
+            canPop: false,
+              onPopInvoked: (didPop)async {
+              if(didPop) return;
+              isUploadStarted ? false : true;
               },
               child: OrientationBuilder(
                   builder: (context,orientation) {
@@ -2632,7 +2634,7 @@ if(!isSyncSignoutClicked){
                                                   child: Container(
                                                       child: Center(
                                                           child:
-                                                          CircularProgressIndicator(color: circularProgressColor,))),
+                                                          CircularProgressIndicator(color: blueColor,))),
                                                 )
                                                     : Container(
                                                   width: displayWidth(context) * 0.32,

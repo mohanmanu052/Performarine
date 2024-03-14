@@ -34,7 +34,7 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
   CommonProvider? commonProvider;
   List<int> inviteCountList = [];
   List<String> inviteEmailList = [];
- FleetData? selectedFleetvalue;
+  FleetData? selectedFleetvalue;
   List<SearchWidget> searchWidgetList = [];
   List<Key> fieldKeyList = [];
   bool isLoading = false;
@@ -42,33 +42,29 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
   List<bool> enableControllerKeyList = [];
   GlobalKey<FormState> formKey = GlobalKey();
   FleetListModel? fleetdata;
-  GlobalKey<FormState> selectVesselFormKey=GlobalKey();
+  GlobalKey<FormState> selectVesselFormKey = GlobalKey();
 
   @override
   void initState() {
     //selectedFleetvalue=fleetList[0];
-    commonProvider= context.read<CommonProvider>();
-                                          fieldKeyList.add(Key(
-                                          Random().nextInt(9999).toString()));
-                                      textControllersList
-                                          .add(TextEditingController());
-                                      enableControllerKeyList.add(false);
+    commonProvider = context.read<CommonProvider>();
+    fieldKeyList.add(Key(Random().nextInt(9999).toString()));
+    textControllersList.add(TextEditingController());
+    enableControllerKeyList.add(false);
 
     getFleetList();
     // TODO: implement initState
     super.initState();
   }
 
-void getFleetList()async{
- fleetdata=await   commonProvider?.getFleetListdata(
-      token: commonProvider!.loginModel!.token,
-      scaffoldKey: scaffoldKey,
-      context: context
-    );
-setState(() {
-  
-});
-}
+  void getFleetList() async {
+    fleetdata = await commonProvider?.getFleetListdata(
+        token: commonProvider!.loginModel!.token,
+        scaffoldKey: scaffoldKey,
+        context: context);
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
@@ -134,13 +130,12 @@ setState(() {
               return 'Please enter email';
             } else if (!EmailValidator.validate(value)) {
               return 'Please enter valid email';
-            } else if(EmailValidator.validate(value)){
+            } else if (EmailValidator.validate(value)) {
               String emailExt = value.split(".").last;
-              if(!['com', 'in', 'us'].contains(emailExt)){
+              if (!['com', 'in', 'us'].contains(emailExt)) {
                 return 'Please enter valid email';
               }
-            }
-            else {
+            } else {
               return null;
             }
           },
@@ -237,59 +232,59 @@ setState(() {
                       height: displayHeight(context) * 0.03,
                     ),
                     SizedBox(
-                      child:fleetdata!=null&&fleetdata!.data!=null? Container(
-                        padding:
-                        EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                        decoration: BoxDecoration(
-                          color: Colors.blue.shade50,
-                          borderRadius: BorderRadius.circular(18),
-                        ),
-                        child:Form(
-                          key: selectVesselFormKey,
-                          child: FormField(
-                            autovalidateMode:AutovalidateMode.onUserInteraction,
-                                                      builder: (state) {
-                                                        
-                          
-                                                return    DropdownButtonFormField<FleetData>(
-                          
-                            value: selectedFleetvalue,
-                            hint: Text('Select Fleet'),
-                            onChanged: (FleetData? newValue){
-                                setState(() => selectedFleetvalue = newValue!);
-                                selectVesselFormKey.currentState!.validate();
-                                
-                                },
-                          items: fleetdata!.data!.map((item) {
-                            return DropdownMenuItem<FleetData>(
-                              value: item,
-                              child: Text(item.fleetName??''),
-                            );
-                          }).toList(),
-                                                                                        validator: (value) {
-                                                            if (value == null) {
-                                                              return 'Select Fleet';
-                                                            }
-                                                            return null;
-                                                          },
-                                               
-                            // add extra sugar..
-                            icon: Icon(Icons.keyboard_arrow_down_rounded),
-                            iconSize: 24,
-                            //underline: SizedBox(),
-                            isExpanded: true,
-                            decoration: InputDecoration(
-                                  border: InputBorder.none,
-                          
-                            ),
-                            padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: fleetdata != null && fleetdata!.data != null
+                          ? Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 5),
+                              decoration: BoxDecoration(
+                                color: Colors.blue.shade50,
+                                borderRadius: BorderRadius.circular(18),
+                              ),
+                              child: Form(
+                                key: selectVesselFormKey,
+                                child: FormField(
+                                    autovalidateMode:
+                                        AutovalidateMode.onUserInteraction,
+                                    builder: (state) {
+                                      return DropdownButtonFormField<FleetData>(
+                                        value: selectedFleetvalue,
+                                        hint: Text('Select Fleet'),
+                                        onChanged: (FleetData? newValue) {
+                                          setState(() =>
+                                              selectedFleetvalue = newValue!);
+                                          selectVesselFormKey.currentState!
+                                              .validate();
+                                        },
+                                        items: fleetdata!.data!.map((item) {
+                                          return DropdownMenuItem<FleetData>(
+                                            value: item,
+                                            child: Text(item.fleetName ?? ''),
+                                          );
+                                        }).toList(),
+                                        validator: (value) {
+                                          if (value == null) {
+                                            return 'Select Fleet';
+                                          }
+                                          return null;
+                                        },
 
-                          );
-                                                
-                                                
-                            }),
-                        ))
-                      :Center(child: CircularProgressIndicator(color: circularProgressColor)),
+                                        // add extra sugar..
+                                        icon: Icon(
+                                            Icons.keyboard_arrow_down_rounded),
+                                        iconSize: 24,
+                                        //underline: SizedBox(),
+                                        isExpanded: true,
+                                        decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                        ),
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                      );
+                                    }),
+                              ))
+                          : Center(
+                              child:
+                                  CircularProgressIndicator(color: blueColor)),
                     ),
                     SizedBox(
                       height: displayHeight(context) * 0.03,
@@ -412,57 +407,60 @@ setState(() {
                           buttonPrimaryColor: blueColor,
                           borderColor: blueColor,
                           width: displayWidth(context),
-                          onTap: () async{
-                            if(selectVesselFormKey.currentState!.validate()){
-                            if(textControllersList.isNotEmpty&&textControllersList!=null){
-                            if(formKey.currentState!.validate()){
-                              isLoading=true;
-                              setState(() {
-                                
-                              });
-                              List emailList=[];
-                              for(int i=0;i<textControllersList.length;i++){
-emailList.add(textControllersList[i].text);
-                            
-                            
-                              }
-Map<String,dynamic> data={
-    "fleetId": selectedFleetvalue?.id,
-    "fleetmembers": emailList
-        
-};
+                          onTap: () async {
+                            if (selectVesselFormKey.currentState!.validate()) {
+                              if (textControllersList.isNotEmpty &&
+                                  textControllersList != null) {
+                                if (formKey.currentState!.validate()) {
+                                  isLoading = true;
+                                  setState(() {});
+                                  List emailList = [];
+                                  for (int i = 0;
+                                      i < textControllersList.length;
+                                      i++) {
+                                    emailList.add(textControllersList[i].text);
+                                  }
+                                  Map<String, dynamic> data = {
+                                    "fleetId": selectedFleetvalue?.id,
+                                    "fleetmembers": emailList
+                                  };
 
+                                  var res =
+                                      await commonProvider?.sendFleetInvite(
+                                          commonProvider!.loginModel!.token!,
+                                          context,
+                                          scaffoldKey,
+                                          data);
+                                  if (res!.statusCode == 200) {
+                                    print('invitation sent sucessfully');
+                                    isLoading = false;
+                                    setState(() {});
 
-                     var res=      await   commonProvider?.sendFleetInvite(commonProvider!.loginModel!.token!, context, scaffoldKey, data);
-                     if(res!.statusCode==200){
-print('invitation sent sucessfully');
-                              isLoading=false;
-                              setState(() {
-                                
-                              });
+                                    Navigator.of(context).pop(true);
 
-                              Navigator.push(context, MaterialPageRoute(builder: (_)=>MyFleetScreen()));
-
-                     }else{
-                                                    isLoading=false;
-                              setState(() {
-                                
-                              });
-
-                     }
-                              /* Navigator.push(
+                                    /*Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) => MyFleetScreen()));*/
+                                  } else {
+                                    isLoading = false;
+                                    setState(() {});
+                                  }
+                                  /* Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => MyDelegateInvitesScreen()),
                             );*/
-                          }
-
-}else{
-  ScaffoldMessenger.maybeOf(context)!.showSnackBar(SnackBar(backgroundColor: Colors.blue, content: Text('Please Select Members')));
-}
-
-                          
-  }}),
+                                }
+                              } else {
+                                ScaffoldMessenger.maybeOf(context)!
+                                    .showSnackBar(SnackBar(
+                                        backgroundColor: Colors.blue,
+                                        content:
+                                            Text('Please Select Members')));
+                              }
+                            }
+                          }),
                     ),
                     GestureDetector(
                         onTap: () async {
@@ -486,7 +484,7 @@ print('invitation sent sucessfully');
             ),
             if (isLoading)
               Center(
-                child: CircularProgressIndicator(color: circularProgressColor),
+                child: CircularProgressIndicator(color: blueColor),
               ),
           ],
         ),
