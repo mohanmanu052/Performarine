@@ -79,10 +79,10 @@ class _FleetInvitesSingleCardState extends State<FleetInvitesSingleCard> {
                     onTap: (){
                       CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to Reject fleet Invite??',subtext: widget.fleetInvites!.fleetName??'',
                           postiveButtonColor: deleteTripBtnColor, positiveButtonText: 'Reject',
-                          onNgeitiveButtonTap: (){
+                          onNegativeButtonTap: (){
                             Navigator.of(context).pop();
                           },
-                          onPostiveButtonTap: (){
+                          onPositiveButtonTap: (){
                             setState(() {
                               isRejectBtnClicked = true;
                             });
@@ -155,10 +155,10 @@ class _FleetInvitesSingleCardState extends State<FleetInvitesSingleCard> {
 
                             CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to accept fleet Invite?',subtext: widget.fleetInvites!.fleetName??'',
                                 postiveButtonColor: blueColor,positiveButtonText: 'Accept', negtiveButtuonColor: blueColor,
-                                onNgeitiveButtonTap: (){
+                                onNegativeButtonTap: (){
                                   Navigator.of(context).pop();
                                 },
-                                onPostiveButtonTap: (){
+                                onPositiveButtonTap: (){
                                   setState(() {
                                     isAcceptBtnClicked = true;
                                   });

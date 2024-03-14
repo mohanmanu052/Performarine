@@ -3,13 +3,15 @@ import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/models/fleet_details_model.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
 import 'package:performarine/services/database_service.dart';
 
 class FleetDetailsCard extends StatefulWidget {
+  List<FleetVessels>? fleetVesselsList;
   GlobalKey<ScaffoldState>? scaffoldKey;
-   FleetDetailsCard({super.key,this.scaffoldKey});
+   FleetDetailsCard({super.key,this.scaffoldKey, this.fleetVesselsList});
   @override
   State<FleetDetailsCard> createState() => _FleetDetailsCardState();
 }
@@ -20,81 +22,75 @@ class _FleetDetailsCardState extends State<FleetDetailsCard> {
 
   @override
   void initState() {
-    getVesselFuture = _databaseService.vessels();
+   // getVesselFuture = _databaseService.vessels();
     // TODO: implement initState
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
+
+    debugPrint("FLEET VESSEL LIST LENGTH ${widget.fleetVesselsList!.length}");
+    return widget.fleetVesselsList == null || widget.fleetVesselsList!.isEmpty
+        ? Center(
+      child: commonText(
+          context: context,
+          text: 'No data found',
+          fontWeight: FontWeight.w500,
+          textColor: Colors.black,
+          textSize: displayWidth(context) * 0.045,
+          textAlign: TextAlign.start),
+    )
+        : SingleChildScrollView(
+      child:   Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
                   color: backgroundColor,
-                  child: FutureBuilder<List<CreateVessel>>(
-                    future: getVesselFuture,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
-                          child: CircularProgressIndicator(
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(blueColor),
-                          ),
-                        );
-                      }
-                      Utils.customPrint('Fleet Vessel HAS DATA: ${snapshot.hasData}');
-                      Utils.customPrint('Fleet Vessel Error: ${snapshot.error}');
-                      Utils.customPrint('Fleet Vessel IsError: ${snapshot.hasError}');
-                      if (snapshot.hasData) {
-                        if (snapshot.data!.isEmpty) {
-                          return Padding(
-                            padding: EdgeInsets.only(top: displayHeight(context) * 0.43),
-                            child: Center(
-                              child: commonText(
-                                  context: context,
-                                  text: 'No vessels available'.toString(),
-                                  fontWeight: FontWeight.w500,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.04,
-                                  textAlign: TextAlign.start),
-                            ),
-                          );
-                        } else {
-                          return Column(
-                            children: [
-                              Container(
-                                // height: displayHeight(context),
-                                color: backgroundColor,
-                                padding: const EdgeInsets.only(
-                                    left: 8.0, right: 8.0, top: 8, bottom: 10),
-                                child: ListView.builder(
-                                  itemCount: snapshot.data!.length,
-                                  primary: false,
-                                  shrinkWrap: true,
-                                  itemBuilder: (context, index) {
-                                    final vessel = snapshot.data![index];
-                                    return snapshot.data![index].vesselStatus == 1
-                                        ? vesselSingleViewCard(context, vessel,
-                                            (CreateVessel value) {
-                                              Navigator.push(context, MaterialPageRoute(builder: (context)=> VesselSingleView(
-                                                vessel: value,
-                                                isCalledFromFleetScreen: true,
-                                              )));
-      
-                                            }, widget.scaffoldKey!,isOwnerNameVisible: true,ownerName: 'abc456@gmail.com',
-                                            
-                                            )
-                                        : SizedBox();
-                                  },
-                                ),
-                              ),
-                            ],
-                          );
-                        }
-                      }
-                      return Container();
+                  child: ListView.builder(
+                    itemCount: widget.fleetVesselsList!.length,
+                    primary: false,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      debugPrint("FLEETS I M IN LENGTH ${widget.fleetVesselsList!.length}");
+                      final vessel = widget.fleetVesselsList![index];
+                      debugPrint("FLEETS I M IN LENGTH 1 ${vessel.vesselInfo!.mMSI == ''}");
+                      return fleetVesselSingleViewCard(context, vessel,
+                            (FleetVessels value) {
+                              CreateVessel vesselData = CreateVessel(
+                                  id: value.vesselInfo!.sId,
+                                  name: value.vesselInfo!.name ?? '',
+                                  builderName: value.vesselInfo!.builderName ?? '',
+                                  model: value.vesselInfo!.model ?? '',
+                                  regNumber: value.vesselInfo!.regNumber ?? '',
+                                  mMSI: value.vesselInfo!.mMSI ?? '',
+                                  engineType: value.vesselInfo!.engineType ?? '',
+                                  fuelCapacity: value.vesselInfo!.fuelCapacity.toString(),
+                                  batteryCapacity:value.vesselInfo!.batteryCapacity.toString(),
+                                  weight: value.vesselInfo!.weight ?? '',
+                                  freeBoard: value.vesselInfo!.freeBoard!,
+                                  lengthOverall: value.vesselInfo!.lengthOverall!,
+                                  beam: value.vesselInfo!.beam!,
+                                  draft: value.vesselInfo!.depth!,
+                                  vesselSize: value.vesselInfo!.vesselSize.toString() ?? '',
+                                  capacity: int.parse(value.vesselInfo!.capacity ?? '0'),
+                                  builtYear: int.parse(value.vesselInfo!.builtYear.toString()),
+                                  vesselStatus: int.parse(value.vesselInfo!.vesselStatus.toString()),
+                                  imageURLs:  '',
+                                  createdAt: value.vesselInfo!.createdAt.toString(),
+                                  createdBy: value.vesselInfo!.createdBy.toString(),
+                                  updatedAt: value.vesselInfo!.updatedAt.toString(),
+                                  isSync: 1,
+                                  updatedBy: value.vesselInfo!.updatedBy.toString(),
+                                  isCloud: 1,
+                                  hullType: value.vesselInfo!.hullShape
+                              );
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=> VesselSingleView(
+                            vessel: vesselData,
+                            isCalledFromFleetScreen: true,
+                          )));
+                        }, widget.scaffoldKey!
+                      );
                     },
                   ),
                 ),

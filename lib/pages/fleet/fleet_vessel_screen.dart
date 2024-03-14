@@ -8,6 +8,7 @@ import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/custom_fleet_dailog.dart';
+import 'package:performarine/models/fleet_details_model.dart';
 import 'package:performarine/models/fleet_list_model.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
@@ -28,15 +29,19 @@ class FleetVesselScreen extends StatefulWidget {
 class _FleetVesselScreenState extends State<FleetVesselScreen>
     with TickerProviderStateMixin {
   GlobalKey<ScaffoldState> _scafoldKey = GlobalKey();
+
   final DatabaseService _databaseService = DatabaseService();
   List<String> fleetDataDummy = ['Fleet1', 'Fleet2', 'Fleet3', 'Fleet4'];
   late Future<List<CreateVessel>> getVesselFuture;
   TabController? _tabController;
-  CommonProvider? commonProvider;
+
+  late CommonProvider commonProvider;
   FleetListModel? fleetdata;
   FleetData? selectedFleetvalue;
 
   int currentTabIndex = 0;
+  Future<FleetDetailsModel>? future;
+
   @override
   void initState() {
     commonProvider = context.read<CommonProvider>();
@@ -57,10 +62,13 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
 
   void getFleetDetails() async {
     fleetdata = await commonProvider?.getFleetListdata(
-        token: commonProvider!.loginModel!.token,
+        token: commonProvider.loginModel!.token,
         scaffoldKey: _scafoldKey,
         context: context);
 
+    selectedFleetvalue = fleetdata!.data!.first;
+
+    future = commonProvider.getFleetDetailsData(context, commonProvider.loginModel!.token!, fleetdata!.data!.first.id!, _scafoldKey);
     setState(() {});
   }
 
@@ -81,6 +89,7 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
 
   @override
   Widget build(BuildContext context) {
+    commonProvider = context.watch<CommonProvider>();
     return Scaffold(
         key: _scafoldKey,
         backgroundColor: backgroundColor,
@@ -114,6 +123,7 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
                       context: context,
                       fleetData: fleetdata!.data,
                       selectedFleetValue: fleetdata!.data![0]);
+
                 },
                 child: commonText(
                     text: 'Edit Fleet',
@@ -240,6 +250,10 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
                                   ))
                               .toList(),
                           onChanged: (newValue) {
+
+                            debugPrint("SELECTED FLEET ID ${newValue!.fleetName}");
+
+                            future = commonProvider.getFleetDetailsData(context, commonProvider.loginModel!.token!, newValue.id!, _scafoldKey);
                             setState(() {});
                           },
                         ),
@@ -303,32 +317,58 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
                 ],
               )),
 
-              Expanded(
-                child: TabBarView(
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    MemberDetailsWidget(),
-                    FleetDetailsCard(
-                      scaffoldKey: _scafoldKey,
-                    )
-                    //Container(child: Center(child: Text('people'))),
-                    // Text('Person')
-                  ],
-                  controller: _tabController,
+              fleetdata != null && fleetdata!.data != null
+              ? Expanded(
+                child: FutureBuilder<FleetDetailsModel>(
+                  future: future,
+                  builder: (context, snapShot)
+                  {
+                    if (snapShot.connectionState == ConnectionState.waiting) {
+                      return SizedBox(
+                          height: displayHeight(context)/1.5,
+                          child: Center(child: const CircularProgressIndicator(color: blueColor)));
+                    }
+                    else if (snapShot.data == null) {
+                      return  Container(
+                        height: displayHeight(context)/ 1.4,
+                        child: Center(
+                          child: commonText(
+                              context: context,
+                              text: 'No data found',
+                              fontWeight: FontWeight.w500,
+                              textColor: Colors.black,
+                              textSize: displayWidth(context) * 0.05,
+                              textAlign: TextAlign.start),
+                        ),
+                      );
+                    }
+                    else
+                    {
+                      return StatefulBuilder(
+                          builder: (BuildContext context, StateSetter setter)
+                          {
+                            debugPrint("MEMBERS ${snapShot.data!.myFleets!.isEmpty}");
+                            return TabBarView(
+                              physics: NeverScrollableScrollPhysics(),
+                              children: [
+                                MemberDetailsWidget(memberList: snapShot.data!.myFleets!.isEmpty ? [] : snapShot.data!.myFleets![0].members ?? []),
+                                FleetDetailsCard(
+                                  scaffoldKey: _scafoldKey,
+                                    fleetVesselsList: snapShot.data!.myFleets!.isEmpty ? [] : snapShot.data!.myFleets![0].fleetVessels! ?? []
+                                )
+                              ],
+                              controller: _tabController,
+                            );
+                          }
+                      );
+                    }
+
+                  },
                 ),
-              ),
-              //  ],
-              //  ),
-              //  ),
-
-              // TabBarView(
-
-              //   children: [
-              //   MemberDetailsWidget(),
-              //   Container(
-              //     color: Colors.red,
-              //   )
-              // ],),
+              )
+              : Container(
+                height: displayHeight(context) / 2,
+                  child: Center(child: CircularProgressIndicator(color: circularProgressColor,))),
             ],
           ),
         ));

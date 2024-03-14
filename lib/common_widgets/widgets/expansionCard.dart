@@ -24,10 +24,10 @@ class ExpansionCard extends StatefulWidget {
   final Function(CreateVessel) onTap;
   final Function(CreateVessel) onDelete;
   final bool isSingleView;
-  final bool? isCalledFromVesselSingleView;
+  final bool? isCalledFromVesselSingleView, isCalledFromFleetScreen;
   ExpansionCard(this.scaffoldKey, this.vessel, this.onEdit, this.onTap,
       this.onDelete, this.isSingleView,
-      {this.isCalledFromVesselSingleView = false});
+      {this.isCalledFromVesselSingleView = false, this.isCalledFromFleetScreen = false});
 
   @override
   State<ExpansionCard> createState() => _ExpansionCardState();
@@ -787,7 +787,9 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                       color: Colors.grey,
                                     ),
                                   ),
-                                  GestureDetector(
+                                  widget.isCalledFromFleetScreen!
+                                  ? SizedBox()
+                                  : GestureDetector(
                                     onTap: () async {
                                       bool result = await _databaseService
                                           .checkIfTripIsRunningForSpecificVessel(

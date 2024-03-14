@@ -12,7 +12,7 @@ class CustomFleetDailog {
 
   void showFleetDialog({String title='',String subtext='',String description='',String positiveButtonText='',Color? postiveButtonColor,Color? negtiveButtuonColor ,
   
-   VoidCallback?onPostiveButtonTap,VoidCallback? onNgeitiveButtonTap,BuildContext? context  })async{
+   VoidCallback?onPositiveButtonTap,VoidCallback? onNegativeButtonTap,BuildContext? context  })async{
 
     showDialog(
         context: context!,
@@ -83,7 +83,7 @@ Container(
                                 'Cancel',
                                 context,
                                 Colors.transparent,
-                                onNgeitiveButtonTap??(){
+                                  onNegativeButtonTap??(){
                                   Navigator.pop(context);
                                 },
                                                         displayWidth(context) * 0.65,
@@ -125,7 +125,7 @@ Container(
                                         textColor: Colors.white,
                                         buttonPrimaryColor: postiveButtonColor??blueColor,
                                         borderColor:postiveButtonColor?? blueColor,
-                                        onTap:onPostiveButtonTap,
+                                        onTap:onPositiveButtonTap,
                                         width: 170,
                                         height: displayHeight(context)*0.050,
                                         
