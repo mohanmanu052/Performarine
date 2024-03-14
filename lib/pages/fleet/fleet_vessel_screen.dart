@@ -34,12 +34,12 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
   List<String> fleetDataDummy = ['Fleet1', 'Fleet2', 'Fleet3', 'Fleet4'];
   late Future<List<CreateVessel>> getVesselFuture;
   TabController? _tabController;
+
   late CommonProvider commonProvider;
   FleetListModel? fleetdata;
   FleetData? selectedFleetvalue;
 
   int currentTabIndex = 0;
-
   Future<FleetDetailsModel>? future;
 
   @override
@@ -89,7 +89,7 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
 
   @override
   Widget build(BuildContext context) {
-    //debugPrint("FLEET DATA ${fleetdata! == null}");
+    commonProvider = context.watch<CommonProvider>();
     return Scaffold(
         key: _scafoldKey,
         backgroundColor: backgroundColor,
@@ -250,6 +250,7 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
                                   ))
                               .toList(),
                           onChanged: (newValue) {
+
                             debugPrint("SELECTED FLEET ID ${newValue!.fleetName}");
 
                             future = commonProvider.getFleetDetailsData(context, commonProvider.loginModel!.token!, newValue.id!, _scafoldKey);
@@ -257,7 +258,7 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
                           },
                         ),
                       )
-                    : CircularProgressIndicator(color: circularProgressColor),
+                    : CircularProgressIndicator(color: blueColor),
               ),
 
               SizedBox(
@@ -325,7 +326,7 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
                     if (snapShot.connectionState == ConnectionState.waiting) {
                       return SizedBox(
                           height: displayHeight(context)/1.5,
-                          child: Center(child: const CircularProgressIndicator(color: circularProgressColor)));
+                          child: Center(child: const CircularProgressIndicator(color: blueColor)));
                     }
                     else if (snapShot.data == null) {
                       return  Container(
@@ -367,7 +368,7 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
               )
               : Container(
                 height: displayHeight(context) / 2,
-                  child: Center(child: CircularProgressIndicator(color: circularProgressColor,))),
+                  child: Center(child: CircularProgressIndicator(color: blueColor,))),
             ],
           ),
         ));

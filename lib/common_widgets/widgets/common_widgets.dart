@@ -25,17 +25,21 @@ Widget commonText(
     Color? textColor,
     FontWeight? fontWeight,
     TextAlign? textAlign = TextAlign.center,
-    TextDecoration textDecoration = TextDecoration.none,String fontFamily = outfit
+    TextDecoration textDecoration = TextDecoration.none,String fontFamily = outfit,
+      int? maxLines
     }) {
   return Text(
     text ?? '',
     textAlign: textAlign!,
     textScaleFactor: 1,
+    maxLines: maxLines??null,
+
     style: TextStyle(
         fontSize: textSize,
         color: textColor,
         fontFamily: fontFamily,
         fontWeight: fontWeight,
+
         decoration: textDecoration),
     overflow: TextOverflow.clip,
     softWrap: true,

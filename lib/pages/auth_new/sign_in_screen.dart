@@ -90,9 +90,11 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
-    return WillPopScope(
-      onWillPop: ()async
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop)async
       {
+        if(didPop) return;
         if(widget.calledFrom != null)
         {
           if(widget.calledFrom.isNotEmpty || widget.calledFrom == '')
@@ -113,12 +115,10 @@ class _SignInScreenState extends State<SignInScreen> {
           {
              Navigator.of(context).pop();
           }
-          return false;
         }
         else
         {
           Navigator.of(context).pop();
-          return false;
         }
       },
       child: Scaffold(

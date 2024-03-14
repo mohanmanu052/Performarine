@@ -210,9 +210,11 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
   @override
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
-    return WillPopScope(
-      onWillPop: () async {
-
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop)
+      {
+        if(didPop)  return;
         Wakelock.disable().then((value) {
           if (widget.calledFrom == null) {
             Navigator.pushAndRemoveUntil(
@@ -241,7 +243,6 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
             return false;
           }
         });
-        return false;
       },
       child: Screenshot(
         controller: controller,

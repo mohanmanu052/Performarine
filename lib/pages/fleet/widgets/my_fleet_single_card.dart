@@ -251,7 +251,7 @@ class _MyFleetSingleCardState extends State<MyFleetSingleCard> {
                               ? Container(
                               height: 20,
                               width: 20,
-                              child: CircularProgressIndicator(color: circularProgressColor, strokeWidth: 2.5,))
+                              child: CircularProgressIndicator(color: blueColor, strokeWidth: 2.5,))
                               : Image.asset('assets/images/Trash.png', height: displayHeight(context) * 0.02, color: Colors.red,)),
                     ],
                   ),

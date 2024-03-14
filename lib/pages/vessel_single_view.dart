@@ -244,8 +244,10 @@ class VesselSingleViewState extends State<VesselSingleView> {
   @override
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        if(didPop)  return;
         if (widget.isCalledFromSuccessScreen! || tripIsEnded) {
           Navigator.pushAndRemoveUntil(
               context,
@@ -254,10 +256,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
               ),
               ModalRoute.withName(""));
 
-          return false;
         } else {
           Navigator.of(context).pop(true);
-          return false;
         }
       },
       child: Screenshot(

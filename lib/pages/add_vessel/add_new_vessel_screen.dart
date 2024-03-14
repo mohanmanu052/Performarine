@@ -54,8 +54,10 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        if(didPop) return;
         if (widget.calledFrom == 'SuccessFullScreen') {
           Navigator.pushAndRemoveUntil(
               context,
@@ -64,16 +66,15 @@ class _AddNewVesselScreenState extends State<AddNewVesselScreen> {
               ),
               ModalRoute.withName(""));
 
-          return false;
         } else if (pageIndex == 0) {
           Navigator.of(context).pop();
-          return false;
+
         } else if (pageIndex == 1) {
           pageController.previousPage(
               duration: Duration(milliseconds: 300), curve: Curves.easeOut);
-          return false;
+
         } else {
-          return true;
+
         }
       },
       child: Screenshot(

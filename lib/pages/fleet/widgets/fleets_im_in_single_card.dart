@@ -186,7 +186,7 @@ class _FleetsImInSingleCardState extends State<FleetsImInSingleCard> {
                     ? Container(
                   height: 30,
                     width: 30,
-                    child: CircularProgressIndicator(color: circularProgressColor, strokeWidth: 3,))
+                    child: CircularProgressIndicator(color: blueColor, strokeWidth: 3,))
                     : commonText(
                     context: context,
                     text: 'Leave',

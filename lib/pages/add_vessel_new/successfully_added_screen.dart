@@ -90,9 +90,11 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
                         ]);
 
 
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
 
+        if(didPop) return;
         if (widget.isEdit!) {
          Navigator.push(
             context,
@@ -111,7 +113,7 @@ class _SuccessfullyAddedScreenState extends State<SuccessfullyAddedScreen> {
               ModalRoute.withName("SuccessFullScreen"));
         }
 
-        return false;
+
       },
       child: Scaffold(
         key: scaffoldKey,
