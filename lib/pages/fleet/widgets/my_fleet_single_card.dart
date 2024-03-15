@@ -88,12 +88,6 @@ class _MyFleetSingleCardState extends State<MyFleetSingleCard> {
                                         isUpdateBtnClicked = true;
                                       });
 
-                                      Future.delayed(Duration(seconds: 1), (){
-                                        setState(() {
-                                          isUpdateBtnClicked = false;
-                                        });
-                                      });
-
                                       commonProvider.editFleetDetails(context, commonProvider.loginModel!.token!, value.first, value.last, widget.scaffoldKey!).then((value)
                                       {
                                         if(value != null)
