@@ -23,8 +23,7 @@ class MyFleetSingleCard extends StatefulWidget {
 
 class _MyFleetSingleCardState extends State<MyFleetSingleCard> {
 
-  bool deleteFleetBtn = false;
-
+  bool deleteFleetBtn = false, isUpdateBtnClicked = false;
   late CommonProvider commonProvider;
 
 
@@ -35,6 +34,7 @@ class _MyFleetSingleCardState extends State<MyFleetSingleCard> {
 
     commonProvider = context.read<CommonProvider>();
   }
+
   @override
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
@@ -76,10 +76,63 @@ class _MyFleetSingleCardState extends State<MyFleetSingleCard> {
                                   id: widget.myFleets!.id,
                                   // fleetOwnerId:snapShot. data!.myFleets![index].
                                 );
-                                CustomFleetDailog().showEditFleetDialog(context: context,fleetData:[data],selectedFleetValue: data,isDropDownEnabled: false );
+                                CustomFleetDailog().showEditFleetDialog(
+                                    context: context,
+                                    fleetData:[data],selectedFleetValue: data,
+                                    isDropDownEnabled: false,
+                                  onUpdateChange: (value)
+                                    {
+                                      Navigator.pop(context);
+
+                                      setState(() {
+                                        isUpdateBtnClicked = true;
+                                      });
+
+                                      Future.delayed(Duration(seconds: 1), (){
+                                        setState(() {
+                                          isUpdateBtnClicked = false;
+                                        });
+                                      });
+
+                                      commonProvider.editFleetDetails(context, commonProvider.loginModel!.token!, value.first, value.last, widget.scaffoldKey!).then((value)
+                                      {
+                                        if(value != null)
+                                        {
+                                          if(value.status!)
+                                          {
+                                            setState(() {
+                                              isUpdateBtnClicked = false;
+                                            });
+                                            widget.onTap!.call();
+                                          }
+                                          else
+                                          {
+                                            setState(() {
+                                              isUpdateBtnClicked = false;
+                                            });
+                                          }
+                                        }
+                                        else
+                                        {
+                                          setState(() {
+                                            isUpdateBtnClicked = false;
+                                          });
+                                        }
+                                      }).catchError((e){
+                                        setState(() {
+                                          isUpdateBtnClicked = false;
+                                        });
+                                      });
+                                    }
+                                );
                               },
 
-                              child: Image.asset('assets/icons/Edit.png', height: displayHeight(context) * 0.018, color: blueColor,)),
+                              child: isUpdateBtnClicked
+                              ? Container(
+                                height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(color: blueColor, strokeWidth: 2,))
+                              : Image.asset('assets/icons/Edit.png', height: displayHeight(context) * 0.018, color: blueColor,)),
                         ],
                       ),
                       SizedBox(height: displayHeight(context) * 0.005,),
@@ -177,6 +230,8 @@ class _MyFleetSingleCardState extends State<MyFleetSingleCard> {
                         onTap: (){
                           Navigator.push(context, MaterialPageRoute(builder: ((context) => FleetVesselScreen(
                             tabIndex: 1,
+                            isCalledFromMyFleet: true,
+                            fleetId: widget.myFleets!.id,
                           ))));
                         },
                         child: Container(

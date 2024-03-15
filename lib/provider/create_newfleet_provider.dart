@@ -10,9 +10,7 @@ import 'package:performarine/common_widgets/widgets/log_level.dart';
 import 'package:performarine/models/create_fleet_response.dart';
 
 class CreateNewFleetProvider with ChangeNotifier{
-
-
-  Future<CreateFleetResponse> createFleet(      String token,
+  Future<CreateFleetResponse> createFleet(String token,
       GlobalKey<ScaffoldState> scaffoldKey,BuildContext context,Map<String,dynamic> data)async{
 CreateFleetResponse? fleetResponse;
     var headers = {

@@ -26,6 +26,7 @@ import 'package:performarine/provider/change_password_provider.dart';
 import 'package:performarine/provider/create_newfleet_provider.dart';
 import 'package:performarine/provider/delete_fleet_api_provider.dart';
 import 'package:performarine/provider/delete_trip_api_provider.dart';
+import 'package:performarine/provider/edit_fleet_api_provider.dart';
 import 'package:performarine/provider/fleet_assign_vessels_provider.dart';
 import 'package:performarine/provider/fleet_details_api_provider.dart';
 import 'package:performarine/provider/fleet_list_provider.dart';
@@ -81,6 +82,7 @@ class CommonProvider with ChangeNotifier {
   FleetDashboardModel? fleetDashboardModel;
   CommonModel? fleetMemberModel;
   CommonModel? deleteFleetModel;
+  CommonModel? editFleetDetailsModel;
   FleetDetailsModel? fleetDetailsModel;
 
 
@@ -500,7 +502,7 @@ Future<ExportDataModel> exportReportData(Map<String,dynamic>body,String token,Bu
     return userInfoCommonModel!;
   }
 
-Future<CreateFleetResponse> createNewFleet(String token, BuildContext context,GlobalKey<ScaffoldState> scaffoldKey, Map<String,dynamic>? data)async{
+Future<CreateFleetResponse> createNewFleet(String token, BuildContext context,GlobalKey<ScaffoldState> scaffoldKey, Map<String,dynamic>? data, )async{
   var response =CreateNewFleetProvider().createFleet(token, scaffoldKey,context,  data!);
 return response;
 }
@@ -583,5 +585,18 @@ return res;
     notifyListeners();
 
     return deleteFleetModel!;
+  }
+
+  Future<CommonModel> editFleetDetails(
+      BuildContext context,
+      String token,
+      String fleetId,
+      String fleetName,
+      GlobalKey<ScaffoldState> scaffoldKey) async {
+    editFleetDetailsModel = CommonModel();
+    editFleetDetailsModel = await EditFleetApiProvider().editFleetDetails(context, token, fleetId, fleetName, scaffoldKey);
+    notifyListeners();
+
+    return editFleetDetailsModel!;
   }
 }

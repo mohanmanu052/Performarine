@@ -144,7 +144,7 @@ setState(() {
             children: [
               Container(
               height: displayHeight(context),
-              margin: EdgeInsets.only(bottom:displayHeight(context) * 0.14) ,
+              margin: EdgeInsets.only(bottom:displayHeight(context) * 0.14),
                 child: SingleChildScrollView(
                   physics: ClampingScrollPhysics(),
                   child: Container(
@@ -211,11 +211,12 @@ setState(() {
                                                   return MyFleetSingleCard(
                                                     myFleets: snapShot.data!.myFleets![index],
                                                     scaffoldKey: scaffoldKey,
-                                                  onTap: (){
-                                                    setter(() {
-                                                      future = commonProvider.fleetDashboardDetails(context, commonProvider.loginModel!.token!, scaffoldKey);
-                                                    });
-                                                  },);
+                                                    onTap: (){
+                                                      setter(() {
+                                                        future = commonProvider.fleetDashboardDetails(context, commonProvider.loginModel!.token!, scaffoldKey);
+                                                      });
+                                                    },
+                                                  );
                                                 }
                                             )
                                                 : Container(

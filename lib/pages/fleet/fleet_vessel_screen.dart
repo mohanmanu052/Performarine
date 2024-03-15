@@ -20,8 +20,10 @@ import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
 class FleetVesselScreen extends StatefulWidget {
-  FleetVesselScreen({super.key, this.tabIndex});
+  FleetVesselScreen({super.key, this.tabIndex, this.isCalledFromMyFleet= false, this.fleetId});
   int? tabIndex;
+  String? fleetId;
+  final bool? isCalledFromMyFleet;
   @override
   State<FleetVesselScreen> createState() => _FleetVesselScreenState();
 }
@@ -41,6 +43,7 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
 
   int currentTabIndex = 0;
   Future<FleetDetailsModel>? future;
+  bool? isUpdateFleetBtnClicked = false;
 
   @override
   void initState() {
@@ -56,6 +59,8 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
     }
     getFleetDetails();
 
+    debugPrint("TABINDEX ${widget.tabIndex}");
+
     // TODO: implement initState
     super.initState();
   }
@@ -66,9 +71,16 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
         scaffoldKey: _scafoldKey,
         context: context);
 
-    selectedFleetvalue = fleetdata!.data!.first;
+    if(widget.isCalledFromMyFleet!)
+      {
+        selectedFleetvalue = (fleetdata!.data ?? []).firstWhere((element) => element.id == widget.fleetId);
+      }
+    else
+      {
+        selectedFleetvalue = fleetdata!.data!.first;
+      }
 
-    future = commonProvider.getFleetDetailsData(context, commonProvider.loginModel!.token!, fleetdata!.data!.first.id!, _scafoldKey);
+    future = commonProvider.getFleetDetailsData(context, commonProvider.loginModel!.token!, selectedFleetvalue!.id!, _scafoldKey);
     setState(() {});
   }
 
@@ -119,19 +131,64 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
               alignment: Alignment.center,
               child: InkWell(
                 onTap: () {
+                  debugPrint("EDIT FLEET ${fleetdata!.data![0].id}");
+
                   CustomFleetDailog().showEditFleetDialog(
                       context: context,
                       fleetData: fleetdata!.data,
-                      selectedFleetValue: fleetdata!.data![0]);
+                      selectedFleetValue: fleetdata!.data![0],
+                      onUpdateChange: (value){
+
+                        Navigator.pop(context);
+                        setState(() {
+                          isUpdateFleetBtnClicked = true;
+                        });
+
+                        debugPrint("EDIT FLEET ${value.first}");
+                        debugPrint("EDIT FLEET ${value.last}");
+
+                        commonProvider.editFleetDetails(context, commonProvider.loginModel!.token!, value.first, value.last, _scafoldKey).then((value)
+                        {
+                          if(value != null)
+                          {
+                            if(value.status!)
+                            {
+                              setState(() {
+                                isUpdateFleetBtnClicked = false;
+                              });
+                              getFleetDetails();
+                            }
+                            else
+                            {
+                              setState(() {
+                                isUpdateFleetBtnClicked = false;
+                              });
+                            }
+                          }
+                          else
+                          {
+                            setState(() {
+                              isUpdateFleetBtnClicked = false;
+                            });
+                          }
+                        }).catchError((e){
+                          setState(() {
+                            isUpdateFleetBtnClicked = false;
+                          });
+                        });
+                      });
 
                 },
-                child: commonText(
+                child: isUpdateFleetBtnClicked!
+                    ? CircularProgressIndicator(color: blueColor,)
+                    : commonText(
                     text: 'Edit Fleet',
                     textColor: blueColor,
                     fontWeight: FontWeight.w500,
                     textSize: 13),
               ),
             ),
+
             Container(
               margin: EdgeInsets.only(right: 8),
               child: IconButton(
