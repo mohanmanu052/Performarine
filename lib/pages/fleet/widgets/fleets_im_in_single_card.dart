@@ -89,7 +89,7 @@ class _FleetsImInSingleCardState extends State<FleetsImInSingleCard> {
                             textAlign: TextAlign.start),
                         commonText(
                             context: context,
-                            text: DateFormat("yyyy-MM-dd").format(DateTime.parse(widget.fleetsIamIn!.fleetJoinedDate!)),
+                            text:widget.fleetsIamIn!.fleetJoinedDate!=null? DateFormat("yyyy-MM-dd").format(DateTime.parse(widget.fleetsIamIn!.fleetJoinedDate!)):'',
                             //text: snapShot.data!.fleetsIamIn![index].fleetJoinedDate,
                             fontWeight: FontWeight.w500,
                             textColor: Colors.black,
