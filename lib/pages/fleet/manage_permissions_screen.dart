@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
+import 'package:performarine/common_widgets/utils/utils.dart';
+import 'package:performarine/common_widgets/widgets/log_level.dart';
 import 'package:performarine/models/fleet_list_model.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/fleet/my_fleet_screen.dart';
@@ -36,6 +41,7 @@ class _ManagePermissionsScreenState extends State<ManagePermissionsScreen> {
 
   List multipleSelected = [];
   bool isSelectAllEnabled = false;
+  List<CreateVessel>? getVesselFuture;
   bool isLoading = false;
 //List<String> fleetData=['Fleet1','Fleet2','Fleet3','Fleet4'];
   FleetListModel? fleetdata;
@@ -51,10 +57,78 @@ class _ManagePermissionsScreenState extends State<ManagePermissionsScreen> {
   }
 
   void getVesselData() async {
+                            var vesselsSyncDetails =await _databaseService.vesselsSyncDetails();
+if(vesselsSyncDetails){
+      getVesselFuture = await _databaseService.syncAndSignOutVesselList().catchError((onError) {
+    });
+
+        for (int i = 0; i < getVesselFuture!.length; i++) {
+        var vesselSyncOrNot = getVesselFuture![i].isSync;
+        //CustomLogger().logWithFile(Level.info, "VESSEL SYNC TRIP DISPLACEMENT  ${getVesselFuture[i].displacement}");
+        Utils.customPrint(
+            "VESSEL SUCCESS MESSAGE ${getVesselFuture![i].imageURLs}");
+
+        if (vesselSyncOrNot == 0) {
+          if (getVesselFuture![i].imageURLs != null &&
+              getVesselFuture![i].imageURLs!.isNotEmpty) {
+            if (getVesselFuture![i].imageURLs!.startsWith("https")) {
+              getVesselFuture![i].selectedImages = [];
+            } else {
+              getVesselFuture![i].selectedImages = [
+                File(getVesselFuture![i].imageURLs!)
+              ];
+            }
+
+            Utils.customPrint(
+                'VESSEL Data ${File(getVesselFuture![i].imageURLs!)}');
+          } else {
+            getVesselFuture![i].selectedImages = [];
+          }
+
+          await commonProvider!
+              .addVessel(
+                  context,
+                  getVesselFuture![i],
+                  commonProvider!.loginModel!.userId!,
+                  commonProvider!.loginModel!.token!,
+                  scaffoldKey,
+                  )
+              .then((value) async {
+            if (value!.status!) {
+              await _databaseService.updateIsSyncStatus(
+                  1, getVesselFuture![i].id.toString());
+            } else {
+              setState(() {
+                //vesselErrorOccurred = true;
+              });
+            }
+          }).catchError((error) {
+            Utils.customPrint("ADD VESSEL ERROR $error");
+            setState(() {
+              //vesselErrorOccurred = true;
+            });
+          });
+        } else {
+          Utils.customPrint("VESSEL DATA NOT Uploaded");
+        }
+
+
+
+}
     vesselsData = await _databaseService.vessels();
     checkListItems = List.generate(vesselsData!.length, (index) => false);
 
     setState(() {});
+
+
+}else{
+    vesselsData = await _databaseService.vessels();
+    checkListItems = List.generate(vesselsData!.length, (index) => false);
+
+    setState(() {});
+
+}
+
   }
 
   void getToken() async {
@@ -71,7 +145,11 @@ class _ManagePermissionsScreenState extends State<ManagePermissionsScreen> {
         token: commonProvider!.loginModel!.token,
         scaffoldKey: scaffoldKey,
         context: context);
+        
     if (mounted) {
+      if(fleetdata!.data!=null&&fleetdata!.data!.isNotEmpty){
+        selectedFleetvalue=fleetdata!.data!.first;
+      }
       setState(() {});
     }
   }

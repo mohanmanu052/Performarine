@@ -397,7 +397,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     top: 0.0, left: 17, right: 17),
                                 child: Column(
                                   children: [
-                                    /*Theme(
+                                    Theme(
                                         data: Theme.of(context).copyWith(
                                             colorScheme: ColorScheme.light(
                                               primary: Colors.black,
@@ -451,7 +451,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                   ],
                                                 ),
                                               ),
-                                            ])),*/
+                                            ])),
                                     Theme(
                                       data: Theme.of(context).copyWith(
                                           colorScheme: ColorScheme.light(

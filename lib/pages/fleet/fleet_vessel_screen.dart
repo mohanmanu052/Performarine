@@ -66,10 +66,11 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
   }
 
   void getFleetDetails() async {
-    fleetdata = await commonProvider?.getFleetListdata(
+    fleetdata = await commonProvider.getFleetListdata(
         token: commonProvider.loginModel!.token,
         scaffoldKey: _scafoldKey,
         context: context);
+if(fleetdata!.data!=null&&fleetdata!.data!.isNotEmpty){
 
     if(widget.isCalledFromMyFleet!)
       {
@@ -79,11 +80,16 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
       {
         selectedFleetvalue = fleetdata!.data!.first;
       }
+   // selectedFleetvalue = fleetdata!.data!.first;
 
     future = commonProvider.getFleetDetailsData(context, commonProvider.loginModel!.token!, selectedFleetvalue!.id!, _scafoldKey);
     setState(() {});
+  }else{
+    setState(() {
+      
+    });
   }
-
+  }
   void _handleTabSelection() {
     if (_tabController!.indexIsChanging) {
       switch (_tabController!.index) {
