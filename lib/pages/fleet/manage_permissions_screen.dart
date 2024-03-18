@@ -595,11 +595,19 @@ if(vesselsSyncDetails){
                                     isLoading = false;
 
                                     if (res.statusCode == 200) {
-                                      Navigator.push(
+                                      Navigator.pushAndRemoveUntil(
                                           context,
                                           MaterialPageRoute(
                                               builder: ((context) =>
-                                                  MyFleetScreen())));
+                                                  MyFleetScreen()),
+                                                 
+                                                  
+                                                  ),
+
+                                                      ModalRoute.withName('/')
+
+                                                  
+                                                  );
                                     }
                                   } else {
                                     isLoading = false;

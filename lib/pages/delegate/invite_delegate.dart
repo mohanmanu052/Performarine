@@ -16,6 +16,7 @@ import 'package:performarine/common_widgets/widgets/user_feed_back.dart';
 import 'package:performarine/common_widgets/widgets/vessel_info_card.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
+import 'package:performarine/pages/delegate/my_delegate_invites_screen.dart';
 import 'package:performarine/pages/feedback_report.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:screenshot/screenshot.dart';
@@ -48,14 +49,14 @@ int calenderType=0;
 String endDate='';
   @override
   void initState() {
-                getVesselFuture = _databaseService.vessels();
-          getVesselFuture.then((value)  {
-           vesselData=   value[1];
-           setState(() {
+          //       getVesselFuture = _databaseService.vessels();
+          // getVesselFuture.then((value)  {
+          //  vesselData=   value[1];
+          //  setState(() {
              
-           });
+          //  });
            
-            });
+          //   });
 
     // TODO: implement initState
     super.initState();
@@ -492,6 +493,7 @@ Visibility(
                               buttonPrimaryColor: blueColor,
                               borderColor: blueColor,
                               onTap: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=> MyDelegateInvitesScreen()));
                   
                               },
                               width: displayWidth(context)/1.3,

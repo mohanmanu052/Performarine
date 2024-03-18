@@ -84,13 +84,13 @@ setState(() {
       canPop: false,
       onPopInvoked: (didPop)async{
         if(didPop) return;
-        if(widget.isComingFromUnilink??false){
+     //   if(widget.isComingFromUnilink??false){
           Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder:((context) =>  BottomNavigation())), (route) => true);
 
-        }else{
-          Navigator.of(context).pop();
+        // }else{
+        //   Navigator.of(context).pop();
 
-        }
+        // }
 
       },
       child: Screenshot(
@@ -103,12 +103,13 @@ setState(() {
             backgroundColor: Colors.white,
             leading: IconButton(
               onPressed: () {
-                if(widget.isComingFromUnilink??false){
+               // if(widget.isComingFromUnilink??false){
                   Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder:((context) =>  BottomNavigation())), (route) => true);
-                }else{
-                Navigator.of(context).pop();
+                
+                // }else{
+                // Navigator.of(context).pop();
 
-                }
+                // }
               },
               icon: const Icon(Icons.arrow_back),
               color: Theme.of(context).brightness == Brightness.dark
