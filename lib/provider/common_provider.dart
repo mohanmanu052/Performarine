@@ -34,6 +34,7 @@ import 'package:performarine/provider/fleet_dashboard_api_provider.dart';
 import 'package:performarine/provider/fleet_member_invitation_api_provider.dart';
 import 'package:performarine/provider/fleet_sendinvite_provider.dart';
 import 'package:performarine/provider/get_user_config_api_provider.dart';
+import 'package:performarine/provider/leave_fleet_api_provider.dart';
 import 'package:performarine/provider/login_api_provider.dart';
 import 'package:performarine/provider/registration_api_provider.dart';
 import 'package:performarine/provider/report_module_provider.dart';
@@ -526,14 +527,24 @@ return res;
       BuildContext context,
       String token,
       GlobalKey<ScaffoldState> scaffoldKey) async {
+
+    isMyFleetNotEmpty = false;
+    notifyListeners();
     fleetDashboardModel = FleetDashboardModel();
     fleetDashboardModel = await FleetDashboardApiProvider().fleetDashboardData(context, token, scaffoldKey);
 
     if(fleetDashboardModel!.myFleets!.isNotEmpty)
       {
+        debugPrint("IS LIST EMPTY ${fleetDashboardModel!.myFleets!.isNotEmpty}");
         isMyFleetNotEmpty = true;
+        notifyListeners();
       }
-    notifyListeners();
+    else
+      {
+        isMyFleetNotEmpty = false;
+        notifyListeners();
+      }
+
 
     return fleetDashboardModel!;
   }
@@ -581,7 +592,7 @@ return res;
       String fleetId,
       GlobalKey<ScaffoldState> scaffoldKey) async {
     deleteFleetModel = CommonModel();
-    deleteFleetModel = await DeleteFleetApiProvider().deleteFleet(context, token, fleetId, scaffoldKey);
+    deleteFleetModel = await LeaveFleetApiProvider().leaveFleet(context, token, fleetId, scaffoldKey);
     notifyListeners();
 
     return deleteFleetModel!;

@@ -70,7 +70,7 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
         token: commonProvider.loginModel!.token,
         scaffoldKey: _scafoldKey,
         context: context);
-if(fleetdata!.data!=null&&fleetdata!.data!.isNotEmpty){
+if(fleetdata!.data!=null && fleetdata!.data!.isNotEmpty){
 
     if(widget.isCalledFromMyFleet!)
       {
@@ -142,7 +142,7 @@ if(fleetdata!.data!=null&&fleetdata!.data!.isNotEmpty){
                   CustomFleetDailog().showEditFleetDialog(
                       context: context,
                       fleetData: fleetdata!.data,
-                      selectedFleetValue: fleetdata!.data![0],
+                      selectedFleetValue: selectedFleetvalue,
                       onUpdateChange: (value){
 
                         Navigator.pop(context);
