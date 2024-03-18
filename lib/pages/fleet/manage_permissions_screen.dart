@@ -6,6 +6,7 @@ import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/log_level.dart';
+import 'package:performarine/models/fleet_dashboard_model.dart';
 import 'package:performarine/models/fleet_list_model.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/fleet/my_fleet_screen.dart';
@@ -25,7 +26,9 @@ import '../feedback_report.dart';
 
 class ManagePermissionsScreen extends StatefulWidget {
   bool? isComingFromUnilink;
-  ManagePermissionsScreen({super.key, this.isComingFromUnilink = false});
+  FleetsIamIn? selectedFleetvalue;
+  List<FleetsIamIn>? fleetItemList;
+  ManagePermissionsScreen({super.key, this.isComingFromUnilink = false,this.selectedFleetvalue,this.fleetItemList});
 
   @override
   State<ManagePermissionsScreen> createState() =>
@@ -36,7 +39,6 @@ class _ManagePermissionsScreenState extends State<ManagePermissionsScreen> {
   final controller = ScreenshotController();
   CommonProvider? commonProvider;
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
-  FleetData? selectedFleetvalue;
   final DatabaseService _databaseService = DatabaseService();
 
   List multipleSelected = [];
@@ -44,7 +46,7 @@ class _ManagePermissionsScreenState extends State<ManagePermissionsScreen> {
   List<CreateVessel>? getVesselFuture;
   bool isLoading = false;
 //List<String> fleetData=['Fleet1','Fleet2','Fleet3','Fleet4'];
-  FleetListModel? fleetdata;
+  //FleetDashboardModel? fleetdata;
   List<CreateVessel>? vesselsData;
   List<bool>? checkListItems = [];
   @override
@@ -134,21 +136,33 @@ if(vesselsSyncDetails){
   void getToken() async {
     if (commonProvider!.loginModel == null) {
       await commonProvider!.getToken();
+      if(widget.fleetItemList==null||widget.fleetItemList!.isEmpty){
       getFleetDetails();
+
+      }
     } else {
+      if(widget.fleetItemList==null||widget.fleetItemList!.isEmpty){
       getFleetDetails();
+
+      }else{
+        
+      }
     }
   }
 
   void getFleetDetails() async {
-    fleetdata = await commonProvider?.getFleetListdata(
-        token: commonProvider!.loginModel!.token,
-        scaffoldKey: scaffoldKey,
-        context: context);
+  var  fleetdata = await commonProvider?.fleetDashboardDetails(
+      context,
+        commonProvider!.loginModel!.token!,
+         scaffoldKey,
+         
+        
+        );
         
     if (mounted) {
-      if(fleetdata!.data!=null&&fleetdata!.data!.isNotEmpty){
-        selectedFleetvalue=fleetdata!.data!.first;
+      if(fleetdata!.fleetsIamIn!=null&&fleetdata!.fleetsIamIn!.isNotEmpty){
+        widget.fleetItemList=fleetdata!.fleetsIamIn;
+        widget.selectedFleetvalue=fleetdata!.fleetsIamIn!.first;
       }
       setState(() {});
     }
@@ -235,14 +249,14 @@ if(vesselsSyncDetails){
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 4),
-                          child: fleetdata != null && fleetdata!.data != null
+                          child:widget.fleetItemList  != null && widget.fleetItemList != null
                               ? DropdownButtonHideUnderline(
-                                  child: DropdownButtonFormField2<FleetData>(
-                                    value: selectedFleetvalue,
+                                  child: DropdownButtonFormField2<FleetsIamIn>(
+                                    value: widget.selectedFleetvalue,
                                     selectedItemBuilder:
                                         (BuildContext context) {
-                                      return fleetdata!.data!
-                                          .map<Widget>((FleetData item) {
+                                      return widget.fleetItemList!
+                                          .map<Widget>((FleetsIamIn item) {
                                         return Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
@@ -265,7 +279,7 @@ if(vesselsSyncDetails){
                                                     fontWeight: FontWeight.w400,
                                                     textColor: Colors.grey),
                                                 commonText(
-                                                    text: item.fleetOwner,
+                                                    text: item.fleetCreatedBy,
                                                     textSize: 11,
                                                     fontWeight: FontWeight.w500,
                                                     textColor: buttonBGColor),
@@ -348,7 +362,7 @@ if(vesselsSyncDetails){
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
-                                    items: fleetdata!.data!.map((item) {
+                                    items: widget.fleetItemList!.map((item) {
                                       return DropdownMenuItem(
                                           child: SingleChildScrollView(
                                             child: Column(
@@ -365,7 +379,7 @@ if(vesselsSyncDetails){
                                                     textColor: buttonBGColor),
                                                 commonText(
                                                     text:
-                                                        'Created By: ${item.fleetOwner}',
+                                                        'Created By: ${item.fleetCreatedBy}',
                                                     fontWeight: FontWeight.w200,
                                                     textSize: 12,
                                                     textColor: Colors.black),
@@ -376,7 +390,7 @@ if(vesselsSyncDetails){
                                     }).toList(),
                                     onChanged: (newValue) {
                                       setState(() {
-                                        selectedFleetvalue = newValue;
+                                      widget.  selectedFleetvalue = newValue;
                                       });
                                     },
                                   ),
@@ -506,9 +520,24 @@ if(vesselsSyncDetails){
                                                     vesselsData![index].id)) {
                                                   multipleSelected.remove(
                                                       vesselsData![index].id);
+
+                                                     if(multipleSelected.length==vesselsData!.length){
+                                                      isSelectAllEnabled=true;
+
+                                                     }else{
+                                                      isSelectAllEnabled=false;
+                                                     } 
                                                 } else {
                                                   multipleSelected.add(
                                                       vesselsData![index].id);
+
+                                                                                                           if(multipleSelected.length==vesselsData!.length){
+                                                      isSelectAllEnabled=true;
+
+                                                     }else{
+                                                      isSelectAllEnabled=false;
+                                                     } 
+
                                                 }
                                               });
                                             },
@@ -544,12 +573,12 @@ if(vesselsSyncDetails){
                             onTap: () async {
                               print('the selected ids was ----' +
                                   multipleSelected.toString());
-                              if (selectedFleetvalue != null) {
+                              if (widget.selectedFleetvalue != null) {
                                 if (multipleSelected.isNotEmpty) {
                                   isLoading = true;
                                   setState(() {});
                                   Map<String, dynamic> data = {
-                                    'fleetId': selectedFleetvalue!.id,
+                                    'fleetId':widget. selectedFleetvalue!.fleetId,
                                     'fleetVessels':
                                         multipleSelected.toSet().toList()
                                   };

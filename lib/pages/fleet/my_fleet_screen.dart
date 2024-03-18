@@ -43,7 +43,7 @@ class _MyFleetScreenState extends State<MyFleetScreen> {
 
   late CommonProvider commonProvider;
 
-  late Future<FleetDashboardModel>? future;
+   Future<FleetDashboardModel>? future;
 
   bool? isAcceptBtnClicked = false, isRejectBtnClicked = false, isFleetIsEmpty = false, leaveFleetBtn = false;
 String? token;
@@ -265,6 +265,7 @@ setState(() {
                                                   return FleetsImInSingleCard(
                                                     fleetsIamIn: snapShot.data!.fleetsIamIn![index],
                                                     scaffoldKey: scaffoldKey,
+                                                    fleetsList: snapShot.data!.fleetsIamIn,
                                                     onTap: (){
                                                       setter(() {
                                                         future = commonProvider.fleetDashboardDetails(context, commonProvider.loginModel!.token!, scaffoldKey);
