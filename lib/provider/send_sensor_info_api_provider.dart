@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -34,7 +35,6 @@ class SendSensorInfoApiProvider with ChangeNotifier {
       String tripId,
       GlobalKey<ScaffoldState> scaffoldKey,
       {bool calledFromSignOut = false}) async {
-
     d.Dio dio = d.Dio();
     Utils.customPrint('ZIPPPP: ${zipFile!.path}');
     Utils.customPrint('ZIPPPP: ${zipFile.existsSync()}');

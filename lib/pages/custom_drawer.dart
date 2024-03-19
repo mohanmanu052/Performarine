@@ -2222,6 +2222,8 @@ if(!isSyncSignoutClicked){
             "createdAt": getTrip[i].createdAt,
             "updatedAt": getTrip[i].updatedAt,
             "duration": getTrip[i].time,
+
+            //"createdBy":'64e4b01076c86cc1877b4497',
             "distance": double.parse(getTrip[i].distance!),
             "speed": double.parse(getTrip[i].speed!),
             "avgSpeed": double.parse(getTrip[i].avgSpeed!),

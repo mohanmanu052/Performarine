@@ -3080,6 +3080,9 @@ showLocationDailog();
   /// It will save data to local database when trip is start
   Future<void> onSave(String file, BuildContext context,
       bool savingDataWhileStartService) async {
+        if(commonProvider.loginModel!.token==null||commonProvider.loginModel!.token!.isEmpty){
+          commonProvider.getToken();
+        }
     final vesselName = selectedVesselName;
     final currentLoad = selectedVesselWeight;
 
@@ -3110,6 +3113,8 @@ showLocationDailog();
         createdAt: Utils.getCurrentTZDateTime(),
         updatedAt: Utils.getCurrentTZDateTime(),
         startPosition: [latitude, longitude].join(","),
+       //createdBy:'64e4b01076c86cc1877b4497' ,
+        createdBy: commonProvider.loginModel?.userId??"",
         endPosition: [latitude, longitude].join(","),
         deviceInfo: deviceDetails!.toJson().toString(),
       ));

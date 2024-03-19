@@ -49,7 +49,7 @@ class DatabaseService {
     await db.execute(
       'CREATE TABLE trips(id Text PRIMARY KEY,vesselId Text,vesselName Text, currentLoad TEXT, numberOfPassengers INTEGER DEFAULT 0, filePath Text,isSync INTEGER DEFAULT 0,'
       'tripStatus INTEGER  DEFAULT 0,deviceInfo Text, startPosition Text,endPosition Text,'
-      ' createdAt TEXT,updatedAt TEXT,duration TEXT,distance TEXT,speed TEXT,avgSpeed TEXT,isCloud INTEGER  DEFAULT 0)',
+      ' createdAt TEXT,createdBy TEXT,updatedAt TEXT,duration TEXT,distance TEXT,speed TEXT,avgSpeed TEXT,isCloud INTEGER  DEFAULT 0)',
     );
     await db.execute(
       'CREATE TABLE IF NOT EXISTS vessels('

@@ -12,9 +12,10 @@ import 'package:provider/provider.dart';
 
 class FleetsImInSingleCard extends StatefulWidget {
   final FleetsIamIn? fleetsIamIn;
+  final List<FleetsIamIn>? fleetsList;
   final GlobalKey<ScaffoldState>? scaffoldKey;
   final Function()? onTap;
-  const FleetsImInSingleCard({super.key, this.fleetsIamIn, this.scaffoldKey, this.onTap});
+  const FleetsImInSingleCard({super.key, this.fleetsIamIn, this.scaffoldKey, this.onTap,this.fleetsList});
 
   @override
   State<FleetsImInSingleCard> createState() => _FleetsImInSingleCardState();
@@ -211,7 +212,12 @@ class _FleetsImInSingleCardState extends State<FleetsImInSingleCard> {
                 child: Center(
                   child: InkWell(
                     onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>ManagePermissionsScreen()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>ManagePermissionsScreen(
+selectedFleetvalue: widget.fleetsIamIn,
+fleetItemList: widget.fleetsList,
+
+
+                      )));
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(top: 8, bottom: 8),
