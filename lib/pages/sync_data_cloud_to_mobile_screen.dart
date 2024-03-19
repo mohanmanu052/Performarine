@@ -599,7 +599,7 @@ class _SyncDataCloudToMobileScreenState
 
             if (vesselData != null) {
 
-              if(value.trips![i].createdBy==commonProvider.loginModel!.userEmail){
+              if(value.trips![i].createdBy==commonProvider.loginModel!.userId){
               Trip tripData = Trip(
                   id: value.trips![i].id,
                   vesselId: value.trips![i].vesselId,

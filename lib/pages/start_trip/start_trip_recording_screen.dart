@@ -3113,7 +3113,8 @@ showLocationDailog();
         createdAt: Utils.getCurrentTZDateTime(),
         updatedAt: Utils.getCurrentTZDateTime(),
         startPosition: [latitude, longitude].join(","),
-        createdBy: commonProvider.loginModel?.userEmail??"",
+       //createdBy:'64e4b01076c86cc1877b4497' ,
+        createdBy: commonProvider.loginModel?.userId??"",
         endPosition: [latitude, longitude].join(","),
         deviceInfo: deviceDetails!.toJson().toString(),
       ));
