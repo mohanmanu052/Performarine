@@ -598,6 +598,8 @@ class _SyncDataCloudToMobileScreenState
                 .getVesselFromVesselID(value.trips![i].vesselId.toString());
 
             if (vesselData != null) {
+
+              if(value.trips![i].createdBy==commonProvider.loginModel!.userEmail){
               Trip tripData = Trip(
                   id: value.trips![i].id,
                   vesselId: value.trips![i].vesselId,
@@ -621,9 +623,9 @@ class _SyncDataCloudToMobileScreenState
 
               Utils.customPrint('USER CONFIG DATA JSON ${tripData.toJson()}');
               CustomLogger().logWithFile(Level.info, "USER CONFIG DATA JSON ${tripData.toJson()} -> $page");
-
               await _databaseService.insertTrip(tripData);
             }
+          }
           }
 
           Future.delayed(Duration(seconds: 1), () {
