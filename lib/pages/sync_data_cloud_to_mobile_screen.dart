@@ -607,6 +607,7 @@ class _SyncDataCloudToMobileScreenState
                   filePath: value.trips![i].cloudFilePath,
                   isSync: 1,
                   tripStatus: value.trips![i].tripStatus,
+                  createdBy:commonProvider.loginModel?.userEmail??"" ,
                   updatedAt: value.trips![i].updatedAt,
                   createdAt: value.trips![i].createdAt,
                   deviceInfo: value.trips![i].deviceInfo!.toJson().toString(),

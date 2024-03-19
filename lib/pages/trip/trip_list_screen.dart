@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_archive/flutter_archive.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
@@ -18,6 +20,7 @@ import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/device_model.dart';
+import 'package:performarine/models/login_model.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/trip/trip_widget.dart';
 import 'package:performarine/services/database_service.dart';
@@ -1061,11 +1064,24 @@ class _TripListScreenState extends State<TripListScreen> {
       return ourDirectory!.path;
     }
   }
+    Future<LoginModel>getEmail()async{
+      LoginModel? loginModel;
+    final storage = new FlutterSecureStorage();
+    String? loginData = await storage.read(key: 'loginData');
+    //String? loginData = sharedPreferences!.getString('loginData');
+    //Utils.customPrint('LOGIN DATA: $loginData');
+    if (loginData != null) {
+ return      loginModel = LoginModel.fromJson(json.decode(loginData));
+    }
+    return loginModel??LoginModel();
+  }
+
 
   Future<void> onSave(File file) async {
     final vesselName = widget.vesselName;
     final currentLoad = selectedVesselWeight;
     await fetchDeviceData();
+LoginModel loginData=await getEmail();
 
     String latitude = '0.0';
     String longitude = '0.0';
@@ -1090,6 +1106,7 @@ class _TripListScreenState extends State<TripListScreen> {
         filePath: file.path,
         isSync: 0,
         tripStatus: 0,
+        createdBy: loginData.userEmail,
         isCloud: 0,
         createdAt: DateTime.now().toUtc().toString(),
         updatedAt: DateTime.now().toUtc().toString(),
