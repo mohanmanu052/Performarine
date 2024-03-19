@@ -359,7 +359,6 @@ setState(() {
                 right: 0,
                 child: Container(
                   alignment: Alignment.bottomCenter,
-
                   color: Colors.white,
                   child: Column(
                     children: [

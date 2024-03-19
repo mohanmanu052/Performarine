@@ -37,6 +37,7 @@ class _FleetsImInSingleCardState extends State<FleetsImInSingleCard> {
   @override
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
       child: Row(
@@ -58,14 +59,14 @@ class _FleetsImInSingleCardState extends State<FleetsImInSingleCard> {
                 children: [
                   commonText(
                       context: context,
-                      text: 'Created By: ',
+                      text: 'Created By : ',
                       fontWeight: FontWeight.w400,
                       textColor: Colors.grey,
                       textSize: displayWidth(context) * 0.028,
                       textAlign: TextAlign.start),
                   commonText(
                       context: context,
-                      text: widget.fleetsIamIn!.fleetName,
+                      text: widget.fleetsIamIn!.fleetCreatedBy!.trim().isEmpty ? '-' : widget.fleetsIamIn!.fleetCreatedBy,
                       fontWeight: FontWeight.w500,
                       textColor: Colors.black,
                       textSize: displayWidth(context) * 0.028,
@@ -131,10 +132,14 @@ class _FleetsImInSingleCardState extends State<FleetsImInSingleCard> {
             children: [
               InkWell(
                 onTap: (){
+
+                  debugPrint("ACTUAL FLEET ID ${widget.fleetsIamIn!.fleetId}");
+                  debugPrint("ACTUAL FLEET MEMBER ID ${widget.fleetsIamIn!.fleetMemberId}");
+
                   CustomFleetDailog().showFleetDialog(
                     context: context,
                     title: 'Are you sure you want to leave this fleet?',
-                    subtext: widget.fleetsIamIn!.fleetName??'',
+                    subtext: widget.fleetsIamIn!.fleetName?? '',
                     description: 'If you leave the fleet your fleet manager cannot view your vessels & Reports',
                     postiveButtonColor: deleteTripBtnColor,
                     positiveButtonText: 'Leave',
@@ -179,8 +184,6 @@ class _FleetsImInSingleCardState extends State<FleetsImInSingleCard> {
                       });
                     },
                   );
-
-
                 },
                 child: leaveFleetBtn
                     ? Container(
@@ -196,7 +199,9 @@ class _FleetsImInSingleCardState extends State<FleetsImInSingleCard> {
                     textAlign: TextAlign.start,
                     fontFamily: poppins),
               ),
+
               SizedBox(width: displayWidth(context) * 0.04,),
+
               Container(
                 width: displayWidth(context) * 0.25,
                 decoration: BoxDecoration(

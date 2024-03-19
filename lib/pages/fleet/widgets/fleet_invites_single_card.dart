@@ -98,7 +98,7 @@ class _FleetInvitesSingleCardState extends State<FleetInvitesSingleCard> {
                                     isRejectBtnClicked = false;
                                   });
 
-                                widget.onTap!.call();
+                                  widget.onTap!.call();
                                 }
                                 else
                                 {
@@ -174,7 +174,7 @@ class _FleetInvitesSingleCardState extends State<FleetInvitesSingleCard> {
                                           isAcceptBtnClicked = false;
                                         });
 
-                                       widget.onTap!.call();
+                                        widget.onTap!.call();
                                       }
                                       else
                                       {

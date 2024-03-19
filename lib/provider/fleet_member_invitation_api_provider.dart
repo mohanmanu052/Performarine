@@ -37,6 +37,8 @@ class FleetMemberInvitationApiProvider with ChangeNotifier
 
     Uri uri = Uri.https(Urls.baseUrl, Urls.fleetMember);
 
+    Utils.customPrint('FLEET MEMBER REQ $body');
+
     try {
       final response =
       await client.post(uri, headers: headers, body: json.encode(body));
