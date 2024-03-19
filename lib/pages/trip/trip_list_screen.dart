@@ -1098,7 +1098,7 @@ LoginModel loginData=await getEmail();
     CustomLogger().logWithFile(Level.info, "current lod:$currentLoad -> $page");
     final String getTripId = ObjectId().toString();
     await _databaseService.insertTrip(Trip(
-        id: '64e4b01076c86cc1877b4497',
+        id: getTripId,
         vesselId: widget.vesselId,
         vesselName: vesselName,
         currentLoad: 'Empty',
@@ -1106,7 +1106,7 @@ LoginModel loginData=await getEmail();
         filePath: file.path,
         isSync: 0,
         tripStatus: 0,
-       //         createdBy: '64e4b01076c86cc1877b4497',
+             //   createdBy: '64e4b01076c86cc1877b4497',
 
         createdBy: loginData.userId,
         isCloud: 0,
