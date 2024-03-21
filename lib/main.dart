@@ -454,11 +454,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
                 isComingFromUnilinkMain = true;
                 bool isSameUser=await        JwtUtils.getDecodedData(uri.queryParameters['verify'].toString());
-                
+                String fleetId=JwtUtils.getFleetId(uri.queryParameters['verify'].toString());
                 if(isSameUser){
                   Get.offAll(
-                      ManagePermissionsScreen(isComingFromUnilink:true),
-                      arguments: arguments);
+                      ManagePermissionsScreen(isComingFromUnilink:true,fleetId: fleetId,url: uri,),
+                      arguments: arguments,
+
+                  );
                 }else{
                   Map<String, dynamic> arguments = {
                     "isComingFromReset": false,

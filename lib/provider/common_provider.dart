@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/lpr_device_handler.dart';
 import 'package:performarine/main.dart';
@@ -529,7 +530,7 @@ return res;
       GlobalKey<ScaffoldState> scaffoldKey) async {
 
     isMyFleetNotEmpty = false;
-    notifyListeners();
+    //notifyListeners();
     fleetDashboardModel = FleetDashboardModel();
     fleetDashboardModel = await FleetDashboardApiProvider().fleetDashboardData(context, token, scaffoldKey);
 
@@ -610,4 +611,11 @@ return res;
 
     return editFleetDetailsModel!;
   }
+
+
+  Future<Response> acceptFleetInvitation(Uri url)async{
+    var res=await FleetDashboardApiProvider().acceptfleetInvite(url);
+    return res;
+  }
+
 }

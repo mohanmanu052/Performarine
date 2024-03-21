@@ -440,11 +440,14 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
             };
             if (isUserLoggedIn != null) {
               if (isUserLoggedIn) {
+
                 isComingFromUnilinkMain = true;
         bool isSameUser=await        JwtUtils.getDecodedData(initialLink.queryParameters['verify'].toString());
+                         String fleetId=JwtUtils.getFleetId(initialLink.queryParameters['verify'].toString());
+
 if(isSameUser){
   Get.offAll(
-      ManagePermissionsScreen(isComingFromUnilink:true),
+      ManagePermissionsScreen(isComingFromUnilink:true,fleetId: fleetId,url: initialLink,),
       arguments: arguments);
 }else{
   Map<String, dynamic> arguments = {

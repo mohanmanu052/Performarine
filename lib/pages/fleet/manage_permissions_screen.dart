@@ -29,7 +29,8 @@ class ManagePermissionsScreen extends StatefulWidget {
   FleetsIamIn? selectedFleetvalue;
   List<FleetsIamIn>? fleetItemList;
   String? fleetId;
-  ManagePermissionsScreen({super.key, this.isComingFromUnilink = false,this.selectedFleetvalue,this.fleetItemList,this.fleetId});
+  Uri? url;
+  ManagePermissionsScreen({super.key, this.isComingFromUnilink = false,this.selectedFleetvalue,this.fleetItemList,this.fleetId,this.url});
 
   @override
   State<ManagePermissionsScreen> createState() =>
@@ -53,6 +54,7 @@ class _ManagePermissionsScreenState extends State<ManagePermissionsScreen> {
   @override
   void initState() {
     commonProvider = context.read<CommonProvider>();
+  //  addFleetInvitation();
     getToken();
     getVesselData();
     // TODO: implement initState
@@ -133,23 +135,38 @@ if(vesselsSyncDetails){
 }
 
   }
+  void addFleetInvitation()async{
+    if(widget.isComingFromUnilink??false){
+      var res=await       commonProvider?.acceptFleetInvitation(widget.url??Uri());
+      if(res!.statusCode==200){
+        getFleetDetails();
+
+      }
+
+  }}
 
   void getToken() async {
     if (commonProvider!.loginModel == null) {
       await commonProvider!.getToken();
-      if(widget.fleetItemList==null||widget.fleetItemList!.isEmpty){
-      getFleetDetails();
 
-      }
-    } else {
-      if(widget.fleetItemList==null||widget.fleetItemList!.isEmpty){
-      getFleetDetails();
+      if(widget.isComingFromUnilink??false){
+        addFleetInvitation();
+      }else {
+        if (widget.fleetItemList == null || widget.fleetItemList!.isEmpty) {
+          getFleetDetails();
+        }
+      }} else {
 
-      }else{
-        
-      }
+      if(widget.isComingFromUnilink??false) {
+        addFleetInvitation();
+      } else{
+    if (widget.fleetItemList == null || widget.fleetItemList!.isEmpty) {
+
+    getFleetDetails();
     }
-  }
+    }
+
+    }}
 
   void getFleetDetails() async {
   var  fleetdata = await commonProvider?.fleetDashboardDetails(
