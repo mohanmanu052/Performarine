@@ -38,6 +38,7 @@ class FleetDetailsApiProvider with ChangeNotifier
     try {
       final response = await http.post(uri,
           body: jsonEncode(queryParameters), headers: headers);
+      Utils.customPrint('FLEET  REq : ' + jsonEncode(queryParameters).toString());
 
       Utils.customPrint('FLEET DETAILS REs : ' + response.body);
       CustomLogger().logWithFile(Level.info, "Reset Password REs : ' + ${response.body} -> $page");

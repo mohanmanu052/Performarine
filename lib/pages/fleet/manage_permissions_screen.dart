@@ -129,9 +129,9 @@ if(vesselsSyncDetails){
 }else{
     vesselsData = await _databaseService.vessels();
     checkListItems = List.generate(vesselsData!.length, (index) => false);
-
-    setState(() {});
-
+if(mounted) {
+  setState(() {});
+}
 }
 
   }
@@ -139,7 +139,10 @@ if(vesselsSyncDetails){
     if(widget.isComingFromUnilink??false){
       var res=await       commonProvider?.acceptFleetInvitation(widget.url??Uri());
       if(res!.statusCode==200){
-        getFleetDetails();
+        Future.delayed(Duration(milliseconds: 500)).then((value) {
+          getFleetDetails();
+
+        });
 
       }
 
@@ -169,7 +172,9 @@ if(vesselsSyncDetails){
     }}
 
   void getFleetDetails() async {
-  var  fleetdata = await commonProvider?.fleetDashboardDetails(
+    if (mounted) {
+
+      var  fleetdata = await commonProvider?.fleetDashboardDetails(
       context,
         commonProvider!.loginModel!.token!,
          scaffoldKey,
@@ -177,7 +182,6 @@ if(vesselsSyncDetails){
         
         );
         
-    if (mounted) {
       if(fleetdata!.fleetsIamIn!=null&&fleetdata!.fleetsIamIn!.isNotEmpty){
         widget.fleetItemList=fleetdata!.fleetsIamIn;
         widget.selectedFleetvalue=fleetdata!.fleetsIamIn!.first;
