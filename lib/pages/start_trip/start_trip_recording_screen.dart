@@ -183,6 +183,9 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     });
   }
 
+  
+  
+  
   checkGPS(BuildContext context) {
     StreamSubscription<geo.ServiceStatus> serviceStatusStream =
     geo.Geolocator.getServiceStatusStream()
@@ -861,7 +864,7 @@ showLocationDailog();
                       EasyLoading.dismiss();
                     } else {
                       if (mounted) {
-                        Future.delayed(Duration(seconds: 2), () {
+                        Future.delayed(Duration(seconds: 1), () {
                           EasyLoading.dismiss();
                           isBluetoothSearching = false;
 
@@ -906,11 +909,12 @@ showLocationDailog();
                     EasyLoading.dismiss();
                   } else {
                     if (mounted) {
-                      Future.delayed(Duration(seconds: 2), () {
+                      Future.delayed(Duration(seconds: 1), () {
                         EasyLoading.dismiss();
                         isBluetoothSearching = false;
-
+                        if(mounted){
                         showBluetoothListDialog(context, null, null);
+                        }
                       });
                     }
                   }
@@ -1010,7 +1014,10 @@ showLocationDailog();
                 if (mounted) {
                   Future.delayed(Duration(seconds: 2), () {
                     EasyLoading.dismiss();
+                    if(mounted){
                     showBluetoothListDialog(context, null, null);
+
+                    }
                   });
                 }
               }
@@ -1082,10 +1089,14 @@ showLocationDailog();
   @override
   void dispose() {
     // TODO: implement dispose
-    super.dispose();
+       autoConnectStreamSubscription?.cancel();
+   autoConnectIsScanningStreamSubscription?.cancel();
+
     if (widget.bottomNavIndex == 1) {}
     popupAnimationController.dispose();
     WidgetsBinding.instance.removeObserver(this);
+        super.dispose();
+
   }
 
   @override
@@ -3753,14 +3764,14 @@ showLocationDailog();
       });
 
       FlutterBluePlus.startScan(timeout: Duration(seconds: 4));
-
+if(mounted){
       Future.delayed(Duration(seconds: 4), () {
         showBluetoothListDialog(context, deviceId, connectedBluetoothDevice);
         isBluetoothSearching = false;
-        setState(() {});
+     //   setState(() {});
         EasyLoading.dismiss();
       });
-    }
+    }}
     return;
     FlutterBluePlus.scanResults.listen((results) async {
       for (ScanResult r in results) {
@@ -4835,6 +4846,7 @@ showLocationDailog();
     // });
 
     // checkAndGetLPRList();
+    if(mounted&&context!=null){
 
     if (autoConnectStreamSubscription != null)
       autoConnectStreamSubscription!.cancel();
@@ -4856,7 +4868,7 @@ showLocationDailog();
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: StatefulBuilder(builder: (ctx, setDialogState) {
+              child: StatefulBuilder(builder: (context, setDialogState) {
                 return Container(
                   width: displayWidth(context),
                   height: displayHeight(context) * 0.6,
@@ -5084,7 +5096,12 @@ showLocationDailog();
                                 setDialogState(() {
                                   isScanningBluetooth = false;
                                 });
+                                if(mounted&&context!=null){
                                 Navigator.pop(context);
+
+                                }else{
+                                  Get.back();
+                                }
                               },
                               child: Container(
                                 decoration: BoxDecoration(
@@ -5113,14 +5130,17 @@ showLocationDailog();
                 );
               }));
         }).then((value) {
+          if(mounted){
       setState(() {});
       Future.delayed(Duration(microseconds: 500), () {
         isBluetoothSearching = false;
         setState(() {});
       });
-
+          }
       Utils.customPrint('DIALOG VALUE $value');
     });
+    
+    }
   }
 
   showForgetDeviceDialog(BuildContext context,

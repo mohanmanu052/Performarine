@@ -454,6 +454,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
                 isComingFromUnilinkMain = true;
                 bool isSameUser=await        JwtUtils.getDecodedData(uri.queryParameters['verify'].toString());
+                
                 if(isSameUser){
                   Get.offAll(
                       ManagePermissionsScreen(isComingFromUnilink:true),

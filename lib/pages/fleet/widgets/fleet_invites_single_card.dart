@@ -77,7 +77,7 @@ class _FleetInvitesSingleCardState extends State<FleetInvitesSingleCard> {
                       ))
                       : InkWell(
                     onTap: (){
-                      CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to Reject fleet Invite??',subtext: widget.fleetInvites!.fleetName??'',
+                      CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to reject the fleet invite?',subtext: widget.fleetInvites!.fleetName??'',
                           postiveButtonColor: deleteTripBtnColor, positiveButtonText: 'Reject',
                           onNegativeButtonTap: (){
                             Navigator.of(context).pop();
@@ -153,7 +153,7 @@ class _FleetInvitesSingleCardState extends State<FleetInvitesSingleCard> {
                         child:  InkWell(
                           onTap: (){
 
-                            CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to accept fleet Invite?',subtext: widget.fleetInvites!.fleetName??'',
+                            CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to accept the fleet Invite?',subtext: widget.fleetInvites!.fleetName??'',
                                 postiveButtonColor: blueColor,positiveButtonText: 'Accept', negtiveButtuonColor: blueColor,
                                 onNegativeButtonTap: (){
                                   Navigator.of(context).pop();

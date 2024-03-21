@@ -30,4 +30,13 @@ if(loginDecodedData['sub']==unilinkDecodedData['sub']){
 return Future.value(false);
 
   }
+
+
+  static String getFleetId(String unilink){
+    String? fleetId;
+          Map<String, dynamic> unilinkDecodedData = JwtDecoder.decode(unilink);
+fleetId=unilinkDecodedData['fleetId']
+;
+return fleetId??'';
+}
 }

@@ -28,7 +28,8 @@ class ManagePermissionsScreen extends StatefulWidget {
   bool? isComingFromUnilink;
   FleetsIamIn? selectedFleetvalue;
   List<FleetsIamIn>? fleetItemList;
-  ManagePermissionsScreen({super.key, this.isComingFromUnilink = false,this.selectedFleetvalue,this.fleetItemList});
+  String? fleetId;
+  ManagePermissionsScreen({super.key, this.isComingFromUnilink = false,this.selectedFleetvalue,this.fleetItemList,this.fleetId});
 
   @override
   State<ManagePermissionsScreen> createState() =>
