@@ -126,7 +126,7 @@ if(fleetdata!.data!=null && fleetdata!.data!.isNotEmpty){
           ),
           title: commonText(
             context: context,
-            text: 'Fleet Vessels',
+            text: 'Fleet Details',
             fontWeight: FontWeight.w600,
             textColor: Colors.black87,
             textSize: displayWidth(context) * 0.045,
