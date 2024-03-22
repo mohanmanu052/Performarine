@@ -32,14 +32,14 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
 
   @override
   void initState() {
-          //   getVesselFuture = _databaseService.vessels();
-          // getVesselFuture.then((value)  {
-          //  vesselData=   value[1];
-          //  setState(() {
+            getVesselFuture = _databaseService.vessels();
+          getVesselFuture.then((value)  {
+           vesselData=   value[0];
+           setState(() {
              
-          //  });
+           });
            
-          //   });
+            });
 
 
 

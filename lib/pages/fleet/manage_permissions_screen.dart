@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
@@ -28,7 +29,9 @@ class ManagePermissionsScreen extends StatefulWidget {
   bool? isComingFromUnilink;
   FleetsIamIn? selectedFleetvalue;
   List<FleetsIamIn>? fleetItemList;
-  ManagePermissionsScreen({super.key, this.isComingFromUnilink = false,this.selectedFleetvalue,this.fleetItemList});
+  String? fleetId;
+  Uri? url;
+  ManagePermissionsScreen({super.key, this.isComingFromUnilink = false,this.selectedFleetvalue,this.fleetItemList,this.fleetId,this.url});
 
   @override
   State<ManagePermissionsScreen> createState() =>
@@ -52,6 +55,7 @@ class _ManagePermissionsScreenState extends State<ManagePermissionsScreen> {
   @override
   void initState() {
     commonProvider = context.read<CommonProvider>();
+  //  addFleetInvitation();
     getToken();
     getVesselData();
     // TODO: implement initState
@@ -126,46 +130,77 @@ if(vesselsSyncDetails){
 }else{
     vesselsData = await _databaseService.vessels();
     checkListItems = List.generate(vesselsData!.length, (index) => false);
-
-    setState(() {});
-
+if(mounted) {
+  setState(() {});
+}
 }
 
   }
+  void addFleetInvitation()async{
+    if(widget.isComingFromUnilink??false){
+      var res=await       commonProvider?.acceptFleetInvitation(widget.url??Uri());
+      if(res!.statusCode==200){
+        Future.delayed(Duration(milliseconds: 500)).then((value) {
+          getFleetDetails();
+
+        });
+
+      }
+
+  }}
 
   void getToken() async {
     if (commonProvider!.loginModel == null) {
       await commonProvider!.getToken();
-      if(widget.fleetItemList==null||widget.fleetItemList!.isEmpty){
-      getFleetDetails();
 
-      }
-    } else {
-      if(widget.fleetItemList==null||widget.fleetItemList!.isEmpty){
-      getFleetDetails();
+      if(widget.isComingFromUnilink??false){
+        addFleetInvitation();
+      }else {
+        if (widget.fleetItemList == null || widget.fleetItemList!.isEmpty) {
+          getFleetDetails();
+        }
+      }} else {
 
-      }else{
-        
-      }
+      if(widget.isComingFromUnilink??false) {
+        addFleetInvitation();
+      } else{
+    if (widget.fleetItemList == null || widget.fleetItemList!.isEmpty) {
+
+    getFleetDetails();
     }
-  }
+    }
+
+    }}
 
   void getFleetDetails() async {
-  var  fleetdata = await commonProvider?.fleetDashboardDetails(
-      context,
+
+      var  fleetdata = await commonProvider?.fleetDashboardDetails(
+      Get.context!,
         commonProvider!.loginModel!.token!,
          scaffoldKey,
          
         
         );
         
-    if (mounted) {
       if(fleetdata!.fleetsIamIn!=null&&fleetdata!.fleetsIamIn!.isNotEmpty){
         widget.fleetItemList=fleetdata!.fleetsIamIn;
-        widget.selectedFleetvalue=fleetdata!.fleetsIamIn!.first;
+        if(widget.fleetId!=null){
+          for(FleetsIamIn fleet in widget.fleetItemList!){
+            if(fleet.fleetId==widget.fleetId){
+              widget.selectedFleetvalue=fleet;
+            }
+
+          }
+        }else{
+          widget.selectedFleetvalue=fleetdata!.fleetsIamIn!.first;
+
+        }
       }
-      setState(() {});
-    }
+      if(mounted){
+        setState(() {});
+
+      }
+
   }
 
   @override

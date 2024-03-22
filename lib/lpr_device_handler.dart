@@ -785,7 +785,7 @@ if(isNavigateToMaps){
                                                         tripId: tripData![0],
                                                                                                               calledFrom: 'bottom_nav',
 
-                                                        vesselId: tripData![1],
+                                                        vesselId: tripData[1],
                                                         vesselName: tripData[2],
                                                         tripIsRunningOrNot:
                                                             runningTrip)),
@@ -811,8 +811,11 @@ if(isNavigateToMaps){
                               onTap: () {
                                 Utils.customPrint("Tapped on scan button");
 
-                                FlutterBluePlus.startScan(
-                                    timeout: const Duration(seconds: 2));
+                        var listener=        FlutterBluePlus.startScan(
+                                    timeout: const Duration(seconds: 2),
+                               oneByOne: true     
+                                    
+                                    );
 
                                 Future.delayed(Duration(seconds: 2), () {
                                   /* setDialogState(() {

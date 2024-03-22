@@ -103,23 +103,6 @@
             </intent-filter>
 
 
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" />
-                <data android:host="goeapidev.azurewebsites.net" />
-                <data android:pathPrefix="/fleetmember" />
-            </intent-filter>
-
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" />
-                <data android:host="goeapiuat.azurewebsites.net" />
-                <data android:pathPrefix="/fleetmember" />
-            </intent-filter>
 
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
@@ -146,6 +129,16 @@
                 <data android:host="performarineuat.azurewebsites.net" />
                 <data android:pathPrefix="/reset" />
             </intent-filter>
+
+                        <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" />
+                <data android:host="performarineuat.azurewebsites.net" />
+                <data android:pathPrefix="/fleetmember" />
+            </intent-filter>
+
         </activity>
 
         <activity

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -38,6 +39,7 @@ class FleetDetailsApiProvider with ChangeNotifier
     try {
       final response = await http.post(uri,
           body: jsonEncode(queryParameters), headers: headers);
+      Utils.customPrint('FLEET  REq : ' + jsonEncode(queryParameters).toString());
 
       Utils.customPrint('FLEET DETAILS REs : ' + response.body);
       CustomLogger().logWithFile(Level.info, "Reset Password REs : ' + ${response.body} -> $page");
@@ -46,7 +48,7 @@ class FleetDetailsApiProvider with ChangeNotifier
 
       if (response.statusCode == HttpStatus.ok) {
         Utils.customPrint('FLEET DETAILS Response : ' + response.body);
-
+log("FLEET DETAILS Response : ' + ${response.body}-> $page");
         CustomLogger().logWithFile(Level.info, "FLEET DETAILS Response : ' + ${response.body}-> $page");
         CustomLogger().logWithFile(Level.info, "API success of ${Urls.baseUrl}${Urls.fleetDetails}  is: ${response.statusCode}-> $page");
 

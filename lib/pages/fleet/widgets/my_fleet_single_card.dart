@@ -251,8 +251,8 @@ class _MyFleetSingleCardState extends State<MyFleetSingleCard> {
                       SizedBox(width: displayWidth(context) * 0.02,),
                       InkWell(
                           onTap: (){
-                            CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to leave this fleet?',subtext: widget.myFleets!.fleetName??'',description: 'If you leave the fleet your fleet manager cannot view your vessels & Reports',
-                                postiveButtonColor: deleteTripBtnColor,positiveButtonText: 'Leave',
+                            CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to Delete this fleet?',subtext: widget.myFleets!.fleetName??'',description: 'If you delete the fleet your fleet members cannot view vessels & Reports',
+                                postiveButtonColor: deleteTripBtnColor,positiveButtonText: 'Delete',
                                 onPositiveButtonTap: ()async{
 
                                   Navigator.of(context).pop();

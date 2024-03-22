@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:screenshot/screenshot.dart';
 
 import '../../common_widgets/utils/colors.dart';
@@ -21,10 +24,10 @@ class _MyDelegateInvitesScreenState extends State<MyDelegateInvitesScreen> {
   final controller = ScreenshotController();
 
   List<InvitesModel> inviteList =  [
-    InvitesModel(fleetName: 'Name of the fleet', sendBy: 'Send By cjhdsn@jkvn.com', status: 'Pending'),
-    InvitesModel(fleetName: 'Name of the fleet', sendBy: 'Send By cjhdsn@jkvn.com', status: 'Pending'),
-    InvitesModel(fleetName: 'Name of the fleet', sendBy: 'Send By cjhdsn@jkvn.com', status: 'Pending'),
-    InvitesModel(fleetName: 'Name of the fleet', sendBy: 'Send By cjhdsn@jkvn.com', status: 'Expired'),
+    InvitesModel(fleetName: 'Name of the Vessel', sendBy: 'Send By cjhdsn@jkvn.com', status: 'Pending'),
+    InvitesModel(fleetName: 'Name of the Vessel', sendBy: 'Send By cjhdsn@jkvn.com', status: 'Pending'),
+    InvitesModel(fleetName: 'Name of the Vessel', sendBy: 'Send By cjhdsn@jkvn.com', status: 'Pending'),
+    InvitesModel(fleetName: 'Name of the Vessel', sendBy: 'Send By cjhdsn@jkvn.com', status: 'Expired'),
   ];
 
   @override
@@ -53,23 +56,35 @@ class _MyDelegateInvitesScreenState extends State<MyDelegateInvitesScreen> {
               textColor: Colors.black,
               textSize: displayWidth(context) * 0.05,
               textAlign: TextAlign.start),
-          actions: [
-            Container(
-              margin: EdgeInsets.only(right: 8),
-              child: IconButton(
-                onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => BottomNavigation()),
-                      ModalRoute.withName(""));
+            actions: [
+      
+              InkWell(
+                onTap: ()async{
                 },
-                icon: Image.asset('assets/icons/performarine_appbar_icon.png'),
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? Colors.white
-                    : Colors.black,
+                child: Image.asset(
+                  'assets/images/Trash.png',
+                  width: Platform.isAndroid ? displayWidth(context) * 0.065 : displayWidth(context) * 0.05,
+                ),
               ),
-            )
-          ],
+      
+              Container(
+                margin: EdgeInsets.only(right: 8),
+                child: IconButton(
+                  onPressed: () async{
+                   await   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => BottomNavigation()),
+                        ModalRoute.withName(""));
+                  },
+                  icon: Image.asset('assets/icons/performarine_appbar_icon.png'),
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black,
+                ),
+              ),
+            ],
         ),
         bottomNavigationBar: Container(
           margin: EdgeInsets.only(bottom: 4),

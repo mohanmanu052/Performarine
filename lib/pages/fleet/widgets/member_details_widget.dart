@@ -124,7 +124,7 @@ class _MemberDetailsWidgetState extends State<MemberDetailsWidget> {
                               children: [
                                 Container(
                                   child: widget.memberList![index].memberStatus ==
-                                          '1'
+                                          1
                                       ? statusTag(
                                       'Accepted',
                                           acceptBackgrounGreen,

@@ -95,4 +95,26 @@ class FleetDashboardApiProvider with ChangeNotifier
     }
     return fleetDashboardModel;
   }
+
+
+  Future<Response> acceptfleetInvite(Uri url)async{
+    Response? response;
+    try {
+      // Uri uri1 = Uri.https('goeapidev.azurewebsites.net/fleetmember');
+      // var headers = {
+      //   HttpHeaders.contentTypeHeader: 'application/json',
+      //   "x_access_token": '',
+      // };
+       response =
+      await client.get(url,
+          //headers: headers
+      );
+      log('accept invite response ${response.body.toString()}');
+return response;
+    }catch(err){
+
+    }
+   return response??Response('', 400);
+  }
+
 }

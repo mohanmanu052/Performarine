@@ -440,11 +440,14 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
             };
             if (isUserLoggedIn != null) {
               if (isUserLoggedIn) {
+
                 isComingFromUnilinkMain = true;
         bool isSameUser=await        JwtUtils.getDecodedData(initialLink.queryParameters['verify'].toString());
+                         String fleetId=JwtUtils.getFleetId(initialLink.queryParameters['verify'].toString());
+
 if(isSameUser){
-  Get.offAll(
-      ManagePermissionsScreen(isComingFromUnilink:true),
+  Get.to(
+      ManagePermissionsScreen(isComingFromUnilink:true,fleetId: fleetId,url: initialLink,),
       arguments: arguments);
 }else{
   Map<String, dynamic> arguments = {
@@ -543,9 +546,14 @@ if(isSameUser){
               if (isUserLoggedIn) {
                 //sharedPreferences!.setBool('reset_dialog_opened', false);
                 bool isSameUser=await        JwtUtils.getDecodedData(uri!.queryParameters['verify'].toString());
+                String fleetId=JwtUtils.getFleetId(uri.queryParameters['verify'].toString());
                 if(isSameUser){
-                  Get.offAll(
-                      ManagePermissionsScreen(isComingFromUnilink:true),
+                  // Navigator.pushAndRemoveUntil(context,MaterialPageRoute(builder: (context)=>ManagePermissionsScreen(isComingFromUnilink:true,fleetId: fleetId,url: initialLink,),),
+                  //     ModalRoute.withName('/')
+                  //
+                  // );
+                  Get.to(
+                      ManagePermissionsScreen(isComingFromUnilink:true,fleetId: fleetId,url: uri,),
                       arguments: arguments);
                 }else{
                   Map<String, dynamic> arguments = {
