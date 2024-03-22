@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
@@ -172,10 +173,9 @@ if(mounted) {
     }}
 
   void getFleetDetails() async {
-    if (mounted) {
 
       var  fleetdata = await commonProvider?.fleetDashboardDetails(
-      context,
+      Get.context!,
         commonProvider!.loginModel!.token!,
          scaffoldKey,
          
@@ -184,10 +184,23 @@ if(mounted) {
         
       if(fleetdata!.fleetsIamIn!=null&&fleetdata!.fleetsIamIn!.isNotEmpty){
         widget.fleetItemList=fleetdata!.fleetsIamIn;
-        widget.selectedFleetvalue=fleetdata!.fleetsIamIn!.first;
+        if(widget.fleetId!=null){
+          for(FleetsIamIn fleet in widget.fleetItemList!){
+            if(fleet.fleetId==widget.fleetId){
+              widget.selectedFleetvalue=fleet;
+            }
+
+          }
+        }else{
+          widget.selectedFleetvalue=fleetdata!.fleetsIamIn!.first;
+
+        }
       }
-      setState(() {});
-    }
+      if(mounted){
+        setState(() {});
+
+      }
+
   }
 
   @override

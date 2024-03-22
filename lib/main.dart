@@ -456,7 +456,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 bool isSameUser=await        JwtUtils.getDecodedData(uri.queryParameters['verify'].toString());
                 String fleetId=JwtUtils.getFleetId(uri.queryParameters['verify'].toString());
                 if(isSameUser){
-                  Get.offAll(
+                  // Navigator.pushAndRemoveUntil(context,MaterialPageRoute(builder: (context)=>ManagePermissionsScreen(isComingFromUnilink:true,fleetId: fleetId,url: uri,),),
+                  //     ModalRoute.withName('/')
+                  //
+                  // );
+                  Get.to(
                       ManagePermissionsScreen(isComingFromUnilink:true,fleetId: fleetId,url: uri,),
                       arguments: arguments,
 
