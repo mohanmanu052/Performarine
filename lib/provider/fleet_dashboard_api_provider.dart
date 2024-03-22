@@ -109,7 +109,7 @@ class FleetDashboardApiProvider with ChangeNotifier
       await client.get(url,
           //headers: headers
       );
-      print('the response was-----'+response.toString());
+      log('accept invite response ${response.body.toString()}');
 return response;
     }catch(err){
 

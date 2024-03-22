@@ -36,8 +36,7 @@ return Future.value(false);
     String? fleetId;
           Map<String, dynamic> unilinkDecodedData = JwtDecoder.decode(unilink);
 fleetId=unilinkDecodedData['fleetId'];
-    print('the fleet id was----'+fleetId.toString());
-;
+
 return fleetId??'';
 }
 }
