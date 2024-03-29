@@ -30,6 +30,7 @@ import 'package:performarine/pages/fleet/fleet_vessel_screen.dart';
 import 'package:performarine/pages/fleet/my_fleet_screen.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/lpr_data_stream.dart';
+import 'package:performarine/pages/lpr_view/lpr_view_screen.dart';
 import 'package:performarine/pages/retired_vessels_screen.dart';
 import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
 import 'package:performarine/pages/sync_data_cloud_to_mobile_screen.dart';
@@ -477,11 +478,18 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                     // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                                     Navigator.of(context).pop();
 
-                                    Navigator.push(
+                                   /* Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               ConnectBLEDevices()),
+                                    );*/
+
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              LPRViewScreen()),
                                     );
                                   },
                                   child: commonText(
@@ -1230,11 +1238,17 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                     // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
                                     Navigator.of(context).pop();
 
-                                    Navigator.push(
+                                    /*Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               ConnectBLEDevices()),
+                                    );*/
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              LPRViewScreen()),
                                     );
                                   },
                                   child: commonText(
