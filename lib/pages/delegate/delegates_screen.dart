@@ -7,6 +7,7 @@ import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/common_widgets/widgets/custom_fleet_dailog.dart';
 import 'package:performarine/common_widgets/widgets/user_feed_back.dart';
 import 'package:performarine/common_widgets/widgets/vessel_info_card.dart';
 import 'package:performarine/models/vessel.dart';
@@ -213,13 +214,38 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                                                       fontWeight:
                                                           FontWeight.w500,
                                                       textSize: 11)),
+                                            
+                                            
                                               Padding(
                                                   padding: EdgeInsets.symmetric(
                                                       horizontal: 8),
-                                                  child: Icon(
-                                                    Icons.more_horiz,
-                                                    size: 12,
-                                                  ))
+                                                  child: InkWell(
+                                                    onTap: (){
+                  CustomFleetDailog().showFleetDialog(
+                    context: context,
+                    title: 'Are you sure you want to remove this Delegate Member?',
+                    subtext: 'First Name Last Name',
+                    description: 'Your permissions to their vessels will be removed & cannot be viewed',
+                    postiveButtonColor: deleteTripBtnColor,
+                    positiveButtonText: 'Remove',
+                    onNegativeButtonTap: (){
+                      Navigator.of(context).pop();
+                    },
+                    onPositiveButtonTap: ()async{
+
+                      Navigator.of(context).pop();
+                    });                                                      
+                                                    },
+                                                    child:Image.asset(
+                'assets/images/Trash.png',
+                height: 18,
+                width: 18,
+                
+                )
+                                                  )
+                                                  
+                                                  
+                                                  )
                                             ],
                                           ))
                                     ]),
@@ -240,37 +266,37 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                                                     textSize: 11,
                                                     textColor: Colors.grey),
                                               )),
-                                          Flexible(
-                                              fit: FlexFit.tight,
-                                              flex: 3,
-                                              child: Visibility(
-                                                child: Container(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 2,
-                                                      vertical: 6),
-                                                  decoration: BoxDecoration(
-                                                    color: colorLightRed,
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                            topLeft:
-                                                                Radius.circular(
-                                                                    20),
-                                                            bottomLeft:
-                                                                Radius.circular(
-                                                                    20),
-                                                            bottomRight:
-                                                                Radius.circular(
-                                                                    20)),
-                                                  ),
-                                                  child: commonText(
-                                                      text: 'Remove Access',
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      textSize: 10,
-                                                      textColor:
-                                                          floatingBtnColor),
-                                                ),
-                                              ))
+                                          // Flexible(
+                                          //     fit: FlexFit.tight,
+                                          //     flex: 3,
+                                          //     child: Visibility(
+                                          //       child: Container(
+                                          //         padding: EdgeInsets.symmetric(
+                                          //             horizontal: 2,
+                                          //             vertical: 6),
+                                          //         decoration: BoxDecoration(
+                                          //           color: colorLightRed,
+                                          //           borderRadius:
+                                          //               BorderRadius.only(
+                                          //                   topLeft:
+                                          //                       Radius.circular(
+                                          //                           20),
+                                          //                   bottomLeft:
+                                          //                       Radius.circular(
+                                          //                           20),
+                                          //                   bottomRight:
+                                          //                       Radius.circular(
+                                          //                           20)),
+                                          //         ),
+                                          //         child: commonText(
+                                          //             text: 'Remove Access',
+                                          //             fontWeight:
+                                          //                 FontWeight.w400,
+                                          //             textSize: 10,
+                                          //             textColor:
+                                          //                 floatingBtnColor),
+                                          //       ),
+                                          //     ))
                                         ],
                                       ),
                                     ),
@@ -291,22 +317,23 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                                                     textSize: 10,
                                                     textColor: blueColor),
                                               )),
-                                          Flexible(
-                                              flex: 2,
-                                              child: Container(
-                                                alignment: Alignment.centerLeft,
-                                                child: Column(children: [
-                                                  commonText(
-                                                      text: 'Permissions:',
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      textSize: 10),
+                                          // Flexible(
+                                          //     flex: 2,
+                                          //     child: Container(
+                                          //       alignment: Alignment.centerLeft,
+                                          //       child: Column(children: [
+                                          //         commonText(
+                                          //             text: 'Permissions:',
+                                          //             fontWeight:
+                                          //                 FontWeight.w400,
+                                          //             textSize: 10),
                                                   //                                                 commonText(text: 'Reports | Manage Trips | Edit',
                                                   // fontWeight: FontWeight.w400,
                                                   // textSize: 7
                                                   // ),
-                                                ]),
-                                              ))
+                                                //]),
+                                             // )
+                                              //)
                                         ],
                                       ),
                                     ),
