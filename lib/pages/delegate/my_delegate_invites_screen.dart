@@ -63,7 +63,7 @@ class _MyDelegateInvitesScreenState extends State<MyDelegateInvitesScreen> {
                 },
                 child: Image.asset(
                   'assets/images/Trash.png',
-                  width: Platform.isAndroid ? displayWidth(context) * 0.065 : displayWidth(context) * 0.05,
+                  width: Platform.isAndroid ? displayWidth(context) * 0.05 : displayWidth(context) * 0.05,
                 ),
               ),
       
@@ -182,7 +182,7 @@ class _MyDelegateInvitesScreenState extends State<MyDelegateInvitesScreen> {
                                         context: context,
                                         text: 'Reject',
                                         fontWeight: FontWeight.w300,
-                                        textColor: blueColor,
+                                        textColor: Colors.red,
                                         textSize: displayWidth(context) * 0.032,
                                         textAlign: TextAlign.start,
                                         fontFamily: poppins),

@@ -9,28 +9,27 @@ import 'package:provider/provider.dart';
 
 /// This helper widget manages the scrollable content inside a picker widget.
 class CustomTimePicker extends StatefulWidget {
-  Function(String time)? getTime; 
-CustomTimePicker({this.getTime});
+  Function(String time)? getTime;
+  CustomTimePicker({this.getTime});
   @override
   _CustomTimePickerState createState() => _CustomTimePickerState();
 }
+
 class _CustomTimePickerState extends State<CustomTimePicker> {
   // Constants
   var hour = 01;
   var minute = 00;
   var timeFormat = "AM";
-  String formattedHour='01';
-  String formattedMinute='00';
+  String formattedHour = '01';
+  String formattedMinute = '00';
   @override
   Widget build(BuildContext context) {
-    return  Column(
+    return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-    
         Container(
-         // padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10)),
+          // padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
           child: Row(
             children: [
               NumberPicker(
@@ -42,52 +41,47 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
                 itemWidth: 50,
                 itemHeight: 45,
                 onChanged: (value) {
-                  if(value<10){
-                    formattedHour=value.toString().padLeft(2,'0');
-                  }else{
-                    formattedHour=value.toString();
+                  if (value < 10) {
+                    formattedHour = value.toString().padLeft(2, '0');
+                  } else {
+                    formattedHour = value.toString();
                   }
                   setState(() {
-                    hour=value;
+                    hour = value;
 
-                   widget. getTime!('$formattedHour : $formattedMinute $timeFormat');
+                    widget.getTime!(
+                        '$formattedHour : $formattedMinute $timeFormat');
                   });
                 },
-                textStyle:
-                    const TextStyle(color: colorlightBlueTimePickerUnselecetd, fontSize: 20,
+                textStyle: const TextStyle(
+                    color: colorlightBlueTimePickerUnselecetd,
+                    fontSize: 16,
                     fontFamily: outfit,
-                    fontWeight: FontWeight.w600
-                    ),
-                selectedTextStyle:
-                    const TextStyle(color: Colors.black, fontSize: 24,
-                    
-                                        fontFamily: outfit,
-                    fontWeight: FontWeight.w600
-                    
-
-                    ),
+                    fontWeight: FontWeight.w600),
+                selectedTextStyle: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontFamily: outfit,
+                    fontWeight: FontWeight.w600),
                 decoration: const BoxDecoration(
-                  // border: Border(
-                  //     top: BorderSide(
-                  //       color: Colors.white,
-                  //     ),
-                  //     bottom: BorderSide(color: Colors.white)
-                      
-                      
+                    // border: Border(
+                    //     top: BorderSide(
+                    //       color: Colors.white,
+                    //     ),
+                    //     bottom: BorderSide(color: Colors.white)
+
                     //  ),
+                    ),
+              ),
+              Container(
+                child: Text(
+                  ':',
+                  style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
-Container(
-child: Text(':',
-style: TextStyle(
-  fontSize: 22,
-  color: Colors.black,
-  fontWeight: FontWeight.bold
-),
-
-),
-),
-
               NumberPicker(
                 minValue: 00,
                 maxValue: 59,
@@ -97,75 +91,69 @@ style: TextStyle(
                 itemWidth: 50,
                 itemHeight: 45,
                 onChanged: (value) {
-                                    if(value<10){
-                    formattedMinute=value.toString().padLeft(2,'0');
-                  }else{
-                    formattedMinute=value.toString();
+                  if (value < 10) {
+                    formattedMinute = value.toString().padLeft(2, '0');
+                  } else {
+                    formattedMinute = value.toString();
                   }
 
                   setState(() {
                     minute = value;
-                   widget. getTime!('$formattedHour : $formattedMinute $timeFormat');
+                    widget.getTime!(
+                        '$formattedHour : $formattedMinute $timeFormat');
                   });
                 },
-                textStyle:
-                    const TextStyle(color: colorlightBlueTimePickerUnselecetd, fontSize: 20,
+                textStyle: const TextStyle(
+                    color: colorlightBlueTimePickerUnselecetd,
+                    fontSize: 16,
                     fontFamily: outfit,
-                    fontWeight: FontWeight.w600
-                    
-                    ),
-                selectedTextStyle:
-                    const TextStyle(color: Colors.black, fontSize: 24,
-                                        fontFamily: outfit,
-                    fontWeight: FontWeight.w600
-                    
-
-                    
-                    ),
+                    fontWeight: FontWeight.w600),
+                selectedTextStyle: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 20,
+                    fontFamily: outfit,
+                    fontWeight: FontWeight.w600),
                 decoration: const BoxDecoration(
-                  // border: Border(
-                  //     top: BorderSide(
-                  //       color: Colors.white,
-                  //     ),
-                  //     bottom: BorderSide(color: Colors.white)),
-                ),
+                    // border: Border(
+                    //     top: BorderSide(
+                    //       color: Colors.white,
+                    //     ),
+                    //     bottom: BorderSide(color: Colors.white)),
+                    ),
               ),
-              SizedBox(width: 10,),
+              SizedBox(
+                width: 10,
+              ),
               Column(
                 children: [
                   GestureDetector(
                     onTap: () {
-                                         widget. getTime!('$formattedHour : $formattedMinute AM');
+                      widget.getTime!('$formattedHour : $formattedMinute AM');
 
                       setState(() {
                         timeFormat = "AM";
-
-
                       });
-
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 10),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                          color: timeFormat == "AM"
-                              ? blueColor
-                              : selectDayBackgroundColor,
-                          // border: Border.all(
-                          //   color: timeFormat == "AM"
-                          //       ? Colors.grey
-                          //       : Colors.grey.shade700,
-                          // )
-                          
-                          ),
-                      child:  commonText(
-                      text:  "AM",
+                        color: timeFormat == "AM"
+                            ? blueColor
+                            : selectDayBackgroundColor,
+                        // border: Border.all(
+                        //   color: timeFormat == "AM"
+                        //       ? Colors.grey
+                        //       : Colors.grey.shade700,
+                        // )
+                      ),
+                      child: commonText(
+                        text: "AM",
                         fontWeight: FontWeight.w400,
-                        textSize: 13,
-                        textColor: timeFormat == "AM"
-                              ? Colors.white
-                              : Colors.black ,
+                        textSize: displayWidth(context) * 0.03,
+                        textColor:
+                            timeFormat == "AM" ? Colors.white : Colors.black,
                       ),
                     ),
                   ),
@@ -174,10 +162,9 @@ style: TextStyle(
                   ),
                   GestureDetector(
                     onTap: () {
-                                         widget. getTime!('$formattedHour : $formattedMinute PM');
+                      widget.getTime!('$formattedHour : $formattedMinute PM');
 
                       setState(() {
-
                         timeFormat = "PM";
                       });
                     },
@@ -187,8 +174,8 @@ style: TextStyle(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: timeFormat == "PM"
-                              ? blueColor
-                              : selectDayBackgroundColor,
+                            ? blueColor
+                            : selectDayBackgroundColor,
                         // border: Border.all(
                         //   color: timeFormat == "PM"
                         //       ? Colors.grey
@@ -196,12 +183,11 @@ style: TextStyle(
                         // ),
                       ),
                       child: commonText(
-                      text:  "PM",
-textColor:timeFormat == "PM"
-                              ? Colors.white
-                              : Colors.black ,
+                        text: "PM",
+                        textColor:
+                            timeFormat == "PM" ? Colors.white : Colors.black,
                         fontWeight: FontWeight.w400,
-                        textSize: 13,
+                        textSize: displayWidth(context) * 0.03,
                       ),
                     ),
                   )
@@ -213,5 +199,4 @@ textColor:timeFormat == "PM"
       ],
     );
   }
-
 }

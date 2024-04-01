@@ -24,6 +24,7 @@ import 'package:performarine/models/upload_trip_model.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/provider/add_vessel_api_provider.dart';
 import 'package:performarine/provider/change_password_provider.dart';
+import 'package:performarine/provider/create_delegate_api_provider.dart';
 import 'package:performarine/provider/create_newfleet_provider.dart';
 import 'package:performarine/provider/delete_fleet_api_provider.dart';
 import 'package:performarine/provider/delete_trip_api_provider.dart';
@@ -85,6 +86,7 @@ class CommonProvider with ChangeNotifier {
   CommonModel? fleetMemberModel;
   CommonModel? deleteFleetModel;
   CommonModel? editFleetDetailsModel;
+  CommonModel? createDelegateModel;
   FleetDetailsModel? fleetDetailsModel;
 
 
@@ -616,6 +618,20 @@ return res;
   Future<Response> acceptFleetInvitation(Uri url)async{
     var res=await FleetDashboardApiProvider().acceptfleetInvite(url);
     return res;
+  }
+
+  Future<CommonModel> createDelegate(
+      BuildContext context,
+      String token,
+      String vesselId,
+      String userEmail,
+      String delegateAccessType,
+      GlobalKey<ScaffoldState> scaffoldKey) async {
+    createDelegateModel = CommonModel();
+    createDelegateModel = await CreateDelegateApiProvider().createDelegate(context, token, vesselId, userEmail, delegateAccessType, scaffoldKey);
+    notifyListeners();
+
+    return createDelegateModel!;
   }
 
 }

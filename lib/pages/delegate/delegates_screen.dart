@@ -17,7 +17,8 @@ import 'package:performarine/services/database_service.dart';
 import 'package:screenshot/screenshot.dart';
 
 class DelegatesScreen extends StatefulWidget {
-  const DelegatesScreen({super.key});
+  String? vesselID;
+  DelegatesScreen({super.key, this.vesselID});
 
   @override
   State<DelegatesScreen> createState() => _DelegatesScreenState();
@@ -69,7 +70,7 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
               textSize: displayWidth(context) * 0.042,
               fontFamily: outfit),
           actions: [
-            InkWell(
+           /* InkWell(
               onTap: () async {},
               child: Image.asset(
                 'assets/images/Trash.png',
@@ -77,7 +78,7 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                     ? displayWidth(context) * 0.065
                     : displayWidth(context) * 0.05,
               ),
-            ),
+            ),*/
             Container(
               margin: EdgeInsets.only(right: 8),
               child: IconButton(
@@ -123,13 +124,10 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: ((context) =>
-                                          InviteDelegate())));
+                                          InviteDelegate(vesselID: widget.vesselID,))));
                             },
                             width: displayWidth(context) / 1.3,
                             height: displayHeight(context) * 0.053),
-                        SizedBox(
-                          height: 10,
-                        ),
                         GestureDetector(
                             onTap: (() async {
                               final image = await controller.capture();
@@ -212,102 +210,46 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                                                       textColor: Colors.green,
                                                       fontWeight:
                                                           FontWeight.w500,
-                                                      textSize: 11)),
+                                                      textSize: displayWidth(context)* 0.03 )),
                                               Padding(
                                                   padding: EdgeInsets.symmetric(
                                                       horizontal: 8),
-                                                  child: Icon(
-                                                    Icons.more_horiz,
-                                                    size: 12,
-                                                  ))
+                                                  child: InkWell(
+                                                    onTap: () async {},
+                                                    child: Image.asset(
+                                                      'assets/images/Trash.png',
+                                                      width: Platform.isAndroid
+                                                          ? displayWidth(context) * 0.045
+                                                          : displayWidth(context) * 0.04,
+                                                    ),
+                                                  ),)
                                             ],
                                           ))
                                     ]),
                                     Padding(
                                       padding: const EdgeInsets.symmetric(
-                                          vertical: 4),
-                                      child: Row(
-                                        children: [
-                                          Flexible(
-                                              fit: FlexFit.tight,
-                                              flex: 10,
-                                              child: Container(
-                                                alignment: Alignment.centerLeft,
-                                                child: commonText(
-                                                    text:
-                                                        'Janeiskij02@knds.com',
-                                                    fontWeight: FontWeight.w400,
-                                                    textSize: 11,
-                                                    textColor: Colors.grey),
-                                              )),
-                                          Flexible(
-                                              fit: FlexFit.tight,
-                                              flex: 3,
-                                              child: Visibility(
-                                                child: Container(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 2,
-                                                      vertical: 6),
-                                                  decoration: BoxDecoration(
-                                                    color: colorLightRed,
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                            topLeft:
-                                                                Radius.circular(
-                                                                    20),
-                                                            bottomLeft:
-                                                                Radius.circular(
-                                                                    20),
-                                                            bottomRight:
-                                                                Radius.circular(
-                                                                    20)),
-                                                  ),
-                                                  child: commonText(
-                                                      text: 'Remove Access',
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      textSize: 10,
-                                                      textColor:
-                                                          floatingBtnColor),
-                                                ),
-                                              ))
-                                        ],
+                                          vertical: 2),
+                                      child: Container(
+                                        alignment: Alignment.centerLeft,
+                                        child: commonText(
+                                            text:
+                                            'Janeiskij02@knds.com',
+                                            fontWeight: FontWeight.w400,
+                                            textSize: 11,
+                                            textColor: Colors.grey),
                                       ),
                                     ),
                                     Padding(
                                       padding:
                                           EdgeInsets.symmetric(vertical: 2),
-                                      child: Row(
-                                        children: [
-                                          Flexible(
-                                              flex: 3,
-                                              fit: FlexFit.tight,
-                                              child: Container(
-                                                alignment: Alignment.centerLeft,
-                                                child: commonText(
-                                                    text:
-                                                        'Manage Share Settings',
-                                                    fontWeight: FontWeight.w300,
-                                                    textSize: 10,
-                                                    textColor: blueColor),
-                                              )),
-                                          Flexible(
-                                              flex: 2,
-                                              child: Container(
-                                                alignment: Alignment.centerLeft,
-                                                child: Column(children: [
-                                                  commonText(
-                                                      text: 'Permissions:',
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      textSize: 10),
-                                                  //                                                 commonText(text: 'Reports | Manage Trips | Edit',
-                                                  // fontWeight: FontWeight.w400,
-                                                  // textSize: 7
-                                                  // ),
-                                                ]),
-                                              ))
-                                        ],
+                                      child: Container(
+                                        alignment: Alignment.centerLeft,
+                                        child: commonText(
+                                            text:
+                                            'Manage Share Settings',
+                                            fontWeight: FontWeight.normal,
+                                            textSize: displayWidth(context) * 0.028,
+                                            textColor: blueColor),
                                       ),
                                     ),
                                     Divider()
