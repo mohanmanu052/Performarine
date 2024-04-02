@@ -1,3 +1,5 @@
+import 'package:performarine/pages/delegate/my_delegate_invites_screen.dart';
+
 class Urls {
   //Client Environment
   static const String baseUrl = 'goeapidev.azurewebsites.net';
@@ -50,6 +52,8 @@ static const deleteFleet ='/api/deleteFleet';
 static const leaveFleet ='/api/leaveFleet';
 
 static const createDelegate ='/api/createdelegate';
+static const myDelegateInvites='/api/mydelegateinvities';
+static const delegateAccessAcceptReject='/delegateaccess';
 
 
 static String baseUrlVersion = '';

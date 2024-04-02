@@ -2,6 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:performarine/common_widgets/widgets/custom_fleet_dailog.dart';
+import 'package:performarine/models/my_delegate_invite_model.dart';
+import 'package:performarine/provider/common_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
 import '../../common_widgets/utils/colors.dart';
@@ -23,18 +27,28 @@ class _MyDelegateInvitesScreenState extends State<MyDelegateInvitesScreen> {
 
   final controller = ScreenshotController();
 
-  List<InvitesModel> inviteList =  [
-    InvitesModel(fleetName: 'Name of the Vessel', sendBy: 'Send By cjhdsn@jkvn.com', status: 'Pending'),
-    InvitesModel(fleetName: 'Name of the Vessel', sendBy: 'Send By cjhdsn@jkvn.com', status: 'Pending'),
-    InvitesModel(fleetName: 'Name of the Vessel', sendBy: 'Send By cjhdsn@jkvn.com', status: 'Pending'),
-    InvitesModel(fleetName: 'Name of the Vessel', sendBy: 'Send By cjhdsn@jkvn.com', status: 'Expired'),
-  ];
+GlobalKey<ScaffoldState> scfoldKey=GlobalKey();
+CommonProvider? commonProvider;
+     Future<MyDelegateInviteModel>? future;
+
+@override
+  void initState() {
+        commonProvider = context.read<CommonProvider>();
+getDelgateInvites();
+    // TODO: implement initState
+    super.initState();
+  }
+void getDelgateInvites()async{
+  future=commonProvider?.getDelegateInvites(context, commonProvider!.loginModel!.token!, scfoldKey);
+
+}
 
   @override
   Widget build(BuildContext context) {
     return Screenshot(
       controller: controller,
       child: Scaffold(
+        key: scfoldKey,
         backgroundColor: Colors.white,
         appBar: AppBar(
           elevation: 0.0,
@@ -101,13 +115,42 @@ class _MyDelegateInvitesScreenState extends State<MyDelegateInvitesScreen> {
         ),
         body: Container(
           margin: EdgeInsets.symmetric(horizontal: 17, vertical: 17),
-          child:   Column(
-            children: [
+          child:   FutureBuilder<MyDelegateInviteModel>(
+                      future: future,
+                      builder: (context, snapShot)
+                      {
+                        if (snapShot.connectionState == ConnectionState.waiting) {
+                          return SizedBox(
+                            height: displayHeight(context)/1.5,
+                              child: Center(child: const CircularProgressIndicator(color: blueColor)));
+                        }
+                        else if (snapShot.data == null||snapShot.data!.myDelegateInvities!.isEmpty) {
+                          return  Container(
+                            height: displayHeight(context)/ 1.4,
+                            child: Center(
+                              child: commonText(
+                                  context: context,
+                                  text: 'No data found',
+                                  fontWeight: FontWeight.w500,
+                                  textColor: Colors.black,
+                                  textSize: displayWidth(context) * 0.05,
+                                  textAlign: TextAlign.start),
+                            ),
+                          );
+                        }
+                        else
+                          {
+          
+          
+        return  Column(
+            children:
+            
+             [
               SizedBox(height: displayHeight(context) * 0.01,),
               ListView.builder(
                   physics: NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  itemCount: inviteList.length,
+                  itemCount: snapShot.data!.myDelegateInvities!.length,
                   itemBuilder: (context, index)
                   {
                     return Padding(
@@ -115,7 +158,7 @@ class _MyDelegateInvitesScreenState extends State<MyDelegateInvitesScreen> {
                       child: Column(
                         children: [
                           Container(
-                            color: inviteList[index].status == 'Expired'
+                            color: snapShot.data!.myDelegateInvities![index].status == 1
                                 ? Colors.grey.shade50
                                 : null,
                             child: Row(
@@ -127,9 +170,9 @@ class _MyDelegateInvitesScreenState extends State<MyDelegateInvitesScreen> {
                                     children: [
                                       commonText(
                                         context: context,
-                                        text: inviteList[index].fleetName,
+                                        text: snapShot.data!.myDelegateInvities![index].vesselName,
                                         fontWeight: FontWeight.w500,
-                                        textColor: inviteList[index].status == 'Expired'
+                                        textColor: snapShot.data!.myDelegateInvities![index].status == 1
                                             ? Colors.grey
                                             : Colors.black,
                                         textSize: displayWidth(context) * 0.042,
@@ -137,7 +180,7 @@ class _MyDelegateInvitesScreenState extends State<MyDelegateInvitesScreen> {
 
                                       commonText(
                                           context: context,
-                                          text: inviteList[index].sendBy,
+                                          text: snapShot.data!.myDelegateInvities![index].invitedByUsername,
                                           fontWeight: FontWeight.w400,
                                           textColor: Colors.grey,
                                           textSize: displayWidth(context) * 0.032,
@@ -148,7 +191,7 @@ class _MyDelegateInvitesScreenState extends State<MyDelegateInvitesScreen> {
                                           context: context,
                                           text: 'Permissions: ',
                                           fontWeight: FontWeight.w400,
-                                          textColor: inviteList[index].status == 'Expired'
+                                          textColor: snapShot.data!.myDelegateInvities![index].status==1
                                               ? Colors.grey
                                               : Colors.black87,
                                           textSize: displayWidth(context) * 0.03,
@@ -158,7 +201,7 @@ class _MyDelegateInvitesScreenState extends State<MyDelegateInvitesScreen> {
                                           context: context,
                                           text: 'Reports | Manage Trips | Edit ',
                                           fontWeight: FontWeight.w400,
-                                          textColor: inviteList[index].status == 'Expired'
+                                          textColor: snapShot.data!.myDelegateInvities![index].status==1
                                               ? Colors.grey
                                               : Colors.black87,
                                           textSize: displayWidth(context) * 0.026,
@@ -167,7 +210,7 @@ class _MyDelegateInvitesScreenState extends State<MyDelegateInvitesScreen> {
                                   ),
                                 ),
                                 SizedBox(width: 4,),
-                                inviteList[index].status == 'Expired'
+                                snapShot.data!.myDelegateInvities![index].status==1
                                     ?  commonText(
                                     context: context,
                                     text: 'Expired',
@@ -178,14 +221,36 @@ class _MyDelegateInvitesScreenState extends State<MyDelegateInvitesScreen> {
                                     fontFamily: poppins)
                                     : Row(
                                   children: [
-                                    commonText(
-                                        context: context,
-                                        text: 'Reject',
-                                        fontWeight: FontWeight.w300,
-                                        textColor: Colors.red,
-                                        textSize: displayWidth(context) * 0.032,
-                                        textAlign: TextAlign.start,
-                                        fontFamily: poppins),
+                                    InkWell(
+                                      onTap: (){
+                                                          CustomFleetDailog().showFleetDialog(
+                    context: context,
+                    title: 'Are you sure you want to reject the Delegate invite?',
+                    subtext: 'Vessel Name',
+                    postiveButtonColor: deleteTripBtnColor,
+                    positiveButtonText: 'Reject',
+                    onNegativeButtonTap: (){
+                      Navigator.of(context).pop();
+                    },
+                    onPositiveButtonTap: ()async{
+
+                      commonProvider?.delegateAcceptReject(context, commonProvider?.loginModel?.token??'', scfoldKey, false, snapShot.data!.myDelegateInvities![index].invitationLink!);
+
+
+                      Navigator.of(context).pop();
+                    });                                                      
+
+                                      },
+                                      child: commonText(
+                                          context: context,
+                                          text: 'Reject',
+                                          fontWeight: FontWeight.w300,
+                                          textColor: userFeedbackBtnColor,
+                                          textSize: displayWidth(context) * 0.032,
+                                          textAlign: TextAlign.start,
+                                          fontFamily: poppins),
+                                    ),
+
                                     SizedBox(width: displayWidth(context) * 0.04,),
                                     Container(
                                       width: displayWidth(context) * 0.18,
@@ -193,17 +258,36 @@ class _MyDelegateInvitesScreenState extends State<MyDelegateInvitesScreen> {
                                           color: blueColor,
                                           borderRadius: BorderRadius.circular(20)
                                       ),
-                                      child: Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(top: 4, bottom: 4),
-                                          child: commonText(
-                                              context: context,
-                                              text: 'Accept',
-                                              fontWeight: FontWeight.w300,
-                                              textColor: Colors.white,
-                                              textSize: displayWidth(context) * 0.032,
-                                              textAlign: TextAlign.start,
-                                              fontFamily: poppins),
+                                      child: InkWell(
+                                        onTap: (){
+                                                                      CustomFleetDailog().showFleetDialog(context: context,title: 'Are you sure you want to accept the Delegate Invite?',subtext: 'Vessel Name',
+                                postiveButtonColor: blueColor,positiveButtonText: 'Accept', negtiveButtuonColor: primaryColor,
+                              
+                                onNegativeButtonTap: (){
+                                  Navigator.of(context).pop();
+                                },
+                                onPositiveButtonTap: (){
+
+commonProvider?.delegateAcceptReject(context, commonProvider?.loginModel?.token??'', scfoldKey, true, snapShot.data!.myDelegateInvities![index].invitationLink!);
+
+
+                                  Navigator.of(context).pop();
+                                
+
+                                        },);
+                                        },
+                                        child: Center(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(top: 4, bottom: 4),
+                                            child: commonText(
+                                                context: context,
+                                                text: 'Accept',
+                                                fontWeight: FontWeight.w300,
+                                                textColor: Colors.white,
+                                                textSize: displayWidth(context) * 0.032,
+                                                textAlign: TextAlign.start,
+                                                fontFamily: poppins),
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -222,10 +306,11 @@ class _MyDelegateInvitesScreenState extends State<MyDelegateInvitesScreen> {
                   }
               ),
             ],
-          )
-        ),
+          );
+                          }                
+  })
       ),
-    );
+    ));
   }
 }
 
