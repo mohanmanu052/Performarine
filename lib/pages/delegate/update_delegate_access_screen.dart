@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_remote_config/firebase_remote_config.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -11,14 +10,12 @@ import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
-import 'package:performarine/common_widgets/widgets/common_text_feild.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/custom_time_picker.dart';
 import 'package:performarine/common_widgets/widgets/user_feed_back.dart';
-import 'package:performarine/common_widgets/widgets/vessel_info_card.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
-import 'package:performarine/pages/delegate/my_delegate_invites_screen.dart';
+import 'package:performarine/pages/delegate/invite_delegate.dart';
 import 'package:performarine/pages/feedback_report.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
@@ -26,44 +23,46 @@ import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class InviteDelegate extends StatefulWidget {
+class UpdateDelegateAccessScreen extends StatefulWidget {
   String? vesselID;
-  InviteDelegate({super.key, this.vesselID});
+  UpdateDelegateAccessScreen({super.key, this.vesselID});
 
   @override
-  State<InviteDelegate> createState() => _InviteDelegateState();
+  State<UpdateDelegateAccessScreen> createState() => _UpdateDelegateAccessScreenState();
 }
 
-class _InviteDelegateState extends State<InviteDelegate> {
-  final controller = ScreenshotController();
+class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
-  late Future<List<CreateVessel>> getVesselFuture;
-  CreateVessel? vesselData;
+
+  final controller = ScreenshotController();
+
+  Future<CreateVessel?>? singleVesselDetails;
   final DatabaseService _databaseService = DatabaseService();
-  DateTime firstDate = DateTime(1980),
-      lastDate = DateTime.now(),
-      focusedDay = DateTime.now(),
-      startDate = DateTime.now();
-  Duration duration = const Duration();
-  bool isCustomTime = false, isInviteDelegateBtnClicked = false;
+
+  late CommonProvider commonProvider;
+  List<ShareAccessModel> shareAccessModel = [];
+  CreateVessel? vesselData;
+
+  String? selectedShareUpdate;
+  bool isCustomTime = false, isUpdateBtnClicked = false;
+
   String startTime = '01:00 AM',
       endTime = '01:00 AM',
       endDate = '',
       selectedDuration = '24 hrs',
       startDateText = '';
   int calenderType = 0;
-  String? selectedShareUpdate;
 
-  TextEditingController userEmailController = TextEditingController();
-  GlobalKey<FormState> formKey = GlobalKey();
-
-  late CommonProvider commonProvider;
-  List<ShareAccessModel> shareAccessModel = [];
-
-  Future<CreateVessel?>? singleVesselDetails;
+  DateTime firstDate = DateTime(1980),
+      lastDate = DateTime.now(),
+      focusedDay = DateTime.now(),
+      startDate = DateTime.now();
 
   @override
   void initState() {
+    // TODO: implement initState
+    super.initState();
+
     singleVesselDetails = _databaseService.getVesselFromVesselID(widget.vesselID!);
     singleVesselDetails!.then((value) {
       vesselData = value;
@@ -73,136 +72,191 @@ class _InviteDelegateState extends State<InviteDelegate> {
     commonProvider = context.read<CommonProvider>();
 
     getShareAccessData();
-
-    // TODO: implement initState
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    commonProvider = context.watch<CommonProvider>();
     return Screenshot(
-        controller: controller,
-        child: Scaffold(
-            backgroundColor: backgroundColor,
-            key: scaffoldKey,
-            appBar: AppBar(
-              backgroundColor: backgroundColor,
-              elevation: 0,
-              leading: IconButton(
+      controller: controller,
+      child: Scaffold(
+        key: scaffoldKey,
+        backgroundColor: backgroundColor,
+        appBar: AppBar(
+          backgroundColor: backgroundColor,
+          elevation: 0,
+          leading: IconButton(
+            onPressed: () async {
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.arrow_back),
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.white
+                : Colors.black,
+          ),
+          title: commonText(
+              context: context,
+              text: 'Manage Access',
+              fontWeight: FontWeight.w600,
+              textColor: Colors.black87,
+              textSize: displayWidth(context) * 0.042,
+              fontFamily: outfit),
+          actions: [
+            InkWell(
+                    onTap: () async {},
+                    child: Image.asset(
+                      'assets/images/Trash.png',
+                      width: Platform.isAndroid
+                          ? displayWidth(context) * 0.055
+                          : displayWidth(context) * 0.05,
+                    ),
+                  ),
+            Container(
+              margin: EdgeInsets.only(right: 8),
+              child: IconButton(
                 onPressed: () async {
-                  Navigator.pop(context);
+                  await SystemChrome.setPreferredOrientations(
+                      [DeviceOrientation.portraitUp]);
+
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BottomNavigation()),
+                      ModalRoute.withName(""));
                 },
-                icon: const Icon(Icons.arrow_back),
+                icon: Image.asset(
+                    'assets/icons/performarine_appbar_icon.png'),
                 color: Theme.of(context).brightness == Brightness.dark
                     ? Colors.white
                     : Colors.black,
               ),
-              title: commonText(
-                  context: context,
-                  text: 'Send Invite',
-                  fontWeight: FontWeight.w600,
-                  textColor: Colors.black87,
-                  textSize: displayWidth(context) * 0.042,
-                  fontFamily: outfit),
-              actions: [
-                /*InkWell(
-                  onTap: () async {},
-                  child: Image.asset(
-                    'assets/images/Trash.png',
-                    width: Platform.isAndroid
-                        ? displayWidth(context) * 0.065
-                        : displayWidth(context) * 0.05,
-                  ),
-                ),*/
-                Container(
-                  margin: EdgeInsets.only(right: 8),
-                  child: IconButton(
-                    onPressed: () async {
-                      await SystemChrome.setPreferredOrientations(
-                          [DeviceOrientation.portraitUp]);
-
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BottomNavigation()),
-                          ModalRoute.withName(""));
-                    },
-                    icon: Image.asset(
-                        'assets/icons/performarine_appbar_icon.png'),
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.white
-                        : Colors.black,
-                  ),
-                ),
-              ],
             ),
-            body: Container(
-                child: Stack(children: [
-//vesselSingleViewCard(context,CreateVessel(),((p0) {} ),scaffoldKey),
-
-              Container(
-                margin: EdgeInsets.only(
-                  left: 12,
-                  right: 12,
-                  bottom: displayHeight(context) / 7,
-                ),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
+          ],
+        ),
+        body: Container(
+          margin: EdgeInsets.symmetric(horizontal: 17),
+          child: Stack(
+            children: [
+              SingleChildScrollView(
+                child: Container(
+                  margin: EdgeInsets.only(bottom: displayHeight(context) * 0.14),
                   child: Column(
                     children: [
-                      if (vesselData != null)
-                        Container(
-                            margin: EdgeInsets.symmetric(
-                              horizontal: 15,
+                      Row(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: vesselData!.imageURLs == null ||
+                                vesselData!.imageURLs!.isEmpty ||
+                                vesselData!.imageURLs == 'string' ||
+                                vesselData!.imageURLs == '[]'
+                                ? Stack(
+                              children: [
+                                Container(
+                                  color: Colors.white,
+                                  child: Image.asset(
+                                    'assets/images/vessel_default_img.png',
+                                    height: displayHeight(context) * 0.1,
+                                    width: displayWidth(context) * 0.22,
+                                    fit: BoxFit.contain,
+                                  ),
+                                ),
+                                Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    left: 0,
+                                    child: Container(
+                                      height: displayHeight(context) * 0.14,
+                                      width: displayWidth(context),
+                                      padding: const EdgeInsets.only(top: 20),
+                                      decoration: BoxDecoration(boxShadow: [
+                                        BoxShadow(
+                                            color:
+                                            Colors.black.withOpacity(0.1),
+                                            blurRadius: 50,
+                                            spreadRadius: 5,
+                                            offset: const Offset(0, 50))
+                                      ]),
+                                    ))
+                              ],
+                            )
+                                : Stack(
+                              children: [
+                                Container(
+                                  height: displayHeight(context) * 0.22,
+                                  width: displayWidth(context),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    image: DecorationImage(
+                                      image: FileImage(
+                                          File(vesselData!.imageURLs!)),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    left: 0,
+                                    child: Container(
+                                      height: displayHeight(context) * 0.14,
+                                      width: displayWidth(context),
+                                      padding: const EdgeInsets.only(top: 20),
+                                      decoration: BoxDecoration(boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.black.withOpacity(0.5),
+                                            blurRadius: 50,
+                                            spreadRadius: 5,
+                                            offset: const Offset(0, 50))
+                                      ]),
+                                    ))
+                              ],
                             ),
-                            width: displayWidth(context),
-                            //height: displayHeight(context)*0.2,
+                          ),
+                          Container(
+                            margin: EdgeInsets.symmetric(horizontal: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                commonText(
+                                    context: context,
+                                    text: vesselData!.name,
+                                    fontWeight: FontWeight.w600,
+                                    textColor: Colors.black87,
+                                    textSize: displayWidth(context) * 0.042,
+                                    fontFamily: outfit),
 
-                            child: VesselinfoCard(
-                              vesselData: vesselData,
-                            )),
-                      SizedBox(
-                        height: displayHeight(context) * 0.025,
-                      ),
-                      commonText(
-                          text: 'Invite Delegate',
-                          fontWeight: FontWeight.w700,
-                          textSize: displayWidth(context) * 0.045),
-                      SizedBox(
-                        height: displayHeight(context) * 0.025,
-                      ),
-                      SizedBox(
-                        width: displayWidth(context) / 1.1,
-                        child: Form(
-                          key: formKey,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          child: CommonTextField(
-                              controller: userEmailController,
-                              // focusNode: nameFocusNode,
-                              labelText: 'Email ID',
-                              hintText: '',
-                              circularRadius: 20,
-                              suffixText: null,
-                              fillColor: dropDownBackgroundColor,
-                              textInputAction: TextInputAction.next,
-                              textInputType: TextInputType.text,
-                              textCapitalization: TextCapitalization.words,
-                              maxLength: 32,
-                              prefixIcon: null,
-                              suffixIcon: Icon(Icons.close),
-                              requestFocusNode: null,
-                              obscureText: false,
-                              onTap: () {},
-                              onChanged: (String value) {},
-                              validator: (value) {
-                                if (value!.trim().isEmpty) {
-                                  return 'Enter Valid Email';
-                                }
-                                return null;
-                              },
-                              onSaved: (String value) {}),
-                        ),
+                                Row(
+                                  children: [
+                                    Icon(Icons.person_2_outlined, color: blueColor, ),
+                                    SizedBox(width: 4,),
+                                    commonText(
+                                        context: context,
+                                        text: 'Abhiram Pawan',
+                                        fontWeight: FontWeight.w600,
+                                        textColor: Colors.black87,
+                                        textSize: displayWidth(context) * 0.036,
+                                        fontFamily: outfit),
+                                  ],
+                                ),
+
+                                Row(
+                                  children: [
+                                    Icon(Icons.mail_lock_outlined, color: blueColor,size: displayWidth(context) * 0.05, ),
+                                    SizedBox(width: 4,),
+                                    commonText(
+                                        context: context,
+                                        text: 'abhiram90@gmail.com',
+                                        fontWeight: FontWeight.w400,
+                                        textColor: Colors.black87,
+                                        textSize: displayWidth(context) * 0.036,
+                                        fontFamily: outfit),
+                                  ],
+                                )
+                              ],
+                            ),
+                          )
+                        ],
                       ),
                       SizedBox(
                         height: 10,
@@ -247,7 +301,7 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                       },
                                       child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.start,
+                                          MainAxisAlignment.start,
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Radio<String>(
@@ -288,7 +342,7 @@ class _InviteDelegateState extends State<InviteDelegate> {
                               child: Column(children: [
                                 Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  MainAxisAlignment.spaceBetween,
                                   //crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Flexible(
@@ -354,7 +408,7 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                             : 'Select End Date',
                                         style: TextStyle(
                                             fontSize:
-                                                displayWidth(context) * 0.038,
+                                            displayWidth(context) * 0.038,
                                             fontWeight: FontWeight.w600,
                                             fontFamily: dmsans),
                                       ),
@@ -383,38 +437,38 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                         calendarBuilders: CalendarBuilders(
                                           selectedBuilder:
                                               (context, date, events) =>
-                                                  Container(
-                                            margin: const EdgeInsets.all(5.0),
-                                            alignment: Alignment.center,
-                                            decoration: BoxDecoration(
-                                                color: blueColor,
-                                                borderRadius:
+                                              Container(
+                                                margin: const EdgeInsets.all(5.0),
+                                                alignment: Alignment.center,
+                                                decoration: BoxDecoration(
+                                                    color: blueColor,
+                                                    borderRadius:
                                                     BorderRadius.circular(15)
-                                                //shape: BoxShape.circle
+                                                  //shape: BoxShape.circle
 
                                                 ),
-                                            child: commonText(
-                                                context: context,
-                                                text: date.day.toString(),
-                                                fontWeight: FontWeight.w500,
-                                                textColor: Colors.white,
-                                                textSize:
+                                                child: commonText(
+                                                    context: context,
+                                                    text: date.day.toString(),
+                                                    fontWeight: FontWeight.w500,
+                                                    textColor: Colors.white,
+                                                    textSize:
                                                     displayWidth(context) *
                                                         0.042,
-                                                fontFamily: dmsans),
-                                          ),
+                                                    fontFamily: dmsans),
+                                              ),
                                         ),
                                         calendarStyle: CalendarStyle(
                                             todayDecoration: BoxDecoration(
                                                 borderRadius:
-                                                    BorderRadius.circular(20),
+                                                BorderRadius.circular(20),
                                                 border: Border.all(
                                                   color: blueColor,
                                                 )),
                                             isTodayHighlighted: true,
                                             selectedDecoration: BoxDecoration(
                                               borderRadius:
-                                                  BorderRadius.circular(8),
+                                              BorderRadius.circular(8),
 
                                               // color: blueColor,
                                               shape: BoxShape.rectangle,
@@ -422,25 +476,25 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                             selectedTextStyle: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize:
-                                                    displayWidth(context) *
-                                                        0.032,
+                                                displayWidth(context) *
+                                                    0.032,
                                                 fontFamily: dmsans,
                                                 color: Colors.pink),
                                             todayTextStyle: TextStyle(
                                                 fontWeight: FontWeight.normal,
                                                 fontSize:
-                                                    displayWidth(context) *
-                                                        0.03,
+                                                displayWidth(context) *
+                                                    0.03,
                                                 fontFamily: dmsans,
                                                 color:
-                                                    focusedDay == DateTime.now()
-                                                        ? Colors.white
-                                                        : blueColor)),
+                                                focusedDay == DateTime.now()
+                                                    ? Colors.white
+                                                    : blueColor)),
                                         selectedDayPredicate: (DateTime date) {
                                           return isSameDay(startDate, date);
                                         },
                                         startingDayOfWeek:
-                                            StartingDayOfWeek.monday,
+                                        StartingDayOfWeek.monday,
                                         onDaySelected: (DateTime? selectDay,
                                             DateTime? focusDay) {
                                           setState(() {
@@ -463,7 +517,7 @@ class _InviteDelegateState extends State<InviteDelegate> {
 
                                           titleTextStyle: TextStyle(
                                               fontSize:
-                                                  displayWidth(context) * 0.032,
+                                              displayWidth(context) * 0.032,
                                               fontFamily: dmsans,
                                               fontWeight: FontWeight.w600,
                                               color: blackcolorCalender),
@@ -473,10 +527,10 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                           formatButtonDecoration: BoxDecoration(
                                             color: Colors.black,
                                             borderRadius:
-                                                BorderRadius.circular(22.0),
+                                            BorderRadius.circular(22.0),
                                           ),
                                           formatButtonTextStyle:
-                                              TextStyle(color: Colors.white),
+                                          TextStyle(color: Colors.white),
                                           formatButtonShowsNext: false,
                                         ),
                                       ),
@@ -488,7 +542,7 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                 ),
                                 Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  MainAxisAlignment.spaceBetween,
                                   children: [
                                     Container(
                                       margin: EdgeInsets.only(left: 8),
@@ -496,7 +550,7 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 8, vertical: 4),
                                       child:
-                                          fromToDate('Start Time: ', startTime),
+                                      fromToDate('Start Time: ', startTime),
                                     ),
                                     Container(
                                         margin: EdgeInsets.only(right: 8),
@@ -504,12 +558,12 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                         padding: EdgeInsets.symmetric(
                                             horizontal: 10, vertical: 4),
                                         child:
-                                            fromToDate('End Time: ', endTime)),
+                                        fromToDate('End Time: ', endTime)),
                                   ],
                                 ),
                                 Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  MainAxisAlignment.spaceBetween,
                                   children: [
                                     CustomTimePicker(
                                       getTime: (time) {
@@ -540,76 +594,35 @@ class _InviteDelegateState extends State<InviteDelegate> {
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(
+                  color: Colors.white,
                   alignment: Alignment.bottomCenter,
                   height: displayHeight(context) / 7.9,
+                  width: displayWidth(context),
                   padding: EdgeInsets.all(8),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      isInviteDelegateBtnClicked
+                      isUpdateBtnClicked
                           ? CircularProgressIndicator()
                           : CommonButtons.getActionButton(
-                              title: 'Invite Delegate',
-                              context: context,
-                              fontSize: displayWidth(context) * 0.044,
-                              textColor: Colors.white,
-                              buttonPrimaryColor: blueColor,
-                              borderColor: blueColor,
-                              onTap: () {
-                                if (formKey.currentState!.validate()) {
-                                  FocusScope.of(context).unfocus();
+                        title: 'Update',
+                        context: context,
+                        fontSize: displayWidth(context) * 0.044,
+                        textColor: Colors.white,
+                        buttonPrimaryColor: blueColor,
+                        borderColor: blueColor,
+                        onTap: () {
+                          if((selectedShareUpdate ?? '').isNotEmpty)
+                          {
 
-                                  if((selectedShareUpdate ?? '').isNotEmpty)
-                                    {
+                            /*setState(() {
+                              isUpdateBtnClicked = true;
+                            });*/
 
-                                      setState(() {
-                                        isInviteDelegateBtnClicked = true;
-                                      });
-
-                                      commonProvider
-                                          .createDelegate(
-                                          context,
-                                          commonProvider.loginModel!.token!,
-                                          widget.vesselID!,
-                                          userEmailController.text.trim().toLowerCase(),
-                                          selectedShareUpdate!,
-                                          scaffoldKey)
-                                          .then((value) {
-                                        if (value != null) {
-                                          if (value.status!) {
-                                            setState(() {
-                                              isInviteDelegateBtnClicked = false;
-                                            });
-
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        MyDelegateInvitesScreen()));
-                                          }
-                                          else
-                                          {
-                                            setState(() {
-                                              isInviteDelegateBtnClicked = false;
-                                            });
-                                          }
-                                        }
-                                        else
-                                        {
-                                          setState(() {
-                                            isInviteDelegateBtnClicked = false;
-                                          });
-                                        }
-                                      }).catchError((e){
-                                        setState(() {
-                                          isInviteDelegateBtnClicked = false;
-                                        });
-                                      });
-                                    }
-                                }
-                              },
-                              width: displayWidth(context) / 1.3,
-                            ),
+                          }
+                        },
+                        width: displayWidth(context) / 1.3,
+                      ),
                       GestureDetector(
                           onTap: (() async {
                             final image = await controller.capture();
@@ -620,9 +633,9 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => FeedbackReport(
-                                          imagePath: image.toString(),
-                                          uIntList: image,
-                                        )));
+                                      imagePath: image.toString(),
+                                      uIntList: image,
+                                    )));
                           }),
                           child: UserFeedback().getUserFeedback(
                             context,
@@ -631,56 +644,10 @@ class _InviteDelegateState extends State<InviteDelegate> {
                   ),
                 ),
               ),
-            ]))));
-  }
-
-  Widget radioButton(String text, bool isCustomTime1) {
-    return Flexible(
-        fit: FlexFit.tight,
-        flex: 1,
-        child: Row(children: [
-          Radio(
-            value: text,
-            groupValue: selectedDuration,
-            onChanged: (value) {
-              setState(() {
-                if (isCustomTime1) {
-                  isCustomTime = true;
-                } else {
-                  isCustomTime = false;
-                }
-                selectedDuration = value.toString();
-              });
-            },
+            ],
           ),
-          commonText(text: text, fontWeight: FontWeight.w400, textSize: 12),
-        ]));
-  }
-
-  Widget fromToDate(String title, String date) {
-    return Container(
-      // color: Colors.amber,
-      child: RichText(
-          text: TextSpan(children: [
-        TextSpan(
-            text: title,
-            style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: displayWidth(context) * 0.03,
-                fontFamily: outfit,
-                color: Colors.black)),
-        WidgetSpan(
-            child: SizedBox(
-          width: 5,
-        )),
-        TextSpan(
-            text: date,
-            style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: displayWidth(context) * 0.03,
-                fontFamily: outfit,
-                color: blueColor)),
-      ])),
+        ),
+      ),
     );
   }
 
@@ -690,6 +657,33 @@ class _InviteDelegateState extends State<InviteDelegate> {
     Utils.customPrint(dateString);
 
     return dateString;
+  }
+
+  Widget fromToDate(String title, String date) {
+    return Container(
+      // color: Colors.amber,
+      child: RichText(
+          text: TextSpan(children: [
+            TextSpan(
+                text: title,
+                style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: displayWidth(context) * 0.03,
+                    fontFamily: outfit,
+                    color: Colors.black)),
+            WidgetSpan(
+                child: SizedBox(
+                  width: 5,
+                )),
+            TextSpan(
+                text: date,
+                style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: displayWidth(context) * 0.03,
+                    fontFamily: outfit,
+                    color: blueColor)),
+          ])),
+    );
   }
 
   void getShareAccessData() async {
@@ -716,15 +710,5 @@ class _InviteDelegateState extends State<InviteDelegate> {
     await remoteConfig.fetchAndActivate();
     RemoteConfigValue(null, ValueSource.valueStatic);
     return remoteConfig;
-  }
-}
-
-class ShareAccessModel {
-  String? key, value;
-  ShareAccessModel(this.key, this.value);
-
-  ShareAccessModel.fromJson(Map<String, dynamic> json) {
-    key = json['key'];
-    value = json['value'];
   }
 }

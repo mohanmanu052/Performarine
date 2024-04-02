@@ -1186,7 +1186,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               },
                               child: commonText(
                                   context: context,
-                                  text: 'My Delegate ',
+                                  text: 'My Delegate',
                                   fontWeight: FontWeight.w400,
                                   textColor: Colors.black54,
                                   textSize: textSize,
