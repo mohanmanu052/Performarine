@@ -77,7 +77,7 @@ void getDelgateInvites()async{
                 },
                 child: Image.asset(
                   'assets/images/Trash.png',
-                  width: Platform.isAndroid ? displayWidth(context) * 0.065 : displayWidth(context) * 0.05,
+                  width: Platform.isAndroid ? displayWidth(context) * 0.05 : displayWidth(context) * 0.05,
                 ),
               ),
       
@@ -250,6 +250,7 @@ void getDelgateInvites()async{
                                           textAlign: TextAlign.start,
                                           fontFamily: poppins),
                                     ),
+
                                     SizedBox(width: displayWidth(context) * 0.04,),
                                     Container(
                                       width: displayWidth(context) * 0.18,

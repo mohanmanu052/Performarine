@@ -18,7 +18,8 @@ import 'package:performarine/services/database_service.dart';
 import 'package:screenshot/screenshot.dart';
 
 class DelegatesScreen extends StatefulWidget {
-  const DelegatesScreen({super.key});
+  String? vesselID;
+  DelegatesScreen({super.key, this.vesselID});
 
   @override
   State<DelegatesScreen> createState() => _DelegatesScreenState();
@@ -70,7 +71,7 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
               textSize: displayWidth(context) * 0.042,
               fontFamily: outfit),
           actions: [
-            InkWell(
+           /* InkWell(
               onTap: () async {},
               child: Image.asset(
                 'assets/images/Trash.png',
@@ -78,7 +79,7 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                     ? displayWidth(context) * 0.065
                     : displayWidth(context) * 0.05,
               ),
-            ),
+            ),*/
             Container(
               margin: EdgeInsets.only(right: 8),
               child: IconButton(
@@ -124,13 +125,10 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                                   context,
                                   MaterialPageRoute(
                                       builder: ((context) =>
-                                          InviteDelegate())));
+                                          InviteDelegate(vesselID: widget.vesselID,))));
                             },
                             width: displayWidth(context) / 1.3,
                             height: displayHeight(context) * 0.053),
-                        SizedBox(
-                          height: 10,
-                        ),
                         GestureDetector(
                             onTap: (() async {
                               final image = await controller.capture();
@@ -213,9 +211,7 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                                                       textColor: Colors.green,
                                                       fontWeight:
                                                           FontWeight.w500,
-                                                      textSize: 11)),
-                                            
-                                            
+                                                      textSize: displayWidth(context)* 0.03 )),
                                               Padding(
                                                   padding: EdgeInsets.symmetric(
                                                       horizontal: 8),
@@ -335,6 +331,7 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                                              // )
                                               //)
                                         ],
+
                                       ),
                                     ),
                                     Divider()

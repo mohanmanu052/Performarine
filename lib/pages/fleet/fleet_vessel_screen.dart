@@ -410,14 +410,14 @@ if(fleetdata!.data!=null && fleetdata!.data!.isNotEmpty){
                       return StatefulBuilder(
                           builder: (BuildContext context, StateSetter setter)
                           {
-                            debugPrint("MEMBERS ${snapShot.data!.myFleets!.isEmpty}");
+                           // debugPrint("MEMBERS ${snapShot.data!.myFleets!.isEmpty}");
                             return TabBarView(
                               physics: NeverScrollableScrollPhysics(),
                               children: [
-                                MemberDetailsWidget(memberList: snapShot.data!.myFleets!.isEmpty ? [] : snapShot.data!.myFleets![0].members ?? []),
+                                MemberDetailsWidget(memberList: (snapShot.data!.myFleets ?? []).isEmpty ? [] : snapShot.data!.myFleets![0].members ?? []),
                                 FleetDetailsCard(
                                   scaffoldKey: _scafoldKey,
-                                    fleetVesselsList: snapShot.data!.myFleets!.isEmpty ? [] : snapShot.data!.myFleets![0].fleetVessels! ?? []
+                                    fleetVesselsList: (snapShot.data!.myFleets ?? []).isEmpty ? [] : snapShot.data!.myFleets![0].fleetVessels! ?? []
                                 )
                               ],
                               controller: _tabController,

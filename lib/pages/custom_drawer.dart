@@ -25,6 +25,8 @@ import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/add_vessel_new/add_new_vessel_screen.dart';
 import 'package:performarine/pages/auth_new/change_password.dart';
 import 'package:performarine/pages/auth_new/sign_in_screen.dart';
+import 'package:performarine/pages/delegate/delegates_screen.dart';
+import 'package:performarine/pages/delegate/my_delegate_invites_screen.dart';
 import 'package:performarine/pages/fleet/fleet_reports.dart';
 import 'package:performarine/pages/fleet/fleet_vessel_screen.dart';
 import 'package:performarine/pages/fleet/my_fleet_screen.dart';
@@ -368,6 +370,34 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   child: commonText(
                                       context: context,
                                       text: 'My Reports',
+                                      fontWeight: FontWeight.w400,
+                                      textColor: Colors.black54,
+                                      textSize: textSize,
+                                      textAlign: TextAlign.start),
+                                ),
+                              ),
+                              SizedBox(
+                                height: displayHeight(context) * 0.02,
+                              ),
+
+                              Container(
+                                width: displayWidth(context),
+                                child: InkWell(
+                                  onTap: ()async {
+                                    // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+                                    CustomLogger().logWithFile(Level.info, "User Navigating to My Delegate -> $page");
+                                    Navigator.of(context).pop();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => MyDelegateInvitesScreen()),
+
+                                    );
+                                  },
+                                  child: commonText(
+                                      context: context,
+                                      text: 'My Delegate',
                                       fontWeight: FontWeight.w400,
                                       textColor: Colors.black54,
                                       textSize: textSize,
@@ -1138,7 +1168,34 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           ),
                           SizedBox(
                             height: displayHeight(context) * 0.02,
-                          ), 
+                          ),
+                          Container(
+                            width: displayWidth(context),
+                            child: InkWell(
+                              onTap: ()async {
+                                // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+                                Navigator.of(context).pop();
+
+                                CustomLogger().logWithFile(Level.info, "User Navigating to My Delegate -> $page");
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => MyDelegateInvitesScreen()),
+
+                                );
+                              },
+                              child: commonText(
+                                  context: context,
+                                  text: 'My Delegate ',
+                                  fontWeight: FontWeight.w400,
+                                  textColor: Colors.black54,
+                                  textSize: textSize,
+                                  textAlign: TextAlign.start),
+                            ),
+                          ),
+                          SizedBox(
+                            height: displayHeight(context) * 0.02,
+                          ),
                           Padding(
                             padding: EdgeInsets.only(right: displayWidth(context)* 0.1, bottom: displayHeight(context) * 0.01),
                             child: Divider(
