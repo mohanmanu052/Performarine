@@ -17,6 +17,7 @@ import 'package:performarine/models/fleet_list_model.dart';
 import 'package:performarine/models/fleet_dashboard_model.dart';
 import 'package:performarine/models/get_user_config_model.dart';
 import 'package:performarine/models/login_model.dart';
+import 'package:performarine/models/my_delegate_invite_model.dart';
 import 'package:performarine/models/registration_model.dart';
 import 'package:performarine/models/send_sensor_model.dart';
 import 'package:performarine/models/trip.dart';
@@ -37,6 +38,7 @@ import 'package:performarine/provider/fleet_sendinvite_provider.dart';
 import 'package:performarine/provider/get_user_config_api_provider.dart';
 import 'package:performarine/provider/leave_fleet_api_provider.dart';
 import 'package:performarine/provider/login_api_provider.dart';
+import 'package:performarine/provider/my_delegate_invite_provider.dart';
 import 'package:performarine/provider/registration_api_provider.dart';
 import 'package:performarine/provider/report_module_provider.dart';
 import 'package:performarine/provider/reset_password_provider.dart';
@@ -618,4 +620,15 @@ return res;
     return res;
   }
 
+Future<MyDelegateInviteModel> getDelegateInvites(BuildContext context,String accessToken,GlobalKey<ScaffoldState> scaffoldKey)async{
+  var res=await MyDelegateInviteProvider().getDelegateInvites(context, accessToken, scaffoldKey);
+  return res;
+  
+}
+
+
+Future<dynamic> delegateAcceptReject(BuildContext context,String accessToken,GlobalKey<ScaffoldState> scaffoldKey,bool flag,String verifyToken)async{
+  var res=await MyDelegateInviteProvider().delegateAcceptReject(context, accessToken, scaffoldKey, flag, verifyToken);
+  return res;
+}
 }
