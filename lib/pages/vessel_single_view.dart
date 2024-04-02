@@ -438,7 +438,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                             MaterialPageRoute(
                                                                 builder:
                                                                     (context) =>
-                                                                        DelegatesScreen()));
+                                                                        DelegatesScreen(vesselID: widget.vessel!.id!,)));
                                                       },
                                                       child: commonText(
                                                           text:

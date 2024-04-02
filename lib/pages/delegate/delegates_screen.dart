@@ -12,6 +12,7 @@ import 'package:performarine/common_widgets/widgets/user_feed_back.dart';
 import 'package:performarine/common_widgets/widgets/vessel_info_card.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
+import 'package:performarine/pages/delegate/update_delegate_access_screen.dart';
 import 'package:performarine/pages/feedback_report.dart';
 import 'package:performarine/pages/delegate/invite_delegate.dart';
 import 'package:performarine/services/database_service.dart';
@@ -304,14 +305,23 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                                           Flexible(
                                               flex: 3,
                                               fit: FlexFit.tight,
-                                              child: Container(
-                                                alignment: Alignment.centerLeft,
-                                                child: commonText(
-                                                    text:
-                                                        'Manage Share Settings',
-                                                    fontWeight: FontWeight.w300,
-                                                    textSize: 10,
-                                                    textColor: blueColor),
+                                              child: InkWell(
+                                                onTap: (){
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) => UpdateDelegateAccessScreen(vesselID: widget.vesselID,)),
+                                                  );
+                                                },
+                                                child: Container(
+                                                  alignment: Alignment.centerLeft,
+                                                  child: commonText(
+                                                      text:
+                                                          'Manage Share Settings',
+                                                      fontWeight: FontWeight.w300,
+                                                      textSize: 10,
+                                                      textColor: blueColor),
+                                                ),
                                               )),
                                           // Flexible(
                                           //     flex: 2,
