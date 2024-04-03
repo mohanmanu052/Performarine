@@ -77,7 +77,8 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
     return PopScope(
               canPop:false,
 
-        onPopInvoked: (didPop) {
+      onPopInvoked: (didPop) async {
+        if(didPop) return;
                           if(widget.isComingFromUnilink??false){
         
         
