@@ -57,10 +57,10 @@ class _SingleMyDelegateInviteCardState extends State<SingleMyDelegateInviteCard>
         child: Column(
           children: [
             Container(
-              color: myDelegateInvite!.status ==
+              /*color: myDelegateInvite!.status ==
                   1
                   ? Colors.grey.shade50
-                  : null,
+                  : null*/
               child: Row(
                 mainAxisAlignment:
                 MainAxisAlignment.spaceBetween,
@@ -74,10 +74,10 @@ class _SingleMyDelegateInviteCardState extends State<SingleMyDelegateInviteCard>
                           context: context,
                           text: myDelegateInvite!.vesselName,
                           fontWeight: FontWeight.w500,
-                          textColor: myDelegateInvite!.status ==
+                          textColor: /*myDelegateInvite!.status ==
                               1
                               ? Colors.grey
-                              : Colors.black,
+                              : */Colors.black,
                           textSize:
                           displayWidth(context) *
                               0.042,
@@ -85,7 +85,7 @@ class _SingleMyDelegateInviteCardState extends State<SingleMyDelegateInviteCard>
                         ),
                         commonText(
                             context: context,
-                            text: 'Send By ${myDelegateInvite!.invitedByUsername}',
+                            text: 'Send By ${myDelegateInvite!.invitedByUsername ?? '-'}',
                             fontWeight:
                             FontWeight.w400,
                             textColor: Colors.grey,
@@ -99,10 +99,10 @@ class _SingleMyDelegateInviteCardState extends State<SingleMyDelegateInviteCard>
                             text: 'Permissions: ',
                             fontWeight:
                             FontWeight.w400,
-                            textColor: myDelegateInvite!.status ==
+                            textColor: /*myDelegateInvite!.status ==
                                 1
                                 ? Colors.grey
-                                : Colors.black87,
+                                : */Colors.black87,
                             textSize: displayWidth(
                                 context) *
                                 0.03,
@@ -114,10 +114,10 @@ class _SingleMyDelegateInviteCardState extends State<SingleMyDelegateInviteCard>
                             'Reports | Manage Trips | Edit ',
                             fontWeight:
                             FontWeight.w400,
-                            textColor: myDelegateInvite!.status ==
+                            textColor:/* myDelegateInvite!.status ==
                                 1
                                 ? Colors.grey
-                                : Colors.black87,
+                                :*/ Colors.black87,
                             textSize: displayWidth(
                                 context) *
                                 0.026,
@@ -129,14 +129,13 @@ class _SingleMyDelegateInviteCardState extends State<SingleMyDelegateInviteCard>
                   SizedBox(
                     width: 4,
                   ),
-                  myDelegateInvite!.status ==
-                      1
+                  myDelegateInvite!.status == 1
                       ? commonText(
                       context: context,
                       text: 'Expired',
                       fontWeight: FontWeight.w300,
                       textColor:
-                      Colors.red.shade200,
+                      Colors.red,
                       textSize:
                       displayWidth(context) *
                           0.032,
@@ -235,90 +234,97 @@ class _SingleMyDelegateInviteCardState extends State<SingleMyDelegateInviteCard>
                             context) *
                             0.04,
                       ),
-                      InkWell(
-                            onTap: () {
-                              CustomFleetDailog()
-                                  .showFleetDialog(
-                                context: context,
-                                title:
-                                'Are you sure you want to accept the Delegate Invite?',
-                                subtext:
-                                myDelegateInvite!.vesselName!,
-                                postiveButtonColor:
-                                blueColor,
-                                positiveButtonText:
-                                'Accept',
-                                negtiveButtuonColor:
-                                primaryColor,
-                                onNegativeButtonTap:
-                                    () {
-                                  Navigator.of(
-                                      context)
-                                      .pop();
-                                },
-                                onPositiveButtonTap:
-                                    () {
-                                      Navigator.of(context).pop();
-                                      setState(() {
-                                        isAcceptBtnClicked = true;
-                                      });
-                                  commonProvider?.delegateAcceptReject(
-                                      context,
-                                      commonProvider
-                                          ?.loginModel
-                                          ?.token ??
-                                          '',
-                                      widget.scaffoldKey!,
-                                      'true',
-                                      myDelegateInvite!.invitationLink!).then((value)
-                                  {
-                                    if(value != null)
-                                      {
-                                        if(value.status!)
-                                          {
-                                            setState(() {
-                                              isAcceptBtnClicked = false;
-                                            });
-
-                                            widget.onTap!.call();
-                                          }
-                                        else
-                                          {
-                                            setState(() {
-                                              isAcceptBtnClicked = false;
-                                            });
-                                          }
-                                      }
-                                    else
-                                      {
+                      SizedBox(
+                        width: displayWidth(context) * 0.18,
+                        child: InkWell(
+                              onTap: () {
+                                CustomFleetDailog()
+                                    .showFleetDialog(
+                                  context: context,
+                                  title:
+                                  'Are you sure you want to accept the Delegate Invite?',
+                                  subtext:
+                                  myDelegateInvite!.vesselName!,
+                                  postiveButtonColor:
+                                  blueColor,
+                                  positiveButtonText:
+                                  'Accept',
+                                  negtiveButtuonColor:
+                                  primaryColor,
+                                  onNegativeButtonTap:
+                                      () {
+                                    Navigator.of(
+                                        context)
+                                        .pop();
+                                  },
+                                  onPositiveButtonTap:
+                                      () {
+                                        Navigator.of(context).pop();
                                         setState(() {
+                                          isAcceptBtnClicked = true;
+                                        });
+                                    commonProvider?.delegateAcceptReject(
+                                        context,
+                                        commonProvider
+                                            ?.loginModel
+                                            ?.token ??
+                                            '',
+                                        widget.scaffoldKey!,
+                                        'true',
+                                        myDelegateInvite!.invitationLink!).then((value)
+                                    {
+                                      if(value != null)
+                                        {
+                                          if(value.status!)
+                                            {
+                                              setState(() {
+                                                isAcceptBtnClicked = false;
+                                              });
+
+                                              widget.onTap!.call();
+                                            }
+                                          else
+                                            {
+                                              setState(() {
+                                                isAcceptBtnClicked = false;
+                                              });
+                                            }
+                                        }
+                                      else
+                                        {
+                                          setState(() {
+                                          isAcceptBtnClicked = false;
+                                        });
+
+                                        }
+                                    }).catchError((e){
+                                      setState(() {
                                         isAcceptBtnClicked = false;
                                       });
-
-                                      }
-                                  }).catchError((e){
-                                    setState(() {
-                                      isAcceptBtnClicked = false;
                                     });
-                                  });
-                                  getUserConfigData();
-                                },
-                              );
-                            },
-                            child: isAcceptBtnClicked!
-                                ? SizedBox(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(color: blueColor, strokeWidth: 2.5,))
-                                : Container(
-                              width: displayWidth(context) * 0.18,
-                              decoration: BoxDecoration(
-                                  color: blueColor,
-                                  borderRadius:
-                                  BorderRadius
-                                      .circular(
-                                      20)),
-                              child: Center(
+                                    getUserConfigData();
+                                  },
+                                );
+                              },
+                              child: isAcceptBtnClicked!
+                                  ? Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SizedBox(
+                                      height: 25,
+                                      width: 25,
+                                      child: Center(child: CircularProgressIndicator(color: blueColor, strokeWidth: 2.5,))),
+                                    ],
+                                  )
+                                  : Container(
+                                width: displayWidth(context) * 0.18,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    color: blueColor,
+                                    borderRadius:
+                                    BorderRadius
+                                        .circular(
+                                        20)),
                                 child: Padding(
                                   padding:
                                   const EdgeInsets
@@ -349,7 +355,7 @@ class _SingleMyDelegateInviteCardState extends State<SingleMyDelegateInviteCard>
                                 ),
                               ),
                             ),
-                          ),
+                      ),
                     ],
                   )
                 ],

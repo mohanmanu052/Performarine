@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:email_validator/email_validator.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -191,15 +192,28 @@ class _InviteDelegateState extends State<InviteDelegate> {
                               textCapitalization: TextCapitalization.words,
                               maxLength: 32,
                               prefixIcon: null,
-                              suffixIcon: Icon(Icons.close),
-                              onSuffixIconTap: (){userEmailController.clear();},
+                              suffixIcon: InkWell(
+                                onTap: (){
+                                  setState(() {
+                                  userEmailController.clear();
+                                });},
+                                  child: Icon(Icons.close)),
                               requestFocusNode: null,
                               obscureText: false,
                               onTap: () {},
                               onChanged: (String value) {},
                               validator: (value) {
-                                if (value!.trim().isEmpty) {
+                                if (value!.isEmpty) {
+                                  return 'Enter Your Email';
+                                }
+                                if (!EmailValidator.validate(value)) {
                                   return 'Enter Valid Email';
+                                } else if (EmailValidator.validate(value)) {
+                                  String emailExt = value.split('.').last;
+
+                                  if (!['com', 'in', 'us'].contains(emailExt)) {
+                                    return 'Enter Valid Email';
+                                  }
                                 }
                                 return null;
                               },
@@ -584,11 +598,8 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                               isInviteDelegateBtnClicked = false;
                                             });
 
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        MyDelegateInvitesScreen()));
+                                            Navigator.of(context).pop(true);
+
                                           }
                                           else
                                           {
@@ -608,6 +619,10 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                           isInviteDelegateBtnClicked = false;
                                         });
                                       });
+                                    }
+                                  else
+                                    {
+                                      Utils.showSnackBar(context, scaffoldKey: scaffoldKey, message: 'Please select access duration.');
                                     }
                                 }
                               },

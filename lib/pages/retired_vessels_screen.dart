@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/home_page.dart';
+import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
+import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
 import '../common_widgets/widgets/user_feed_back.dart';
@@ -31,6 +34,8 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
 
   final controller = ScreenshotController();
 
+  late CommonProvider commonProvider;
+
   @override
   void initState() {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
@@ -38,6 +43,8 @@ class _RetiredVesselsScreenState extends State<RetiredVesselsScreen> {
     super.initState();
 
     getVesselFuture = _databaseService.retiredVessels();
+
+    commonProvider = context.read<CommonProvider>();
   }
 
   @override
@@ -57,6 +64,7 @@ if(widget.bottomNavIndex==1){
 
   @override
   Widget build(BuildContext context) {
+    commonProvider = context.watch<CommonProvider>();
     return Screenshot(
       controller: controller,
       child: Scaffold(
@@ -176,8 +184,8 @@ if(widget.bottomNavIndex==1){
                                 itemBuilder: (context, index) {
                                   final vessel = snapshot.data![index];
                                   return snapshot.data![index].vesselStatus == 0
-                                      ? vesselSingleViewCard(context, vessel,
-                                          (CreateVessel value) {}, scaffoldKey)
+                                      ? vesselSingleViewCard(context, vessel, commonProvider.loginModel!.userId!,
+                                          (CreateVessel value) {},  scaffoldKey)
                                       : SizedBox();
                                 },
                               ),

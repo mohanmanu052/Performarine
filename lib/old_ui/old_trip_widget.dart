@@ -16,6 +16,7 @@ import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/common_widgets/widgets/status_tag.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
@@ -27,7 +28,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../common_widgets/utils/urls.dart';
 import '../../common_widgets/widgets/log_level.dart';
-import '../../common_widgets/widgets/status_tage.dart';
 import '../new_trip_analytics_screen.dart';
 import '../pages/web_navigation/privacy_and_policy_web_view.dart';
 

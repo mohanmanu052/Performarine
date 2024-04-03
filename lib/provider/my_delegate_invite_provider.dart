@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -46,6 +47,8 @@ class MyDelegateInviteProvider with ChangeNotifier {
       if (response.statusCode == HttpStatus.ok) {
         myDelegateInviteModel =
             MyDelegateInviteModel.fromJson(json.decode(response.body));
+        log('My Delegate Invites RESPONSE : ' +
+            response.body.toString());
         CustomLogger().logWithFile(
             Level.info, "My Delegate Invite Response : ' + ${response.body}");
 

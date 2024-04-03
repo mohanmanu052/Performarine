@@ -53,8 +53,7 @@ class _MyDelegateInvitesScreenState extends State<MyDelegateInvitesScreen> {
   }
 
   void getDelgateInvites() async {
-    future = commonProvider?.getDelegateInvites(
-        context, commonProvider!.loginModel!.token!, scfoldKey);
+    future = commonProvider?.getDelegateInvites(context, commonProvider!.loginModel!.token!, scfoldKey);
   }
 
   @override
@@ -132,59 +131,61 @@ class _MyDelegateInvitesScreenState extends State<MyDelegateInvitesScreen> {
                 },
                 child: UserFeedback().getUserFeedback(context)),
           ),
-          body: Container(
-              margin: EdgeInsets.symmetric(horizontal: 17, vertical: 17),
-              child: FutureBuilder<MyDelegateInviteModel>(
-                  future: future,
-                  builder: (context, snapShot) {
-                    if (snapShot.connectionState == ConnectionState.waiting) {
-                      return SizedBox(
-                          height: displayHeight(context) / 1.5,
+          body: SingleChildScrollView(
+            child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 17, vertical: 17),
+                child: FutureBuilder<MyDelegateInviteModel>(
+                    future: future,
+                    builder: (context, snapShot) {
+                      if (snapShot.connectionState == ConnectionState.waiting) {
+                        return SizedBox(
+                            height: displayHeight(context) / 1.5,
+                            child: Center(
+                                child: const CircularProgressIndicator(
+                                    color: blueColor)));
+                      } else if (snapShot.data == null ||
+                          snapShot.data!.myDelegateInvities!.isEmpty) {
+                        return Container(
+                          height: displayHeight(context) / 1.4,
                           child: Center(
-                              child: const CircularProgressIndicator(
-                                  color: blueColor)));
-                    } else if (snapShot.data == null ||
-                        snapShot.data!.myDelegateInvities!.isEmpty) {
-                      return Container(
-                        height: displayHeight(context) / 1.4,
-                        child: Center(
-                          child: commonText(
-                              context: context,
-                              text: 'No data found',
-                              fontWeight: FontWeight.w500,
-                              textColor: Colors.black,
-                              textSize: displayWidth(context) * 0.05,
-                              textAlign: TextAlign.start),
-                        ),
-                      );
-                    } else {
-                      myDelegateInvite = snapShot.data!.myDelegateInvities!;
-                      return Column(
-                        children: [
-                          SizedBox(
-                            height: displayHeight(context) * 0.01,
+                            child: commonText(
+                                context: context,
+                                text: 'No data found',
+                                fontWeight: FontWeight.w500,
+                                textColor: Colors.black,
+                                textSize: displayWidth(context) * 0.05,
+                                textAlign: TextAlign.start),
                           ),
-                          ListView.builder(
-                              physics: NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount:
-                              myDelegateInvite!.length,
-                              itemBuilder: (context, index) {
-                                myDelegateInvite = snapShot.data!.myDelegateInvities!;
-                                return SingleMyDelegateInviteCard(
-                                  myDelegateInvite: myDelegateInvite![index],
-                                scaffoldKey: scfoldKey,
-                                onTap: (){
-                                  myDelegateInvite!.removeAt(index);
-                                  setState(() {});
-                                  //myDelegateInvite![index].removeWhere((item) => item == 'Item 3');
-                                },);
+                        );
+                      } else {
+                        return Column(
+                          children: [
+                            SizedBox(
+                              height: displayHeight(context) * 0.01,
+                            ),
+                            ListView.builder(
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount:
+                                snapShot.data!.myDelegateInvities!.length,
+                                itemBuilder: (context, index) {
+                                  debugPrint("RESPONSE DELEGATE ${snapShot.data!.myDelegateInvities![index].status}");
+                                  return SingleMyDelegateInviteCard(
+                                    myDelegateInvite: snapShot.data!.myDelegateInvities![index],
+                                  scaffoldKey: scfoldKey,
+                                  onTap: (){
+                                    future = commonProvider?.getDelegateInvites(context, commonProvider!.loginModel!.token!, scfoldKey);
+                                    //myDelegateInvite!.removeAt(index);
+                                    setState(() {});
+                                    //myDelegateInvite![index].removeWhere((item) => item == 'Item 3');
+                                  },);
 
-                              }),
-                        ],
-                      );
-                    }
-                  })),
+                                }),
+                          ],
+                        );
+                      }
+                    })),
+          ),
         ));
   }
 
