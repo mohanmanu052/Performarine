@@ -9,9 +9,6 @@ class JwtUtils{
     final storage = new FlutterSecureStorage();
     String? loginData = await storage.read(key: 'loginData');
     LoginModel loginModel;
-    //String? loginData = sharedPreferences!.getString('loginData');
-    //Utils.customPrint('LOGIN DATA: $loginData');
-
     if (loginData != null) {
           loginModel = LoginModel.fromJson(json.decode(loginData));
           Map<String, dynamic> loginDecodedData = JwtDecoder.decode(loginModel.token??"");
@@ -22,10 +19,6 @@ if(loginDecodedData['sub']==unilinkDecodedData['sub']){
   return Future.value(false);
 }
 
-          print('the login decoded data was'+loginDecodedData.toString());
-          print('the unilink decoded data was'+unilinkDecodedData.toString());
-
-      // notifyListeners();
     }
 return Future.value(false);
 

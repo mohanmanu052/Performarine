@@ -168,58 +168,16 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
               ),
             ],
           ),
-          body: Container(
-            child: Stack(
-              children: [
-                Positioned(
-                    bottom: 0,
-                    right: 0,
-                    left: 0,
-                    child: Container(
-                      height: displayHeight(context) / 8.5,
-                      padding: EdgeInsets.all(8),
-                      child: Column(
-                        children: [
-                          CommonButtons.getActionButton(
-                              title: 'Invite Delegate',
-                              context: context,
-                              fontSize: displayWidth(context) * 0.044,
-                              textColor: Colors.white,
-                              buttonPrimaryColor: blueColor,
-                              borderColor: blueColor,
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: ((context) =>
-                                            InviteDelegate(vesselID: widget.vesselID,))));
-                              },
-                              width: displayWidth(context) / 1.3,
-                              height: displayHeight(context) * 0.053),
-                          GestureDetector(
-                              onTap: (() async {
-                                final image = await controller.capture();
-                                await SystemChrome.setPreferredOrientations(
-                                    [DeviceOrientation.portraitUp]);
-        
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => FeedbackReport(
-                                              imagePath: image.toString(),
-                                              uIntList: image,
-                                            )));
-                              }),
-                              child: UserFeedback().getUserFeedback(
-                                context,
-                              )),
-                        ],
-                      ),
-                    )),
-                Container(
-                  margin: EdgeInsets.only(bottom: displayHeight(context) / 7.1),
-                  height: displayHeight(context) / 0.8,
-                  child: SingleChildScrollView(
+        body: Container(
+          child: Stack(
+            children: [
+              Positioned(
+                  bottom: 0,
+                  right: 0,
+                  left: 0,
+                  child: Container(
+                    height: displayHeight(context) / 8.5,
+                    padding: EdgeInsets.all(8),
                     child: Column(
                       children: [
                         CommonButtons.getActionButton(
@@ -436,107 +394,49 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                                                   alignment: Alignment.centerLeft,
                                                   child: commonText(
                                                       text:
-                                                          'Janeiskij02@knds.com',
-                                                      fontWeight: FontWeight.w400,
-                                                      textSize: 11,
-                                                      textColor: Colors.grey),
-                                                )),
-                                            // Flexible(
-                                            //     fit: FlexFit.tight,
-                                            //     flex: 3,
-                                            //     child: Visibility(
-                                            //       child: Container(
-                                            //         padding: EdgeInsets.symmetric(
-                                            //             horizontal: 2,
-                                            //             vertical: 6),
-                                            //         decoration: BoxDecoration(
-                                            //           color: colorLightRed,
-                                            //           borderRadius:
-                                            //               BorderRadius.only(
-                                            //                   topLeft:
-                                            //                       Radius.circular(
-                                            //                           20),
-                                            //                   bottomLeft:
-                                            //                       Radius.circular(
-                                            //                           20),
-                                            //                   bottomRight:
-                                            //                       Radius.circular(
-                                            //                           20)),
-                                            //         ),
-                                            //         child: commonText(
-                                            //             text: 'Remove Access',
-                                            //             fontWeight:
-                                            //                 FontWeight.w400,
-                                            //             textSize: 10,
-                                            //             textColor:
-                                            //                 floatingBtnColor),
-                                            //       ),
-                                            //     ))
-                                      )],
-                                        ),
+                                                          'Manage Share Settings',
+                                                      fontWeight: FontWeight.w300,
+                                                      textSize: 10,
+                                                      textColor: blueColor),
+                                                ),
+                                              )),
+                                          // Flexible(
+                                          //     flex: 2,
+                                          //     child: Container(
+                                          //       alignment: Alignment.centerLeft,
+                                          //       child: Column(children: [
+                                          //         commonText(
+                                          //             text: 'Permissions:',
+                                          //             fontWeight:
+                                          //                 FontWeight.w400,
+                                          //             textSize: 10),
+                                                  //                                                 commonText(text: 'Reports | Manage Trips | Edit',
+                                                  // fontWeight: FontWeight.w400,
+                                                  // textSize: 7
+                                                  // ),
+                                                //]),
+                                             // )
+                                              //)
+                                        ],
+
                                       ),
-                                      Padding(
-                                        padding:
-                                            EdgeInsets.symmetric(vertical: 2),
-                                        child: Row(
-                                          children: [
-                                            Flexible(
-                                                flex: 3,
-                                                fit: FlexFit.tight,
-                                                child: InkWell(
-                                                  onTap: (){
-                                                    Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) => UpdateDelegateAccessScreen(vesselID: widget.vesselID,)),
-                                                    );
-                                                  },
-                                                  child: Container(
-                                                    alignment: Alignment.centerLeft,
-                                                    child: commonText(
-                                                        text:
-                                                            'Manage Share Settings',
-                                                        fontWeight: FontWeight.w300,
-                                                        textSize: 10,
-                                                        textColor: blueColor),
-                                                  ),
-                                                )),
-                                            // Flexible(
-                                            //     flex: 2,
-                                            //     child: Container(
-                                            //       alignment: Alignment.centerLeft,
-                                            //       child: Column(children: [
-                                            //         commonText(
-                                            //             text: 'Permissions:',
-                                            //             fontWeight:
-                                            //                 FontWeight.w400,
-                                            //             textSize: 10),
-                                                    //                                                 commonText(text: 'Reports | Manage Trips | Edit',
-                                                    // fontWeight: FontWeight.w400,
-                                                    // textSize: 7
-                                                    // ),
-                                                  //]),
-                                               // )
-                                                //)
-                                          ],
-        
-                                        ),
-                                      ),
-                                      Divider()
-                                    ],
-                                  ));
-                            })
-        
-                        //vesselSingleViewCard(context, vesselData!, (p0) => null, scaffoldKey)
-                      ],
-                    ),
+                                    ),
+                                    Divider()
+                                  ],
+                                ));
+                          })
+
+                      //vesselSingleViewCard(context, vesselData!, (p0) => null, scaffoldKey)
+                    ],
                   ),
-                )
-              ],
-            ),
+                ),
+              )
+            ],
           ),
         ),
       ),
+                    ),
+      
     );
   }
 
