@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/jwt_utils.dart';
+import 'package:performarine/pages/delegate/delegates_screen.dart';
 import 'package:performarine/pages/fleet/manage_permissions_screen.dart';
 import 'package:performarine/pages/fleet/my_fleet_screen.dart';
 import 'package:performarine/pages/new_intro_screen.dart';
@@ -474,6 +475,58 @@ if(isSameUser){
               });
             }
           }
+          else if(initialLink.path=='/delegateaccess'){
+                        Utils.customPrint(
+                "delegate: ${initialLink.queryParameters['verify'].toString()}");
+            CustomLogger().logWithFile(Level.info,
+                "delegate: ${initialLink.queryParameters['verify'].toString()} -> $page");
+            bool? isUserLoggedIn = await sharedPreferences!.getBool('isUserLoggedIn');
+
+            Utils.customPrint("isUserLoggedIn: $isUserLoggedIn");
+            CustomLogger().logWithFile(
+                Level.info, "isUserLoggedIn: $isUserLoggedIn-> $page");
+
+            Map<String, dynamic> arguments = {
+              "isComingFromReset": false,
+              "token": initialLink.queryParameters['verify'].toString()
+            };
+            if (isUserLoggedIn != null) {
+              if (isUserLoggedIn) {
+
+                isComingFromUnilinkMain = true;
+                bool isSameUser=await        JwtUtils.getDecodedData(initialLink.queryParameters['verify'].toString());
+                String vesselId=JwtUtils.getVesselId(initialLink.queryParameters['verify'].toString());
+                String? ownerId=JwtUtils.getOwnerId(initialLink.queryParameters['verify'].toString());
+                if(isSameUser){
+                  // Navigator.pushAndRemoveUntil(context,MaterialPageRoute(builder: (context)=>ManagePermissionsScreen(isComingFromUnilink:true,fleetId: fleetId,url: uri,),),
+                  //     ModalRoute.withName('/')
+                  //
+                  // );
+                  Get.to(
+                      DelegatesScreen(isComingFromUnilink:true,vesselID: vesselId,uri: initialLink,
+                      ownerId: ownerId,
+                      
+                      ),
+                      arguments: arguments,
+
+                  );
+                }else{
+                  Map<String, dynamic> arguments = {
+                    "isComingFromReset": false,
+                    "token": initialLink.queryParameters['verify'].toString(),
+                    'isLoggedinUser':false
+                  };
+                  Get.offAll(
+                      BottomNavigation(
+                          isComingFromReset: false,
+                          isAppKilled: true),
+                      arguments: arguments);
+                }
+              }
+
+
+            }}
+
         } else {
           checkIfTripIsRunning();
           Future.delayed(Duration(seconds: 1), () {
@@ -548,10 +601,6 @@ if(isSameUser){
                 bool isSameUser=await        JwtUtils.getDecodedData(uri!.queryParameters['verify'].toString());
                 String fleetId=JwtUtils.getFleetId(uri.queryParameters['verify'].toString());
                 if(isSameUser){
-                  // Navigator.pushAndRemoveUntil(context,MaterialPageRoute(builder: (context)=>ManagePermissionsScreen(isComingFromUnilink:true,fleetId: fleetId,url: initialLink,),),
-                  //     ModalRoute.withName('/')
-                  //
-                  // );
                   Get.to(
                       ManagePermissionsScreen(isComingFromUnilink:true,fleetId: fleetId,url: uri,),
                       arguments: arguments);
@@ -577,6 +626,66 @@ Get.offAll( const SignInScreen());
               });
             }
           }
+
+          else if(uri.path=='/delegateaccess'){
+                        Utils.customPrint(
+                "delegate: ${uri.queryParameters['verify'].toString()}");
+            CustomLogger().logWithFile(Level.info,
+                "delegate: ${uri.queryParameters['verify'].toString()} -> $page");
+            bool? isUserLoggedIn = await sharedPreferences!.getBool('isUserLoggedIn');
+
+            Utils.customPrint("isUserLoggedIn: $isUserLoggedIn");
+            CustomLogger().logWithFile(
+                Level.info, "isUserLoggedIn: $isUserLoggedIn-> $page");
+
+            Map<String, dynamic> arguments = {
+              "isComingFromReset": false,
+              "token": uri.queryParameters['verify'].toString()
+            };
+            if (isUserLoggedIn != null) {
+              if (isUserLoggedIn) {
+
+                isComingFromUnilinkMain = true;
+                bool isSameUser=await        JwtUtils.getDecodedData(uri.queryParameters['verify'].toString());
+                String vesselId=JwtUtils.getVesselId(uri.queryParameters['verify'].toString());
+                String? ownerId=JwtUtils.getOwnerId(uri.queryParameters['verify'].toString());
+                if(isSameUser){
+                  Get.to(
+                      DelegatesScreen(isComingFromUnilink:true,vesselID: vesselId,uri: uri,
+                      ownerId: ownerId,
+                      
+                      ),
+                      arguments: arguments,
+
+                  );
+                }else{
+                  Map<String, dynamic> arguments = {
+                    "isComingFromReset": false,
+                    "token": uri.queryParameters['verify'].toString(),
+                    'isLoggedinUser':false
+                  };
+                  Get.offAll(
+                      BottomNavigation(
+                          isComingFromReset: false,
+                          isAppKilled: true),
+                      arguments: arguments);
+                }
+              }
+            } else {
+
+
+              Future.delayed(Duration(seconds: 2), () {
+                //isComingFromUnilinkMain = true;
+                Get.offAll(
+                    SignInScreen(),
+                    );
+              });
+            }
+          }
+
+
+
+
         } else {
           checkIfTripIsRunning();
           Future.delayed(Duration(seconds: 1), () {

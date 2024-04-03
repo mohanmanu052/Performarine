@@ -31,6 +31,7 @@ import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/lpr_device_handler.dart';
 import 'package:performarine/pages/auth_new/sign_in_screen.dart';
+import 'package:performarine/pages/delegate/delegates_screen.dart';
 import 'package:performarine/pages/fleet/manage_permissions_screen.dart';
 import 'package:performarine/pages/fleet/my_fleet_screen.dart';
 import 'package:performarine/pages/new_splash_screen.dart';
@@ -489,6 +490,65 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               });
             }
           }
+
+          else if(uri.path=='/delegateaccess'){
+                        Utils.customPrint(
+                "delegate: ${uri.queryParameters['verify'].toString()}");
+            CustomLogger().logWithFile(Level.info,
+                "delegate: ${uri.queryParameters['verify'].toString()} -> $page");
+            bool? isUserLoggedIn = await sharedPreferences!.getBool('isUserLoggedIn');
+
+            Utils.customPrint("isUserLoggedIn: $isUserLoggedIn");
+            CustomLogger().logWithFile(
+                Level.info, "isUserLoggedIn: $isUserLoggedIn-> $page");
+
+            Map<String, dynamic> arguments = {
+              "isComingFromReset": false,
+              "token": uri.queryParameters['verify'].toString()
+            };
+            if (isUserLoggedIn != null) {
+              if (isUserLoggedIn) {
+
+                isComingFromUnilinkMain = true;
+                bool isSameUser=await        JwtUtils.getDecodedData(uri.queryParameters['verify'].toString());
+                String vesselId=JwtUtils.getVesselId(uri.queryParameters['verify'].toString());
+                String? ownerId=JwtUtils.getOwnerId(uri.queryParameters['verify'].toString());
+                if(isSameUser){
+                  Get.to(
+                      DelegatesScreen(isComingFromUnilink:true,vesselID: vesselId,uri: uri,
+                      ownerId: ownerId,
+                      
+                      ),
+                      arguments: arguments,
+
+                  );
+                }else{
+                  Map<String, dynamic> arguments = {
+                    "isComingFromReset": false,
+                    "token": uri.queryParameters['verify'].toString(),
+                    'isLoggedinUser':false
+                  };
+                  Get.offAll(
+                      BottomNavigation(
+                          isComingFromReset: false,
+                          isAppKilled: true),
+                      arguments: arguments);
+                }
+              }
+            } else {
+
+
+              Future.delayed(Duration(seconds: 2), () {
+                //isComingFromUnilinkMain = true;
+                Get.offAll(
+                    SignInScreen(),
+                    );
+              });
+            }
+          }
+
+
+          
 
         }
       }, onError: (err) {

@@ -27,6 +27,7 @@ import 'package:performarine/provider/add_vessel_api_provider.dart';
 import 'package:performarine/provider/change_password_provider.dart';
 import 'package:performarine/provider/create_delegate_api_provider.dart';
 import 'package:performarine/provider/create_newfleet_provider.dart';
+import 'package:performarine/provider/delegate_provider.dart';
 import 'package:performarine/provider/delete_fleet_api_provider.dart';
 import 'package:performarine/provider/delete_trip_api_provider.dart';
 import 'package:performarine/provider/edit_fleet_api_provider.dart';
@@ -658,5 +659,14 @@ Future<MyDelegateInviteModel> getDelegateInvites(BuildContext context,String acc
 /*Future<CommonModel> delegateAcceptReject(BuildContext context,String accessToken,GlobalKey<ScaffoldState> scaffoldKey,String flag,String verifyToken)async{
   var res=await MyDelegateInviteProvider().delegateAcceptReject(context, accessToken, scaffoldKey, flag, verifyToken);
   return res;
+}
+
 }*/
+
+Future<Response> acceptDelegateInvite(Uri uri)async{
+  var res=DelegateProvider().acceptDelegateInvitation(uri);
+  return res;
+
+}
+
 }

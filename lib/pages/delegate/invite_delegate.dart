@@ -19,6 +19,7 @@ import 'package:performarine/common_widgets/widgets/user_feed_back.dart';
 import 'package:performarine/common_widgets/widgets/vessel_info_card.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
+import 'package:performarine/pages/delegate/delegates_screen.dart';
 import 'package:performarine/pages/delegate/my_delegate_invites_screen.dart';
 import 'package:performarine/pages/feedback_report.dart';
 import 'package:performarine/provider/common_provider.dart';
@@ -39,6 +40,8 @@ class _InviteDelegateState extends State<InviteDelegate> {
   final controller = ScreenshotController();
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   late Future<List<CreateVessel>> getVesselFuture;
+    List<CreateVessel>? getVesselSyncToCloud;
+
   CreateVessel? vesselData;
   final DatabaseService _databaseService = DatabaseService();
   DateTime firstDate = DateTime(1980),
@@ -571,24 +574,24 @@ class _InviteDelegateState extends State<InviteDelegate> {
                               textColor: Colors.white,
                               buttonPrimaryColor: blueColor,
                               borderColor: blueColor,
-                              onTap: () {
+                              onTap: () async {
                                 if (formKey.currentState!.validate()) {
                                   FocusScope.of(context).unfocus();
 
                                   if((selectedShareUpdate ?? '').isNotEmpty)
                                     {
+                                      debugPrint("IF EXECUTED");
 
                                       setState(() {
                                         isInviteDelegateBtnClicked = true;
                                       });
-
+bool? isSyncToCloud=await getVesselDataSyncToCloud();
                                       commonProvider
                                           .createDelegate(
                                           context,
                                           commonProvider.loginModel!.token!,
-
-                                          widget.vesselID!,
-                                          userEmailController.text.trim().toLowerCase(),
+                                          widget.vesselID??'6400c54b7a70ad4eae7c550d',
+                                          userEmailController.text.trim(),
                                           selectedShareUpdate!,
                                           scaffoldKey)
                                           .then((value) {
@@ -598,8 +601,11 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                               isInviteDelegateBtnClicked = false;
                                             });
 
-                                            Navigator.of(context).pop(true);
-
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        DelegatesScreen()));
                                           }
                                           else
                                           {
@@ -710,6 +716,74 @@ class _InviteDelegateState extends State<InviteDelegate> {
     return dateString;
   }
 
+
+  Future<bool>? getVesselDataSyncToCloud() async {
+                            var vesselsSyncDetails =await _databaseService.vesselsSyncDetails();
+if(vesselsSyncDetails){
+      getVesselSyncToCloud = await _databaseService.syncAndSignOutVesselList().catchError((onError) {
+    });
+
+        for (int i = 0; i < getVesselSyncToCloud!.length; i++) {
+        var vesselSyncOrNot = getVesselSyncToCloud![i].isSync;
+        Utils.customPrint(
+            "VESSEL SUCCESS MESSAGE ${getVesselSyncToCloud![i].imageURLs}");
+
+        if (vesselSyncOrNot == 0) {
+          if (getVesselSyncToCloud![i].imageURLs != null &&
+              getVesselSyncToCloud![i].imageURLs!.isNotEmpty) {
+            if (getVesselSyncToCloud![i].imageURLs!.startsWith("https")) {
+              getVesselSyncToCloud![i].selectedImages = [];
+            } else {
+              getVesselSyncToCloud![i].selectedImages = [
+                File(getVesselSyncToCloud![i].imageURLs!)
+              ];
+            }
+
+            Utils.customPrint(
+                'VESSEL Data ${File(getVesselSyncToCloud![i].imageURLs!)}');
+          } else {
+            getVesselSyncToCloud![i].selectedImages = [];
+          }
+
+          await commonProvider
+              .addVessel(
+                  context,
+                  getVesselSyncToCloud![i],
+                  commonProvider.loginModel!.userId!,
+                  commonProvider.loginModel!.token!,
+                  scaffoldKey,
+                  )
+              .then((value) async {
+            if (value!.status!) {
+              await _databaseService.updateIsSyncStatus(
+                  1, getVesselSyncToCloud![i].id.toString());
+            } else {
+              setState(() {
+                //vesselErrorOccurred = true;
+              });
+            }
+          }).catchError((error) {
+            Utils.customPrint("ADD VESSEL ERROR $error");
+            setState(() {
+              //vesselErrorOccurred = true;
+            });
+          });
+        } else {
+          Utils.customPrint("VESSEL DATA NOT Uploaded");
+        }
+
+
+}
+
+    setState(() {});
+
+return Future.value(true);
+
+}else{
+return Future.value(false);
+}
+
+  }
   void getShareAccessData() async {
     FirebaseRemoteConfig data = await setupRemoteConfig();
     String shareAccessData = data.getString('share_access_data');

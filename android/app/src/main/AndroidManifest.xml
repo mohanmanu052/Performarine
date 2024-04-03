@@ -108,7 +108,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="http" />
+                <data android:scheme="https" />
                 <data android:host="goeapidev.azurewebsites.net" />
                 <data android:pathPrefix="/fleetmember" />
             </intent-filter>
@@ -116,7 +116,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="http" />
+                <data android:scheme="https" />
                 <data android:host="goeapiuat.azurewebsites.net" />
                 <data android:pathPrefix="/fleetmember" />
             </intent-filter>
@@ -126,8 +126,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" />
-                <data android:host="performarineuat.azurewebsites.net" />
-                <data android:pathPrefix="/reset" />
+                <data android:host="goeapidev.azurewebsites.net" />
+                <data android:pathPrefix="/delegateaccess" />
             </intent-filter>
 
                         <intent-filter android:autoVerify="true">
@@ -136,7 +136,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" />
                 <data android:host="performarineuat.azurewebsites.net" />
-                <data android:pathPrefix="/fleetmember" />
+                <data android:pathPrefix="/delegateaccess" />
             </intent-filter>
 
         </activity>
