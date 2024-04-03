@@ -39,4 +39,23 @@ fleetId=unilinkDecodedData['fleetId'];
 
 return fleetId??'';
 }
+
+  static String getVesselId(String unilink){
+    String? vesselId;
+          Map<String, dynamic> unilinkDecodedData = JwtDecoder.decode(unilink);
+vesselId=unilinkDecodedData['vessel_id'];
+
+return vesselId??'';
+}
+
+
+  static String getOwnerId(String unilink){
+    String? ownerId;
+          Map<String, dynamic> unilinkDecodedData = JwtDecoder.decode(unilink);
+ownerId=unilinkDecodedData['owner_id'];
+
+return ownerId??'';
+}
+
+
 }

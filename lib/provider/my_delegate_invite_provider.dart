@@ -105,7 +105,7 @@ var data;
     Uri uri = Uri.https(Urls.baseUrl, Urls.delegateAccessAcceptReject);
 var body={
   'verify':verifyToken,
-  'flag':flag,
+  'flag':flag.toString(),
 };
 
     try {
