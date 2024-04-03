@@ -7,7 +7,7 @@ import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
-import 'package:performarine/common_widgets/widgets/status_tage.dart';
+import 'package:performarine/common_widgets/widgets/status_tag.dart';
 import 'package:performarine/models/fleet_details_model.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/home_page.dart';
@@ -25,21 +25,19 @@ Widget commonText(
     Color? textColor,
     FontWeight? fontWeight,
     TextAlign? textAlign = TextAlign.center,
-    TextDecoration textDecoration = TextDecoration.none,String fontFamily = outfit,
-      int? maxLines
-    }) {
+    TextDecoration textDecoration = TextDecoration.none,
+    String fontFamily = outfit,
+    int? maxLines}) {
   return Text(
     text ?? '',
     textAlign: textAlign!,
     textScaleFactor: 1,
-    maxLines: maxLines??null,
-
+    maxLines: maxLines ?? null,
     style: TextStyle(
         fontSize: textSize,
         color: textColor,
         fontFamily: fontFamily,
         fontWeight: fontWeight,
-
         decoration: textDecoration),
     overflow: TextOverflow.clip,
     softWrap: true,
@@ -110,7 +108,8 @@ Widget? selectImage(
 
                       Utils.customPrint(
                           ' CAM PERMISSION $isCameraPermissionGranted');
-                      CustomLogger().logWithFile(Level.warning, "CAM PERMISSION $isCameraPermissionGranted  while selecting image");
+                      CustomLogger().logWithFile(Level.warning,
+                          "CAM PERMISSION $isCameraPermissionGranted  while selecting image");
 
                       if (!isCameraPermissionGranted) {
                         await Utils.getStoragePermission(
@@ -136,14 +135,13 @@ Widget? selectImage(
       });
 }
 
-
 // Dashboard rich text on vesselSingleViewCard
-Widget dashboardRichText(
-    {String? modelName,
-    String? builderName,
-    BuildContext? context,
-    Color? color,}) {
-
+Widget dashboardRichText({
+  String? modelName,
+  String? builderName,
+  BuildContext? context,
+  Color? color,
+}) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.start,
     children: [
@@ -192,19 +190,17 @@ Widget dashboardRichText(
   );
 }
 
-
-Widget vesselSingleViewRichText(
-    {String? capacity,
-      String? built,
-      String regNo = '',
-      BuildContext? context,
-      Color? color,}) {
-
+Widget vesselSingleViewRichText({
+  String? capacity,
+  String? built,
+  String regNo = '',
+  BuildContext? context,
+  Color? color,
+}) {
   Utils.customPrint("EXPANSION CARD ${regNo}");
 
   return Row(
     mainAxisAlignment: MainAxisAlignment.start,
-
     children: [
       // Flexible(
       //   child: Column(
@@ -304,54 +300,57 @@ Widget vesselSingleViewRichText(
         ],
       ),
 
-       /*regNo != null && regNo != ''
+      /*regNo != null && regNo != ''
           ?
           : SizedBox(),*/
 
-     /* regNo != null && regNo != ''
-          ? */ Column(
-            children: [
-              Text(
-                regNo != null && regNo != '' ? regNo : '-',
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                  fontSize: displayWidth(context) * 0.038,
-                  color: color,
-                  fontFamily: outfit,
-                  fontWeight: FontWeight.w600,
-                ),
-                overflow: TextOverflow.clip,
-                softWrap: true,
-                maxLines: 1,
-              ),
-
-              Text(
-                'Registration Number',
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                  fontSize: displayWidth(context) * 0.03,
-                  color: Colors.black87,
-                  fontFamily: poppins,
-                  fontWeight: FontWeight.w400,
-                ),
-                overflow: TextOverflow.clip,
-                softWrap: true,
-                maxLines: 1,
-              ),
-            ],
-          )
-         /* : SizedBox(),*/
+      /* regNo != null && regNo != ''
+          ? */
+      Column(
+        children: [
+          Text(
+            regNo != null && regNo != '' ? regNo : '-',
+            textAlign: TextAlign.start,
+            style: TextStyle(
+              fontSize: displayWidth(context) * 0.038,
+              color: color,
+              fontFamily: outfit,
+              fontWeight: FontWeight.w600,
+            ),
+            overflow: TextOverflow.clip,
+            softWrap: true,
+            maxLines: 1,
+          ),
+          Text(
+            'Registration Number',
+            textAlign: TextAlign.start,
+            style: TextStyle(
+              fontSize: displayWidth(context) * 0.03,
+              color: Colors.black87,
+              fontFamily: poppins,
+              fontWeight: FontWeight.w400,
+            ),
+            overflow: TextOverflow.clip,
+            softWrap: true,
+            maxLines: 1,
+          ),
+        ],
+      )
+      /* : SizedBox(),*/
     ],
   );
 }
 
-
 // Vessel single view card
 Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
+    String userId,
     Function(CreateVessel) onTap, GlobalKey<ScaffoldState> scaffoldKey,
-    {bool isTripIsRunning = false,bool isOwnerNameVisible=false,String ownerName=''}) {
+    {bool isTripIsRunning = false,
+    bool isOwnerNameVisible = false,
+    String ownerName = ''}) {
   Utils.customPrint("IMAGE FROM HOME SINGLE WIDGET ${vesselData.imageURLs}");
-  CustomLogger().logWithFile(Level.info, "IMAGE FROM HOME SINGLE WIDGET ${vesselData.imageURLs}");
+  CustomLogger().logWithFile(
+      Level.info, "IMAGE FROM HOME SINGLE WIDGET ${vesselData.imageURLs}");
 
   return GestureDetector(
     onTap: () {
@@ -377,7 +376,7 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                             borderRadius: BorderRadius.circular(10),
                             child: Center(
                               child: Container(
-                               // height: displayHeight(context) * 0.22,
+                                // height: displayHeight(context) * 0.22,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
                                   //color: Colors.white,
@@ -443,30 +442,27 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-
-                 isTripIsRunning
-                        ? CustomPaint(
-                          painter: StatusTag(color: Color(0XFFFDBF21)),
-                          child: Container(
-                            margin: EdgeInsets.only(
-                                left: displayWidth(context) * 0.05),
-                            child: Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: commonText(
+                isTripIsRunning
+                    ? CustomPaint(
+                        painter: StatusTag(color: Color(0XFFFDBF21)),
+                        child: Container(
+                          margin: EdgeInsets.only(
+                              left: displayWidth(context) * 0.05),
+                          child: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: commonText(
                                   context: context,
                                   text: "In Progress",
                                   fontWeight: FontWeight.w500,
                                   textColor: Colors.white,
                                   textSize: displayWidth(context) * 0.03,
-                                  fontFamily: poppins
-                                ),
-                              ),
+                                  fontFamily: poppins),
                             ),
                           ),
-                        )
-                        : SizedBox(),
-
+                        ),
+                      )
+                    : SizedBox(),
                 Container(
                   alignment: Alignment.centerRight,
                   padding: EdgeInsets.only(right: 10, top: 5),
@@ -478,254 +474,247 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                     children: [
                       vesselData.engineType!.isEmpty
                           ? const SizedBox()
-                          : vesselData.engineType!.toLowerCase() ==
-                          'combustion'
-                          ? vesselData.fuelCapacity == null
-                          ? const SizedBox()
-                          : Column(
-                        crossAxisAlignment:
-                        CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.start,
-                            children: [
-                              Image.asset(
-                                'assets/images/fuel.png',
-                                width: displayWidth(context) *
-                                    0.045,
-                                color: backgroundColor,
-                              ),
-                              SizedBox(
-                                width: displayWidth(context) *
-                                    0.02,
-                              ),
-                              commonText(
-                                  context: context,
-                                  text:
-                                  '${vesselData.fuelCapacity!} $liters'
-                                      .toString(),
-                                  fontWeight: FontWeight.w500,
-                                  textColor: backgroundColor,
-                                  textSize:
-                                  displayWidth(context) *
-                                      0.03,
-                                  textAlign: TextAlign.start,
-                                  fontFamily: poppins),
-                            ],
-                          ),
-                          SizedBox(
-                            height:
-                            displayHeight(context) * 0.005,
-                          ),
-                          Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.start,
-                            children: [
-                              Image.asset(
-                                'assets/images/combustion_engine.png',
-                                width: displayWidth(context) * 0.045,
-                                color: backgroundColor,
-                              ),
-                              SizedBox(
-                                width: displayWidth(context) *
-                                    0.02,
-                              ),
-                              commonText(
-                                  context: context,
-                                  text: vesselData.engineType!,
-                                  fontWeight: FontWeight.w500,
-                                  textColor: backgroundColor,
-                                  textSize:
-                                  displayWidth(context) *
-                                      0.03,
-                                  textAlign: TextAlign.start),
-                            ],
-                          )
-                        ],
-                      )
-                          : vesselData.engineType!.toLowerCase() ==
-                          'electric'
-                          ? vesselData.batteryCapacity == null
-                          ? const SizedBox()
-                          : Column(
-                        crossAxisAlignment:
-                        CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.start,
-                            children: [
-                              Container(
-                                  margin:
-                                  const EdgeInsets.only(
-                                      left: 4),
-                                  child: Image.asset(
-                                    'assets/images/battery.png',
-                                    width: displayWidth(
-                                        context) *
-                                        0.027,
-                                    color: backgroundColor,
-                                  )),
-                              SizedBox(
-                                width:
-                                displayWidth(context) *
-                                    0.02,
-                              ),
-                              commonText(
-                                  context: context,
-                                  text:
-                                  ' ${vesselData.batteryCapacity!} $kiloWattHour'
-                                      .toString(),
-                                  fontWeight:
-                                  FontWeight.w500,
-                                  textColor: backgroundColor,
-                                  textSize: displayWidth(
-                                      context) *
-                                      0.03,
-                                  textAlign:
-                                  TextAlign.start, fontFamily: poppins),
-                            ],
-                          ),
-                          SizedBox(
-                            height: displayHeight(context) *
-                                0.005,
-                          ),
-                          Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.start,
-                            children: [
-                              Image.asset(
-                                'assets/images/electric_engine.png',
-                                width:
-                                displayWidth(context) *
-                                    0.045,
-                                color: backgroundColor,
-                              ),
-                              SizedBox(
-                                width:
-                                displayWidth(context) *
-                                    0.02,
-                              ),
-                              commonText(
-                                  context: context,
-                                  text: vesselData
-                                      .engineType!,
-                                  fontWeight:
-                                  FontWeight.w500,
-                                  textColor: backgroundColor,
-                                  textSize: displayWidth(
-                                      context) *
-                                      0.03,
-                                  textAlign:
-                                  TextAlign.start,
-                                  fontFamily: poppins),
-                            ],
-                          )
-                        ],
-                      )
-                          : Column(
-                        crossAxisAlignment:
-                        CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.start,
-                            children: [
-                              Image.asset(
-                                'assets/images/fuel.png',
-                                width: displayWidth(context) *
-                                    0.045,
-                                color: backgroundColor,
-                              ),
-                              SizedBox(
-                                width: displayWidth(context) *
-                                    0.02,
-                              ),
-                              commonText(
-                                  context: context,
-                                  text: vesselData
-                                      .fuelCapacity ==
-                                      null
-                                      ? '-'
-                                      : '${vesselData.fuelCapacity!} $liters'
-                                      .toString(),
-                                  fontWeight: FontWeight.w500,
-                                  textColor: backgroundColor,
-                                  textSize:
-                                  displayWidth(context) *
-                                      0.03,
-                                  textAlign: TextAlign.start,
-                                  fontFamily: poppins),
-                            ],
-                          ),
-                          SizedBox(
-                            height:
-                            displayHeight(context) * 0.005,
-                          ),
-                          Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.start,
-                            children: [
-                              Container(
-                                  margin: const EdgeInsets.only(
-                                      left: 4),
-                                  child: Image.asset(
-                                    'assets/images/battery.png',
-                                    width:
-                                    displayWidth(context) *
-                                        0.027,
-                                    color: backgroundColor,
-                                  )),
-                              SizedBox(
-                                width: displayWidth(context) *
-                                    0.02,
-                              ),
-                              commonText(
-                                  context: context,
-                                  text:
-                                  ' ${vesselData.batteryCapacity!} $kiloWattHour'
-                                      .toString(),
-                                  fontWeight: FontWeight.w500,
-                                  textColor: backgroundColor,
-                                  textSize:
-                                  displayWidth(context) *
-                                      0.03,
-                                  textAlign: TextAlign.start,
-                                  fontFamily: poppins),
-                            ],
-                          ),
-                          SizedBox(
-                            height:
-                            displayHeight(context) * 0.005,
-                          ),
-                          Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.start,
-                            children: [
-                              Image.asset(
-                                'assets/images/hybrid_engine.png',
-                                width: displayWidth(context) *
-                                    0.045,
-                                color: backgroundColor,
-                              ),
-                              SizedBox(
-                                width: displayWidth(context) *
-                                    0.02,
-                              ),
-                              commonText(
-                                  context: context,
-                                  text: vesselData.engineType!,
-                                  fontWeight: FontWeight.w500,
-                                  textColor: backgroundColor,
-                                  textSize:
-                                  displayWidth(context) *
-                                      0.03,
-                                  textAlign: TextAlign.start,fontFamily: poppins),
-                            ],
-                          )
-                        ],
-                      ),
+                          : vesselData.engineType!.toLowerCase() == 'combustion'
+                              ? vesselData.fuelCapacity == null
+                                  ? const SizedBox()
+                                  : Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Image.asset(
+                                              'assets/images/fuel.png',
+                                              width:
+                                                  displayWidth(context) * 0.045,
+                                              color: backgroundColor,
+                                            ),
+                                            SizedBox(
+                                              width:
+                                                  displayWidth(context) * 0.02,
+                                            ),
+                                            commonText(
+                                                context: context,
+                                                text:
+                                                    '${vesselData.fuelCapacity!} $liters'
+                                                        .toString(),
+                                                fontWeight: FontWeight.w500,
+                                                textColor: backgroundColor,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.03,
+                                                textAlign: TextAlign.start,
+                                                fontFamily: poppins),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height:
+                                              displayHeight(context) * 0.005,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Image.asset(
+                                              'assets/images/combustion_engine.png',
+                                              width:
+                                                  displayWidth(context) * 0.045,
+                                              color: backgroundColor,
+                                            ),
+                                            SizedBox(
+                                              width:
+                                                  displayWidth(context) * 0.02,
+                                            ),
+                                            commonText(
+                                                context: context,
+                                                text: vesselData.engineType!,
+                                                fontWeight: FontWeight.w500,
+                                                textColor: backgroundColor,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.03,
+                                                textAlign: TextAlign.start),
+                                          ],
+                                        )
+                                      ],
+                                    )
+                              : vesselData.engineType!.toLowerCase() ==
+                                      'electric'
+                                  ? vesselData.batteryCapacity == null
+                                      ? const SizedBox()
+                                      : Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                            left: 4),
+                                                    child: Image.asset(
+                                                      'assets/images/battery.png',
+                                                      width: displayWidth(
+                                                              context) *
+                                                          0.027,
+                                                      color: backgroundColor,
+                                                    )),
+                                                SizedBox(
+                                                  width: displayWidth(context) *
+                                                      0.02,
+                                                ),
+                                                commonText(
+                                                    context: context,
+                                                    text:
+                                                        ' ${vesselData.batteryCapacity!} $kiloWattHour'
+                                                            .toString(),
+                                                    fontWeight: FontWeight.w500,
+                                                    textColor: backgroundColor,
+                                                    textSize:
+                                                        displayWidth(context) *
+                                                            0.03,
+                                                    textAlign: TextAlign.start,
+                                                    fontFamily: poppins),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: displayHeight(context) *
+                                                  0.005,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                Image.asset(
+                                                  'assets/images/electric_engine.png',
+                                                  width: displayWidth(context) *
+                                                      0.045,
+                                                  color: backgroundColor,
+                                                ),
+                                                SizedBox(
+                                                  width: displayWidth(context) *
+                                                      0.02,
+                                                ),
+                                                commonText(
+                                                    context: context,
+                                                    text:
+                                                        vesselData.engineType!,
+                                                    fontWeight: FontWeight.w500,
+                                                    textColor: backgroundColor,
+                                                    textSize:
+                                                        displayWidth(context) *
+                                                            0.03,
+                                                    textAlign: TextAlign.start,
+                                                    fontFamily: poppins),
+                                              ],
+                                            )
+                                          ],
+                                        )
+                                  : Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Image.asset(
+                                              'assets/images/fuel.png',
+                                              width:
+                                                  displayWidth(context) * 0.045,
+                                              color: backgroundColor,
+                                            ),
+                                            SizedBox(
+                                              width:
+                                                  displayWidth(context) * 0.02,
+                                            ),
+                                            commonText(
+                                                context: context,
+                                                text: vesselData.fuelCapacity ==
+                                                        null
+                                                    ? '-'
+                                                    : '${vesselData.fuelCapacity!} $liters'
+                                                        .toString(),
+                                                fontWeight: FontWeight.w500,
+                                                textColor: backgroundColor,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.03,
+                                                textAlign: TextAlign.start,
+                                                fontFamily: poppins),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height:
+                                              displayHeight(context) * 0.005,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                                margin: const EdgeInsets.only(
+                                                    left: 4),
+                                                child: Image.asset(
+                                                  'assets/images/battery.png',
+                                                  width: displayWidth(context) *
+                                                      0.027,
+                                                  color: backgroundColor,
+                                                )),
+                                            SizedBox(
+                                              width:
+                                                  displayWidth(context) * 0.02,
+                                            ),
+                                            commonText(
+                                                context: context,
+                                                text:
+                                                    ' ${vesselData.batteryCapacity!} $kiloWattHour'
+                                                        .toString(),
+                                                fontWeight: FontWeight.w500,
+                                                textColor: backgroundColor,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.03,
+                                                textAlign: TextAlign.start,
+                                                fontFamily: poppins),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height:
+                                              displayHeight(context) * 0.005,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Image.asset(
+                                              'assets/images/hybrid_engine.png',
+                                              width:
+                                                  displayWidth(context) * 0.045,
+                                              color: backgroundColor,
+                                            ),
+                                            SizedBox(
+                                              width:
+                                                  displayWidth(context) * 0.02,
+                                            ),
+                                            commonText(
+                                                context: context,
+                                                text: vesselData.engineType!,
+                                                fontWeight: FontWeight.w500,
+                                                textColor: backgroundColor,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.03,
+                                                textAlign: TextAlign.start,
+                                                fontFamily: poppins),
+                                          ],
+                                        )
+                                      ],
+                                    ),
                     ],
                   ),
                 )
@@ -762,25 +751,23 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                           softWrap: true,
                           //maxLines: 2,
                         ),
-if(isOwnerNameVisible)
-
-
-                        Container(
-                          padding: EdgeInsets.symmetric(vertical: 8),
-                          child: Text(
-                             'Owner : $ownerName',
-                            textAlign: TextAlign.start,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.white,
-                              fontFamily: poppins,
-                              fontWeight: FontWeight.w400,
+                        if (isOwnerNameVisible)
+                          Container(
+                            padding: EdgeInsets.symmetric(vertical: 8),
+                            child: Text(
+                              'Owner : $ownerName',
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.white,
+                                fontFamily: poppins,
+                                fontWeight: FontWeight.w400,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              softWrap: true,
+                              //maxLines: 2,
                             ),
-                            overflow: TextOverflow.ellipsis,
-                            softWrap: true,
-                            //maxLines: 2,
                           ),
-                        ),
 
                         /*dashboardRichText(
                             modelName: vesselData.model,
@@ -796,41 +783,43 @@ if(isOwnerNameVisible)
                   Container(
                     child: vesselData.vesselStatus == 0
                         ? Container(
-                      margin: EdgeInsets.only(
-                        top: 8.0,
-                      ),
-                      child: Card(
-                        color: primaryColor,
-                        elevation: 6,
-                        shadowColor: Colors.black,
-                        child: Center(
-                          child: CommonButtons.getAcceptButton(
-                              'Unretire', context, endTripBtnColor, () async {
-                            showDialogBox(context, vesselData, scaffoldKey);
-                          },
-                              displayWidth(context) * 0.18,
-                              displayHeight(context) * 0.04,
-                              primaryColor,
-                              Colors.white,
-                              displayHeight(context) * 0.014,
-                              endTripBtnColor,
-                              '',
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                    )
+                            margin: EdgeInsets.only(
+                              top: 8.0,
+                            ),
+                            child: Card(
+                              color: primaryColor,
+                              elevation: 6,
+                              shadowColor: Colors.black,
+                              child: Center(
+                                child: CommonButtons.getAcceptButton(
+                                    'Unretire', context, endTripBtnColor,
+                                    () async {
+                                  showDialogBox(
+                                      context, vesselData, scaffoldKey);
+                                },
+                                    displayWidth(context) * 0.18,
+                                    displayHeight(context) * 0.04,
+                                    primaryColor,
+                                    Colors.white,
+                                    displayHeight(context) * 0.014,
+                                    endTripBtnColor,
+                                    '',
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          )
                         : CommonButtons.getActionButton(
-                        title: 'View Details',
-                        context: context,
-                        fontSize: displayWidth(context) * 0.03,
-                        textColor: Colors.white,
-                        buttonPrimaryColor: blueColor,
-                        borderColor: blueColor,
-                        width: displayWidth(context) * 0.26,
-                        height: displayHeight(context) * 0.045,
-                        onTap: () async {
-                          onTap(vesselData);
-                        }),
+                            title: 'View Details',
+                            context: context,
+                            fontSize: displayWidth(context) * 0.03,
+                            textColor: Colors.white,
+                            buttonPrimaryColor: blueColor,
+                            borderColor: blueColor,
+                            width: displayWidth(context) * 0.26,
+                            height: displayHeight(context) * 0.045,
+                            onTap: () async {
+                              onTap(vesselData);
+                            }),
                   ),
                   SizedBox(
                     width: displayWidth(context) * 0.02,
@@ -839,6 +828,56 @@ if(isOwnerNameVisible)
               ),
             ),
           ),
+
+          vesselData.createdBy != userId
+              ? Positioned(
+            top: 15,
+            left: 0,
+            child: Stack(
+              children: [
+                RotatedBox(
+                  quarterTurns: 2,
+                  child: Container(
+                  alignment: Alignment.centerLeft,
+                  child: CustomPaint(
+                    painter: StatusTag(color: Colors.black.withOpacity(.7)),
+                    child: Container(
+                      width: displayWidth(context) * 0.36,
+                      height: displayHeight(context) * 0.034,
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: commonText(
+                              context: context,
+                              text: "",
+                              fontWeight: FontWeight.w500,
+                              textColor: Colors.white,
+                              textSize: displayWidth(context) * 0.03,
+                              fontFamily: poppins
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                            ),
+                ),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: commonText(
+                        context: context,
+                        text: "Delegated Vessel",
+                        fontWeight: FontWeight.w500,
+                        textColor: Colors.white,
+                        textSize: displayWidth(context) * 0.03,
+                        fontFamily: poppins
+                    ),
+                  ),
+                )
+              ],
+            ),)
+          : SizedBox(),
+
         ],
       ),
     ),
@@ -850,7 +889,8 @@ Widget OldVesselSingleViewCard(BuildContext context, CreateVessel vesselData,
     Function(CreateVessel) onTap, GlobalKey<ScaffoldState> scaffoldKey,
     {bool isTripIsRunning = false}) {
   Utils.customPrint("IMAGE FROM HOME SINGLE WIDGET ${vesselData.imageURLs}");
-  CustomLogger().logWithFile(Level.info, "IMAGE FROM HOME SINGLE WIDGET ${vesselData.imageURLs}");
+  CustomLogger().logWithFile(
+      Level.info, "IMAGE FROM HOME SINGLE WIDGET ${vesselData.imageURLs}");
 
   return GestureDetector(
     onTap: () {
@@ -867,129 +907,129 @@ Widget OldVesselSingleViewCard(BuildContext context, CreateVessel vesselData,
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: vesselData.imageURLs == null ||
-                    vesselData.imageURLs!.isEmpty ||
-                    vesselData.imageURLs == 'string' ||
-                    vesselData.imageURLs == ''
+                        vesselData.imageURLs!.isEmpty ||
+                        vesselData.imageURLs == 'string' ||
+                        vesselData.imageURLs == ''
                     ? Stack(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Container(
-                        //height: displayHeight(context) * 0.22,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          //color: Colors.white,
-                        ),
-                        child: Center(
-                          child: Image.asset(
-                            'assets/images/vessel_default_img.png',
-                            height: displayHeight(context) * 0.24,
-                            width: displayWidth(context) * 0.65,
-                            fit: BoxFit.cover,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              //height: displayHeight(context) * 0.22,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                //color: Colors.white,
+                              ),
+                              child: Center(
+                                child: Image.asset(
+                                  'assets/images/vessel_default_img.png',
+                                  height: displayHeight(context) * 0.24,
+                                  width: displayWidth(context) * 0.65,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                        bottom: 0,
-                        right: 0,
-                        left: 0,
-                        child: Container(
-                          height: displayHeight(context) * 0.14,
-                          width: displayWidth(context),
-                          padding: const EdgeInsets.only(top: 20),
-                          decoration: BoxDecoration(boxShadow: [
-                            BoxShadow(
-                                color: Colors.black.withOpacity(0.5),
-                                blurRadius: 50,
-                                spreadRadius: 5,
-                                offset: const Offset(0, 50))
-                          ]),
-                        ))
-                  ],
-                )
+                          Positioned(
+                              bottom: 0,
+                              right: 0,
+                              left: 0,
+                              child: Container(
+                                height: displayHeight(context) * 0.14,
+                                width: displayWidth(context),
+                                padding: const EdgeInsets.only(top: 20),
+                                decoration: BoxDecoration(boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.black.withOpacity(0.5),
+                                      blurRadius: 50,
+                                      spreadRadius: 5,
+                                      offset: const Offset(0, 50))
+                                ]),
+                              ))
+                        ],
+                      )
                     : Stack(
-                  children: [
-                    //Image.memory(bytes)
-                    Image.file(
-                      File(vesselData.imageURLs!),
-                      fit: BoxFit.cover,
-                      height: displayHeight(context) * 0.24,
-                      width: displayWidth(context),
-                    ),
-                    Positioned(
-                        bottom: 0,
-                        right: 0,
-                        left: 0,
-                        child: Container(
-                          height: displayHeight(context) * 0.14,
-                          width: displayWidth(context),
-                          padding: const EdgeInsets.only(top: 20),
-                          decoration: BoxDecoration(boxShadow: [
-                            BoxShadow(
-                                color: Colors.black.withOpacity(0.5),
-                                blurRadius: 50,
-                                spreadRadius: 5,
-                                offset: const Offset(0, 50))
-                          ]),
-                        ))
-                  ],
-                )),
+                        children: [
+                          //Image.memory(bytes)
+                          Image.file(
+                            File(vesselData.imageURLs!),
+                            fit: BoxFit.cover,
+                            height: displayHeight(context) * 0.24,
+                            width: displayWidth(context),
+                          ),
+                          Positioned(
+                              bottom: 0,
+                              right: 0,
+                              left: 0,
+                              child: Container(
+                                height: displayHeight(context) * 0.14,
+                                width: displayWidth(context),
+                                padding: const EdgeInsets.only(top: 20),
+                                decoration: BoxDecoration(boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.black.withOpacity(0.5),
+                                      blurRadius: 50,
+                                      spreadRadius: 5,
+                                      offset: const Offset(0, 50))
+                                ]),
+                              ))
+                        ],
+                      )),
           ),
           vesselData.vesselStatus == 0
               ? Positioned(
-            top: 5,
-            right: 10,
-            child: Container(
-              margin: EdgeInsets.only(
-                top: 8.0,
-              ),
-              child: Card(
-                color: primaryColor,
-                elevation: 6,
-                shadowColor: Colors.black,
-                child: Center(
-                  child: CommonButtons.getAcceptButton(
-                      'Unretire', context, buttonBGColor, () async {
-                    showDialogBox(context, vesselData, scaffoldKey);
-                  },
-                      displayWidth(context) * 0.18,
-                      displayHeight(context) * 0.04,
-                      primaryColor,
-                      Colors.white,
-                      displayHeight(context) * 0.014,
-                      buttonBGColor,
-                      '',
-                      fontWeight: FontWeight.w500),
-                ),
-              ),
-            ),
-          )
-              : isTripIsRunning
-              ? Positioned(
-            top: 15,
-            right: 0,
-            child: CustomPaint(
-              painter: StatusTag(color: Color(0XFF41C1C8)),
-              child: Container(
-                margin: EdgeInsets.only(
-                    left: displayWidth(context) * 0.05),
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: commonText(
-                      context: context,
-                      text: "In Progress",
-                      fontWeight: FontWeight.w500,
-                      textColor: Colors.white,
-                      textSize: displayWidth(context) * 0.03,
+                  top: 5,
+                  right: 10,
+                  child: Container(
+                    margin: EdgeInsets.only(
+                      top: 8.0,
+                    ),
+                    child: Card(
+                      color: primaryColor,
+                      elevation: 6,
+                      shadowColor: Colors.black,
+                      child: Center(
+                        child: CommonButtons.getAcceptButton(
+                            'Unretire', context, buttonBGColor, () async {
+                          showDialogBox(context, vesselData, scaffoldKey);
+                        },
+                            displayWidth(context) * 0.18,
+                            displayHeight(context) * 0.04,
+                            primaryColor,
+                            Colors.white,
+                            displayHeight(context) * 0.014,
+                            buttonBGColor,
+                            '',
+                            fontWeight: FontWeight.w500),
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ),
-          )
-              : SizedBox(),
+                )
+              : isTripIsRunning
+                  ? Positioned(
+                      top: 15,
+                      right: 0,
+                      child: CustomPaint(
+                        painter: StatusTag(color: Color(0XFF41C1C8)),
+                        child: Container(
+                          margin: EdgeInsets.only(
+                              left: displayWidth(context) * 0.05),
+                          child: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: commonText(
+                                context: context,
+                                text: "In Progress",
+                                fontWeight: FontWeight.w500,
+                                textColor: Colors.white,
+                                textSize: displayWidth(context) * 0.03,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : SizedBox(),
           Positioned(
             bottom: 0,
             left: 0,
@@ -1041,243 +1081,243 @@ Widget OldVesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                         vesselData.engineType!.isEmpty
                             ? const SizedBox()
                             : vesselData.engineType!.toLowerCase() ==
-                            'combustion'
-                            ? vesselData.fuelCapacity == null
-                            ? const SizedBox()
-                            : Column(
-                          crossAxisAlignment:
-                          CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.start,
-                              children: [
-                                Image.asset(
-                                  'assets/images/fuel.png',
-                                  width: displayWidth(context) *
-                                      0.045,
-                                ),
-                                SizedBox(
-                                  width: displayWidth(context) *
-                                      0.02,
-                                ),
-                                commonText(
-                                    context: context,
-                                    text:
-                                    '${vesselData.fuelCapacity!}$gallons'
-                                        .toString(),
-                                    fontWeight: FontWeight.w500,
-                                    textColor: Colors.white,
-                                    textSize:
-                                    displayWidth(context) *
-                                        0.03,
-                                    textAlign: TextAlign.start),
-                              ],
-                            ),
-                            SizedBox(
-                              height:
-                              displayHeight(context) * 0.005,
-                            ),
-                            Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.start,
-                              children: [
-                                Image.asset(
-                                  'assets/images/combustion_engine.png',
-                                  width: displayWidth(context) *
-                                      0.045,
-                                ),
-                                SizedBox(
-                                  width: displayWidth(context) *
-                                      0.02,
-                                ),
-                                commonText(
-                                    context: context,
-                                    text: vesselData.engineType!,
-                                    fontWeight: FontWeight.w500,
-                                    textColor: Colors.white,
-                                    textSize:
-                                    displayWidth(context) *
-                                        0.03,
-                                    textAlign: TextAlign.start),
-                              ],
-                            )
-                          ],
-                        )
-                            : vesselData.engineType!.toLowerCase() ==
-                            'electric'
-                            ? vesselData.batteryCapacity == null
-                            ? const SizedBox()
-                            : Column(
-                          crossAxisAlignment:
-                          CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                    margin:
-                                    const EdgeInsets.only(
-                                        left: 4),
-                                    child: Image.asset(
-                                      'assets/images/battery.png',
-                                      width: displayWidth(
-                                          context) *
-                                          0.027,
-                                    )),
-                                SizedBox(
-                                  width:
-                                  displayWidth(context) *
-                                      0.02,
-                                ),
-                                commonText(
-                                    context: context,
-                                    text:
-                                    ' ${vesselData.batteryCapacity!} $kiloWattHour'
-                                        .toString(),
-                                    fontWeight:
-                                    FontWeight.w500,
-                                    textColor: Colors.white,
-                                    textSize: displayWidth(
-                                        context) *
-                                        0.03,
-                                    textAlign:
-                                    TextAlign.start),
-                              ],
-                            ),
-                            SizedBox(
-                              height: displayHeight(context) *
-                                  0.005,
-                            ),
-                            Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.start,
-                              children: [
-                                Image.asset(
-                                  'assets/images/electric_engine.png',
-                                  width:
-                                  displayWidth(context) *
-                                      0.045,
-                                ),
-                                SizedBox(
-                                  width:
-                                  displayWidth(context) *
-                                      0.02,
-                                ),
-                                commonText(
-                                    context: context,
-                                    text: vesselData
-                                        .engineType!,
-                                    fontWeight:
-                                    FontWeight.w500,
-                                    textColor: Colors.white,
-                                    textSize: displayWidth(
-                                        context) *
-                                        0.03,
-                                    textAlign:
-                                    TextAlign.start),
-                              ],
-                            )
-                          ],
-                        )
-                            : Column(
-                          crossAxisAlignment:
-                          CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.start,
-                              children: [
-                                Image.asset(
-                                  'assets/images/fuel.png',
-                                  width: displayWidth(context) *
-                                      0.045,
-                                ),
-                                SizedBox(
-                                  width: displayWidth(context) *
-                                      0.02,
-                                ),
-                                commonText(
-                                    context: context,
-                                    text: vesselData
-                                        .fuelCapacity ==
-                                        null
-                                        ? '-'
-                                        : '${vesselData.fuelCapacity!}$gallons'
-                                        .toString(),
-                                    fontWeight: FontWeight.w500,
-                                    textColor: Colors.white,
-                                    textSize:
-                                    displayWidth(context) *
-                                        0.03,
-                                    textAlign: TextAlign.start),
-                              ],
-                            ),
-                            SizedBox(
-                              height:
-                              displayHeight(context) * 0.005,
-                            ),
-                            Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                    margin: const EdgeInsets.only(
-                                        left: 4),
-                                    child: Image.asset(
-                                      'assets/images/battery.png',
-                                      width:
-                                      displayWidth(context) *
-                                          0.027,
-                                    )),
-                                SizedBox(
-                                  width: displayWidth(context) *
-                                      0.02,
-                                ),
-                                commonText(
-                                    context: context,
-                                    text:
-                                    ' ${vesselData.batteryCapacity!} $kiloWattHour'
-                                        .toString(),
-                                    fontWeight: FontWeight.w500,
-                                    textColor: Colors.white,
-                                    textSize:
-                                    displayWidth(context) *
-                                        0.03,
-                                    textAlign: TextAlign.start),
-                              ],
-                            ),
-                            SizedBox(
-                              height:
-                              displayHeight(context) * 0.005,
-                            ),
-                            Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.start,
-                              children: [
-                                Image.asset(
-                                  'assets/images/hybrid_engine.png',
-                                  width: displayWidth(context) *
-                                      0.045,
-                                ),
-                                SizedBox(
-                                  width: displayWidth(context) *
-                                      0.02,
-                                ),
-                                commonText(
-                                    context: context,
-                                    text: vesselData.engineType!,
-                                    fontWeight: FontWeight.w500,
-                                    textColor: Colors.white,
-                                    textSize:
-                                    displayWidth(context) *
-                                        0.03,
-                                    textAlign: TextAlign.start),
-                              ],
-                            )
-                          ],
-                        ),
+                                    'combustion'
+                                ? vesselData.fuelCapacity == null
+                                    ? const SizedBox()
+                                    : Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Image.asset(
+                                                'assets/images/fuel.png',
+                                                width: displayWidth(context) *
+                                                    0.045,
+                                              ),
+                                              SizedBox(
+                                                width: displayWidth(context) *
+                                                    0.02,
+                                              ),
+                                              commonText(
+                                                  context: context,
+                                                  text:
+                                                      '${vesselData.fuelCapacity!}$gallons'
+                                                          .toString(),
+                                                  fontWeight: FontWeight.w500,
+                                                  textColor: Colors.white,
+                                                  textSize:
+                                                      displayWidth(context) *
+                                                          0.03,
+                                                  textAlign: TextAlign.start),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height:
+                                                displayHeight(context) * 0.005,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Image.asset(
+                                                'assets/images/combustion_engine.png',
+                                                width: displayWidth(context) *
+                                                    0.045,
+                                              ),
+                                              SizedBox(
+                                                width: displayWidth(context) *
+                                                    0.02,
+                                              ),
+                                              commonText(
+                                                  context: context,
+                                                  text: vesselData.engineType!,
+                                                  fontWeight: FontWeight.w500,
+                                                  textColor: Colors.white,
+                                                  textSize:
+                                                      displayWidth(context) *
+                                                          0.03,
+                                                  textAlign: TextAlign.start),
+                                            ],
+                                          )
+                                        ],
+                                      )
+                                : vesselData.engineType!.toLowerCase() ==
+                                        'electric'
+                                    ? vesselData.batteryCapacity == null
+                                        ? const SizedBox()
+                                        : Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              left: 4),
+                                                      child: Image.asset(
+                                                        'assets/images/battery.png',
+                                                        width: displayWidth(
+                                                                context) *
+                                                            0.027,
+                                                      )),
+                                                  SizedBox(
+                                                    width:
+                                                        displayWidth(context) *
+                                                            0.02,
+                                                  ),
+                                                  commonText(
+                                                      context: context,
+                                                      text:
+                                                          ' ${vesselData.batteryCapacity!} $kiloWattHour'
+                                                              .toString(),
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      textColor: Colors.white,
+                                                      textSize: displayWidth(
+                                                              context) *
+                                                          0.03,
+                                                      textAlign:
+                                                          TextAlign.start),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: displayHeight(context) *
+                                                    0.005,
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Image.asset(
+                                                    'assets/images/electric_engine.png',
+                                                    width:
+                                                        displayWidth(context) *
+                                                            0.045,
+                                                  ),
+                                                  SizedBox(
+                                                    width:
+                                                        displayWidth(context) *
+                                                            0.02,
+                                                  ),
+                                                  commonText(
+                                                      context: context,
+                                                      text: vesselData
+                                                          .engineType!,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      textColor: Colors.white,
+                                                      textSize: displayWidth(
+                                                              context) *
+                                                          0.03,
+                                                      textAlign:
+                                                          TextAlign.start),
+                                                ],
+                                              )
+                                            ],
+                                          )
+                                    : Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Image.asset(
+                                                'assets/images/fuel.png',
+                                                width: displayWidth(context) *
+                                                    0.045,
+                                              ),
+                                              SizedBox(
+                                                width: displayWidth(context) *
+                                                    0.02,
+                                              ),
+                                              commonText(
+                                                  context: context,
+                                                  text: vesselData
+                                                              .fuelCapacity ==
+                                                          null
+                                                      ? '-'
+                                                      : '${vesselData.fuelCapacity!}$gallons'
+                                                          .toString(),
+                                                  fontWeight: FontWeight.w500,
+                                                  textColor: Colors.white,
+                                                  textSize:
+                                                      displayWidth(context) *
+                                                          0.03,
+                                                  textAlign: TextAlign.start),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height:
+                                                displayHeight(context) * 0.005,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                  margin: const EdgeInsets.only(
+                                                      left: 4),
+                                                  child: Image.asset(
+                                                    'assets/images/battery.png',
+                                                    width:
+                                                        displayWidth(context) *
+                                                            0.027,
+                                                  )),
+                                              SizedBox(
+                                                width: displayWidth(context) *
+                                                    0.02,
+                                              ),
+                                              commonText(
+                                                  context: context,
+                                                  text:
+                                                      ' ${vesselData.batteryCapacity!} $kiloWattHour'
+                                                          .toString(),
+                                                  fontWeight: FontWeight.w500,
+                                                  textColor: Colors.white,
+                                                  textSize:
+                                                      displayWidth(context) *
+                                                          0.03,
+                                                  textAlign: TextAlign.start),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height:
+                                                displayHeight(context) * 0.005,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Image.asset(
+                                                'assets/images/hybrid_engine.png',
+                                                width: displayWidth(context) *
+                                                    0.045,
+                                              ),
+                                              SizedBox(
+                                                width: displayWidth(context) *
+                                                    0.02,
+                                              ),
+                                              commonText(
+                                                  context: context,
+                                                  text: vesselData.engineType!,
+                                                  fontWeight: FontWeight.w500,
+                                                  textColor: Colors.white,
+                                                  textSize:
+                                                      displayWidth(context) *
+                                                          0.03,
+                                                  textAlign: TextAlign.start),
+                                            ],
+                                          )
+                                        ],
+                                      ),
                       ],
                     ),
                   ),
@@ -1293,9 +1333,13 @@ Widget OldVesselSingleViewCard(BuildContext context, CreateVessel vesselData,
 
 Widget fleetVesselSingleViewCard(BuildContext context, FleetVessels vesselData,
     Function(FleetVessels) onTap, GlobalKey<ScaffoldState> scaffoldKey,
-    {bool isTripIsRunning = false,bool isOwnerNameVisible=false,String ownerName=''}) {
-  Utils.customPrint("IMAGE FROM HOME SINGLE WIDGET ${vesselData.vesselInfo!.imageURLs}");
-  CustomLogger().logWithFile(Level.info, "IMAGE FROM HOME SINGLE WIDGET ${vesselData.vesselInfo!.imageURLs}");
+    {bool isTripIsRunning = false,
+    bool isOwnerNameVisible = false,
+    String ownerName = ''}) {
+  Utils.customPrint(
+      "IMAGE FROM HOME SINGLE WIDGET ${vesselData.vesselInfo!.imageURLs}");
+  CustomLogger().logWithFile(Level.info,
+      "IMAGE FROM HOME SINGLE WIDGET ${vesselData.vesselInfo!.imageURLs}");
 
   return GestureDetector(
     onTap: () {
@@ -1312,114 +1356,116 @@ Widget fleetVesselSingleViewCard(BuildContext context, FleetVessels vesselData,
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: vesselData.vesselInfo!.imageURLs == null ||
-                    vesselData.vesselInfo!.imageURLs!.isEmpty ||
-                    vesselData.vesselInfo!.imageURLs == 'string' ||
-                    vesselData.vesselInfo!.imageURLs == ''
+                        vesselData.vesselInfo!.imageURLs!.isEmpty ||
+                        vesselData.vesselInfo!.imageURLs == 'string' ||
+                        vesselData.vesselInfo!.imageURLs == ''
                     ? Stack(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Center(
-                        child: Container(
-                          // height: displayHeight(context) * 0.22,
-                          decoration: BoxDecoration(
+                        children: [
+                          ClipRRect(
                             borderRadius: BorderRadius.circular(10),
-                            //color: Colors.white,
-                          ),
-                          child: Image.asset(
-                            'assets/images/vessel_default_img.png',
-                            width: displayWidth(context) * 0.65,
-                            height: displayHeight(context) * 0.24,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                        bottom: 0,
-                        right: 0,
-                        left: 0,
-                        child: Container(
-                          height: displayHeight(context) * 0.14,
-                          width: displayWidth(context),
-                          padding: const EdgeInsets.only(top: 20),
-                          decoration: BoxDecoration(boxShadow: [
-                            BoxShadow(
-                                color: Colors.black.withOpacity(0.5),
-                                blurRadius: 50,
-                                spreadRadius: 5,
-                                offset: const Offset(0, 50))
-                          ]),
-                        ))
-                  ],
-                )
-                    : Stack(
-                  children: [
-                    //Image.memory(bytes)
-                    Image.file(
-                      File(vesselData.vesselInfo!.imageURLs!.first),
-                      fit: BoxFit.cover,
-                      height: displayHeight(context) * 0.24,
-                      width: displayWidth(context),
-                      errorBuilder: (context, error, stackTrace) {
-                        return Stack(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Center(
-                                child: Container(
-                                  // height: displayHeight(context) * 0.22,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    //color: Colors.white,
-                                  ),
-                                  child: Image.asset(
-                                    'assets/images/vessel_default_img.png',
-                                    width: displayWidth(context) * 0.65,
-                                    height: displayHeight(context) * 0.24,
-                                    fit: BoxFit.cover,
-                                  ),
+                            child: Center(
+                              child: Container(
+                                // height: displayHeight(context) * 0.22,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  //color: Colors.white,
+                                ),
+                                child: Image.asset(
+                                  'assets/images/vessel_default_img.png',
+                                  width: displayWidth(context) * 0.65,
+                                  height: displayHeight(context) * 0.24,
+                                  fit: BoxFit.cover,
                                 ),
                               ),
                             ),
-                            Positioned(
-                                bottom: 0,
-                                right: 0,
-                                left: 0,
-                                child: Container(
-                                  height: displayHeight(context) * 0.14,
-                                  width: displayWidth(context),
-                                  padding: const EdgeInsets.only(top: 20),
-                                  decoration: BoxDecoration(boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.black.withOpacity(0.5),
-                                        blurRadius: 50,
-                                        spreadRadius: 5,
-                                        offset: const Offset(0, 50))
-                                  ]),
-                                ))
-                          ],
-                        );
-                      },
-                    ),
-                    Positioned(
-                        bottom: 0,
-                        right: 0,
-                        left: 0,
-                        child: Container(
-                          height: displayHeight(context) * 0.14,
-                          width: displayWidth(context),
-                          padding: const EdgeInsets.only(top: 20),
-                          decoration: BoxDecoration(boxShadow: [
-                            BoxShadow(
-                                color: Colors.black.withOpacity(0.5),
-                                blurRadius: 50,
-                                spreadRadius: 5,
-                                offset: const Offset(0, 50))
-                          ]),
-                        ))
-                  ],
-                )),
+                          ),
+                          Positioned(
+                              bottom: 0,
+                              right: 0,
+                              left: 0,
+                              child: Container(
+                                height: displayHeight(context) * 0.14,
+                                width: displayWidth(context),
+                                padding: const EdgeInsets.only(top: 20),
+                                decoration: BoxDecoration(boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.black.withOpacity(0.5),
+                                      blurRadius: 50,
+                                      spreadRadius: 5,
+                                      offset: const Offset(0, 50))
+                                ]),
+                              ))
+                        ],
+                      )
+                    : Stack(
+                        children: [
+                          //Image.memory(bytes)
+                          Image.file(
+                            File(vesselData.vesselInfo!.imageURLs!.first),
+                            fit: BoxFit.cover,
+                            height: displayHeight(context) * 0.24,
+                            width: displayWidth(context),
+                            errorBuilder: (context, error, stackTrace) {
+                              return Stack(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Center(
+                                      child: Container(
+                                        // height: displayHeight(context) * 0.22,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          //color: Colors.white,
+                                        ),
+                                        child: Image.asset(
+                                          'assets/images/vessel_default_img.png',
+                                          width: displayWidth(context) * 0.65,
+                                          height: displayHeight(context) * 0.24,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                      bottom: 0,
+                                      right: 0,
+                                      left: 0,
+                                      child: Container(
+                                        height: displayHeight(context) * 0.14,
+                                        width: displayWidth(context),
+                                        padding: const EdgeInsets.only(top: 20),
+                                        decoration: BoxDecoration(boxShadow: [
+                                          BoxShadow(
+                                              color:
+                                                  Colors.black.withOpacity(0.5),
+                                              blurRadius: 50,
+                                              spreadRadius: 5,
+                                              offset: const Offset(0, 50))
+                                        ]),
+                                      ))
+                                ],
+                              );
+                            },
+                          ),
+                          Positioned(
+                              bottom: 0,
+                              right: 0,
+                              left: 0,
+                              child: Container(
+                                height: displayHeight(context) * 0.14,
+                                width: displayWidth(context),
+                                padding: const EdgeInsets.only(top: 20),
+                                decoration: BoxDecoration(boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.black.withOpacity(0.5),
+                                      blurRadius: 50,
+                                      spreadRadius: 5,
+                                      offset: const Offset(0, 50))
+                                ]),
+                              ))
+                        ],
+                      )),
           ),
           Positioned(
             top: 10,
@@ -1427,30 +1473,27 @@ Widget fleetVesselSingleViewCard(BuildContext context, FleetVessels vesselData,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-
                 isTripIsRunning
                     ? CustomPaint(
-                  painter: StatusTag(color: Color(0XFFFDBF21)),
-                  child: Container(
-                    margin: EdgeInsets.only(
-                        left: displayWidth(context) * 0.05),
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: commonText(
-                            context: context,
-                            text: "In Progress",
-                            fontWeight: FontWeight.w500,
-                            textColor: Colors.white,
-                            textSize: displayWidth(context) * 0.03,
-                            fontFamily: poppins
+                        painter: StatusTag(color: Color(0XFFFDBF21)),
+                        child: Container(
+                          margin: EdgeInsets.only(
+                              left: displayWidth(context) * 0.05),
+                          child: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: commonText(
+                                  context: context,
+                                  text: "In Progress",
+                                  fontWeight: FontWeight.w500,
+                                  textColor: Colors.white,
+                                  textSize: displayWidth(context) * 0.03,
+                                  fontFamily: poppins),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                )
+                      )
                     : SizedBox(),
-
                 Container(
                   alignment: Alignment.centerRight,
                   padding: EdgeInsets.only(right: 10, top: 5),
@@ -1463,253 +1506,252 @@ Widget fleetVesselSingleViewCard(BuildContext context, FleetVessels vesselData,
                       vesselData.vesselInfo!.engineType!.isEmpty
                           ? const SizedBox()
                           : vesselData.vesselInfo!.engineType!.toLowerCase() ==
-                          'combustion'
-                          ? vesselData.vesselInfo!.fuelCapacity == null
-                          ? const SizedBox()
-                          : Column(
-                        crossAxisAlignment:
-                        CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.start,
-                            children: [
-                              Image.asset(
-                                'assets/images/fuel.png',
-                                width: displayWidth(context) *
-                                    0.045,
-                                color: backgroundColor,
-                              ),
-                              SizedBox(
-                                width: displayWidth(context) *
-                                    0.02,
-                              ),
-                              commonText(
-                                  context: context,
-                                  text:
-                                  '${vesselData.vesselInfo!.fuelCapacity!} $liters'
-                                      .toString(),
-                                  fontWeight: FontWeight.w500,
-                                  textColor: backgroundColor,
-                                  textSize:
-                                  displayWidth(context) *
-                                      0.03,
-                                  textAlign: TextAlign.start,
-                                  fontFamily: poppins),
-                            ],
-                          ),
-                          SizedBox(
-                            height:
-                            displayHeight(context) * 0.005,
-                          ),
-                          Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.start,
-                            children: [
-                              Image.asset(
-                                'assets/images/combustion_engine.png',
-                                width: displayWidth(context) * 0.045,
-                                color: backgroundColor,
-                              ),
-                              SizedBox(
-                                width: displayWidth(context) *
-                                    0.02,
-                              ),
-                              commonText(
-                                  context: context,
-                                  text: vesselData.vesselInfo!.engineType!,
-                                  fontWeight: FontWeight.w500,
-                                  textColor: backgroundColor,
-                                  textSize:
-                                  displayWidth(context) *
-                                      0.03,
-                                  textAlign: TextAlign.start),
-                            ],
-                          )
-                        ],
-                      )
-                          : vesselData.vesselInfo!.engineType!.toLowerCase() ==
-                          'electric'
-                          ? vesselData.vesselInfo!.batteryCapacity == null
-                          ? const SizedBox()
-                          : Column(
-                        crossAxisAlignment:
-                        CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.start,
-                            children: [
-                              Container(
-                                  margin:
-                                  const EdgeInsets.only(
-                                      left: 4),
-                                  child: Image.asset(
-                                    'assets/images/battery.png',
-                                    width: displayWidth(
-                                        context) *
-                                        0.027,
-                                    color: backgroundColor,
-                                  )),
-                              SizedBox(
-                                width:
-                                displayWidth(context) *
-                                    0.02,
-                              ),
-                              commonText(
-                                  context: context,
-                                  text:
-                                  ' ${vesselData.vesselInfo!.batteryCapacity!} $kiloWattHour'
-                                      .toString(),
-                                  fontWeight:
-                                  FontWeight.w500,
-                                  textColor: backgroundColor,
-                                  textSize: displayWidth(
-                                      context) *
-                                      0.03,
-                                  textAlign:
-                                  TextAlign.start, fontFamily: poppins),
-                            ],
-                          ),
-                          SizedBox(
-                            height: displayHeight(context) *
-                                0.005,
-                          ),
-                          Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.start,
-                            children: [
-                              Image.asset(
-                                'assets/images/electric_engine.png',
-                                width:
-                                displayWidth(context) *
-                                    0.045,
-                                color: backgroundColor,
-                              ),
-                              SizedBox(
-                                width:
-                                displayWidth(context) *
-                                    0.02,
-                              ),
-                              commonText(
-                                  context: context,
-                                  text: vesselData
-                                      .vesselInfo!.engineType!,
-                                  fontWeight:
-                                  FontWeight.w500,
-                                  textColor: backgroundColor,
-                                  textSize: displayWidth(
-                                      context) *
-                                      0.03,
-                                  textAlign:
-                                  TextAlign.start,
-                                  fontFamily: poppins),
-                            ],
-                          )
-                        ],
-                      )
-                          : Column(
-                        crossAxisAlignment:
-                        CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.start,
-                            children: [
-                              Image.asset(
-                                'assets/images/fuel.png',
-                                width: displayWidth(context) *
-                                    0.045,
-                                color: backgroundColor,
-                              ),
-                              SizedBox(
-                                width: displayWidth(context) *
-                                    0.02,
-                              ),
-                              commonText(
-                                  context: context,
-                                  text: vesselData
-                                      .vesselInfo!.fuelCapacity ==
-                                      null
-                                      ? '-'
-                                      : '${vesselData.vesselInfo!.fuelCapacity!} $liters'
-                                      .toString(),
-                                  fontWeight: FontWeight.w500,
-                                  textColor: backgroundColor,
-                                  textSize:
-                                  displayWidth(context) *
-                                      0.03,
-                                  textAlign: TextAlign.start,
-                                  fontFamily: poppins),
-                            ],
-                          ),
-                          SizedBox(
-                            height:
-                            displayHeight(context) * 0.005,
-                          ),
-                          Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.start,
-                            children: [
-                              Container(
-                                  margin: const EdgeInsets.only(
-                                      left: 4),
-                                  child: Image.asset(
-                                    'assets/images/battery.png',
-                                    width:
-                                    displayWidth(context) *
-                                        0.027,
-                                    color: backgroundColor,
-                                  )),
-                              SizedBox(
-                                width: displayWidth(context) *
-                                    0.02,
-                              ),
-                              commonText(
-                                  context: context,
-                                  text:
-                                  ' ${vesselData.vesselInfo!.batteryCapacity!} $kiloWattHour'
-                                      .toString(),
-                                  fontWeight: FontWeight.w500,
-                                  textColor: backgroundColor,
-                                  textSize:
-                                  displayWidth(context) *
-                                      0.03,
-                                  textAlign: TextAlign.start,
-                                  fontFamily: poppins),
-                            ],
-                          ),
-                          SizedBox(
-                            height:
-                            displayHeight(context) * 0.005,
-                          ),
-                          Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.start,
-                            children: [
-                              Image.asset(
-                                'assets/images/hybrid_engine.png',
-                                width: displayWidth(context) *
-                                    0.045,
-                                color: backgroundColor,
-                              ),
-                              SizedBox(
-                                width: displayWidth(context) *
-                                    0.02,
-                              ),
-                              commonText(
-                                  context: context,
-                                  text: vesselData.vesselInfo!.engineType!,
-                                  fontWeight: FontWeight.w500,
-                                  textColor: backgroundColor,
-                                  textSize:
-                                  displayWidth(context) *
-                                      0.03,
-                                  textAlign: TextAlign.start,fontFamily: poppins),
-                            ],
-                          )
-                        ],
-                      ),
+                                  'combustion'
+                              ? vesselData.vesselInfo!.fuelCapacity == null
+                                  ? const SizedBox()
+                                  : Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Image.asset(
+                                              'assets/images/fuel.png',
+                                              width:
+                                                  displayWidth(context) * 0.045,
+                                              color: backgroundColor,
+                                            ),
+                                            SizedBox(
+                                              width:
+                                                  displayWidth(context) * 0.02,
+                                            ),
+                                            commonText(
+                                                context: context,
+                                                text:
+                                                    '${vesselData.vesselInfo!.fuelCapacity!} $liters'
+                                                        .toString(),
+                                                fontWeight: FontWeight.w500,
+                                                textColor: backgroundColor,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.03,
+                                                textAlign: TextAlign.start,
+                                                fontFamily: poppins),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height:
+                                              displayHeight(context) * 0.005,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Image.asset(
+                                              'assets/images/combustion_engine.png',
+                                              width:
+                                                  displayWidth(context) * 0.045,
+                                              color: backgroundColor,
+                                            ),
+                                            SizedBox(
+                                              width:
+                                                  displayWidth(context) * 0.02,
+                                            ),
+                                            commonText(
+                                                context: context,
+                                                text: vesselData
+                                                    .vesselInfo!.engineType!,
+                                                fontWeight: FontWeight.w500,
+                                                textColor: backgroundColor,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.03,
+                                                textAlign: TextAlign.start),
+                                          ],
+                                        )
+                                      ],
+                                    )
+                              : vesselData.vesselInfo!.engineType!
+                                          .toLowerCase() ==
+                                      'electric'
+                                  ? vesselData.vesselInfo!.batteryCapacity ==
+                                          null
+                                      ? const SizedBox()
+                                      : Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                            left: 4),
+                                                    child: Image.asset(
+                                                      'assets/images/battery.png',
+                                                      width: displayWidth(
+                                                              context) *
+                                                          0.027,
+                                                      color: backgroundColor,
+                                                    )),
+                                                SizedBox(
+                                                  width: displayWidth(context) *
+                                                      0.02,
+                                                ),
+                                                commonText(
+                                                    context: context,
+                                                    text:
+                                                        ' ${vesselData.vesselInfo!.batteryCapacity!} $kiloWattHour'
+                                                            .toString(),
+                                                    fontWeight: FontWeight.w500,
+                                                    textColor: backgroundColor,
+                                                    textSize:
+                                                        displayWidth(context) *
+                                                            0.03,
+                                                    textAlign: TextAlign.start,
+                                                    fontFamily: poppins),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: displayHeight(context) *
+                                                  0.005,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                Image.asset(
+                                                  'assets/images/electric_engine.png',
+                                                  width: displayWidth(context) *
+                                                      0.045,
+                                                  color: backgroundColor,
+                                                ),
+                                                SizedBox(
+                                                  width: displayWidth(context) *
+                                                      0.02,
+                                                ),
+                                                commonText(
+                                                    context: context,
+                                                    text: vesselData.vesselInfo!
+                                                        .engineType!,
+                                                    fontWeight: FontWeight.w500,
+                                                    textColor: backgroundColor,
+                                                    textSize:
+                                                        displayWidth(context) *
+                                                            0.03,
+                                                    textAlign: TextAlign.start,
+                                                    fontFamily: poppins),
+                                              ],
+                                            )
+                                          ],
+                                        )
+                                  : Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Image.asset(
+                                              'assets/images/fuel.png',
+                                              width:
+                                                  displayWidth(context) * 0.045,
+                                              color: backgroundColor,
+                                            ),
+                                            SizedBox(
+                                              width:
+                                                  displayWidth(context) * 0.02,
+                                            ),
+                                            commonText(
+                                                context: context,
+                                                text: vesselData.vesselInfo!
+                                                            .fuelCapacity ==
+                                                        null
+                                                    ? '-'
+                                                    : '${vesselData.vesselInfo!.fuelCapacity!} $liters'
+                                                        .toString(),
+                                                fontWeight: FontWeight.w500,
+                                                textColor: backgroundColor,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.03,
+                                                textAlign: TextAlign.start,
+                                                fontFamily: poppins),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height:
+                                              displayHeight(context) * 0.005,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                                margin: const EdgeInsets.only(
+                                                    left: 4),
+                                                child: Image.asset(
+                                                  'assets/images/battery.png',
+                                                  width: displayWidth(context) *
+                                                      0.027,
+                                                  color: backgroundColor,
+                                                )),
+                                            SizedBox(
+                                              width:
+                                                  displayWidth(context) * 0.02,
+                                            ),
+                                            commonText(
+                                                context: context,
+                                                text:
+                                                    ' ${vesselData.vesselInfo!.batteryCapacity!} $kiloWattHour'
+                                                        .toString(),
+                                                fontWeight: FontWeight.w500,
+                                                textColor: backgroundColor,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.03,
+                                                textAlign: TextAlign.start,
+                                                fontFamily: poppins),
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height:
+                                              displayHeight(context) * 0.005,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            Image.asset(
+                                              'assets/images/hybrid_engine.png',
+                                              width:
+                                                  displayWidth(context) * 0.045,
+                                              color: backgroundColor,
+                                            ),
+                                            SizedBox(
+                                              width:
+                                                  displayWidth(context) * 0.02,
+                                            ),
+                                            commonText(
+                                                context: context,
+                                                text: vesselData
+                                                    .vesselInfo!.engineType!,
+                                                fontWeight: FontWeight.w500,
+                                                textColor: backgroundColor,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.03,
+                                                textAlign: TextAlign.start,
+                                                fontFamily: poppins),
+                                          ],
+                                        )
+                                      ],
+                                    ),
                     ],
                   ),
                 )
@@ -1734,7 +1776,9 @@ Widget fleetVesselSingleViewCard(BuildContext context, FleetVessels vesselData,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          vesselData.vesselInfo!.name == "" ? '-' : vesselData.vesselInfo!.name!,
+                          vesselData.vesselInfo!.name == ""
+                              ? '-'
+                              : vesselData.vesselInfo!.name!,
                           textAlign: TextAlign.start,
                           style: TextStyle(
                             fontSize: displayWidth(context) * 0.045,
@@ -1866,41 +1910,40 @@ showDialogBox(BuildContext context, CreateVessel vesselData,
                       Column(
                         children: [
                           Container(
-                          margin: EdgeInsets.only(
-                              left: 15,
-                              right: 15
+                            margin: EdgeInsets.only(left: 15, right: 15),
+                            child: Center(
+                              child: CommonButtons.getAcceptButton(
+                                  'Confirm Unretire', context, endTripBtnColor,
+                                  () async {
+                                DatabaseService()
+                                    .updateIsSyncStatus(0, vesselData.id!);
+                                await DatabaseService()
+                                    .updateVesselStatus(1, vesselData.id!)
+                                    .then((value) {
+                                  Utils.showSnackBar(context,
+                                      scaffoldKey: scaffoldKey,
+                                      message:
+                                          'Vessel Unretired Successfully.');
+                                  Navigator.of(dialogContext).pop();
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            BottomNavigation(),
+                                      ),
+                                      ModalRoute.withName(""));
+                                });
+                              },
+                                  displayWidth(context),
+                                  displayHeight(context) * 0.05,
+                                  primaryColor,
+                                  Colors.white,
+                                  displayHeight(context) * 0.02,
+                                  endTripBtnColor,
+                                  '',
+                                  fontWeight: FontWeight.w500),
+                            ),
                           ),
-                          child: Center(
-                            child: CommonButtons.getAcceptButton(
-                                'Confirm Unretire', context, endTripBtnColor, () async {
-                              DatabaseService()
-                                  .updateIsSyncStatus(0, vesselData.id!);
-                              await DatabaseService()
-                                  .updateVesselStatus(1, vesselData.id!)
-                                  .then((value) {
-                                Utils.showSnackBar(context,
-                                    scaffoldKey: scaffoldKey,
-                                    message:
-                                    'Vessel Unretired Successfully.');
-                                Navigator.of(dialogContext).pop();
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => BottomNavigation(),
-                                    ),
-                                    ModalRoute.withName(""));
-                              });
-                            },
-                                displayWidth(context) ,
-                                displayHeight(context) * 0.05,
-                                primaryColor,
-                                Colors.white,
-                                displayHeight(context) * 0.02,
-                                endTripBtnColor,
-                                '',
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ),
                           SizedBox(
                             height: 8.0,
                           ),
@@ -2130,14 +2173,15 @@ Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
     String distance, String totalCount, String avgSpeed) {
   double finalAvgSpeed = double.parse(avgSpeed);
   return Container(
-    margin: EdgeInsets.symmetric(horizontal: 0,),
+    margin: EdgeInsets.symmetric(
+      horizontal: 0,
+    ),
     child: Column(
       children: [
         Container(
           width: displayWidth(context),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              color: backgroundColor),
+              borderRadius: BorderRadius.circular(15), color: backgroundColor),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16),
             child: Column(
@@ -2175,7 +2219,8 @@ Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
                     borderRadius: BorderRadius.circular(15),
                     color: backgroundColor),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0, vertical: 16),
                   child: Column(
                     children: [
                       commonText(
@@ -2204,14 +2249,14 @@ Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
             SizedBox(
               width: 10,
             ),
-
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15),
                     color: backgroundColor),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0, vertical: 16),
                   child: Column(
                     children: [
                       commonText(
@@ -2250,7 +2295,8 @@ Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
                     borderRadius: BorderRadius.circular(15),
                     color: backgroundColor),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0, vertical: 16),
                   child: Column(
                     children: [
                       commonText(
@@ -2271,7 +2317,8 @@ Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
                           fontWeight: FontWeight.w400,
                           textColor: Colors.grey,
                           textSize: displayWidth(context) * 0.03,
-                          textAlign: TextAlign.start,fontFamily: poppins),
+                          textAlign: TextAlign.start,
+                          fontFamily: poppins),
                     ],
                   ),
                 ),
@@ -2286,7 +2333,8 @@ Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
                     borderRadius: BorderRadius.circular(15),
                     color: backgroundColor),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0, vertical: 16),
                   child: Column(
                     children: [
                       commonText(
@@ -2305,7 +2353,8 @@ Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
                           fontWeight: FontWeight.w400,
                           textColor: Colors.grey,
                           textSize: displayWidth(context) * 0.03,
-                          textAlign: TextAlign.start,fontFamily: poppins),
+                          textAlign: TextAlign.start,
+                          fontFamily: poppins),
                     ],
                   ),
                 ),
@@ -2324,7 +2373,8 @@ Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
                     borderRadius: BorderRadius.circular(15),
                     color: backgroundColor),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0, vertical: 16),
                   child: Column(
                     children: [
                       commonText(
@@ -2343,7 +2393,8 @@ Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
                           fontWeight: FontWeight.w400,
                           textColor: Colors.grey,
                           textSize: displayWidth(context) * 0.03,
-                          textAlign: TextAlign.start,fontFamily: poppins),
+                          textAlign: TextAlign.start,
+                          fontFamily: poppins),
                     ],
                   ),
                 ),
@@ -2358,7 +2409,8 @@ Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
                     borderRadius: BorderRadius.circular(15),
                     color: backgroundColor),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0, vertical: 16),
                   child: Column(
                     children: [
                       commonText(
@@ -2377,7 +2429,8 @@ Widget vesselSingleViewVesselAnalytics(BuildContext context, String duration,
                           fontWeight: FontWeight.w400,
                           textColor: Colors.grey,
                           textSize: displayWidth(context) * 0.03,
-                          textAlign: TextAlign.start,fontFamily: poppins),
+                          textAlign: TextAlign.start,
+                          fontFamily: poppins),
                     ],
                   ),
                 ),
@@ -2394,7 +2447,9 @@ Widget oldVesselSingleViewVesselAnalytics(BuildContext context, String duration,
     String distance, String totalCount, String avgSpeed) {
   double finalAvgSpeed = double.parse(avgSpeed);
   return Container(
-    margin: EdgeInsets.symmetric(horizontal: 10,),
+    margin: EdgeInsets.symmetric(
+      horizontal: 10,
+    ),
     child: Column(
       children: [
         Row(
@@ -2535,7 +2590,8 @@ Widget oldVesselSingleViewVesselAnalytics(BuildContext context, String duration,
                           fontWeight: FontWeight.w400,
                           textColor: Colors.grey,
                           textSize: displayWidth(context) * 0.03,
-                          textAlign: TextAlign.start,fontFamily: poppins),
+                          textAlign: TextAlign.start,
+                          fontFamily: poppins),
                     ],
                   ),
                 ),

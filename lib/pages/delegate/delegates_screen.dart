@@ -222,104 +222,216 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        SizedBox(
-                          height: 5,
-                        ),
-                        if (vesselData != null)
-                          Container(
-                              margin: EdgeInsets.symmetric(
-                                horizontal: 15,
-                              ),
-                              width: displayWidth(context),
-                              //height: displayHeight(context)*0.2,
-        
-                              child: VesselinfoCard(
-                                vesselData: vesselData,
-                              )),
-        
-                        SizedBox(
-                          height: 10,
-                        ),
-                        ListView.builder(
-                            physics: NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: 10,
-                            itemBuilder: (context, index) {
-                              return Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 4),
-                                  margin: EdgeInsets.symmetric(horizontal: 10),
-                                  child: Column(
-                                    children: [
-                                      Row(children: [
-                                        Flexible(
-                                            flex: 4,
-                                            fit: FlexFit.tight,
-                                            child: Row(
-                                              children: [
-                                                commonText(
-                                                    text: 'Delegate Name',
-                                                    context: context,
-                                                    textSize: 16,
-                                                    fontWeight: FontWeight.w500,
-                                                    fontFamily: outfit),
-                                                tag(colorgreenLight,
-                                                    '24 Hr Access')
-                                              ],
-                                            )),
-                                        Flexible(
-                                            flex: 1,
-                                            fit: FlexFit.tight,
-                                            child: Row(
-                                              children: [
-                                                Visibility(
-                                                    child: commonText(
-                                                        text: 'Active',
-                                                        textColor: Colors.green,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        textSize: displayWidth(context)* 0.03 )),
-                                                Padding(
-                                                    padding: EdgeInsets.symmetric(
-                                                        horizontal: 8),
-                                                    child: InkWell(
-                                                      onTap: (){
-                    CustomFleetDailog().showFleetDialog(
-                      context: context,
-                      title: 'Are you sure you want to remove this Delegate Member?',
-                      subtext: 'First Name Last Name',
-                      description: 'Your permissions to their vessels will be removed & cannot be viewed',
-                      postiveButtonColor: deleteTripBtnColor,
-                      positiveButtonText: 'Remove',
-                      onNegativeButtonTap: (){
-                        Navigator.of(context).pop();
-                      },
-                      onPositiveButtonTap: ()async{
-        
-                        Navigator.of(context).pop();
-                      });                                                      
-                                                      },
-                                                      child:Image.asset(
-                  'assets/images/Trash.png',
-                  height: 18,
-                  width: 18,
-                  
-                  )
-                                                    )
-                                                    
-                                                    
-                                                    )
-                                              ],
-                                            ))
-                                      ]),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 4),
-                                        child: Row(
-                                          children: [
-                                            Flexible(
-                                                fit: FlexFit.tight,
-                                                flex: 10,
+                        CommonButtons.getActionButton(
+                            title: 'Invite Delegate',
+                            context: context,
+                            fontSize: displayWidth(context) * 0.044,
+                            textColor: Colors.white,
+                            buttonPrimaryColor: blueColor,
+                            borderColor: blueColor,
+                            onTap: ()async {
+                              debugPrint("VESSEL ID DELEGATE SCREEN 1 - ${widget.vesselID}");
+                              var result = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: ((context) =>
+                                          InviteDelegate(vesselID: widget.vesselID,))));
+
+                              if(result != null)
+                                {
+                                  if(result)
+                                    {
+                                      /// TODO update list
+                                    }
+                                }
+                            },
+                            width: displayWidth(context) / 1.3,
+                            height: displayHeight(context) * 0.053),
+                        GestureDetector(
+                            onTap: (() async {
+                              final image = await controller.capture();
+                              await SystemChrome.setPreferredOrientations(
+                                  [DeviceOrientation.portraitUp]);
+
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => FeedbackReport(
+                                            imagePath: image.toString(),
+                                            uIntList: image,
+                                          )));
+                            }),
+                            child: UserFeedback().getUserFeedback(
+                              context,
+                            )),
+                      ],
+                    ),
+                  )),
+              Container(
+                margin: EdgeInsets.only(bottom: displayHeight(context) / 7.1),
+                height: displayHeight(context) / 0.8,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 5,
+                      ),
+                      if (vesselData != null)
+                        Container(
+                            margin: EdgeInsets.symmetric(
+                              horizontal: 15,
+                            ),
+                            width: displayWidth(context),
+                            //height: displayHeight(context)*0.2,
+
+                            child: VesselinfoCard(
+                              vesselData: vesselData,
+                            )),
+
+                      SizedBox(
+                        height: 10,
+                      ),
+                      ListView.builder(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: 10,
+                          itemBuilder: (context, index) {
+                            return Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 4),
+                                margin: EdgeInsets.symmetric(horizontal: 10),
+                                child: Column(
+                                  children: [
+                                    Row(children: [
+                                      Flexible(
+                                          flex: 4,
+                                          fit: FlexFit.tight,
+                                          child: Row(
+                                            children: [
+                                              commonText(
+                                                  text: 'Delegate Name',
+                                                  context: context,
+                                                  textSize: 16,
+                                                  fontWeight: FontWeight.w500,
+                                                  fontFamily: outfit),
+                                              tag(colorgreenLight,
+                                                  '24 Hr Access')
+                                            ],
+                                          )),
+                                      Flexible(
+                                          flex: 1,
+                                          fit: FlexFit.tight,
+                                          child: Row(
+                                            children: [
+                                              Visibility(
+                                                  child: commonText(
+                                                      text: 'Active',
+                                                      textColor: Colors.green,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      textSize: displayWidth(context)* 0.03 )),
+                                              Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 8),
+                                                  child: InkWell(
+                                                    onTap: (){
+                  CustomFleetDailog().showFleetDialog(
+                    context: context,
+                    title: 'Are you sure you want to remove this Delegate Member?',
+                    subtext: 'First Name Last Name',
+                    description: 'Your permissions to their vessels will be removed & cannot be viewed',
+                    postiveButtonColor: deleteTripBtnColor,
+                    positiveButtonText: 'Remove',
+                    onNegativeButtonTap: (){
+                      Navigator.of(context).pop();
+                    },
+                    onPositiveButtonTap: ()async{
+
+                      Navigator.of(context).pop();
+                    });                                                      
+                                                    },
+                                                    child:Image.asset(
+                'assets/images/Trash.png',
+                height: 18,
+                width: 18,
+                
+                )
+                                                  )
+                                                  
+                                                  
+                                                  )
+                                            ],
+                                          ))
+                                    ]),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 4),
+                                      child: Row(
+                                        children: [
+                                          Flexible(
+                                              fit: FlexFit.tight,
+                                              flex: 10,
+                                              child: Container(
+                                                alignment: Alignment.centerLeft,
+                                                child: commonText(
+                                                    text:
+                                                        'Janeiskij02@knds.com',
+                                                    fontWeight: FontWeight.w400,
+                                                    textSize: 11,
+                                                    textColor: Colors.grey),
+                                              )),
+                                          // Flexible(
+                                          //     fit: FlexFit.tight,
+                                          //     flex: 3,
+                                          //     child: Visibility(
+                                          //       child: Container(
+                                          //         padding: EdgeInsets.symmetric(
+                                          //             horizontal: 2,
+                                          //             vertical: 6),
+                                          //         decoration: BoxDecoration(
+                                          //           color: colorLightRed,
+                                          //           borderRadius:
+                                          //               BorderRadius.only(
+                                          //                   topLeft:
+                                          //                       Radius.circular(
+                                          //                           20),
+                                          //                   bottomLeft:
+                                          //                       Radius.circular(
+                                          //                           20),
+                                          //                   bottomRight:
+                                          //                       Radius.circular(
+                                          //                           20)),
+                                          //         ),
+                                          //         child: commonText(
+                                          //             text: 'Remove Access',
+                                          //             fontWeight:
+                                          //                 FontWeight.w400,
+                                          //             textSize: 10,
+                                          //             textColor:
+                                          //                 floatingBtnColor),
+                                          //       ),
+                                          //     ))
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 2),
+                                      child: Row(
+                                        children: [
+                                          Flexible(
+                                              flex: 3,
+                                              fit: FlexFit.tight,
+                                              child: InkWell(
+                                                onTap: (){
+                                                  debugPrint("VESSEL ID DELEGATE SCREEN 2 - ${widget.vesselID}");
+
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) => UpdateDelegateAccessScreen(vesselID: widget.vesselID,)),
+                                                  );
+                                                },
                                                 child: Container(
                                                   alignment: Alignment.centerLeft,
                                                   child: commonText(
@@ -360,7 +472,7 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                                             //                 floatingBtnColor),
                                             //       ),
                                             //     ))
-                                          ],
+                                      )],
                                         ),
                                       ),
                                       Padding(
