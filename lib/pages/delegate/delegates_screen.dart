@@ -122,6 +122,7 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                             buttonPrimaryColor: blueColor,
                             borderColor: blueColor,
                             onTap: () {
+                              debugPrint("VESSEL ID DELEGATE SCREEN 1 - ${widget.vesselID}");
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -307,6 +308,8 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                                               fit: FlexFit.tight,
                                               child: InkWell(
                                                 onTap: (){
+                                                  debugPrint("VESSEL ID DELEGATE SCREEN 2 - ${widget.vesselID}");
+
                                                   Navigator.push(
                                                       context,
                                                       MaterialPageRoute(

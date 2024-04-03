@@ -296,7 +296,7 @@ class _MyFleetSingleCardState extends State<MyFleetSingleCard> {
                             );
 
                           },
-                          child: deleteFleetBtn!
+                          child: deleteFleetBtn
                               ? Container(
                               height: 20,
                               width: 20,

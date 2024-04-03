@@ -64,7 +64,8 @@ class _InviteDelegateState extends State<InviteDelegate> {
 
   @override
   void initState() {
-    singleVesselDetails = _databaseService.getVesselFromVesselID(widget.vesselID??'6400c54b7a70ad4eae7c550d');
+    debugPrint("VESSEL ID INVITE DELEGATE SCREEN ${widget.vesselID}");
+    singleVesselDetails = _databaseService.getVesselFromVesselID(widget.vesselID!);
     singleVesselDetails!.then((value) {
       vesselData = value;
       setState(() {});
@@ -191,6 +192,7 @@ class _InviteDelegateState extends State<InviteDelegate> {
                               maxLength: 32,
                               prefixIcon: null,
                               suffixIcon: Icon(Icons.close),
+                              onSuffixIconTap: (){userEmailController.clear();},
                               requestFocusNode: null,
                               obscureText: false,
                               onTap: () {},

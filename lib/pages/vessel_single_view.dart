@@ -433,6 +433,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                             delegateTextHeaderColor),
                                                     InkWell(
                                                       onTap: () {
+                                                        debugPrint("VESSEL ID DELEGATE SCREEN 2 - ${widget.vessel!.id!}");
                                                         Navigator.push(
                                                             context,
                                                             MaterialPageRoute(
