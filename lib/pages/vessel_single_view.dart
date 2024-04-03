@@ -397,7 +397,9 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                     top: 0.0, left: 17, right: 17),
                                 child: Column(
                                   children: [
-                                    Theme(
+                                    widget.vessel!.createdBy != commonProvider.loginModel!.userId
+                                        ? SizedBox(height: displayHeight(context) * 0.04,)
+                                        : Theme(
                                         data: Theme.of(context).copyWith(
                                             colorScheme: ColorScheme.light(
                                               primary: Colors.black,
@@ -433,6 +435,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                             delegateTextHeaderColor),
                                                     InkWell(
                                                       onTap: () {
+                                                        debugPrint("VESSEL ID DELEGATE SCREEN 2 - ${widget.vessel!.id!}");
                                                         Navigator.push(
                                                             context,
                                                             MaterialPageRoute(
@@ -1200,7 +1203,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 ),
                               ),
                             ),
-                            widget.isCalledFromFleetScreen!
+                            widget.vessel!.createdBy != commonProvider.loginModel!.userId
                             ? SizedBox(height: displayHeight(context) * 0.04,)
                             : Theme(
                               data: Theme.of(context).copyWith(

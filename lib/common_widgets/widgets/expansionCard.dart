@@ -11,7 +11,9 @@ import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
+import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
+import 'package:provider/provider.dart';
 
 import '../../pages/bottom_navigation.dart';
 import 'log_level.dart';
@@ -47,18 +49,20 @@ class _ExpansionCardState extends State<ExpansionCard> {
       totalDuration = "00:00:00",
       page = "Expansion card";
 
+  late CommonProvider commonProvider;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
-
-
     getVesselAnalytics(widget.vessel!.id!);
+
+    commonProvider = context.read<CommonProvider>();
   }
 
   @override
   Widget build(BuildContext context) {
+    commonProvider = context.watch<CommonProvider>();
     print('FFFFF: ${widget.vessel!.engineType}');
     return ExpandableNotifier(
         child: GestureDetector(
@@ -722,7 +726,8 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
-                                      GestureDetector(
+                                     widget.vessel!.createdBy == commonProvider.loginModel!.userId
+                                      ? GestureDetector(
                                         onTap: () {
                                           widget.onEdit(widget.vessel!);
                                         },
@@ -754,7 +759,8 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                             ],
                                           ),
                                         ),
-                                      ),
+                                      )
+                                      : SizedBox(),
                                     ],
                                   ),
                                 ],
@@ -787,7 +793,7 @@ class _ExpansionCardState extends State<ExpansionCard> {
                                       color: Colors.grey,
                                     ),
                                   ),
-                                  widget.isCalledFromFleetScreen!
+                                  widget.vessel!.createdBy != commonProvider.loginModel!.userId
                                   ? SizedBox()
                                   : GestureDetector(
                                     onTap: () async {

@@ -62,7 +62,7 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    debugPrint("VESSEL ID UPDATE DELEGATE SCREEN  ${widget.vesselID}");
     singleVesselDetails = _databaseService.getVesselFromVesselID(widget.vesselID!);
     singleVesselDetails!.then((value) {
       vesselData = value;

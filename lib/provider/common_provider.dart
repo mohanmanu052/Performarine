@@ -89,6 +89,7 @@ class CommonProvider with ChangeNotifier {
   CommonModel? deleteFleetModel;
   CommonModel? editFleetDetailsModel;
   CommonModel? createDelegateModel;
+  CommonModel? myDelegateInviteModel;
   FleetDetailsModel? fleetDetailsModel;
 
 
@@ -645,8 +646,17 @@ Future<MyDelegateInviteModel> getDelegateInvites(BuildContext context,String acc
 }
 
 
-Future<dynamic> delegateAcceptReject(BuildContext context,String accessToken,GlobalKey<ScaffoldState> scaffoldKey,bool flag,String verifyToken)async{
+  Future<CommonModel> delegateAcceptReject(
+      BuildContext context,String accessToken,GlobalKey<ScaffoldState> scaffoldKey,String flag,String verifyToken) async {
+    myDelegateInviteModel = CommonModel();
+    myDelegateInviteModel = await MyDelegateInviteProvider().delegateAcceptReject(context, accessToken, scaffoldKey, flag, verifyToken);
+    notifyListeners();
+
+    return myDelegateInviteModel!;
+  }
+
+/*Future<CommonModel> delegateAcceptReject(BuildContext context,String accessToken,GlobalKey<ScaffoldState> scaffoldKey,String flag,String verifyToken)async{
   var res=await MyDelegateInviteProvider().delegateAcceptReject(context, accessToken, scaffoldKey, flag, verifyToken);
   return res;
-}
+}*/
 }

@@ -121,12 +121,21 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                             textColor: Colors.white,
                             buttonPrimaryColor: blueColor,
                             borderColor: blueColor,
-                            onTap: () {
-                              Navigator.push(
+                            onTap: ()async {
+                              debugPrint("VESSEL ID DELEGATE SCREEN 1 - ${widget.vesselID}");
+                              var result = await Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: ((context) =>
                                           InviteDelegate(vesselID: widget.vesselID,))));
+
+                              if(result != null)
+                                {
+                                  if(result)
+                                    {
+                                      /// TODO update list
+                                    }
+                                }
                             },
                             width: displayWidth(context) / 1.3,
                             height: displayHeight(context) * 0.053),
@@ -307,6 +316,8 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                                               fit: FlexFit.tight,
                                               child: InkWell(
                                                 onTap: (){
+                                                  debugPrint("VESSEL ID DELEGATE SCREEN 2 - ${widget.vesselID}");
+
                                                   Navigator.push(
                                                       context,
                                                       MaterialPageRoute(

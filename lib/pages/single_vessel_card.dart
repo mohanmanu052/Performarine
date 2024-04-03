@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/models/vessel.dart';
+import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
+import 'package:provider/provider.dart';
 
 class SingleVesselCard extends StatefulWidget {
   final CreateVessel? vessel;
@@ -21,6 +23,8 @@ class _SingleVesselCardState extends State<SingleVesselCard> {
 
   bool isTripRunning = false;
 
+  late CommonProvider commonProvider;
+
   @override
   void initState() {
     //     SystemChrome.setPreferredOrientations([
@@ -31,6 +35,8 @@ class _SingleVesselCardState extends State<SingleVesselCard> {
     super.initState();
 
     checkTripRunning();
+
+    commonProvider = context.read<CommonProvider>();
   }
 
   /// To Check trip is running or not
@@ -46,9 +52,11 @@ class _SingleVesselCardState extends State<SingleVesselCard> {
 
   @override
   Widget build(BuildContext context) {
+    commonProvider = context.watch<CommonProvider>();
     return vesselSingleViewCard(
       context,
       widget.vessel!,
+      commonProvider.loginModel!.userId!,
       (CreateVessel value) {
         widget.onTap!(value);
       },

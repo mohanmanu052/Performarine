@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -8,14 +9,17 @@ import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/log_level.dart';
+import 'package:performarine/models/common_model.dart';
 import 'package:performarine/models/my_delegate_invite_model.dart';
 
-class MyDelegateInviteProvider with ChangeNotifier{
+class MyDelegateInviteProvider with ChangeNotifier {
   Client client = Client();
 
-    Future<MyDelegateInviteModel> getDelegateInvites( BuildContext context,
+  CommonModel? delegateAcceptRejectModel;
+
+  Future<MyDelegateInviteModel> getDelegateInvites(BuildContext context,
       String? accessToken, GlobalKey<ScaffoldState> scaffoldKey) async {
-MyDelegateInviteModel? myDelegateInviteModel; 
+    MyDelegateInviteModel? myDelegateInviteModel;
     var headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
       "x_access_token": '$accessToken',
@@ -25,24 +29,32 @@ MyDelegateInviteModel? myDelegateInviteModel;
     Uri uri = Uri.https(Urls.baseUrl, Urls.myDelegateInvites);
 
     try {
-      final response =
-          await client.get(uri, headers: headers, );
+      final response = await client.get(
+        uri,
+        headers: headers,
+      );
 
       var decodedData = json.decode(response.body);
 
-      kReleaseMode ? null : Utils.customPrint('My Delegate Invites : ' + response.body);
       kReleaseMode
           ? null
-
-          : Utils.customPrint('My Delegate Invites Status code : ' + response.statusCode.toString());
-
+          : Utils.customPrint('My Delegate Invites : ' + response.body);
+      kReleaseMode
+          ? null
+          : Utils.customPrint('My Delegate Invites Status code : ' +
+              response.statusCode.toString());
 
       if (response.statusCode == HttpStatus.ok) {
-        myDelegateInviteModel = MyDelegateInviteModel.fromJson(json.decode(response.body));
-        CustomLogger().logWithFile(Level.info, "My Delegate Invite Response : ' + ${response.body}");
+        myDelegateInviteModel =
+            MyDelegateInviteModel.fromJson(json.decode(response.body));
+        log('My Delegate Invites RESPONSE : ' +
+            response.body.toString());
+        CustomLogger().logWithFile(
+            Level.info, "My Delegate Invite Response : ' + ${response.body}");
 
-        if(myDelegateInviteModel == null){
-          CustomLogger().logWithFile(Level.error, "Error while parsing json data on MyDelegateInviteModel");
+        if (myDelegateInviteModel == null) {
+          CustomLogger().logWithFile(Level.error,
+              "Error while parsing json data on MyDelegateInviteModel");
         }
 
         return myDelegateInviteModel;
@@ -52,7 +64,8 @@ MyDelegateInviteModel? myDelegateInviteModel;
             : Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         kReleaseMode ? null : Utils.customPrint('EXE RESP: $response');
 
-        CustomLogger().logWithFile(Level.error, "EXE RESP STATUS CODE: ${response.statusCode} -> ");
+        CustomLogger().logWithFile(
+            Level.error, "EXE RESP STATUS CODE: ${response.statusCode} -> ");
 
         if (scaffoldKey != null) {
           Utils.showSnackBar(context,
@@ -71,8 +84,6 @@ MyDelegateInviteModel? myDelegateInviteModel;
             : Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         kReleaseMode ? null : Utils.customPrint('EXE RESP: $response');
 
-        
-
         myDelegateInviteModel = null;
       }
     } on SocketException catch (_) {
@@ -83,30 +94,35 @@ MyDelegateInviteModel? myDelegateInviteModel;
 
       myDelegateInviteModel = null;
     } catch (exception, s) {
-      kReleaseMode ? null : Utils.customPrint('error caught myDelegateInviteModel:- $exception \n $s');
+      kReleaseMode
+          ? null
+          : Utils.customPrint(
+              'error caught myDelegateInviteModel:- $exception \n $s');
 
-      CustomLogger().logWithFile(Level.error, "error caught myDelegateInviteModel:- $exception \n $s -> ");
-
+      CustomLogger().logWithFile(Level.error,
+          "error caught myDelegateInviteModel:- $exception \n $s -> ");
 
       myDelegateInviteModel = null;
     }
     return myDelegateInviteModel ?? MyDelegateInviteModel();
   }
 
-
-
-    Future<dynamic> delegateAcceptReject( BuildContext context,
-      String? accessToken, GlobalKey<ScaffoldState> scaffoldKey,bool flag ,String verifyToken) async {
-var data; 
+  Future<CommonModel> delegateAcceptReject(
+      BuildContext context,
+      String? accessToken,
+      GlobalKey<ScaffoldState> scaffoldKey,
+      String flag,
+      String verifyToken) async {
+    var data;
     var headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
       "x_access_token": '$accessToken',
     };
     Uri uri = Uri.https(Urls.baseUrl, Urls.delegateAccessAcceptReject);
-var body={
-  'verify':verifyToken,
-  'flag':flag,
-};
+    var body = {
+      'verify': verifyToken,
+      'flag': flag,
+    };
 
     try {
       final response =
@@ -114,38 +130,47 @@ var body={
 
       var decodedData = json.decode(response.body);
 
-      kReleaseMode ? null : Utils.customPrint('My Delegate Invites Accept Reject : ' + response.body);
       kReleaseMode
           ? null
-
-          : Utils.customPrint('My Delegate Invites Accept Reject Status code : ' + response.statusCode.toString());
-
+          : Utils.customPrint(
+              'My Delegate Invites Accept Reject : ' + response.body);
+      kReleaseMode
+          ? null
+          : Utils.customPrint(
+              'My Delegate Invites Accept Reject Status code : ' +
+                  response.statusCode.toString());
 
       if (response.statusCode == HttpStatus.ok) {
-                  Utils.showSnackBar(context,
-              scaffoldKey: scaffoldKey, message: decodedData['message']);
+        delegateAcceptRejectModel =
+            CommonModel.fromJson(json.decode(response.body));
+        Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey, message: decodedData['message']);
 
-        CustomLogger().logWithFile(Level.info, "My Delegate Invites Accept Reject Response : ' + ${response.body}");
+        CustomLogger().logWithFile(Level.info,
+            "My Delegate Invites Accept Reject Response : ' + ${response.body}");
 
-        if(data == null){
-          CustomLogger().logWithFile(Level.error, "Error while parsing json data on MyDelegateInviteModel");
+        if (delegateAcceptRejectModel == null) {
+          CustomLogger().logWithFile(Level.error,
+              "Error while parsing json data on MyDelegateInviteModel");
         }
 
-        return data;
+        return delegateAcceptRejectModel!;
       } else if (response.statusCode == HttpStatus.gatewayTimeout) {
         kReleaseMode
             ? null
-            : Utils.customPrint('My Delegate Invites Accept Reject EXE RESP STATUS CODE: ${response.statusCode}');
+            : Utils.customPrint(
+                'My Delegate Invites Accept Reject EXE RESP STATUS CODE: ${response.statusCode}');
         kReleaseMode ? null : Utils.customPrint('EXE RESP: $response');
 
-        CustomLogger().logWithFile(Level.error, "My Delegate Invites Accept Reject EXE RESP STATUS CODE: ${response.statusCode} -> ");
+        CustomLogger().logWithFile(Level.error,
+            "My Delegate Invites Accept Reject EXE RESP STATUS CODE: ${response.statusCode} -> ");
 
         if (scaffoldKey != null) {
           Utils.showSnackBar(context,
               scaffoldKey: scaffoldKey, message: decodedData['message']);
         }
 
-        data = null;
+        delegateAcceptRejectModel = null;
       } else {
         if (scaffoldKey != null) {
           Utils.showSnackBar(context,
@@ -157,9 +182,7 @@ var body={
             : Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         kReleaseMode ? null : Utils.customPrint('EXE RESP: $response');
 
-        
-
-        data = null;
+        delegateAcceptRejectModel = null;
       }
     } on SocketException catch (_) {
       Utils().check(scaffoldKey);
@@ -167,17 +190,18 @@ var body={
       kReleaseMode ? null : Utils.customPrint('Socket Exception');
       CustomLogger().logWithFile(Level.error, "Socket Exception -> ");
 
-      data = null;
+      delegateAcceptRejectModel = null;
     } catch (exception, s) {
-      kReleaseMode ? null : Utils.customPrint('error caught myDelegateInviteModel:- $exception \n $s');
+      kReleaseMode
+          ? null
+          : Utils.customPrint(
+              'error caught myDelegateInviteModel:- $exception \n $s');
 
-      CustomLogger().logWithFile(Level.error, "error caught myDelegateInviteModel:- $exception \n $s -> ");
+      CustomLogger().logWithFile(Level.error,
+          "error caught myDelegateInviteModel:- $exception \n $s -> ");
 
-
-      data = null;
+      delegateAcceptRejectModel = null;
     }
-    return data;
+    return delegateAcceptRejectModel!;
   }
-
-
 }
