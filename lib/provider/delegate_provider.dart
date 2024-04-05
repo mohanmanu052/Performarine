@@ -15,12 +15,13 @@ class DelegateProvider with ChangeNotifier{
       //   HttpHeaders.contentTypeHeader: 'application/json',
       //   "x_access_token": '',
       // };
+      debugPrint("GET URL URL $url");
        response =
       await client.get(url,
           //headers: headers
       );
       print('accept delegate invite response status code was ${response.statusCode.toString()}');
-      log('accept delegate invite response ${response.body.toString()}');
+      //log('accept delegate invite response ${response.body.toString()}');
 return response;
     }catch(err){
 

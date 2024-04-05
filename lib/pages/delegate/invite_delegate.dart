@@ -792,7 +792,10 @@ return Future.value(false);
       shareAccessModel.add(ShareAccessModel.fromJson(data));
     }
     Utils.customPrint('LIST LENGTH ${shareAccessModel.length}');
-    setState(() {});
+    if(mounted)
+      {
+        setState(() {});
+      }
   }
 
   Future<FirebaseRemoteConfig> setupRemoteConfig() async {

@@ -12,13 +12,16 @@ import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/custom_fleet_dailog.dart';
+import 'package:performarine/common_widgets/widgets/delegate_vessel_info_card.dart';
 import 'package:performarine/common_widgets/widgets/log_level.dart';
 import 'package:performarine/common_widgets/widgets/user_feed_back.dart';
 import 'package:performarine/common_widgets/widgets/vessel_info_card.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
+import 'package:performarine/models/vessel_delegate_model.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
+import 'package:performarine/pages/delegate/single_delegate_card.dart';
 import 'package:performarine/pages/delegate/update_delegate_access_screen.dart';
 import 'package:performarine/pages/feedback_report.dart';
 import 'package:performarine/pages/delegate/invite_delegate.dart';
@@ -32,7 +35,12 @@ class DelegatesScreen extends StatefulWidget {
   bool? isComingFromUnilink;
   Uri? uri;
   String? ownerId;
-  DelegatesScreen({super.key, this.vesselID,this.isComingFromUnilink,this.uri,this.ownerId});
+  DelegatesScreen(
+      {super.key,
+      this.vesselID,
+      this.isComingFromUnilink,
+      this.uri,
+      this.ownerId});
 
   @override
   State<DelegatesScreen> createState() => _DelegatesScreenState();
@@ -41,67 +49,56 @@ class DelegatesScreen extends StatefulWidget {
 class _DelegatesScreenState extends State<DelegatesScreen> {
   final controller = ScreenshotController();
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
-  late Future<List<CreateVessel>> getVesselFuture;
-  CreateVessel? vesselData;
   final DatabaseService _databaseService = DatabaseService();
   CommonProvider? commonProvider;
 
+  late Future<VesselDelegateModel> future;
+
   @override
   void initState() {
-        commonProvider = context.read<CommonProvider>();
 
-    getVesselFuture = _databaseService.vessels();
-    getVesselFuture.then((value) {
-      vesselData = value[0];
-      setState(() {});
-    });
+    debugPrint("VESSEL ID FROM UNILINK ${widget.vesselID}");
 
-    if(widget.isComingFromUnilink??false){
+    commonProvider = context.read<CommonProvider>();
+
+    if (widget.isComingFromUnilink ?? false) {
+      debugPrint("COMING FROM UNILINK 1 ");
       adddelegateInvitation();
+      //future = commonProvider!.vesselDelegateData(context, commonProvider!.loginModel!.token!, widget.vesselID!, scaffoldKey);
       getUserConfigData();
     }
+
+    debugPrint("COMING FROM UNILINK");
+    future = commonProvider!.vesselDelegateData(context, commonProvider!.loginModel!.token!, widget.vesselID!, scaffoldKey);
 
     // TODO: implement initState
     super.initState();
   }
 
-
-
-    void adddelegateInvitation()async{
-    if(widget.isComingFromUnilink??false){
-      var res=await       commonProvider?.acceptDelegateInvite(widget.uri??Uri());
-      if(res!.statusCode==200){
-        Future.delayed(Duration(milliseconds: 500)).then((value) {
-
-        });
-
+  void adddelegateInvitation() async {
+    if (widget.isComingFromUnilink ?? false) {
+      var res = await commonProvider?.acceptDelegateInvite(widget.uri ?? Uri());
+      if (res!.statusCode == 200) {
+        Future.delayed(Duration(milliseconds: 500)).then((value) {});
       }
-
+    }
   }
-  
-  }
-
 
   @override
   Widget build(BuildContext context) {
     return PopScope(
-              canPop:false,
-
+      canPop: false,
       onPopInvoked: (didPop) async {
-        if(didPop) return;
-                          if(widget.isComingFromUnilink??false){
-        
-        
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => BottomNavigation()),
-                  ModalRoute.withName(""));
-        
-                }else{
-                Navigator.pop(context);
-        
-                };},
-
+        if (didPop) return;
+        if (widget.isComingFromUnilink ?? false) {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => BottomNavigation()),
+              ModalRoute.withName(""));
+        } else {
+          Navigator.pop(context);
+        };
+      },
       child: Screenshot(
         controller: controller,
         child: Scaffold(
@@ -112,17 +109,14 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
             elevation: 0,
             leading: IconButton(
               onPressed: () async {
-                if(widget.isComingFromUnilink??false){
-        
-        
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => BottomNavigation()),
-                  ModalRoute.withName(""));
-        
-                }else{
-                Navigator.pop(context);
-        
+                if (widget.isComingFromUnilink ?? false) {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BottomNavigation()),
+                      ModalRoute.withName(""));
+                } else {
+                  Navigator.pop(context);
                 }
               },
               icon: const Icon(Icons.arrow_back),
@@ -138,29 +132,21 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                 textSize: displayWidth(context) * 0.042,
                 fontFamily: outfit),
             actions: [
-             /* InkWell(
-                onTap: () async {},
-                child: Image.asset(
-                  'assets/images/Trash.png',
-                  width: Platform.isAndroid
-                      ? displayWidth(context) * 0.065
-                      : displayWidth(context) * 0.05,
-                ),
-              ),*/
               Container(
                 margin: EdgeInsets.only(right: 8),
                 child: IconButton(
                   onPressed: () async {
                     await SystemChrome.setPreferredOrientations(
                         [DeviceOrientation.portraitUp]);
-        
+
                     Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
                             builder: (context) => BottomNavigation()),
                         ModalRoute.withName(""));
                   },
-                  icon: Image.asset('assets/icons/performarine_appbar_icon.png'),
+                  icon:
+                      Image.asset('assets/icons/performarine_appbar_icon.png'),
                   color: Theme.of(context).brightness == Brightness.dark
                       ? Colors.white
                       : Colors.black,
@@ -168,275 +154,145 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
               ),
             ],
           ),
-        body: Container(
-          child: Stack(
-            children: [
-              Positioned(
-                  bottom: 0,
-                  right: 0,
-                  left: 0,
-                  child: Container(
-                    height: displayHeight(context) / 8.5,
-                    padding: EdgeInsets.all(8),
-                    child: Column(
-                      children: [
-                        CommonButtons.getActionButton(
-                            title: 'Invite Delegate',
-                            context: context,
-                            fontSize: displayWidth(context) * 0.044,
-                            textColor: Colors.white,
-                            buttonPrimaryColor: blueColor,
-                            borderColor: blueColor,
-                            onTap: ()async {
-                              debugPrint("VESSEL ID DELEGATE SCREEN 1 - ${widget.vesselID}");
-                              var result = await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: ((context) =>
-                                          InviteDelegate(vesselID: widget.vesselID,))));
+          body: Container(
+            child: Stack(
+              children: [
+                Positioned(
+                    bottom: 0,
+                    right: 0,
+                    left: 0,
+                    child: Container(
+                      height: displayHeight(context) / 8.5,
+                      padding: EdgeInsets.all(8),
+                      child: Column(
+                        children: [
+                          CommonButtons.getActionButton(
+                              title: 'Invite Delegate',
+                              context: context,
+                              fontSize: displayWidth(context) * 0.044,
+                              textColor: Colors.white,
+                              buttonPrimaryColor: blueColor,
+                              borderColor: blueColor,
+                              onTap: () async {
+                                debugPrint(
+                                    "VESSEL ID DELEGATE SCREEN 1 - ${widget.vesselID}");
+                                var result = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: ((context) => InviteDelegate(
+                                              vesselID: widget.vesselID,
+                                            ))));
 
-                              if(result != null)
-                                {
-                                  if(result)
-                                    {
-                                      /// TODO update list
-                                    }
+                                if (result != null) {
+                                  if (result) {
+                                    future = commonProvider!.vesselDelegateData(context, commonProvider!.loginModel!.token!, widget.vesselID!, scaffoldKey);
+                                    setState(() {
+
+                                    });
+                                  }
                                 }
-                            },
-                            width: displayWidth(context) / 1.3,
-                            height: displayHeight(context) * 0.053),
-                        GestureDetector(
-                            onTap: (() async {
-                              final image = await controller.capture();
-                              await SystemChrome.setPreferredOrientations(
-                                  [DeviceOrientation.portraitUp]);
+                              },
+                              width: displayWidth(context) / 1.3,
+                              height: displayHeight(context) * 0.053),
+                          GestureDetector(
+                              onTap: (() async {
+                                final image = await controller.capture();
+                                await SystemChrome.setPreferredOrientations(
+                                    [DeviceOrientation.portraitUp]);
 
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => FeedbackReport(
-                                            imagePath: image.toString(),
-                                            uIntList: image,
-                                          )));
-                            }),
-                            child: UserFeedback().getUserFeedback(
-                              context,
-                            )),
-                      ],
-                    ),
-                  )),
-              Container(
-                margin: EdgeInsets.only(bottom: displayHeight(context) / 7.1),
-                height: displayHeight(context) / 0.8,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 5,
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => FeedbackReport(
+                                              imagePath: image.toString(),
+                                              uIntList: image,
+                                            )));
+                              }),
+                              child: UserFeedback().getUserFeedback(
+                                context,
+                              )),
+                        ],
                       ),
-                      if (vesselData != null)
-                        Container(
-                            margin: EdgeInsets.symmetric(
-                              horizontal: 15,
-                            ),
-                            width: displayWidth(context),
-                            //height: displayHeight(context)*0.2,
-
-                            child: VesselinfoCard(
-                              vesselData: vesselData,
-                            )),
-
-                      SizedBox(
-                        height: 10,
-                      ),
-                      ListView.builder(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: 10,
-                          itemBuilder: (context, index) {
+                    )),
+                Container(
+                  margin: EdgeInsets.only(bottom: displayHeight(context) / 7.1),
+                  height: displayHeight(context) / 0.8,
+                  child: SingleChildScrollView(
+                    child: FutureBuilder<VesselDelegateModel>(
+                        future: future,
+                        builder: (context, snapShot) {
+                          if (snapShot.connectionState == ConnectionState.waiting) {
+                            return SizedBox(
+                                height: displayHeight(context) / 1.5,
+                                child: Center(
+                                    child: const CircularProgressIndicator(
+                                        color: blueColor)));
+                          } else if (snapShot.data == null || snapShot.data!.myVesselDelegaties!.isEmpty) {
                             return Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 4),
-                                margin: EdgeInsets.symmetric(horizontal: 10),
-                                child: Column(
+                              height: displayHeight(context) / 1.4,
+                              child: Center(
+                                child: commonText(
+                                    context: context,
+                                    text: 'No data found',
+                                    fontWeight: FontWeight.w500,
+                                    textColor: Colors.black,
+                                    textSize: displayWidth(context) * 0.05,
+                                    textAlign: TextAlign.start),
+                              ),
+                            );
+                          } else {
+                            return Column(
+                              children: [
+                                SizedBox(
+                                  height: displayHeight(context) * 0.01,
+                                ),
+                                Column(
                                   children: [
-                                    Row(children: [
-                                      Flexible(
-                                          flex: 4,
-                                          fit: FlexFit.tight,
-                                          child: Row(
-                                            children: [
-                                              commonText(
-                                                  text: 'Delegate Name',
-                                                  context: context,
-                                                  textSize: 16,
-                                                  fontWeight: FontWeight.w500,
-                                                  fontFamily: outfit),
-                                              tag(colorgreenLight,
-                                                  '24 Hr Access')
-                                            ],
-                                          )),
-                                      Flexible(
-                                          flex: 1,
-                                          fit: FlexFit.tight,
-                                          child: Row(
-                                            children: [
-                                              Visibility(
-                                                  child: commonText(
-                                                      text: 'Active',
-                                                      textColor: Colors.green,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      textSize: displayWidth(context)* 0.03 )),
-                                              Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 8),
-                                                  child: InkWell(
-                                                    onTap: (){
-                  CustomFleetDailog().showFleetDialog(
-                    context: context,
-                    title: 'Are you sure you want to remove this Delegate Member?',
-                    subtext: 'First Name Last Name',
-                    description: 'Your permissions to their vessels will be removed & cannot be viewed',
-                    postiveButtonColor: deleteTripBtnColor,
-                    positiveButtonText: 'Remove',
-                    onNegativeButtonTap: (){
-                      Navigator.of(context).pop();
-                    },
-                    onPositiveButtonTap: ()async{
-
-                      Navigator.of(context).pop();
-                    });                                                      
-                                                    },
-                                                    child:Image.asset(
-                'assets/images/Trash.png',
-                height: 18,
-                width: 18,
-                
-                )
-                                                  )
-                                                  
-                                                  
-                                                  )
-                                            ],
-                                          ))
-                                    ]),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 4),
-                                      child: Row(
-                                        children: [
-                                          Flexible(
-                                              fit: FlexFit.tight,
-                                              flex: 10,
-                                              child: Container(
-                                                alignment: Alignment.centerLeft,
-                                                child: commonText(
-                                                    text:
-                                                        'Janeiskij02@knds.com',
-                                                    fontWeight: FontWeight.w400,
-                                                    textSize: 11,
-                                                    textColor: Colors.grey),
+                                    Column(
+                                      children: [
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        if (snapShot.data!.myVesselDelegaties != null)
+                                          Container(
+                                              margin: EdgeInsets.symmetric(
+                                                horizontal: 15,
+                                              ),
+                                              width: displayWidth(context),
+                                              child: DelegateVesselInfoCard(
+                                                vesselData: snapShot.data!.myVesselDelegaties![0].vesselInfo!,
                                               )),
-                                          // Flexible(
-                                          //     fit: FlexFit.tight,
-                                          //     flex: 3,
-                                          //     child: Visibility(
-                                          //       child: Container(
-                                          //         padding: EdgeInsets.symmetric(
-                                          //             horizontal: 2,
-                                          //             vertical: 6),
-                                          //         decoration: BoxDecoration(
-                                          //           color: colorLightRed,
-                                          //           borderRadius:
-                                          //               BorderRadius.only(
-                                          //                   topLeft:
-                                          //                       Radius.circular(
-                                          //                           20),
-                                          //                   bottomLeft:
-                                          //                       Radius.circular(
-                                          //                           20),
-                                          //                   bottomRight:
-                                          //                       Radius.circular(
-                                          //                           20)),
-                                          //         ),
-                                          //         child: commonText(
-                                          //             text: 'Remove Access',
-                                          //             fontWeight:
-                                          //                 FontWeight.w400,
-                                          //             textSize: 10,
-                                          //             textColor:
-                                          //                 floatingBtnColor),
-                                          //       ),
-                                          //     ))
-                                        ],
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 2),
-                                      child: Row(
-                                        children: [
-                                          Flexible(
-                                              flex: 3,
-                                              fit: FlexFit.tight,
-                                              child: InkWell(
-                                                onTap: (){
-                                                  debugPrint("VESSEL ID DELEGATE SCREEN 2 - ${widget.vesselID}");
 
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) => UpdateDelegateAccessScreen(vesselID: widget.vesselID,)),
-                                                  );
-                                                },
-                                                child: Container(
-                                                  alignment: Alignment.centerLeft,
-                                                  child: commonText(
-                                                      text:
-                                                          'Manage Share Settings',
-                                                      fontWeight: FontWeight.w300,
-                                                      textSize: 10,
-                                                      textColor: blueColor),
-                                                ),
-                                              )),
-                                          // Flexible(
-                                          //     flex: 2,
-                                          //     child: Container(
-                                          //       alignment: Alignment.centerLeft,
-                                          //       child: Column(children: [
-                                          //         commonText(
-                                          //             text: 'Permissions:',
-                                          //             fontWeight:
-                                          //                 FontWeight.w400,
-                                          //             textSize: 10),
-                                                  //                                                 commonText(text: 'Reports | Manage Trips | Edit',
-                                                  // fontWeight: FontWeight.w400,
-                                                  // textSize: 7
-                                                  // ),
-                                                //]),
-                                             // )
-                                              //)
-                                        ],
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        ListView.builder(
+                                            physics: NeverScrollableScrollPhysics(),
+                                            shrinkWrap: true,
+                                            itemCount: snapShot.data!.myVesselDelegaties![0].delegates!.length,
+                                            itemBuilder: (context, index) {
+                                              return SingleDelegateCard(
+                                                  delegates: snapShot.data!.myVesselDelegaties![0].delegates![index]
+                                              );
+                                            })
 
-                                      ),
+                                        //vesselSingleViewCard(context, vesselData!, (p0) => null, scaffoldKey)
+                                      ],
                                     ),
-                                    Divider()
                                   ],
-                                ));
-                          })
+                                ),
+                              ],
+                            );
+                          }
+                        })
 
-                      //vesselSingleViewCard(context, vesselData!, (p0) => null, scaffoldKey)
-                    ],
                   ),
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
         ),
       ),
-                    ),
-      
     );
   }
 
@@ -456,30 +312,32 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
     );
   }
 
-
-      getUserConfigData() {
+  getUserConfigData() {
     Utils.customPrint("CLOUDE USER ID ${commonProvider!.loginModel!.userId}");
-    CustomLogger().logWithFile(Level.info, "CLOUDE USER ID ${commonProvider!.loginModel!.userId} -> ");
+    CustomLogger().logWithFile(
+        Level.info, "CLOUDE USER ID ${commonProvider!.loginModel!.userId} -> ");
 
     commonProvider!
         .getUserConfigData(context, commonProvider!.loginModel!.userId!,
-        commonProvider!.loginModel!.token!, scaffoldKey)
+            commonProvider!.loginModel!.token!, scaffoldKey)
         .then((value) async {
       if (value != null) {
         if (value.status!) {
-          
           Utils.customPrint('LENGTH: ${value.vessels!.length}');
-          CustomLogger().logWithFile(Level.info, "LENGTH: ${value.vessels!.length} -> ");
+          CustomLogger()
+              .logWithFile(Level.info, "LENGTH: ${value.vessels!.length} -> ");
           for (int i = 0; i < value.vessels!.length; i++) {
             if (value.vessels![i].name == 'rrrrr 12') {
-              Utils.customPrint('RRRRR 12 VESSEL DATA: ${value.vessels![i].toJson()}');
-              CustomLogger().logWithFile(Level.info, "RRRRR 12 VESSEL DATA: ${value.vessels![i].toJson()} -> $page");
-
+              Utils.customPrint(
+                  'RRRRR 12 VESSEL DATA: ${value.vessels![i].toJson()}');
+              CustomLogger().logWithFile(Level.info,
+                  "RRRRR 12 VESSEL DATA: ${value.vessels![i].toJson()} -> $page");
             }
 
             Utils.customPrint(
                 'USER CONFIG DATA CLOUD IMAGE 1212 ${value.vessels![i].imageURLs!}');
-            CustomLogger().logWithFile(Level.info, "USER CONFIG DATA CLOUD IMAGE 1212 ${value.vessels![i].imageURLs!} -> $page");
+            CustomLogger().logWithFile(Level.info,
+                "USER CONFIG DATA CLOUD IMAGE 1212 ${value.vessels![i].imageURLs!} -> $page");
             String cloudImage;
             if (value.vessels![i].imageURLs!.length > 1) {
               cloudImage = value.vessels![i].imageURLs![0];
@@ -487,13 +345,14 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
               cloudImage = value.vessels![i].imageURLs == []
                   ? ''
                   : value.vessels![i].imageURLs
-                  .toString()
-                  .replaceAll("[", "")
-                  .replaceAll("]", "");
+                      .toString()
+                      .replaceAll("[", "")
+                      .replaceAll("]", "");
 
               Utils.customPrint(
                   'USER CONFIG DATA CLOUD IMAGE 1212 $cloudImage');
-              CustomLogger().logWithFile(Level.info, "USER CONFIG DATA CLOUD IMAGE 1212 $cloudImage -> $page");
+              CustomLogger().logWithFile(Level.info,
+                  "USER CONFIG DATA CLOUD IMAGE 1212 $cloudImage -> $page");
             }
 
             var downloadImageFromCloud;
@@ -504,7 +363,8 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
 
               Utils.customPrint(
                   'USER CONFIG DATA CLOUD IMAGE $downloadImageFromCloud');
-              CustomLogger().logWithFile(Level.info, "USER CONFIG DATA CLOUD IMAGE $downloadImageFromCloud -> ");
+              CustomLogger().logWithFile(Level.info,
+                  "USER CONFIG DATA CLOUD IMAGE $downloadImageFromCloud -> ");
             } else {
               downloadImageFromCloud = '';
             }
@@ -515,8 +375,10 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
             Utils.customPrint(
                 'DOWNLOADED FILE EXIST SYNC ${downloadedFile.existsSync()}');
 
-            CustomLogger().logWithFile(Level.info, "DOWNLOADED FILE PATH ${downloadedFile.path} -> ");
-            CustomLogger().logWithFile(Level.info, "DOWNLOADED FILE EXIST SYNC ${downloadedFile.existsSync()} -> ");
+            CustomLogger().logWithFile(
+                Level.info, "DOWNLOADED FILE PATH ${downloadedFile.path} -> ");
+            CustomLogger().logWithFile(Level.info,
+                "DOWNLOADED FILE EXIST SYNC ${downloadedFile.existsSync()} -> ");
 
             bool doesExist = await downloadedFile.exists();
 
@@ -548,10 +410,14 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                 Utils.customPrint(
                     "RESULT N PATH ${downloadedCompressImageFile}");
 
-                CustomLogger().logWithFile(Level.info, "${downloadedFile.lengthSync().toString()} -> $page");
-                CustomLogger().logWithFile(Level.info, "${result.lengthSync().toString()} -> $page");
-                CustomLogger().logWithFile(Level.info, "RESULT N PATH ${result.path} -> $page");
-                CustomLogger().logWithFile(Level.info, "RESULT N PATH ${downloadedCompressImageFile} -> $page");
+                CustomLogger().logWithFile(Level.info,
+                    "${downloadedFile.lengthSync().toString()} -> $page");
+                CustomLogger().logWithFile(
+                    Level.info, "${result.lengthSync().toString()} -> $page");
+                CustomLogger().logWithFile(
+                    Level.info, "RESULT N PATH ${result.path} -> $page");
+                CustomLogger().logWithFile(Level.info,
+                    "RESULT N PATH ${downloadedCompressImageFile} -> $page");
 
                 downloadedFile.deleteSync();
               } else {
@@ -560,7 +426,8 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
             } else {
               bool doesExist = await downloadedFile.exists();
               Utils.customPrint('DOWNLOADED FILE EXIST SYNC @@@ $doesExist');
-              CustomLogger().logWithFile(Level.info, "DOWNLOADED FILE EXIST SYNC @@@ $doesExist -> $page");
+              CustomLogger().logWithFile(Level.info,
+                  "DOWNLOADED FILE EXIST SYNC @@@ $doesExist -> $page");
               if (doesExist) {
                 if (downloadedFile.lengthSync() >= 2000000) {
                   String targetPath = '${ourDirectory!.path}/vesselImages';
@@ -588,10 +455,14 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                   Utils.customPrint(
                       "RESULT N PATH ${downloadedCompressImageFile}");
 
-                  CustomLogger().logWithFile(Level.info, "${downloadedFile.lengthSync().toString()} -> $page");
-                  CustomLogger().logWithFile(Level.info, "${result.lengthSync().toString()} -> $page");
-                  CustomLogger().logWithFile(Level.info, "RESULT N PATH ${result.path} -> $page");
-                  CustomLogger().logWithFile(Level.info, "RESULT N PATH ${downloadedCompressImageFile} -> $page");
+                  CustomLogger().logWithFile(Level.info,
+                      "${downloadedFile.lengthSync().toString()} -> $page");
+                  CustomLogger().logWithFile(
+                      Level.info, "${result.lengthSync().toString()} -> $page");
+                  CustomLogger().logWithFile(
+                      Level.info, "RESULT N PATH ${result.path} -> $page");
+                  CustomLogger().logWithFile(Level.info,
+                      "RESULT N PATH ${downloadedCompressImageFile} -> $page");
 
                   downloadedFile.deleteSync();
                 } else {
@@ -601,7 +472,8 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
             }
 
             Utils.customPrint('FINAL IMAGEEEE: $downloadedCompressImageFile');
-            CustomLogger().logWithFile(Level.info, "FINAL IMAGEEEE: $downloadedCompressImageFile -> $page");
+            CustomLogger().logWithFile(Level.info,
+                "FINAL IMAGEEEE: $downloadedCompressImageFile -> $page");
 
             CreateVessel vesselData = CreateVessel(
                 id: value.vessels![i].id,
@@ -612,7 +484,7 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                 mMSI: value.vessels![i].mMSI,
                 engineType: value.vessels![i].engineType,
                 fuelCapacity: value.vessels![i].fuelCapacity.toString(),
-                batteryCapacity:value.vessels![i].batteryCapacity.toString(),
+                batteryCapacity: value.vessels![i].batteryCapacity.toString(),
                 weight: value.vessels![i].weight,
                 freeBoard: value.vessels![i].freeBoard!,
                 lengthOverall: value.vessels![i].lengthOverall!,
@@ -631,14 +503,14 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                 isSync: 1,
                 updatedBy: value.vessels![i].updatedBy.toString(),
                 isCloud: 1,
-                hullType: int.parse(value.vessels![i].hullType.toString())
-            );
+                hullType: int.parse(value.vessels![i].hullType.toString()));
 
             var vesselExist = await _databaseService
                 .vesselsExistInCloud(value.vessels![i].id!);
 
             Utils.customPrint('USER CONFIG DATA CLOUD $vesselExist');
-            CustomLogger().logWithFile(Level.info, "USER CONFIG DATA CLOUD $vesselExist -> $page");
+            CustomLogger().logWithFile(
+                Level.info, "USER CONFIG DATA CLOUD $vesselExist -> $page");
 
             if (vesselExist) {
               await _databaseService.updateVessel(vesselData);
@@ -652,41 +524,44 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
             Utils.customPrint("TRIPS VESSEL ID ${value.trips![i].vesselId}");
             Utils.customPrint("TRIPS VESSEL ID ${value.trips![i].toJson()}");
 
-            CustomLogger().logWithFile(Level.info, "TRIPS DATA ${value.trips!.length} -> $page");
-            CustomLogger().logWithFile(Level.info, "TRIPS VESSEL ID ${value.trips![i].vesselId} -> $page");
+            CustomLogger().logWithFile(
+                Level.info, "TRIPS DATA ${value.trips!.length} -> $page");
+            CustomLogger().logWithFile(Level.info,
+                "TRIPS VESSEL ID ${value.trips![i].vesselId} -> $page");
 
             CreateVessel? vesselData = await _databaseService
                 .getVesselFromVesselID(value.trips![i].vesselId.toString());
 
             if (vesselData != null) {
+              if (value.trips![i].createdBy ==
+                  commonProvider!.loginModel!.userId) {
+                Trip tripData = Trip(
+                    id: value.trips![i].id,
+                    vesselId: value.trips![i].vesselId,
+                    vesselName: vesselData.name,
+                    currentLoad: value.trips![i].load,
+                    numberOfPassengers: value.trips![i].numberOfPassengers ?? 0,
+                    filePath: value.trips![i].cloudFilePath,
+                    isSync: 1,
+                    tripStatus: value.trips![i].tripStatus,
+                    createdBy: commonProvider!.loginModel?.userEmail ?? "",
+                    updatedAt: value.trips![i].updatedAt,
+                    createdAt: value.trips![i].createdAt,
+                    deviceInfo: value.trips![i].deviceInfo!.toJson().toString(),
+                    startPosition: value.trips![i].startPosition!.join(','),
+                    endPosition: value.trips![i].endPosition!.join(','),
+                    time: value.trips![i].duration,
+                    distance: value.trips![i].distance.toString(),
+                    speed: value.trips![i].speed.toString(),
+                    avgSpeed: value.trips![i].avgSpeed.toString(),
+                    isCloud: 1);
 
-              if(value.trips![i].createdBy==commonProvider!.loginModel!.userId){
-              Trip tripData = Trip(
-                  id: value.trips![i].id,
-                  vesselId: value.trips![i].vesselId,
-                  vesselName: vesselData.name,
-                  currentLoad: value.trips![i].load,
-                  numberOfPassengers: value.trips![i].numberOfPassengers ?? 0,
-                  filePath: value.trips![i].cloudFilePath,
-                  isSync: 1,
-                  tripStatus: value.trips![i].tripStatus,
-                  createdBy:commonProvider!.loginModel?.userEmail??"" ,
-                  updatedAt: value.trips![i].updatedAt,
-                  createdAt: value.trips![i].createdAt,
-                  deviceInfo: value.trips![i].deviceInfo!.toJson().toString(),
-                  startPosition: value.trips![i].startPosition!.join(','),
-                  endPosition: value.trips![i].endPosition!.join(','),
-                  time: value.trips![i].duration,
-                  distance: value.trips![i].distance.toString(),
-                  speed: value.trips![i].speed.toString(),
-                  avgSpeed: value.trips![i].avgSpeed.toString(),
-                  isCloud: 1);
-
-              Utils.customPrint('USER CONFIG DATA JSON ${tripData.toJson()}');
-              CustomLogger().logWithFile(Level.info, "USER CONFIG DATA JSON ${tripData.toJson()} -> $page");
-              await _databaseService.insertTrip(tripData);
+                Utils.customPrint('USER CONFIG DATA JSON ${tripData.toJson()}');
+                CustomLogger().logWithFile(Level.info,
+                    "USER CONFIG DATA JSON ${tripData.toJson()} -> $page");
+                await _databaseService.insertTrip(tripData);
+              }
             }
-          }
           }
 
           // Future.delayed(Duration(seconds: 1), () {
@@ -709,8 +584,4 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
       }
     });
   }
-
 }
-
-
-

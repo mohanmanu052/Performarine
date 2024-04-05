@@ -23,6 +23,7 @@ import 'package:performarine/models/send_sensor_model.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/upload_trip_model.dart';
 import 'package:performarine/models/vessel.dart';
+import 'package:performarine/models/vessel_delegate_model.dart';
 import 'package:performarine/provider/add_vessel_api_provider.dart';
 import 'package:performarine/provider/change_password_provider.dart';
 import 'package:performarine/provider/create_delegate_api_provider.dart';
@@ -47,6 +48,7 @@ import 'package:performarine/provider/reset_password_provider.dart';
 import 'package:performarine/provider/send_sensor_info_api_provider.dart';
 import 'package:performarine/provider/update_userinfo_api_provider.dart';
 import 'package:performarine/provider/user_feedback_provider.dart';
+import 'package:performarine/provider/vessel_delegate_api_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -92,6 +94,7 @@ class CommonProvider with ChangeNotifier {
   CommonModel? createDelegateModel;
   CommonModel? myDelegateInviteModel;
   FleetDetailsModel? fleetDetailsModel;
+  VesselDelegateModel? vesselDelegateModel;
 
 
   init()async {
@@ -656,17 +659,19 @@ Future<MyDelegateInviteModel> getDelegateInvites(BuildContext context,String acc
     return myDelegateInviteModel!;
   }
 
-/*Future<CommonModel> delegateAcceptReject(BuildContext context,String accessToken,GlobalKey<ScaffoldState> scaffoldKey,String flag,String verifyToken)async{
-  var res=await MyDelegateInviteProvider().delegateAcceptReject(context, accessToken, scaffoldKey, flag, verifyToken);
-  return res;
-}
-
-}*/
-
 Future<Response> acceptDelegateInvite(Uri uri)async{
   var res=DelegateProvider().acceptDelegateInvitation(uri);
   return res;
 
 }
+
+  Future<VesselDelegateModel> vesselDelegateData(
+      BuildContext context, String accessToken, String vesselId, GlobalKey<ScaffoldState> scaffoldKey) async {
+    vesselDelegateModel = VesselDelegateModel();
+    vesselDelegateModel = await VesselDelegateApiProvider().vesselDelegateData(context, accessToken, vesselId, scaffoldKey);
+    notifyListeners();
+
+    return vesselDelegateModel!;
+  }
 
 }

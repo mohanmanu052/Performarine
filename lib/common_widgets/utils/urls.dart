@@ -54,6 +54,7 @@ static const leaveFleet ='/api/leaveFleet';
 static const createDelegate ='/api/createdelegate';
 static const myDelegateInvites='/api/mydelegateinvities';
 static const delegateAccessAcceptReject='/delegateaccess';
+static const vesselDelegates='/api/vesselDelegates';
 
 
 static String baseUrlVersion = '';

@@ -5,10 +5,11 @@ import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/models/vessel.dart';
+import 'package:performarine/models/vessel_delegate_model.dart';
 
-class VesselinfoCard extends StatelessWidget {
-  CreateVessel? vesselData;
-  VesselinfoCard({super.key, this.vesselData});
+class DelegateVesselInfoCard extends StatelessWidget {
+  VesselInfo? vesselData;
+  DelegateVesselInfoCard({super.key, this.vesselData});
 
   @override
   Widget build(BuildContext context) {
@@ -19,69 +20,69 @@ class VesselinfoCard extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: vesselData!.imageURLs == null ||
-                    vesselData!.imageURLs!.isEmpty ||
-                    vesselData!.imageURLs == 'string' ||
-                    vesselData!.imageURLs == '[]'
+                vesselData!.imageURLs!.isEmpty ||
+                vesselData!.imageURLs == 'string' ||
+                vesselData!.imageURLs == '[]'
                 ? Stack(
-                    children: [
-                      Container(
-                        color: Colors.white,
-                        child: Image.asset(
-                          'assets/images/vessel_default_img.png',
-                          height: displayHeight(context) * 0.24,
-                          width: displayWidth(context),
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                      Positioned(
-                          bottom: 0,
-                          right: 0,
-                          left: 0,
-                          child: Container(
-                            height: displayHeight(context) * 0.14,
-                            width: displayWidth(context),
-                            padding: const EdgeInsets.only(top: 20),
-                            decoration: BoxDecoration(boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black.withOpacity(0.5),
-                                  blurRadius: 50,
-                                  spreadRadius: 5,
-                                  offset: const Offset(0, 50))
-                            ]),
-                          ))
-                    ],
-                  )
-                : Stack(
-                    children: [
-                      Container(
-                        height: displayHeight(context) * 0.22,
-                        width: displayWidth(context),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          image: DecorationImage(
-                            image: FileImage(File(vesselData!.imageURLs!)),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                          bottom: 0,
-                          right: 0,
-                          left: 0,
-                          child: Container(
-                            height: displayHeight(context) * 0.14,
-                            width: displayWidth(context),
-                            padding: const EdgeInsets.only(top: 20),
-                            decoration: BoxDecoration(boxShadow: [
-                              BoxShadow(
-                                  color: Colors.black.withOpacity(0.5),
-                                  blurRadius: 50,
-                                  spreadRadius: 5,
-                                  offset: const Offset(0, 50))
-                            ]),
-                          ))
-                    ],
+              children: [
+                Container(
+                  color: Colors.white,
+                  child: Image.asset(
+                    'assets/images/vessel_default_img.png',
+                    height: displayHeight(context) * 0.24,
+                    width: displayWidth(context),
+                    fit: BoxFit.contain,
                   ),
+                ),
+                Positioned(
+                    bottom: 0,
+                    right: 0,
+                    left: 0,
+                    child: Container(
+                      height: displayHeight(context) * 0.14,
+                      width: displayWidth(context),
+                      padding: const EdgeInsets.only(top: 20),
+                      decoration: BoxDecoration(boxShadow: [
+                        BoxShadow(
+                            color: Colors.black.withOpacity(0.5),
+                            blurRadius: 50,
+                            spreadRadius: 5,
+                            offset: const Offset(0, 50))
+                      ]),
+                    ))
+              ],
+            )
+                : Stack(
+              children: [
+                Container(
+                  height: displayHeight(context) * 0.22,
+                  width: displayWidth(context),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    image: DecorationImage(
+                      image: FileImage(File(vesselData!.imageURLs![0])),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                Positioned(
+                    bottom: 0,
+                    right: 0,
+                    left: 0,
+                    child: Container(
+                      height: displayHeight(context) * 0.14,
+                      width: displayWidth(context),
+                      padding: const EdgeInsets.only(top: 20),
+                      decoration: BoxDecoration(boxShadow: [
+                        BoxShadow(
+                            color: Colors.black.withOpacity(0.5),
+                            blurRadius: 50,
+                            spreadRadius: 5,
+                            offset: const Offset(0, 50))
+                      ]),
+                    ))
+              ],
+            ),
           ),
         ),
         Positioned(
@@ -103,10 +104,11 @@ class VesselinfoCard extends StatelessWidget {
                   Text(
                     '${vesselData!.name}',
                     style: TextStyle(
+                      fontFamily: outfit,
                         color: Colors.white,
                         fontSize: displayWidth(context) * 0.05,
                         fontWeight: FontWeight.w700,
-                        overflow: TextOverflow.clip,),
+                        overflow: TextOverflow.clip),
                     softWrap: true,
                     textAlign: TextAlign.center,
                   ),
@@ -116,29 +118,6 @@ class VesselinfoCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Column(
-                      //   crossAxisAlignment:
-                      //   CrossAxisAlignment.start,
-                      //   children: [
-                      //     commonText(
-                      //         context: context,
-                      //         text:
-                      //         '${vesselData!.capacity}$cubicCapacity',
-                      //         fontWeight: FontWeight.w500,
-                      //         textColor: Colors.white,
-                      //         textSize:
-                      //         displayWidth(context) * 0.038,
-                      //         textAlign: TextAlign.start),
-                      //     commonText(
-                      //         context: context,
-                      //         text: 'Capacity',
-                      //         fontWeight: FontWeight.w400,
-                      //         textColor: Colors.white,
-                      //         textSize:
-                      //         displayWidth(context) * 0.024,
-                      //         textAlign: TextAlign.start),
-                      //   ],
-                      // ),
                       SizedBox(
                         width: displayWidth(context) * 0.05,
                       ),
@@ -169,19 +148,19 @@ class VesselinfoCard extends StatelessWidget {
                         children: [
                           vesselData!.regNumber! == ""
                               ? commonText(
-                                  context: context,
-                                  text: '-',
-                                  fontWeight: FontWeight.w500,
-                                  textColor: Colors.white,
-                                  textSize: displayWidth(context) * 0.04,
-                                  textAlign: TextAlign.start)
+                              context: context,
+                              text: '-',
+                              fontWeight: FontWeight.w500,
+                              textColor: Colors.white,
+                              textSize: displayWidth(context) * 0.04,
+                              textAlign: TextAlign.start)
                               : commonText(
-                                  context: context,
-                                  text: vesselData!.regNumber,
-                                  fontWeight: FontWeight.w500,
-                                  textColor: Colors.white,
-                                  textSize: displayWidth(context) * 0.038,
-                                  textAlign: TextAlign.start),
+                              context: context,
+                              text: vesselData!.regNumber,
+                              fontWeight: FontWeight.w500,
+                              textColor: Colors.white,
+                              textSize: displayWidth(context) * 0.038,
+                              textAlign: TextAlign.start),
                           commonText(
                               context: context,
                               text: 'Registration Number',
@@ -202,7 +181,7 @@ class VesselinfoCard extends StatelessWidget {
                     children: [
                       if (vesselData!.engineType!.isEmpty) SizedBox(),
                       if (vesselData!.engineType!.toLowerCase() ==
-                              'combustion' &&
+                          'combustion' &&
                           vesselData!.fuelCapacity != null)
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -273,8 +252,8 @@ class VesselinfoCard extends StatelessWidget {
                                 commonText(
                                     context: context,
                                     text:
-                                        ' ${vesselData!.batteryCapacity!} $kiloWattHour'
-                                            .toString(),
+                                    ' ${vesselData!.batteryCapacity!} $kiloWattHour'
+                                        .toString(),
                                     fontWeight: FontWeight.w400,
                                     textColor: Colors.white,
                                     textSize: displayWidth(context) * 0.028,
@@ -324,7 +303,7 @@ class VesselinfoCard extends StatelessWidget {
                                     text: vesselData!.fuelCapacity == null
                                         ? '-'
                                         : '${vesselData!.fuelCapacity!} $liters'
-                                            .toString(),
+                                        .toString(),
                                     fontWeight: FontWeight.w400,
                                     textColor: Colors.white,
                                     textSize: displayWidth(context) * 0.028,
@@ -349,8 +328,8 @@ class VesselinfoCard extends StatelessWidget {
                                 commonText(
                                     context: context,
                                     text:
-                                        ' ${vesselData!.batteryCapacity!} $kiloWattHour'
-                                            .toString(),
+                                    ' ${vesselData!.batteryCapacity!} $kiloWattHour'
+                                        .toString(),
                                     fontWeight: FontWeight.w400,
                                     textColor: Colors.white,
                                     textSize: displayWidth(context) * 0.028,

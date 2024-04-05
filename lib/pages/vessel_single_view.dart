@@ -17,6 +17,7 @@ import 'package:performarine/main.dart';
 import 'package:performarine/models/device_model.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
+import 'package:performarine/models/vessel_delegate_model.dart';
 import 'package:performarine/pages/custom_drawer.dart';
 import 'package:performarine/pages/delegate/delegates_screen.dart';
 import 'package:performarine/pages/trip/tripViewBuilder.dart';
@@ -128,7 +129,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
       isVesselParticularExpanded = true,
       isVesselAnalyticsExpanded = false,
       isPropulsionDetails = true,
-      anotherVesselEndTrip = false;
+      anotherVesselEndTrip = false, isDelegateApiCalled = false;
 
   late CommonProvider commonProvider;
 
@@ -141,7 +142,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
       avgSpeed = '0',
       tripsCount = '0',
       totalDuration = "00:00:00",
-      hullType = '-';
+      hullType = '-', delegateCount = '';
 
   @override
   void didUpdateWidget(covariant VesselSingleView oldWidget) {
@@ -149,6 +150,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
     print("came to vessel single view screen.");
     getVesselAnalytics(widget.vessel!.id!);
   }
+
+  late Future<VesselDelegateModel> future;
 
   @override
   void initState() {
@@ -159,6 +162,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
 
     commonProvider = context.read<CommonProvider>();
 
+    getDelegateCount();
+
     // Utils.customPrint('VESSEL Image ${widget.vessel!.displacement!.isEmpty}');
 
     checkSensorAvailabelOrNot();
@@ -166,6 +171,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
     getVesselAnalytics(widget.vessel!.id!);
 
     getHullTypes();
+
+
   }
 
   /// To get hull types from secure storage
@@ -420,39 +427,53 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                         0.036,
                                                 textAlign: TextAlign.start),
                                             children: [
-                                              Container(
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    commonText(
-                                                        text: 'No Delegates',
+                                              isDelegateApiCalled
+                                              ? SizedBox(
+                                               /* height: 25,
+                                                  width: 25,*/
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(4.0),
+                                                    child: CircularProgressIndicator(),
+                                                  ))
+                                              : Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  delegateCount.isNotEmpty
+                                                  ? commonText(
+                                                      text: '$delegateCount Delegates',
+                                                      fontWeight:
+                                                      FontWeight.w600,
+                                                      textSize: 16,
+                                                      textColor:
+                                                      delegateTextHeaderColor)
+                                                  : commonText(
+                                                      text: 'No Delegates',
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      textSize: 16,
+                                                      textColor:
+                                                          delegateTextHeaderColor),
+                                                  InkWell(
+                                                    onTap: () {
+                                                      debugPrint("VESSEL ID DELEGATE SCREEN 2 - ${widget.vessel!.id!}");
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder:
+                                                                  (context) =>
+                                                                      DelegatesScreen(vesselID: widget.vessel!.id!,)));
+                                                    },
+                                                    child: commonText(
+                                                        text:
+                                                            'Manage Delegate Access',
                                                         fontWeight:
-                                                            FontWeight.w600,
-                                                        textSize: 16,
-                                                        textColor:
-                                                            delegateTextHeaderColor),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        debugPrint("VESSEL ID DELEGATE SCREEN 2 - ${widget.vessel!.id!}");
-                                                        Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                                builder:
-                                                                    (context) =>
-                                                                        DelegatesScreen(vesselID: widget.vessel!.id!,)));
-                                                      },
-                                                      child: commonText(
-                                                          text:
-                                                              'Manage Delegate Access',
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          textSize: 11,
-                                                          textColor: blueColor),
-                                                    )
-                                                  ],
-                                                ),
+                                                            FontWeight.w400,
+                                                        textSize: 11,
+                                                        textColor: blueColor),
+                                                  )
+                                                ],
                                               ),
                                             ])),
                                     Theme(
@@ -1290,5 +1311,45 @@ class VesselSingleViewState extends State<VesselSingleView> {
     });
 
     Utils.customPrint('VESSEl ANA $vesselAnalytics');
+  }
+
+  getDelegateCount()
+  {
+    if(widget.vessel!.createdBy == commonProvider.loginModel!.userId)
+    {
+      setState(() {
+        isDelegateApiCalled = true;
+      });
+      commonProvider.vesselDelegateData(context, commonProvider.loginModel!.token!, widget.vessel!.id!, scaffoldKey).then((value)
+      {
+        if(value != null)
+        {
+          if(value.status!)
+          {
+            debugPrint("DELEGATE COUNT 1 $delegateCount");
+            delegateCount = value.myVesselDelegaties![0].delegateCount.toString();
+            debugPrint("DELEGATE COUNT $delegateCount");
+            setState(() {
+              isDelegateApiCalled = false;
+            });
+
+          }
+          else
+          {
+            setState(() {
+              isDelegateApiCalled = false;
+            });
+          }
+        }
+        else
+        {
+          setState(() {
+            isDelegateApiCalled = false;
+          });
+        }
+      }).catchError((e){setState(() {
+        isDelegateApiCalled = false;
+      });});
+    }
   }
 }
