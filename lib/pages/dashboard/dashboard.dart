@@ -34,7 +34,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
   final DatabaseService _databaseService = DatabaseService();
   late CommonProvider commonProvider;
   final controller = ScreenshotController();
-  late Future<List<CreateVessel>> getVesselFuture;
+   Future<List<CreateVessel>>? getVesselFuture;
   Future<void> _onVesselDelete(CreateVessel vessel) async {
     await _databaseService.deleteVessel(vessel.id.toString());
     setState(() {});
@@ -52,7 +52,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
 
     commonProvider = context.read<CommonProvider>();
     commonProvider.init();
-    commonProvider.getTripsCount();
+  //commonProvider.getTripsCount();
 
     getVesselFuture = _databaseService.vessels();
 
@@ -100,7 +100,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
                 children: [
                   Expanded(
                     child: VesselBuilder(
-                      future: getVesselFuture,
+                      future: getVesselFuture!,
                       onEdit: (value) async {
                         {
                           Navigator.of(context)

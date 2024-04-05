@@ -601,11 +601,7 @@ bool? isSyncToCloud=await getVesselDataSyncToCloud();
                                               isInviteDelegateBtnClicked = false;
                                             });
 
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        DelegatesScreen()));
+                                           Navigator.of(context).pop(true);
                                           }
                                           else
                                           {
