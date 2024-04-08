@@ -57,8 +57,11 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
     });
 
     if(widget.isComingFromUnilink??false){
+      debugPrint("COMING FROM UNILINK ");
       adddelegateInvitation();
-      getUserConfigData();
+     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+       getUserConfigData();
+     });
     }
 
     // TODO: implement initState
@@ -457,7 +460,7 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
   }
 
 
-      getUserConfigData() {
+  getUserConfigData() {
     Utils.customPrint("CLOUDE USER ID ${commonProvider!.loginModel!.userId}");
     CustomLogger().logWithFile(Level.info, "CLOUDE USER ID ${commonProvider!.loginModel!.userId} -> ");
 

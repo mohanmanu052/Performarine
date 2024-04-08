@@ -42,6 +42,7 @@ class _InviteDelegateState extends State<InviteDelegate> {
   late Future<List<CreateVessel>> getVesselFuture;
     List<CreateVessel>? getVesselSyncToCloud;
     bool isCalenderVisible=false;
+
   CreateVessel? vesselData;
   final DatabaseService _databaseService = DatabaseService();
   DateTime firstDate = DateTime.now(),
@@ -71,7 +72,8 @@ class _InviteDelegateState extends State<InviteDelegate> {
   @override
   void initState() {
     debugPrint("VESSEL ID INVITE DELEGATE SCREEN ${widget.vesselID}");
-    singleVesselDetails = _databaseService.getVesselFromVesselID(widget.vesselID!);
+    singleVesselDetails =
+        _databaseService.getVesselFromVesselID(widget.vesselID!);
     singleVesselDetails!.then((value) {
       vesselData = value;
       setState(() {});
@@ -198,10 +200,11 @@ class _InviteDelegateState extends State<InviteDelegate> {
                               maxLength: 32,
                               prefixIcon: null,
                               suffixIcon: InkWell(
-                                onTap: (){
-                                  setState(() {
-                                  userEmailController.clear();
-                                });},
+                                  onTap: () {
+                                    setState(() {
+                                      userEmailController.clear();
+                                    });
+                                  },
                                   child: Icon(Icons.close)),
                               requestFocusNode: null,
                               obscureText: false,
@@ -243,21 +246,44 @@ class _InviteDelegateState extends State<InviteDelegate> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Container(
-                              height: displayHeight(context) * 0.14,
-                              width: displayWidth(context),
-                              child: Wrap(
-                                runSpacing: 4,
-                                spacing: 2,
-                                children: shareAccessModel.map((e) {
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0),
-                                    child: InkWell(
-                                      onTap: () {
+                      Container(
+                        height: displayHeight(context) * 0.14,
+                        width: displayWidth(context),
+                        child: GridView.builder(
+                        scrollDirection: Axis.vertical,
+                          itemCount: shareAccessModel.length,
+                          shrinkWrap: true,
+                          padding: EdgeInsets.zero,
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3 ,childAspectRatio:2.5, mainAxisSpacing: 4),
+                          itemBuilder: (BuildContext context,int index){
+
+                            return  InkWell(
+                              onTap: () {
+                                setState(() {
+                                  selectedShareUpdate = shareAccessModel[index].value;
+                                  if (shareAccessModel[index].value == "4") {
+                                    isCustomTime = true;
+                                  } else {
+                                    isCustomTime = false;
+                                  }
+                                });
+                                debugPrint(
+                                    "SELECTED VALUE 1 ${selectedShareUpdate}");
+                              },
+                              child: Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Radio<String>(
+                                      value: shareAccessModel[index].value!,
+                                      groupValue: selectedShareUpdate,
+                                      onChanged: (value) {
                                         setState(() {
-                                          selectedShareUpdate = e.value;
-                                          if (e.value == "4") {
+                                          selectedShareUpdate =
+                                              value.toString();
+                                          if (selectedShareUpdate ==
+                                              "4") {
                                             isCustomTime = true;
                                             isCalenderVisible=true;
                                           } else {
@@ -268,45 +294,19 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                         });
                                         debugPrint(
                                             "SELECTED VALUE 1 ${selectedShareUpdate}");
+                                        debugPrint(
+                                            "SELECTED VALUE 2 ${value}");
                                       },
-                                      child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Radio<String>(
-                                              value: e.value!,
-                                              groupValue: selectedShareUpdate,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  selectedShareUpdate =
-                                                      value.toString();
-                                                  if (selectedShareUpdate ==
-                                                      "4") {
-                                                    isCustomTime = true;
-                                                    isCalenderVisible=true;
-                                                  } else {
-                                                                                                        isCalenderVisible=false;
-
-                                                    isCustomTime = false;
-                                                  }
-                                                });
-                                                debugPrint(
-                                                    "SELECTED VALUE 1 ${selectedShareUpdate}");
-                                                debugPrint(
-                                                    "SELECTED VALUE 2 ${value}");
-                                              },
-                                            ),
-                                            commonText(
-                                                text: e.key,
-                                                fontWeight: FontWeight.w400,
-                                                textSize: 12),
-                                          ]),
                                     ),
-                                  );
-                                }).toList(),
-                              ),
-                            ),
+                                    commonText(
+                                        text: shareAccessModel[index].key,
+                                        fontWeight: FontWeight.w400,
+                                        textSize: 12),
+                                  ]),
+                            );
+                          },
+                        ),
+                      ),
                             SizedBox(
                               height: displayHeight(context) * 0.015,
                             ),
@@ -617,7 +617,9 @@ Flexible(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       isInviteDelegateBtnClicked
-                          ? CircularProgressIndicator()
+                          ? CircularProgressIndicator(
+                              color: blueColor,
+                            )
                           : CommonButtons.getActionButton(
                               title: 'Invite Delegate',
                               context: context,
@@ -686,26 +688,23 @@ bool? isSyncToCloud=await getVesselDataSyncToCloud();
                                               isInviteDelegateBtnClicked = false;
                                             });
 
-                                           Navigator.of(context).pop(true);
-                                          }
-                                          else
-                                          {
+                                              Navigator.of(context).pop(true);
+                                            } else {
+                                              setState(() {
+                                                isInviteDelegateBtnClicked = false;
+                                              });
+                                            }
+                                          } else {
                                             setState(() {
                                               isInviteDelegateBtnClicked = false;
                                             });
                                           }
-                                        }
-                                        else
-                                        {
+                                        }).catchError((e) {
                                           setState(() {
                                             isInviteDelegateBtnClicked = false;
                                           });
-                                        }
-                                      }).catchError((e){
-                                        setState(() {
-                                          isInviteDelegateBtnClicked = false;
                                         });
-                                      });
+                                      }
     }
     else{
                                             Utils.showSnackBar(context, scaffoldKey: scaffoldKey, message: 'You cannot send an invitation to your own account.');
@@ -714,7 +713,7 @@ bool? isSyncToCloud=await getVesselDataSyncToCloud();
                                   else
                                     {
                                       Utils.showSnackBar(context, scaffoldKey: scaffoldKey, message: 'Please select access duration.');
-                                    }
+                                    
                                 }
                               },
                               width: displayWidth(context) / 1.3,
@@ -804,14 +803,14 @@ bool? isSyncToCloud=await getVesselDataSyncToCloud();
     return dateString;
   }
 
-
   Future<bool>? getVesselDataSyncToCloud() async {
-                            var vesselsSyncDetails =await _databaseService.vesselsSyncDetails();
-if(vesselsSyncDetails){
-      getVesselSyncToCloud = await _databaseService.syncAndSignOutVesselList().catchError((onError) {
-    });
+    var vesselsSyncDetails = await _databaseService.vesselsSyncDetails();
+    if (vesselsSyncDetails) {
+      getVesselSyncToCloud = await _databaseService
+          .syncAndSignOutVesselList()
+          .catchError((onError) {});
 
-        for (int i = 0; i < getVesselSyncToCloud!.length; i++) {
+      for (int i = 0; i < getVesselSyncToCloud!.length; i++) {
         var vesselSyncOrNot = getVesselSyncToCloud![i].isSync;
         Utils.customPrint(
             "VESSEL SUCCESS MESSAGE ${getVesselSyncToCloud![i].imageURLs}");
@@ -835,12 +834,12 @@ if(vesselsSyncDetails){
 
           await commonProvider
               .addVessel(
-                  context,
-                  getVesselSyncToCloud![i],
-                  commonProvider.loginModel!.userId!,
-                  commonProvider.loginModel!.token!,
-                  scaffoldKey,
-                  )
+            context,
+            getVesselSyncToCloud![i],
+            commonProvider.loginModel!.userId!,
+            commonProvider.loginModel!.token!,
+            scaffoldKey,
+          )
               .then((value) async {
             if (value!.status!) {
               await _databaseService.updateIsSyncStatus(
@@ -859,19 +858,16 @@ if(vesselsSyncDetails){
         } else {
           Utils.customPrint("VESSEL DATA NOT Uploaded");
         }
+      }
 
+      setState(() {});
 
-}
-
-    setState(() {});
-
-return Future.value(true);
-
-}else{
-return Future.value(false);
-}
-
+      return Future.value(true);
+    } else {
+      return Future.value(false);
+    }
   }
+
   void getShareAccessData() async {
     FirebaseRemoteConfig data = await setupRemoteConfig();
     String shareAccessData = data.getString('share_access_data');
