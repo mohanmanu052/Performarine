@@ -279,59 +279,59 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
                             Container(
                               height: displayHeight(context) * 0.14,
                               width: displayWidth(context),
-                              child: Wrap(
-                                runSpacing: 4,
-                                spacing: 2,
-                                children: shareAccessModel.map((e) {
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0),
-                                    child: InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          selectedShareUpdate = e.value;
-                                          if (e.value == "4") {
-                                            isCustomTime = true;
-                                          } else {
-                                            isCustomTime = false;
-                                          }
-                                        });
-                                        debugPrint(
-                                            "SELECTED VALUE 1 ${selectedShareUpdate}");
-                                      },
-                                      child: Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Radio<String>(
-                                              value: e.value!,
-                                              groupValue: selectedShareUpdate,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  selectedShareUpdate =
-                                                      value.toString();
-                                                  if (selectedShareUpdate ==
-                                                      "4") {
-                                                    isCustomTime = true;
-                                                  } else {
-                                                    isCustomTime = false;
-                                                  }
-                                                });
-                                                debugPrint(
-                                                    "SELECTED VALUE 1 ${selectedShareUpdate}");
-                                                debugPrint(
-                                                    "SELECTED VALUE 2 ${value}");
-                                              },
-                                            ),
-                                            commonText(
-                                                text: e.key,
-                                                fontWeight: FontWeight.w400,
-                                                textSize: 12),
-                                          ]),
-                                    ),
+                              child: GridView.builder(
+                                scrollDirection: Axis.vertical,
+                                itemCount: shareAccessModel.length,
+                                shrinkWrap: true,
+                                padding: EdgeInsets.zero,
+                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3 ,childAspectRatio:2.5, mainAxisSpacing: 4),
+                                itemBuilder: (BuildContext context,int index){
+
+                                  return  InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        selectedShareUpdate = shareAccessModel[index].value;
+                                        if (shareAccessModel[index].value == "4") {
+                                          isCustomTime = true;
+                                        } else {
+                                          isCustomTime = false;
+                                        }
+                                      });
+                                      debugPrint(
+                                          "SELECTED VALUE 1 ${selectedShareUpdate}");
+                                    },
+                                    child: Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Radio<String>(
+                                            value: shareAccessModel[index].value!,
+                                            groupValue: selectedShareUpdate,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedShareUpdate =
+                                                    value.toString();
+                                                if (selectedShareUpdate ==
+                                                    "4") {
+                                                  isCustomTime = true;
+                                                } else {
+                                                  isCustomTime = false;
+                                                }
+                                              });
+                                              debugPrint(
+                                                  "SELECTED VALUE 1 ${selectedShareUpdate}");
+                                              debugPrint(
+                                                  "SELECTED VALUE 2 ${value}");
+                                            },
+                                          ),
+                                          commonText(
+                                              text: shareAccessModel[index].key,
+                                              fontWeight: FontWeight.w400,
+                                              textSize: 12),
+                                        ]),
                                   );
-                                }).toList(),
+                                },
                               ),
                             ),
                             SizedBox(
@@ -603,7 +603,7 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       isUpdateBtnClicked
-                          ? CircularProgressIndicator()
+                          ? CircularProgressIndicator(color: blueColor,)
                           : CommonButtons.getActionButton(
                         title: 'Update',
                         context: context,
