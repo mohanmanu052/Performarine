@@ -300,8 +300,11 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
                                         selectedShareUpdate = shareAccessModel[index].value;
                                         if (shareAccessModel[index].value == "4") {
                                           isCustomTime = true;
+                                          isCalenderVisible=true;
                                         } else {
                                           isCustomTime = false;
+                                                                                    isCalenderVisible=false;
+
                                         }
                                       });
                                       debugPrint(
@@ -322,7 +325,9 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
                                                 if (selectedShareUpdate ==
                                                     "4") {
                                                   isCustomTime = true;
+                                                  isCalenderVisible=true;
                                                 } else {
+                                                  isCalenderVisible=false;
                                                   isCustomTime = false;
                                                 }
                                               });

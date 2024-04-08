@@ -704,7 +704,7 @@ bool? isSyncToCloud=await getVesselDataSyncToCloud();
                                             isInviteDelegateBtnClicked = false;
                                           });
                                         });
-                                      }
+                                      
     }
     else{
                                             Utils.showSnackBar(context, scaffoldKey: scaffoldKey, message: 'You cannot send an invitation to your own account.');
@@ -714,6 +714,7 @@ bool? isSyncToCloud=await getVesselDataSyncToCloud();
                                     {
                                       Utils.showSnackBar(context, scaffoldKey: scaffoldKey, message: 'Please select access duration.');
                                     
+                                }
                                 }
                               },
                               width: displayWidth(context) / 1.3,
