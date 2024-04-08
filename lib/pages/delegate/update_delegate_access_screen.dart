@@ -46,17 +46,21 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
   String? selectedShareUpdate;
   bool isCustomTime = false, isUpdateBtnClicked = false;
 
+  DateTime firstDate = DateTime.now(),
+      lastDate = DateTime(2100),
+      focusedDay = DateTime.now(),
+      startDate = DateTime.now();
+    DateTime?  selectedEndDate;
+      
+  Duration duration = const Duration();
   String startTime = '01:00 AM',
       endTime = '01:00 AM',
       endDate = '',
       selectedDuration = '24 hrs',
       startDateText = '';
   int calenderType = 0;
+      bool isCalenderVisible=false;
 
-  DateTime firstDate = DateTime(1980),
-      lastDate = DateTime.now(),
-      focusedDay = DateTime.now(),
-      startDate = DateTime.now();
 
   @override
   void initState() {
@@ -145,10 +149,10 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(10),
-                            child: vesselData!.imageURLs == null ||
+                            child: vesselData?.imageURLs == null ||
                                 vesselData!.imageURLs!.isEmpty ||
-                                vesselData!.imageURLs == 'string' ||
-                                vesselData!.imageURLs == '[]'
+                                vesselData?.imageURLs == 'string' ||
+                                vesselData?.imageURLs == '[]'
                                 ? Stack(
                               children: [
                                 Container(
@@ -220,24 +224,27 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
                               children: [
                                 commonText(
                                     context: context,
-                                    text: vesselData!.name,
+                                    text: vesselData?.name??"",
                                     fontWeight: FontWeight.w600,
                                     textColor: Colors.black87,
                                     textSize: displayWidth(context) * 0.042,
                                     fontFamily: outfit),
 
-                                Row(
-                                  children: [
-                                    Icon(Icons.person_2_outlined, color: blueColor, ),
-                                    SizedBox(width: 4,),
-                                    commonText(
-                                        context: context,
-                                        text: 'Abhiram Pawan',
-                                        fontWeight: FontWeight.w600,
-                                        textColor: Colors.black87,
-                                        textSize: displayWidth(context) * 0.036,
-                                        fontFamily: outfit),
-                                  ],
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 4,bottom: 2),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.person_2_outlined, color: blueColor, ),
+                                      SizedBox(width: 4,),
+                                      commonText(
+                                          context: context,
+                                          text: 'Abhiram Pawan',
+                                          fontWeight: FontWeight.w600,
+                                          textColor: Colors.black87,
+                                          textSize: displayWidth(context) * 0.036,
+                                          fontFamily: outfit),
+                                    ],
+                                  ),
                                 ),
 
                                 Row(
@@ -292,7 +299,10 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
                                           selectedShareUpdate = e.value;
                                           if (e.value == "4") {
                                             isCustomTime = true;
+                                            isCalenderVisible=true;
                                           } else {
+                                                                                        isCalenderVisible=false;
+
                                             isCustomTime = false;
                                           }
                                         });
@@ -301,7 +311,7 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
                                       },
                                       child: Row(
                                           mainAxisAlignment:
-                                          MainAxisAlignment.start,
+                                              MainAxisAlignment.start,
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Radio<String>(
@@ -314,7 +324,10 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
                                                   if (selectedShareUpdate ==
                                                       "4") {
                                                     isCustomTime = true;
+                                                    isCalenderVisible=true;
                                                   } else {
+                                                                                                        isCalenderVisible=false;
+
                                                     isCustomTime = false;
                                                   }
                                                 });
@@ -342,7 +355,7 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
                               child: Column(children: [
                                 Row(
                                   mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.spaceBetween,
                                   //crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Flexible(
@@ -354,6 +367,7 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
                                           child: InkWell(
                                               onTap: () {
                                                 calenderType = 0;
+                                                isCalenderVisible=true;
                                                 setState(() {});
                                               },
                                               child: fromToDate('From Date: ',
@@ -369,6 +383,8 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
                                           child: InkWell(
                                               onTap: () {
                                                 calenderType = 1;
+                                                                                                isCalenderVisible=true;
+
                                                 setState(() {});
                                               },
                                               child: fromToDate(
@@ -379,6 +395,11 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
                                 SizedBox(
                                   height: displayHeight(context) * 0.01,
                                 ),
+                                                                Visibility(
+                                  visible: isCalenderVisible,
+                                  child: Column(
+                                    children: [
+
                                 Padding(
                                   padding: EdgeInsets.only(
                                       left: displayWidth(context) * 0.045,
@@ -408,133 +429,160 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
                                             : 'Select End Date',
                                         style: TextStyle(
                                             fontSize:
-                                            displayWidth(context) * 0.038,
+                                                displayWidth(context) * 0.038,
                                             fontWeight: FontWeight.w600,
                                             fontFamily: dmsans),
                                       ),
                                     ),
                                   ),
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      left: displayWidth(context) * 0.045,
-                                      right: displayWidth(context) * 0.045),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: calenderBackgroundColor,
-                                        borderRadius: BorderRadius.only(
-                                            bottomLeft: Radius.circular(20),
-                                            bottomRight: Radius.circular(20))),
-                                    child: Visibility(
-                                      // visible: !isEndDateSected!,
-                                      child: TableCalendar(
-                                        daysOfWeekVisible: true,
-                                        focusedDay: startDate,
-                                        firstDay: firstDate,
-                                        lastDay: lastDate,
-                                        onFormatChanged:
-                                            (CalendarFormat _format) {},
-                                        calendarBuilders: CalendarBuilders(
-                                          selectedBuilder:
-                                              (context, date, events) =>
-                                              Container(
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left: displayWidth(context) * 0.045,
+                                            right: displayWidth(context) * 0.045),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: calenderBackgroundColor,
+                                              borderRadius: BorderRadius.only(
+                                                  bottomLeft: Radius.circular(20),
+                                                  bottomRight: Radius.circular(20))),
+                                          child: TableCalendar(
+                                            daysOfWeekVisible: true,
+                                            focusedDay: focusedDay,
+                                            firstDay: firstDate,
+                                            lastDay: lastDate,
+                                            onFormatChanged:
+                                                (CalendarFormat _format) {},
+                                            calendarBuilders: CalendarBuilders(
+                                              selectedBuilder:
+                                                  (context, date, events) =>
+                                                      Container(
                                                 margin: const EdgeInsets.all(5.0),
                                                 alignment: Alignment.center,
                                                 decoration: BoxDecoration(
                                                     color: blueColor,
                                                     borderRadius:
-                                                    BorderRadius.circular(15)
-                                                  //shape: BoxShape.circle
-
-                                                ),
+                                                        BorderRadius.circular(15)
+                                                    //shape: BoxShape.circle
+                                          
+                                                    ),
                                                 child: commonText(
                                                     context: context,
                                                     text: date.day.toString(),
                                                     fontWeight: FontWeight.w500,
                                                     textColor: Colors.white,
                                                     textSize:
-                                                    displayWidth(context) *
-                                                        0.042,
+                                                        displayWidth(context) *
+                                                            0.042,
                                                     fontFamily: dmsans),
                                               ),
-                                        ),
-                                        calendarStyle: CalendarStyle(
-                                            todayDecoration: BoxDecoration(
-                                                borderRadius:
-                                                BorderRadius.circular(20),
-                                                border: Border.all(
-                                                  color: blueColor,
-                                                )),
-                                            isTodayHighlighted: true,
-                                            selectedDecoration: BoxDecoration(
-                                              borderRadius:
-                                              BorderRadius.circular(8),
-
-                                              // color: blueColor,
-                                              shape: BoxShape.rectangle,
                                             ),
-                                            selectedTextStyle: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize:
-                                                displayWidth(context) *
-                                                    0.032,
-                                                fontFamily: dmsans,
-                                                color: Colors.pink),
-                                            todayTextStyle: TextStyle(
-                                                fontWeight: FontWeight.normal,
-                                                fontSize:
-                                                displayWidth(context) *
-                                                    0.03,
-                                                fontFamily: dmsans,
-                                                color:
-                                                focusedDay == DateTime.now()
-                                                    ? Colors.white
-                                                    : blueColor)),
-                                        selectedDayPredicate: (DateTime date) {
-                                          return isSameDay(startDate, date);
-                                        },
-                                        startingDayOfWeek:
-                                        StartingDayOfWeek.monday,
-                                        onDaySelected: (DateTime? selectDay,
-                                            DateTime? focusDay) {
-                                          setState(() {
-                                            focusedDay = focusDay!;
-                                            startDate = selectDay!;
-                                            if (calenderType == 0) {
-                                              startDateText =
-                                                  convertIntoMonthDayYear(
+                                            calendarStyle: CalendarStyle(
+                                                todayDecoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(20),
+                                                    border: Border.all(
+                                                      color: blueColor,
+                                                    )),
+                                                isTodayHighlighted: true,
+                                                selectedDecoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                          
+                                                  // color: blueColor,
+                                                  shape: BoxShape.rectangle,
+                                                ),
+                                                selectedTextStyle: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize:
+                                                        displayWidth(context) *
+                                                            0.032,
+                                                    fontFamily: dmsans,
+                                                    color: Colors.pink),
+                                                todayTextStyle: TextStyle(
+                                                    fontWeight: FontWeight.normal,
+                                                    fontSize:
+                                                        displayWidth(context) *
+                                                            0.03,
+                                                    fontFamily: dmsans,
+                                                    color:
+                                                        focusedDay == DateTime.now()
+                                                            ? Colors.white
+                                                            : blueColor)),
+                                            selectedDayPredicate: (DateTime date) {
+                                              return isSameDay(focusedDay, date);
+                                            },
+                                            startingDayOfWeek:
+                                                StartingDayOfWeek.monday,
+                                            onDaySelected: (DateTime? selectDay,
+                                                DateTime? focusDay) {
+                                              setState(() {
+                                              //  focusedDay = focusDay!;
+                                                if (calenderType == 0) {
+focusedDay=startDate;
+                                                  if(selectedEndDate!=null){
+                                                          if(selectDay!.isAfter(selectedEndDate!)||selectDay.isAtSameMomentAs(selectedEndDate!))  {
+                                                  Utils.showSnackBar(context, scaffoldKey: scaffoldKey, message: 'Start date should be below than end date');
+return null;
+                                                          } else{
+                                                            isCalenderVisible=false;
+                                                          }                                            
+ 
+                                                  }
+
+
+                                                   startDate = selectDay!;
+                                          focusedDay=selectDay;
+                                                  startDateText =
+                                                      convertIntoMonthDayYear(
+                                                          selectDay);
+                                                  calenderType = 1;
+                                                  setState(() {});
+                                                } else {
+                                                  focusedDay=selectedEndDate??DateTime.now();
+
+                                                  if(selectDay!.isBefore(startDate)||selectDay.isAtSameMomentAs(startDate!)){
+                                                  Utils.showSnackBar(context, scaffoldKey: scaffoldKey, message: 'End date should be greater than start date');
+                                          
+                                                  }else{
+      selectedEndDate=selectDay;
+focusedDay=selectDay;
+
+                                                  endDate = convertIntoMonthDayYear(
                                                       selectDay);
-                                              calenderType = 1;
-                                              setState(() {});
-                                            } else {
-                                              endDate = convertIntoMonthDayYear(
-                                                  selectDay);
-                                            }
-                                          });
-                                        },
-                                        headerStyle: HeaderStyle(
-                                          titleCentered: true,
-
-                                          titleTextStyle: TextStyle(
-                                              fontSize:
-                                              displayWidth(context) * 0.032,
-                                              fontFamily: dmsans,
-                                              fontWeight: FontWeight.w600,
-                                              color: blackcolorCalender),
-                                          // Center the month title
-
-                                          formatButtonVisible: false,
-                                          formatButtonDecoration: BoxDecoration(
-                                            color: Colors.black,
-                                            borderRadius:
-                                            BorderRadius.circular(22.0),
+                                                      isCalenderVisible=false;
+                                          
+                                                  }
+                                                }
+                                              });
+                                            },
+                                            headerStyle: HeaderStyle(
+                                              titleCentered: true,
+                                          
+                                              titleTextStyle: TextStyle(
+                                                  fontSize:
+                                                      displayWidth(context) * 0.032,
+                                                  fontFamily: dmsans,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: blackcolorCalender),
+                                              // Center the month title
+                                          
+                                              formatButtonVisible: false,
+                                              formatButtonDecoration: BoxDecoration(
+                                                color: Colors.black,
+                                                borderRadius:
+                                                    BorderRadius.circular(22.0),
+                                              ),
+                                              formatButtonTextStyle:
+                                                  TextStyle(color: Colors.white),
+                                              formatButtonShowsNext: false,
+                                            ),
                                           ),
-                                          formatButtonTextStyle:
-                                          TextStyle(color: Colors.white),
-                                          formatButtonShowsNext: false,
                                         ),
                                       ),
-                                    ),
+                                    ],
+                                                                 
+                                                                 
                                   ),
                                 ),
                                 SizedBox(
@@ -542,28 +590,36 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
                                 ),
                                 Row(
                                   mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
+                                    Flexible(
+                                      flex: 6,
+                                      fit: FlexFit.tight,
+                                      child: 
+
                                     Container(
-                                      margin: EdgeInsets.only(left: 8),
+                                      margin: EdgeInsets.only(left: 2),
                                       alignment: Alignment.centerRight,
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 8, vertical: 4),
                                       child:
-                                      fromToDate('Start Time: ', startTime),
-                                    ),
-                                    Container(
-                                        margin: EdgeInsets.only(right: 8),
-                                        alignment: Alignment.centerLeft,
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 10, vertical: 4),
-                                        child:
-                                        fromToDate('End Time: ', endTime)),
+                                          fromToDate('Start Time: ', startTime),
+                                    )),
+Flexible(
+                                      flex: 4,
+                                      fit: FlexFit.tight,
+                                      child: Container(
+                                          alignment: Alignment.centerLeft,
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 10, vertical: 4),
+                                                                                                                      child:
+                                            fromToDate('End Time: ', endTime)),
+)
                                   ],
                                 ),
                                 Row(
                                   mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     CustomTimePicker(
                                       getTime: (time) {
@@ -661,6 +717,7 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
 
   Widget fromToDate(String title, String date) {
     return Container(
+      alignment: Alignment.centerLeft,
       // color: Colors.amber,
       child: RichText(
           text: TextSpan(children: [

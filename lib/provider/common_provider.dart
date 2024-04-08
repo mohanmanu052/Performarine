@@ -628,12 +628,10 @@ return res;
   Future<CommonModel> createDelegate(
       BuildContext context,
       String token,
-      String vesselId,
-      String userEmail,
-      String delegateAccessType,
+Map<String,dynamic> body,
       GlobalKey<ScaffoldState> scaffoldKey) async {
     createDelegateModel = CommonModel();
-    createDelegateModel = await CreateDelegateApiProvider().createDelegate(context, token, vesselId, userEmail, delegateAccessType, scaffoldKey);
+    createDelegateModel = await CreateDelegateApiProvider().createDelegate(context, token, body, scaffoldKey);
     notifyListeners();
 
     return createDelegateModel!;
