@@ -361,6 +361,7 @@ class CommonProvider with ChangeNotifier {
       String userId,
       String accessToken,
       GlobalKey<ScaffoldState> scaffoldKey) async {
+
     getUserConfigModel = GetUserConfigModel();
 
     getUserConfigModel = await GetUserConfigApiProvider()
