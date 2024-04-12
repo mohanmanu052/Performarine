@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
@@ -6,10 +8,15 @@ import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/custom_fleet_dailog.dart';
 import 'package:performarine/models/vessel_delegate_model.dart';
 import 'package:performarine/pages/delegate/update_delegate_access_screen.dart';
+import 'package:performarine/provider/common_provider.dart';
+import 'package:provider/provider.dart';
 
 class SingleDelegateCard extends StatefulWidget {
   Delegates? delegates;
-  SingleDelegateCard({super.key, this.delegates});
+  final GlobalKey<ScaffoldState>? scaffoldKey;
+  final Function()? onTap;
+  String? vesselID;
+  SingleDelegateCard({super.key, this.delegates, this.onTap, this.scaffoldKey, this.vesselID});
 
   @override
   State<SingleDelegateCard> createState() => _SingleDelegateCardState();
@@ -18,6 +25,8 @@ class SingleDelegateCard extends StatefulWidget {
 class _SingleDelegateCardState extends State<SingleDelegateCard> {
 
   Delegates? delegates;
+  late CommonProvider commonProvider;
+  bool? isDeleteDelegateClicked = false;
 
   @override
   void initState() {
@@ -26,10 +35,13 @@ class _SingleDelegateCardState extends State<SingleDelegateCard> {
 
     delegates = widget.delegates ;
 
+    commonProvider = context.read<CommonProvider>();
+
   }
 
   @override
   Widget build(BuildContext context) {
+    commonProvider = context.watch<CommonProvider>();
     return Container(
         padding: EdgeInsets.symmetric(
             horizontal: 12, vertical: 4),
@@ -38,9 +50,7 @@ class _SingleDelegateCardState extends State<SingleDelegateCard> {
           children: [
             Row(
                 children: [
-                  Flexible(
-                  flex: 3,
-                  fit: FlexFit.tight,
+                  Expanded(
                   child: Row(
                     children: [
                       commonText(
@@ -53,60 +63,100 @@ class _SingleDelegateCardState extends State<SingleDelegateCard> {
                       tag(colorgreenLight, delegates!.delegateaccessType.toString() == '1' ?'24 Hr Access' : delegates!.delegateaccessType.toString() == '2' ? '7 Days':delegates!.delegateaccessType.toString() == '3' ? '1 Month': delegates!.delegateaccessType.toString() == '4' ? 'Custom time': 'Always')
                     ],
                   )),
-              Flexible(
-                  flex: 1,
-                  fit: FlexFit.tight,
-                  child: Row(
-                    children: [
-                      Visibility(
-                          child: commonText(
-                              text: delegates!.status,
-                              textColor: Colors.green,
-                              fontWeight:
-                              FontWeight.w500,
-                              textSize: displayWidth(
-                                  context) *
-                                  0.03)),
-                      Padding(
-                          padding:
-                          EdgeInsets.symmetric(
-                              horizontal: 8),
-                          child: InkWell(
-                              onTap: () {
-                                CustomFleetDailog()
-                                    .showFleetDialog(
-                                    context:
-                                    context,
-                                    title:
-                                    'Are you sure you want to remove this Delegate Member?',
-                                    subtext:
-                                    'First Name Last Name',
-                                    description:
-                                    'Your permissions to their vessels will be removed & cannot be viewed',
-                                    postiveButtonColor:
-                                    deleteTripBtnColor,
-                                    positiveButtonText:
-                                    'Remove',
-                                    onNegativeButtonTap:
-                                        () {
-                                      Navigator.of(
-                                          context)
-                                          .pop();
-                                    },
-                                    onPositiveButtonTap:
-                                        () async {
-                                      Navigator.of(
-                                          context)
-                                          .pop();
+              Row(
+                children: [
+                  Visibility(
+                      child: commonText(
+                          text: delegates!.status,
+                          textColor: Colors.green,
+                          fontWeight:
+                          FontWeight.w500,
+                          textSize: displayWidth(
+                              context) *
+                              0.03)),
+                  SizedBox(width: displayWidth(context) * 0.02,),
+                  InkWell(
+                      onTap: () {
+                        CustomFleetDailog()
+                            .showFleetDialog(
+                            context:
+                            context,
+                            title:
+                            'Are you sure you want to remove this Delegate Member?',
+                            subtext:
+                            'First Name Last Name',
+                            description:
+                            'Your permissions to their vessels will be removed & cannot be viewed',
+                            postiveButtonColor:
+                            deleteTripBtnColor,
+                            positiveButtonText:
+                            'Remove',
+                            onNegativeButtonTap:
+                                () {
+                              Navigator.of(
+                                  context)
+                                  .pop();
+                            },
+                            onPositiveButtonTap:
+                                () async {
+
+                              setState(() {
+                                isDeleteDelegateClicked = true;
+                              });
+
+                              Navigator.of(
+                                  context)
+                                  .pop();
+
+                                  commonProvider.removeDelegate(context, commonProvider.loginModel!.token!, widget.vesselID!, delegates!.id, widget.scaffoldKey!).then((value)
+                                  {
+                                    if(value != null)
+                                      {
+                                        if(value.status!)
+                                          {
+                                            setState(() {
+                                              isDeleteDelegateClicked = false;
+                                            });
+
+                                            widget.onTap!.call();
+                                          }
+                                        else
+                                          {
+                                            setState(() {
+                                              isDeleteDelegateClicked = false;
+                                            });
+                                          }
+                                      }
+                                    else
+                                      {
+                                        setState(() {
+                                          isDeleteDelegateClicked = false;
+                                        });
+                                      }
+                                  }).catchError((e){
+                                    setState(() {
+                                      isDeleteDelegateClicked = false;
                                     });
-                              },
-                              child: Image.asset(
-                                'assets/images/Trash.png',
-                                height: 18,
-                                width: 18,
-                              )))
-                    ],
-                  ))
+                                  });
+
+                            });
+                      },
+                      child: isDeleteDelegateClicked!
+                    ? Container(
+                        height: 25,
+                          width: 25,
+                          child: CircularProgressIndicator(color: blueColor, strokeWidth: 3,))
+                      : Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 8),
+                        child: Image.asset(
+                          'assets/images/Trash.png',
+                          height: 18,
+                          width: 18,
+                        ),
+                      ))
+                ],
+              )
             ]),
             SizedBox(height: displayHeight(context) * 0.006,),
             Container(

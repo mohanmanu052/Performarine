@@ -271,8 +271,19 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                                             shrinkWrap: true,
                                             itemCount: snapShot.data!.myVesselDelegaties![0].delegates!.length,
                                             itemBuilder: (context, index) {
+
                                               return SingleDelegateCard(
-                                                  delegates: snapShot.data!.myVesselDelegaties![0].delegates![index]
+                                                  delegates: snapShot.data!.myVesselDelegaties![0].delegates![index],
+                                                  vesselID: snapShot.data!.myVesselDelegaties![0].vesselId,
+                                                scaffoldKey: scaffoldKey,
+                                                onTap: (){
+
+                                                  debugPrint("REMOVE VESSEL ID ${snapShot.data!.myVesselDelegaties![0].vesselId}");
+                                                  debugPrint("REMOVE DELEGATE ID ${snapShot.data!.myVesselDelegaties![0].delegates![index].id}");
+
+                                                  future = commonProvider!.vesselDelegateData(context, commonProvider!.loginModel!.token!, widget.vesselID!, scaffoldKey);
+                                                  setState(() {});
+                                                },
                                               );
                                             })
 
