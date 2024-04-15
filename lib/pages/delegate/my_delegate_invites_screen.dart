@@ -46,6 +46,9 @@ class _MyDelegateInvitesScreenState extends State<MyDelegateInvitesScreen> {
 
   @override
   void initState() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     commonProvider = context.read<CommonProvider>();
     getDelgateInvites();
     // TODO: implement initState
@@ -143,7 +146,7 @@ class _MyDelegateInvitesScreenState extends State<MyDelegateInvitesScreen> {
                             child: Center(
                                 child: const CircularProgressIndicator(
                                     color: blueColor)));
-                      } else if (snapShot.data == null ||
+                      } else if (snapShot.data == null || snapShot.data!.myDelegateInvities == null||
                           snapShot.data!.myDelegateInvities!.isEmpty) {
                         return Container(
                           height: displayHeight(context) / 1.4,
