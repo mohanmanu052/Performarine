@@ -55,7 +55,8 @@ class _FleetDetailsCardState extends State<FleetDetailsCard> {
                       debugPrint("FLEETS I M IN LENGTH ${widget.fleetVesselsList!.length}");
                       final vessel = widget.fleetVesselsList![index];
                       debugPrint("FLEETS I M IN LENGTH 1 ${vessel.vesselInfo!.mMSI == ''}");
-                      return fleetVesselSingleViewCard(context, vessel,
+                      return fleetVesselSingleViewCard(
+                          context, vessel,
                             (FleetVessels value) {
                               CreateVessel vesselData = CreateVessel(
                                   id: value.vesselInfo!.sId,

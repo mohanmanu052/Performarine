@@ -57,299 +57,293 @@ class _SingleMyDelegateInviteCardState
         padding: const EdgeInsets.only(bottom: 8.0),
         child: Column(
           children: [
-            Container(
-              /*color: myDelegateInvite!.status ==
-                  1
-                  ? Colors.grey.shade50
-                  : null*/
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        commonText(
+             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      commonText(
+                        context: context,
+                        text: myDelegateInvite!.vesselName,
+                        fontWeight: FontWeight.w500,
+                        textColor: /*myDelegateInvite!.status ==
+                            1
+                            ? Colors.grey
+                            : */
+                            Colors.black,
+                        textSize: displayWidth(context) * 0.042,
+                        textAlign: TextAlign.start,
+                      ),
+                      commonText(
                           context: context,
-                          text: myDelegateInvite!.vesselName,
-                          fontWeight: FontWeight.w500,
+                          text:
+                              'Send By ${myDelegateInvite!.invitedBy ?? '-'}',
+                          fontWeight: FontWeight.w400,
+                          textColor: Colors.grey,
+                          textSize: displayWidth(context) * 0.032,
+                          textAlign: TextAlign.start),
+                      commonText(
+                          context: context,
+                          text: 'Permissions: ',
+                          fontWeight: FontWeight.w400,
                           textColor: /*myDelegateInvite!.status ==
                               1
                               ? Colors.grey
                               : */
-                              Colors.black,
-                          textSize: displayWidth(context) * 0.042,
-                          textAlign: TextAlign.start,
-                        ),
-                        commonText(
-                            context: context,
-                            text:
-                                'Send By ${myDelegateInvite!.invitedBy ?? '-'}',
-                            fontWeight: FontWeight.w400,
-                            textColor: Colors.grey,
-                            textSize: displayWidth(context) * 0.032,
-                            textAlign: TextAlign.start),
-                        commonText(
-                            context: context,
-                            text: 'Permissions: ',
-                            fontWeight: FontWeight.w400,
-                            textColor: /*myDelegateInvite!.status ==
-                                1
-                                ? Colors.grey
-                                : */
-                                Colors.black87,
-                            textSize: displayWidth(context) * 0.03,
-                            textAlign: TextAlign.start),
-                        commonText(
-                            context: context,
-                            text: 'Reports | Manage Trips | Edit ',
-                            fontWeight: FontWeight.w400,
-                            textColor: /* myDelegateInvite!.status ==
-                                1
-                                ? Colors.grey
-                                :*/
-                                Colors.black87,
-                            textSize: displayWidth(context) * 0.026,
-                            textAlign: TextAlign.start),
-                      ],
-                    ),
+                              Colors.black87,
+                          textSize: displayWidth(context) * 0.03,
+                          textAlign: TextAlign.start),
+                      commonText(
+                          context: context,
+                          text: 'Reports | Manage Trips | Edit ',
+                          fontWeight: FontWeight.w400,
+                          textColor: /* myDelegateInvite!.status ==
+                              1
+                              ? Colors.grey
+                              :*/
+                              Colors.black87,
+                          textSize: displayWidth(context) * 0.026,
+                          textAlign: TextAlign.start),
+                    ],
                   ),
-                  SizedBox(
-                    width: 4,
-                  ),
+                ),
+                SizedBox(
+                  width: 4,
+                ),
 
-                  accepeRejectStatus(myDelegateInvite!.status ?? 0)
-                  // myDelegateInvite!.status == 1
-                  //     ? commonText(
-                  //     context: context,
-                  //     text: 'Expired',
-                  //     fontWeight: FontWeight.w300,
-                  //     textColor:
-                  //     Colors.red,
-                  //     textSize:
-                  //     displayWidth(context) *
-                  //         0.032,
-                  //     textAlign: TextAlign.start,
-                  //     fontFamily: poppins)
-                  //     : Row(
-                  //   children: [
-                  //     InkWell(
-                  //       onTap: () {
-                  //         CustomFleetDailog()
-                  //             .showFleetDialog(
-                  //             context:
-                  //             context,
-                  //             title:
-                  //             'Are you sure you want to reject the Delegate invite?',
-                  //             subtext:
-                  //             myDelegateInvite!.vesselName!,
-                  //             postiveButtonColor:
-                  //             deleteTripBtnColor,
-                  //             positiveButtonText:
-                  //             'Reject',
-                  //             onNegativeButtonTap:
-                  //                 () {
-                  //               Navigator.of(
-                  //                   context)
-                  //                   .pop();
-                  //             },
-                  //             onPositiveButtonTap:
-                  //                 () async {
+                accepeRejectStatus(myDelegateInvite!.status ?? 0)
+                // myDelegateInvite!.status == 1
+                //     ? commonText(
+                //     context: context,
+                //     text: 'Expired',
+                //     fontWeight: FontWeight.w300,
+                //     textColor:
+                //     Colors.red,
+                //     textSize:
+                //     displayWidth(context) *
+                //         0.032,
+                //     textAlign: TextAlign.start,
+                //     fontFamily: poppins)
+                //     : Row(
+                //   children: [
+                //     InkWell(
+                //       onTap: () {
+                //         CustomFleetDailog()
+                //             .showFleetDialog(
+                //             context:
+                //             context,
+                //             title:
+                //             'Are you sure you want to reject the Delegate invite?',
+                //             subtext:
+                //             myDelegateInvite!.vesselName!,
+                //             postiveButtonColor:
+                //             deleteTripBtnColor,
+                //             positiveButtonText:
+                //             'Reject',
+                //             onNegativeButtonTap:
+                //                 () {
+                //               Navigator.of(
+                //                   context)
+                //                   .pop();
+                //             },
+                //             onPositiveButtonTap:
+                //                 () async {
 
-                  //                   Navigator.of(context).pop();
+                //                   Navigator.of(context).pop();
 
-                  //                   setState(() {
-                  //                     isRejectBtnClicked = true;
-                  //                   });
-                  //               commonProvider?.delegateAcceptReject(
-                  //                   context,
-                  //                   commonProvider?.loginModel?.token ??
-                  //                       '',
-                  //                   widget.scaffoldKey!,
-                  //                   'false',
-                  //                   myDelegateInvite!.invitationLink!).then((value)
-                  //               {
-                  //                 if(value != null)
-                  //                   {
-                  //                     if(value.status!)
-                  //                       {
-                  //                         setState(() {
-                  //                           isRejectBtnClicked = false;
-                  //                         });
+                //                   setState(() {
+                //                     isRejectBtnClicked = true;
+                //                   });
+                //               commonProvider?.delegateAcceptReject(
+                //                   context,
+                //                   commonProvider?.loginModel?.token ??
+                //                       '',
+                //                   widget.scaffoldKey!,
+                //                   'false',
+                //                   myDelegateInvite!.invitationLink!).then((value)
+                //               {
+                //                 if(value != null)
+                //                   {
+                //                     if(value.status!)
+                //                       {
+                //                         setState(() {
+                //                           isRejectBtnClicked = false;
+                //                         });
 
-                  //                         widget.onTap!.call();
-                  //                       }
-                  //                     else
-                  //                       {
-                  //                         setState(() {
-                  //                           isRejectBtnClicked = false;
-                  //                         });
-                  //                       }
-                  //                   }
-                  //                 else
-                  //                   {
-                  //                     setState(() {
-                  //                       isRejectBtnClicked = false;
-                  //                     });
-                  //                   }
-                  //               }).catchError((e){
-                  //                 setState(() {
-                  //                   isRejectBtnClicked = false;
-                  //                 });
-                  //               });
-                  //             });
-                  //       },
-                  //       child: isRejectBtnClicked!
-                  //       ? Container(
-                  //           height: 20,
-                  //           width: 20,
-                  //           child: CircularProgressIndicator(color: blueColor, strokeWidth: 2.5,))
-                  //       : commonText(
-                  //           context: context,
-                  //           text: 'Reject',
-                  //           fontWeight:
-                  //           FontWeight.w300,
-                  //           textColor:
-                  //           userFeedbackBtnColor,
-                  //           textSize: displayWidth(
-                  //               context) *
-                  //               0.032,
-                  //           textAlign:
-                  //           TextAlign.start,
-                  //           fontFamily:
-                  //           poppins),
-                  //     ),
-                  //     SizedBox(
-                  //       width: displayWidth(
-                  //           context) *
-                  //           0.04,
-                  //     ),
-                  //     SizedBox(
-                  //       width: displayWidth(context) * 0.18,
-                  //       child: InkWell(
-                  //             onTap: () {
-                  //               CustomFleetDailog()
-                  //                   .showFleetDialog(
-                  //                 context: context,
-                  //                 title:
-                  //                 'Are you sure you want to accept the Delegate Invite?',
-                  //                 subtext:
-                  //                 myDelegateInvite!.vesselName!,
-                  //                 postiveButtonColor:
-                  //                 blueColor,
-                  //                 positiveButtonText:
-                  //                 'Accept',
-                  //                 negtiveButtuonColor:
-                  //                 primaryColor,
-                  //                 onNegativeButtonTap:
-                  //                     () {
-                  //                   Navigator.of(
-                  //                       context)
-                  //                       .pop();
-                  //                 },
-                  //                 onPositiveButtonTap:
-                  //                     () {
-                  //                       Navigator.of(context).pop();
-                  //                       setState(() {
-                  //                         isAcceptBtnClicked = true;
-                  //                       });
-                  //                   commonProvider?.delegateAcceptReject(
-                  //                       context,
-                  //                       commonProvider
-                  //                           ?.loginModel
-                  //                           ?.token ??
-                  //                           '',
-                  //                       widget.scaffoldKey!,
-                  //                       'true',
-                  //                       myDelegateInvite!.invitationLink!).then((value)
-                  //                   {
-                  //                     if(value != null)
-                  //                       {
-                  //                         if(value.status!)
-                  //                           {
-                  //                             setState(() {
-                  //                               isAcceptBtnClicked = false;
-                  //                             });
+                //                         widget.onTap!.call();
+                //                       }
+                //                     else
+                //                       {
+                //                         setState(() {
+                //                           isRejectBtnClicked = false;
+                //                         });
+                //                       }
+                //                   }
+                //                 else
+                //                   {
+                //                     setState(() {
+                //                       isRejectBtnClicked = false;
+                //                     });
+                //                   }
+                //               }).catchError((e){
+                //                 setState(() {
+                //                   isRejectBtnClicked = false;
+                //                 });
+                //               });
+                //             });
+                //       },
+                //       child: isRejectBtnClicked!
+                //       ? Container(
+                //           height: 20,
+                //           width: 20,
+                //           child: CircularProgressIndicator(color: blueColor, strokeWidth: 2.5,))
+                //       : commonText(
+                //           context: context,
+                //           text: 'Reject',
+                //           fontWeight:
+                //           FontWeight.w300,
+                //           textColor:
+                //           userFeedbackBtnColor,
+                //           textSize: displayWidth(
+                //               context) *
+                //               0.032,
+                //           textAlign:
+                //           TextAlign.start,
+                //           fontFamily:
+                //           poppins),
+                //     ),
+                //     SizedBox(
+                //       width: displayWidth(
+                //           context) *
+                //           0.04,
+                //     ),
+                //     SizedBox(
+                //       width: displayWidth(context) * 0.18,
+                //       child: InkWell(
+                //             onTap: () {
+                //               CustomFleetDailog()
+                //                   .showFleetDialog(
+                //                 context: context,
+                //                 title:
+                //                 'Are you sure you want to accept the Delegate Invite?',
+                //                 subtext:
+                //                 myDelegateInvite!.vesselName!,
+                //                 postiveButtonColor:
+                //                 blueColor,
+                //                 positiveButtonText:
+                //                 'Accept',
+                //                 negtiveButtuonColor:
+                //                 primaryColor,
+                //                 onNegativeButtonTap:
+                //                     () {
+                //                   Navigator.of(
+                //                       context)
+                //                       .pop();
+                //                 },
+                //                 onPositiveButtonTap:
+                //                     () {
+                //                       Navigator.of(context).pop();
+                //                       setState(() {
+                //                         isAcceptBtnClicked = true;
+                //                       });
+                //                   commonProvider?.delegateAcceptReject(
+                //                       context,
+                //                       commonProvider
+                //                           ?.loginModel
+                //                           ?.token ??
+                //                           '',
+                //                       widget.scaffoldKey!,
+                //                       'true',
+                //                       myDelegateInvite!.invitationLink!).then((value)
+                //                   {
+                //                     if(value != null)
+                //                       {
+                //                         if(value.status!)
+                //                           {
+                //                             setState(() {
+                //                               isAcceptBtnClicked = false;
+                //                             });
 
-                  //                             widget.onTap!.call();
-                  //                           }
-                  //                         else
-                  //                           {
-                  //                             setState(() {
-                  //                               isAcceptBtnClicked = false;
-                  //                             });
-                  //                           }
-                  //                       }
-                  //                     else
-                  //                       {
-                  //                         setState(() {
-                  //                         isAcceptBtnClicked = false;
-                  //                       });
+                //                             widget.onTap!.call();
+                //                           }
+                //                         else
+                //                           {
+                //                             setState(() {
+                //                               isAcceptBtnClicked = false;
+                //                             });
+                //                           }
+                //                       }
+                //                     else
+                //                       {
+                //                         setState(() {
+                //                         isAcceptBtnClicked = false;
+                //                       });
 
-                  //                       }
-                  //                   }).catchError((e){
-                  //                     setState(() {
-                  //                       isAcceptBtnClicked = false;
-                  //                     });
-                  //                   });
-                  //                   getUserConfigData();
-                  //                 },
-                  //               );
-                  //             },
-                  //             child: isAcceptBtnClicked!
-                  //                 ? Row(
-                  //               mainAxisAlignment: MainAxisAlignment.center,
-                  //                   children: [
-                  //                     SizedBox(
-                  //                     height: 25,
-                  //                     width: 25,
-                  //                     child: Center(child: CircularProgressIndicator(color: blueColor, strokeWidth: 2.5,))),
-                  //                   ],
-                  //                 )
-                  //                 : Container(
-                  //               width: displayWidth(context) * 0.18,
-                  //               alignment: Alignment.center,
-                  //               decoration: BoxDecoration(
-                  //                   color: blueColor,
-                  //                   borderRadius:
-                  //                   BorderRadius
-                  //                       .circular(
-                  //                       20)),
-                  //               child: Padding(
-                  //                 padding:
-                  //                 const EdgeInsets
-                  //                     .only(
-                  //                     top: 4,
-                  //                     bottom:
-                  //                     4),
-                  //                 child: commonText(
-                  //                     context:
-                  //                     context,
-                  //                     text:
-                  //                     'Accept',
-                  //                     fontWeight:
-                  //                     FontWeight
-                  //                         .w300,
-                  //                     textColor:
-                  //                     Colors
-                  //                         .white,
-                  //                     textSize:
-                  //                     displayWidth(
-                  //                         context) *
-                  //                         0.032,
-                  //                     textAlign:
-                  //                     TextAlign
-                  //                         .start,
-                  //                     fontFamily:
-                  //                     poppins),
-                  //               ),
-                  //             ),
-                  //           ),
-                  //     ),
-                  //   ],
-                  // )
-                ],
-              ),
+                //                       }
+                //                   }).catchError((e){
+                //                     setState(() {
+                //                       isAcceptBtnClicked = false;
+                //                     });
+                //                   });
+                //                   getUserConfigData();
+                //                 },
+                //               );
+                //             },
+                //             child: isAcceptBtnClicked!
+                //                 ? Row(
+                //               mainAxisAlignment: MainAxisAlignment.center,
+                //                   children: [
+                //                     SizedBox(
+                //                     height: 25,
+                //                     width: 25,
+                //                     child: Center(child: CircularProgressIndicator(color: blueColor, strokeWidth: 2.5,))),
+                //                   ],
+                //                 )
+                //                 : Container(
+                //               width: displayWidth(context) * 0.18,
+                //               alignment: Alignment.center,
+                //               decoration: BoxDecoration(
+                //                   color: blueColor,
+                //                   borderRadius:
+                //                   BorderRadius
+                //                       .circular(
+                //                       20)),
+                //               child: Padding(
+                //                 padding:
+                //                 const EdgeInsets
+                //                     .only(
+                //                     top: 4,
+                //                     bottom:
+                //                     4),
+                //                 child: commonText(
+                //                     context:
+                //                     context,
+                //                     text:
+                //                     'Accept',
+                //                     fontWeight:
+                //                     FontWeight
+                //                         .w300,
+                //                     textColor:
+                //                     Colors
+                //                         .white,
+                //                     textSize:
+                //                     displayWidth(
+                //                         context) *
+                //                         0.032,
+                //                     textAlign:
+                //                     TextAlign
+                //                         .start,
+                //                     fontFamily:
+                //                     poppins),
+                //               ),
+                //             ),
+                //           ),
+                //     ),
+                //   ],
+                // )
+              ],
             ),
             Divider(
               color: Colors.grey.shade200,
@@ -619,6 +613,7 @@ class _SingleMyDelegateInviteCardState
   }
 
   Widget accepeRejectStatus(int status) {
+
     switch (status) {
       case 1:
         return commonText(
@@ -655,7 +650,8 @@ class _SingleMyDelegateInviteCardState
           children: [
             InkWell(
               onTap: () {
-                CustomFleetDailog().showFleetDialog(
+                CustomFleetDailog().showFleetDialog
+                  (
                     context: context,
                     title:
                         'Are you sure you want to reject the Delegate invite?',
@@ -817,7 +813,7 @@ class _SingleMyDelegateInviteCardState
       default:
         return commonText(
             context: context,
-            text: 'Expired',
+            text: 'Expired ',
             fontWeight: FontWeight.w300,
             textColor: Colors.red,
             textSize: displayWidth(context) * 0.032,

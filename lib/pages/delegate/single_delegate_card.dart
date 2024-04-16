@@ -60,7 +60,7 @@ class _SingleDelegateCardState extends State<SingleDelegateCard> {
                           fontWeight: FontWeight.w500,
                           fontFamily: outfit,
                       textAlign: TextAlign.start),
-                      tag(colorgreenLight, delegates!.delegateaccessType.toString() == '1' ?'24 Hr Access' : delegates!.delegateaccessType.toString() == '2' ? '7 Days':delegates!.delegateaccessType.toString() == '3' ? '1 Month': delegates!.delegateaccessType.toString() == '4' ? 'Custom time': 'Always')
+                      tag(colorgreenLight, delegates!.delegateaccessType)
                     ],
                   )),
               Row(
@@ -68,7 +68,7 @@ class _SingleDelegateCardState extends State<SingleDelegateCard> {
                   Visibility(
                       child: commonText(
                           text: delegates!.status,
-                          textColor: Colors.green,
+                          textColor: Colors.black,
                           fontWeight:
                           FontWeight.w500,
                           textSize: displayWidth(
@@ -200,7 +200,7 @@ class _SingleDelegateCardState extends State<SingleDelegateCard> {
         ));
   }
 
-  Widget tag(Color tagColor, String text) {
+  Widget tag(Color tagColor, dynamic text) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 10),
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
@@ -208,11 +208,61 @@ class _SingleDelegateCardState extends State<SingleDelegateCard> {
         color: tagColor,
         borderRadius: BorderRadius.circular(20),
       ),
-      child: commonText(
-          text: text,
-          fontWeight: FontWeight.w300,
-          textSize: 8,
-          textColor: blutoothDialogTitleColor),
-    );
+      child: delegateAccessStatus(text));
+  }
+
+  Widget delegateAccessStatus(int status) {
+    switch (status) {
+      case 1:
+        return commonText(
+            context: context,
+            text: '24 Hours',
+            fontWeight: FontWeight.w300,
+            textColor: Colors.black,
+            textSize: displayWidth(context) * 0.028,
+            textAlign: TextAlign.start,
+            fontFamily: outfit);
+
+      case 2:
+        return commonText(
+            context: context,
+            text: '7 Days',
+            fontWeight: FontWeight.w300,
+            textColor: Colors.black,
+            textSize: displayWidth(context) * 0.028,
+            textAlign: TextAlign.start,
+            fontFamily: outfit);
+
+      case 3:
+        return commonText(
+            context: context,
+            text: '1 Month',
+            fontWeight: FontWeight.w300,
+            textColor: Colors.black,
+            textSize: displayWidth(context) * 0.028,
+            textAlign: TextAlign.start,
+            fontFamily: outfit);
+
+      case 4:
+        return commonText(
+            context: context,
+            text: 'Custom Time',
+            fontWeight: FontWeight.w300,
+            textColor: Colors.black,
+            textSize: displayWidth(context) * 0.028,
+            textAlign: TextAlign.start,
+            fontFamily: outfit);
+
+      default:
+        return commonText(
+            context: context,
+            text: 'Always',
+            fontWeight: FontWeight.w300,
+            textColor: Colors.black,
+            textSize: displayWidth(context) * 0.028,
+            textAlign: TextAlign.start,
+            fontFamily: outfit);
+        ;
+    }
   }
 }

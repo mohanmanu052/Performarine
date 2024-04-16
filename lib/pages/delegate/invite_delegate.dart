@@ -48,7 +48,9 @@ class _InviteDelegateState extends State<InviteDelegate> {
   DateTime firstDate = DateTime.now(),
       lastDate = DateTime(2100),
       focusedDay = DateTime.now(),
-      startDate = DateTime.now();
+      startDate = DateTime.now(),
+      globalStartDate = DateTime.now(),
+      globalEndDate = DateTime.now();
   DateTime? selectedEndDate;
 
   Duration duration = const Duration();
@@ -57,8 +59,8 @@ class _InviteDelegateState extends State<InviteDelegate> {
       endTime = '01:00 AM',
       endDate = '',
       selectedDuration = '24 hrs',
-      startDateText = '';
-  int calenderType = 0;
+      startDateText = '', startDateUtc = '', endDateUtc = '', globalStartTime = '', globalEndTime = '', ampm = '';
+  int calenderType = 0, hour = 0, min = 0;
   String? selectedShareUpdate;
 
   TextEditingController userEmailController = TextEditingController();
@@ -519,9 +521,8 @@ class _InviteDelegateState extends State<InviteDelegate> {
 
                                                   startDate = selectDay!;
                                                   focusedDay = selectDay;
-                                                  startDateText =
-                                                      convertIntoMonthDayYear(
-                                                          selectDay);
+                                                  globalStartDate = selectDay;
+                                                  startDateText = convertIntoMonthDayYear(selectDay);
                                                   calenderType = 1;
                                                   setState(() {});
                                                 } else {
@@ -543,9 +544,8 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                                     selectedEndDate = selectDay;
                                                     focusedDay = selectDay;
 
-                                                    endDate =
-                                                        convertIntoMonthDayYear(
-                                                            selectDay);
+                                                    globalEndDate = selectDay;
+                                                    endDate = convertIntoMonthDayYear(selectDay);
                                                     isCalenderVisible = false;
                                                   }
                                                 }
@@ -617,6 +617,7 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                     CustomTimePicker(
                                       getTime: (time) {
                                         startTime = time;
+                                        globalStartTime = time;
                                         setState(() {});
 
                                         Utils.customPrint(
@@ -626,6 +627,7 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                     CustomTimePicker(
                                       getTime: (time) {
                                         endTime = time;
+                                        globalEndTime = time;
                                         setState(() {});
                                         Utils.customPrint(
                                             'the end time was $time');
@@ -670,14 +672,16 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                         userEmailController.text
                                             .toLowerCase()) {
                                       if (selectedShareUpdate == '4') {
-                                        if (startDateText.isEmpty) {
+
+                                        if (globalStartDate.toString().isEmpty) {
+
                                           Utils.showSnackBar(context,
                                               scaffoldKey: scaffoldKey,
                                               message:
                                                   'Please select start date');
                                           return null;
                                         }
-                                        if (endDate.isEmpty) {
+                                        if (globalEndDate.toString().isEmpty) {
                                           Utils.showSnackBar(context,
                                               scaffoldKey: scaffoldKey,
                                               message:
@@ -695,8 +699,9 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                               userEmailController.text.trim(),
                                           "delegateAccessType":
                                               selectedShareUpdate,
-                                          "fromDate": startDateText,
-                                          "toDate": endDate,
+                                          "fromDate": convertIntoUTCFormat(globalStartDate, globalStartTime),
+                                          "toDate": convertIntoUTCFormat(globalEndDate, globalEndTime),
+
                                         };
                                       } else {
                                         body = {
@@ -846,6 +851,31 @@ class _InviteDelegateState extends State<InviteDelegate> {
     Utils.customPrint(dateString);
 
     return dateString;
+  }
+
+  String convertIntoUTCFormat(DateTime? date, String? time) {
+
+    if(date != null && time != null)
+      {
+        hour = int.parse(time.split(' : ').first);
+        min = int.parse(time.split(' : ').last.split(' ').first);
+        ampm = time.split(' : ').last.split(' ').last;
+
+        TimeOfDay startTime = TimeOfDay(hour: ampm == 'PM' ? hour + 12 : hour, minute: min);
+
+        DateTime utcDateTime = DateTime(date.year, date.month,date.day, startTime.hour, startTime.minute,00);
+
+        debugPrint("SELECTED DATE ${date}");
+        debugPrint("SELECTED DATE ${time}");
+        debugPrint("SELECTED DATE ${utcDateTime}");
+
+        return utcDateTime.toUtc().toString();
+      }
+    else
+      {
+        return '';
+      }
+
   }
 
   Future<bool>? getVesselDataSyncToCloud() async {

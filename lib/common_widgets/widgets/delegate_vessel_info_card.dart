@@ -60,7 +60,7 @@ class DelegateVesselInfoCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     image: DecorationImage(
-                      image: FileImage(File(vesselData!.imageURLs![0])),
+                      image: FileImage(File(vesselData!.imageURLs![0].toString())),
                       fit: BoxFit.cover,
                     ),
                   ),

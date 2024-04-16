@@ -87,7 +87,7 @@ class Vessels {
   String? syncCreatedAt;
   String? syncUpdatedAt;
   String? id;
-  dynamic hullType;
+  int? hullType;
 
   Vessels(
       {this.name,
