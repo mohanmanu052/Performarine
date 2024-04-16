@@ -540,6 +540,7 @@ class _SyncDataCloudToMobileScreenState
             }
 
             Utils.customPrint('FINAL IMAGEEEE: $downloadedCompressImageFile');
+            Utils.customPrint('FINAL IMAGEEEE HULL TYPE : ${value.vessels![i].hullType.toString()}');
             CustomLogger().logWithFile(Level.info, "FINAL IMAGEEEE: $downloadedCompressImageFile -> $page");
 
             CreateVessel vesselData = CreateVessel(
@@ -570,7 +571,7 @@ class _SyncDataCloudToMobileScreenState
                 isSync: 1,
                 updatedBy: value.vessels![i].updatedBy.toString(),
                 isCloud: 1,
-                hullType: int.parse(value.vessels![i].hullType.toString())
+                hullType: value.vessels![i].hullType.toString(),
             );
 
             var vesselExist = await _databaseService

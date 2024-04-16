@@ -49,7 +49,7 @@ class RemoveDelegateApiProvider with ChangeNotifier
         removeDelegateModel = CommonModel.fromJson(json.decode(response.body));
 
          Utils.showSnackBar(scaffoldKey.currentContext!,
-            scaffoldKey: scaffoldKey, message: vesselDelegateModel!.message);
+            scaffoldKey: scaffoldKey, message: removeDelegateModel!.message);
         return removeDelegateModel!;
       } else if (response.statusCode == HttpStatus.gatewayTimeout) {
         kReleaseMode

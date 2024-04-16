@@ -35,7 +35,7 @@ class CreateVessel {
   int? isCloud;
   List<File?>? selectedImages;
   //String? displacement;
-  int? hullType;
+  dynamic hullType;
 
   CreateVessel(
       {this.id,

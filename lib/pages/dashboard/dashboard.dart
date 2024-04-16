@@ -44,10 +44,6 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
   void initState() {
     super.initState();
 
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
-
     WidgetsBinding.instance.addObserver(this);
 
     commonProvider = context.read<CommonProvider>();
@@ -63,6 +59,14 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
     bool? isTripStarted = sharedPreferences!.getBool('trip_started');
 
     Utils.customPrint("IS APP KILLED FROM BG 1212 $isTripStarted");
+
+   Future.delayed(Duration(microseconds: 20), (){
+     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+       SystemChrome.setPreferredOrientations([
+         DeviceOrientation.portraitUp,
+       ]);
+     });
+   });
   }
   @override
   void dispose() {

@@ -194,7 +194,7 @@ class Delegates {
   String? delegateUserId;
   String? delegateUserName;
   String? delegateUserEmail;
-  dynamic? delegateaccessType;
+  dynamic delegateaccessType;
   String? delegateaccessTime;
   String? status;
 

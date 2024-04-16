@@ -61,11 +61,12 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
 
     commonProvider = context.read<CommonProvider>();
 
-    if (widget.isComingFromUnilink ?? false) {
-      debugPrint("COMING FROM UNILINK 1 ");
+    if(widget.isComingFromUnilink??false){
+      debugPrint("COMING FROM UNILINK ");
       adddelegateInvitation();
-      //future = commonProvider!.vesselDelegateData(context, commonProvider!.loginModel!.token!, widget.vesselID!, scaffoldKey);
-      getUserConfigData();
+     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+       getUserConfigData();
+     });
     }
 
     debugPrint("COMING FROM UNILINK");
@@ -86,6 +87,7 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    commonProvider = context.watch<CommonProvider>();
     return PopScope(
       canPop: false,
       onPopInvoked: (didPop) async {

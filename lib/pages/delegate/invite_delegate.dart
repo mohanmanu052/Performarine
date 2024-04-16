@@ -40,14 +40,17 @@ class _InviteDelegateState extends State<InviteDelegate> {
   final controller = ScreenshotController();
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   late Future<List<CreateVessel>> getVesselFuture;
-    List<CreateVessel>? getVesselSyncToCloud;
+  List<CreateVessel>? getVesselSyncToCloud;
+  bool isCalenderVisible = false;
 
   CreateVessel? vesselData;
   final DatabaseService _databaseService = DatabaseService();
-  DateTime firstDate = DateTime(1980),
-      lastDate = DateTime.now(),
+  DateTime firstDate = DateTime.now(),
+      lastDate = DateTime(2100),
       focusedDay = DateTime.now(),
       startDate = DateTime.now();
+  DateTime? selectedEndDate;
+
   Duration duration = const Duration();
   bool isCustomTime = false, isInviteDelegateBtnClicked = false;
   String startTime = '01:00 AM',
@@ -69,7 +72,8 @@ class _InviteDelegateState extends State<InviteDelegate> {
   @override
   void initState() {
     debugPrint("VESSEL ID INVITE DELEGATE SCREEN ${widget.vesselID}");
-    singleVesselDetails = _databaseService.getVesselFromVesselID(widget.vesselID!);
+    singleVesselDetails =
+        _databaseService.getVesselFromVesselID(widget.vesselID!);
     singleVesselDetails!.then((value) {
       vesselData = value;
       setState(() {});
@@ -196,10 +200,11 @@ class _InviteDelegateState extends State<InviteDelegate> {
                               maxLength: 32,
                               prefixIcon: null,
                               suffixIcon: InkWell(
-                                onTap: (){
-                                  setState(() {
-                                  userEmailController.clear();
-                                });},
+                                  onTap: () {
+                                    setState(() {
+                                      userEmailController.clear();
+                                    });
+                                  },
                                   child: Icon(Icons.close)),
                               requestFocusNode: null,
                               obscureText: false,
@@ -244,59 +249,68 @@ class _InviteDelegateState extends State<InviteDelegate> {
                             Container(
                               height: displayHeight(context) * 0.14,
                               width: displayWidth(context),
-                              child: Wrap(
-                                runSpacing: 4,
-                                spacing: 2,
-                                children: shareAccessModel.map((e) {
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0),
-                                    child: InkWell(
-                                      onTap: () {
-                                        setState(() {
-                                          selectedShareUpdate = e.value;
-                                          if (e.value == "4") {
-                                            isCustomTime = true;
-                                          } else {
-                                            isCustomTime = false;
-                                          }
-                                        });
-                                        debugPrint(
-                                            "SELECTED VALUE 1 ${selectedShareUpdate}");
-                                      },
-                                      child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Radio<String>(
-                                              value: e.value!,
-                                              groupValue: selectedShareUpdate,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  selectedShareUpdate =
-                                                      value.toString();
-                                                  if (selectedShareUpdate ==
-                                                      "4") {
-                                                    isCustomTime = true;
-                                                  } else {
-                                                    isCustomTime = false;
-                                                  }
-                                                });
-                                                debugPrint(
-                                                    "SELECTED VALUE 1 ${selectedShareUpdate}");
-                                                debugPrint(
-                                                    "SELECTED VALUE 2 ${value}");
-                                              },
-                                            ),
-                                            commonText(
-                                                text: e.key,
-                                                fontWeight: FontWeight.w400,
-                                                textSize: 12),
-                                          ]),
-                                    ),
+                              child: GridView.builder(
+                                scrollDirection: Axis.vertical,
+                                itemCount: shareAccessModel.length,
+                                shrinkWrap: true,
+                                padding: EdgeInsets.zero,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3,
+                                        childAspectRatio: 2.5,
+                                        mainAxisSpacing: 4),
+                                itemBuilder: (BuildContext context, int index) {
+                                  return InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        selectedShareUpdate =
+                                            shareAccessModel[index].value;
+                                        if (shareAccessModel[index].value ==
+                                            "4") {
+                                          isCustomTime = true;
+                                        } else {
+                                          isCustomTime = false;
+                                        }
+                                      });
+                                      debugPrint(
+                                          "SELECTED VALUE 1 ${selectedShareUpdate}");
+                                    },
+                                    child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Radio<String>(
+                                            value:
+                                                shareAccessModel[index].value!,
+                                            groupValue: selectedShareUpdate,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                selectedShareUpdate =
+                                                    value.toString();
+                                                if (selectedShareUpdate ==
+                                                    "4") {
+                                                  isCustomTime = true;
+                                                  isCalenderVisible = true;
+                                                } else {
+                                                  isCalenderVisible = false;
+
+                                                  isCustomTime = false;
+                                                }
+                                              });
+                                              debugPrint(
+                                                  "SELECTED VALUE 1 ${selectedShareUpdate}");
+                                              debugPrint(
+                                                  "SELECTED VALUE 2 ${value}");
+                                            },
+                                          ),
+                                          commonText(
+                                              text: shareAccessModel[index].key,
+                                              fontWeight: FontWeight.w400,
+                                              textSize: 12),
+                                        ]),
                                   );
-                                }).toList(),
+                                },
                               ),
                             ),
                             SizedBox(
@@ -319,6 +333,7 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                           child: InkWell(
                                               onTap: () {
                                                 calenderType = 0;
+                                                isCalenderVisible = true;
                                                 setState(() {});
                                               },
                                               child: fromToDate('From Date: ',
@@ -334,6 +349,8 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                           child: InkWell(
                                               onTap: () {
                                                 calenderType = 1;
+                                                isCalenderVisible = true;
+
                                                 setState(() {});
                                               },
                                               child: fromToDate(
@@ -344,162 +361,223 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                 SizedBox(
                                   height: displayHeight(context) * 0.01,
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      left: displayWidth(context) * 0.045,
-                                      right: displayWidth(context) * 0.045,
-                                      top: 8,
-                                      bottom: 8),
-                                  child: Container(
-                                    width: displayWidth(context),
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                        color: calenderHeaderBackgroundColor,
-                                        borderRadius: BorderRadius.only(
-                                          topRight: Radius.circular(
-                                            30,
-                                          ),
-                                          topLeft: Radius.circular(
-                                            30,
-                                          ),
-                                        )),
-                                    child: Padding(
-                                      padding: EdgeInsets.only(
-                                          left: displayWidth(context) * 0.03,
-                                          top: displayWidth(context) * 0.05),
-                                      child: Text(
-                                        calenderType == 0
-                                            ? "Select Start Date"
-                                            : 'Select End Date',
-                                        style: TextStyle(
-                                            fontSize:
-                                                displayWidth(context) * 0.038,
-                                            fontWeight: FontWeight.w600,
-                                            fontFamily: dmsans),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      left: displayWidth(context) * 0.045,
-                                      right: displayWidth(context) * 0.045),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: calenderBackgroundColor,
-                                        borderRadius: BorderRadius.only(
-                                            bottomLeft: Radius.circular(20),
-                                            bottomRight: Radius.circular(20))),
-                                    child: Visibility(
-                                      // visible: !isEndDateSected!,
-                                      child: TableCalendar(
-                                        daysOfWeekVisible: true,
-                                        focusedDay: startDate,
-                                        firstDay: firstDate,
-                                        lastDay: lastDate,
-                                        onFormatChanged:
-                                            (CalendarFormat _format) {},
-                                        calendarBuilders: CalendarBuilders(
-                                          selectedBuilder:
-                                              (context, date, events) =>
-                                                  Container(
-                                            margin: const EdgeInsets.all(5.0),
-                                            alignment: Alignment.center,
-                                            decoration: BoxDecoration(
-                                                color: blueColor,
-                                                borderRadius:
-                                                    BorderRadius.circular(15)
-                                                //shape: BoxShape.circle
-
+                                Visibility(
+                                  visible: isCalenderVisible,
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left: displayWidth(context) * 0.045,
+                                            right:
+                                                displayWidth(context) * 0.045,
+                                            top: 8,
+                                            bottom: 8),
+                                        child: Container(
+                                          width: displayWidth(context),
+                                          height: 50,
+                                          decoration: BoxDecoration(
+                                              color:
+                                                  calenderHeaderBackgroundColor,
+                                              borderRadius: BorderRadius.only(
+                                                topRight: Radius.circular(
+                                                  30,
                                                 ),
-                                            child: commonText(
-                                                context: context,
-                                                text: date.day.toString(),
-                                                fontWeight: FontWeight.w500,
-                                                textColor: Colors.white,
-                                                textSize:
-                                                    displayWidth(context) *
-                                                        0.042,
-                                                fontFamily: dmsans),
+                                                topLeft: Radius.circular(
+                                                  30,
+                                                ),
+                                              )),
+                                          child: Padding(
+                                            padding: EdgeInsets.only(
+                                                left: displayWidth(context) *
+                                                    0.03,
+                                                top: displayWidth(context) *
+                                                    0.05),
+                                            child: Text(
+                                              calenderType == 0
+                                                  ? "Select Start Date"
+                                                  : 'Select End Date',
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      displayWidth(context) *
+                                                          0.038,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontFamily: dmsans),
+                                            ),
                                           ),
                                         ),
-                                        calendarStyle: CalendarStyle(
-                                            todayDecoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                border: Border.all(
-                                                  color: blueColor,
-                                                )),
-                                            isTodayHighlighted: true,
-                                            selectedDecoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left: displayWidth(context) * 0.045,
+                                            right:
+                                                displayWidth(context) * 0.045),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: calenderBackgroundColor,
+                                              borderRadius: BorderRadius.only(
+                                                  bottomLeft:
+                                                      Radius.circular(20),
+                                                  bottomRight:
+                                                      Radius.circular(20))),
+                                          child: TableCalendar(
+                                            daysOfWeekVisible: true,
+                                            focusedDay: focusedDay,
+                                            firstDay: firstDate,
+                                            lastDay: lastDate,
+                                            onFormatChanged:
+                                                (CalendarFormat _format) {},
+                                            calendarBuilders: CalendarBuilders(
+                                              selectedBuilder:
+                                                  (context, date, events) =>
+                                                      Container(
+                                                margin:
+                                                    const EdgeInsets.all(5.0),
+                                                alignment: Alignment.center,
+                                                decoration: BoxDecoration(
+                                                    color: blueColor,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15)
+                                                    //shape: BoxShape.circle
 
-                                              // color: blueColor,
-                                              shape: BoxShape.rectangle,
+                                                    ),
+                                                child: commonText(
+                                                    context: context,
+                                                    text: date.day.toString(),
+                                                    fontWeight: FontWeight.w500,
+                                                    textColor: Colors.white,
+                                                    textSize:
+                                                        displayWidth(context) *
+                                                            0.042,
+                                                    fontFamily: dmsans),
+                                              ),
                                             ),
-                                            selectedTextStyle: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize:
-                                                    displayWidth(context) *
-                                                        0.032,
-                                                fontFamily: dmsans,
-                                                color: Colors.pink),
-                                            todayTextStyle: TextStyle(
-                                                fontWeight: FontWeight.normal,
-                                                fontSize:
-                                                    displayWidth(context) *
-                                                        0.03,
-                                                fontFamily: dmsans,
-                                                color:
-                                                    focusedDay == DateTime.now()
+                                            calendarStyle: CalendarStyle(
+                                                todayDecoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                    border: Border.all(
+                                                      color: blueColor,
+                                                    )),
+                                                isTodayHighlighted: true,
+                                                selectedDecoration:
+                                                    BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+
+                                                  // color: blueColor,
+                                                  shape: BoxShape.rectangle,
+                                                ),
+                                                selectedTextStyle: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize:
+                                                        displayWidth(context) *
+                                                            0.032,
+                                                    fontFamily: dmsans,
+                                                    color: Colors.pink),
+                                                todayTextStyle: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                    fontSize:
+                                                        displayWidth(context) *
+                                                            0.03,
+                                                    fontFamily: dmsans,
+                                                    color: focusedDay ==
+                                                            DateTime.now()
                                                         ? Colors.white
                                                         : blueColor)),
-                                        selectedDayPredicate: (DateTime date) {
-                                          return isSameDay(startDate, date);
-                                        },
-                                        startingDayOfWeek:
-                                            StartingDayOfWeek.monday,
-                                        onDaySelected: (DateTime? selectDay,
-                                            DateTime? focusDay) {
-                                          setState(() {
-                                            focusedDay = focusDay!;
-                                            startDate = selectDay!;
-                                            if (calenderType == 0) {
-                                              startDateText =
-                                                  convertIntoMonthDayYear(
-                                                      selectDay);
-                                              calenderType = 1;
-                                              setState(() {});
-                                            } else {
-                                              endDate = convertIntoMonthDayYear(
-                                                  selectDay);
-                                            }
-                                          });
-                                        },
-                                        headerStyle: HeaderStyle(
-                                          titleCentered: true,
+                                            selectedDayPredicate:
+                                                (DateTime date) {
+                                              return isSameDay(
+                                                  focusedDay, date);
+                                            },
+                                            startingDayOfWeek:
+                                                StartingDayOfWeek.monday,
+                                            onDaySelected: (DateTime? selectDay,
+                                                DateTime? focusDay) {
+                                              setState(() {
+                                                //  focusedDay = focusDay!;
+                                                if (calenderType == 0) {
+                                                  focusedDay = startDate;
+                                                  if (selectedEndDate != null) {
+                                                    if (selectDay!.isAfter(
+                                                            selectedEndDate!) ||
+                                                        selectDay.isAtSameMomentAs(
+                                                            selectedEndDate!)) {
+                                                      Utils.showSnackBar(
+                                                          context,
+                                                          scaffoldKey:
+                                                              scaffoldKey,
+                                                          message:
+                                                              'Start date should be below than end date');
+                                                      return null;
+                                                    } else {
+                                                      isCalenderVisible = false;
+                                                    }
+                                                  }
 
-                                          titleTextStyle: TextStyle(
-                                              fontSize:
-                                                  displayWidth(context) * 0.032,
-                                              fontFamily: dmsans,
-                                              fontWeight: FontWeight.w600,
-                                              color: blackcolorCalender),
-                                          // Center the month title
+                                                  startDate = selectDay!;
+                                                  focusedDay = selectDay;
+                                                  startDateText =
+                                                      convertIntoMonthDayYear(
+                                                          selectDay);
+                                                  calenderType = 1;
+                                                  setState(() {});
+                                                } else {
+                                                  focusedDay =
+                                                      selectedEndDate ??
+                                                          DateTime.now();
 
-                                          formatButtonVisible: false,
-                                          formatButtonDecoration: BoxDecoration(
-                                            color: Colors.black,
-                                            borderRadius:
-                                                BorderRadius.circular(22.0),
+                                                  if (selectDay!.isBefore(
+                                                          startDate) ||
+                                                      selectDay
+                                                          .isAtSameMomentAs(
+                                                              startDate!)) {
+                                                    Utils.showSnackBar(context,
+                                                        scaffoldKey:
+                                                            scaffoldKey,
+                                                        message:
+                                                            'End date should be greater than start date');
+                                                  } else {
+                                                    selectedEndDate = selectDay;
+                                                    focusedDay = selectDay;
+
+                                                    endDate =
+                                                        convertIntoMonthDayYear(
+                                                            selectDay);
+                                                    isCalenderVisible = false;
+                                                  }
+                                                }
+                                              });
+                                            },
+                                            headerStyle: HeaderStyle(
+                                              titleCentered: true,
+
+                                              titleTextStyle: TextStyle(
+                                                  fontSize:
+                                                      displayWidth(context) *
+                                                          0.032,
+                                                  fontFamily: dmsans,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: blackcolorCalender),
+                                              // Center the month title
+
+                                              formatButtonVisible: false,
+                                              formatButtonDecoration:
+                                                  BoxDecoration(
+                                                color: Colors.black,
+                                                borderRadius:
+                                                    BorderRadius.circular(22.0),
+                                              ),
+                                              formatButtonTextStyle: TextStyle(
+                                                  color: Colors.white),
+                                              formatButtonShowsNext: false,
+                                            ),
                                           ),
-                                          formatButtonTextStyle:
-                                              TextStyle(color: Colors.white),
-                                          formatButtonShowsNext: false,
                                         ),
                                       ),
-                                    ),
+                                    ],
                                   ),
                                 ),
                                 SizedBox(
@@ -509,21 +587,27 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Container(
-                                      margin: EdgeInsets.only(left: 8),
-                                      alignment: Alignment.centerRight,
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 4),
-                                      child:
-                                          fromToDate('Start Time: ', startTime),
-                                    ),
-                                    Container(
-                                        margin: EdgeInsets.only(right: 8),
-                                        alignment: Alignment.centerLeft,
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 10, vertical: 4),
-                                        child:
-                                            fromToDate('End Time: ', endTime)),
+                                    Flexible(
+                                        flex: 6,
+                                        fit: FlexFit.tight,
+                                        child: Container(
+                                          margin: EdgeInsets.only(left: 2),
+                                          alignment: Alignment.centerRight,
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 8, vertical: 4),
+                                          child: fromToDate(
+                                              'Start Time: ', startTime),
+                                        )),
+                                    Flexible(
+                                      flex: 4,
+                                      fit: FlexFit.tight,
+                                      child: Container(
+                                          alignment: Alignment.centerLeft,
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 10, vertical: 4),
+                                          child: fromToDate(
+                                              'End Time: ', endTime)),
+                                    )
                                   ],
                                 ),
                                 Row(
@@ -566,7 +650,9 @@ class _InviteDelegateState extends State<InviteDelegate> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       isInviteDelegateBtnClicked
-                          ? CircularProgressIndicator()
+                          ? CircularProgressIndicator(
+                              color: blueColor,
+                            )
                           : CommonButtons.getActionButton(
                               title: 'Invite Delegate',
                               context: context,
@@ -578,54 +664,98 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                 if (formKey.currentState!.validate()) {
                                   FocusScope.of(context).unfocus();
 
-                                  if((selectedShareUpdate ?? '').isNotEmpty)
-                                    {
+                                  if ((selectedShareUpdate ?? '').isNotEmpty) {
+                                    if (commonProvider.loginModel!.userEmail!
+                                            .toLowerCase() !=
+                                        userEmailController.text
+                                            .toLowerCase()) {
+                                      if (selectedShareUpdate == '4') {
+                                        if (startDateText.isEmpty) {
+                                          Utils.showSnackBar(context,
+                                              scaffoldKey: scaffoldKey,
+                                              message:
+                                                  'Please select start date');
+                                          return null;
+                                        }
+                                        if (endDate.isEmpty) {
+                                          Utils.showSnackBar(context,
+                                              scaffoldKey: scaffoldKey,
+                                              message:
+                                                  'Please select end date');
+                                          return null;
+                                        }
+                                      }
+
                                       debugPrint("IF EXECUTED");
+                                      Map<String, dynamic>? body;
+                                      if (selectedShareUpdate == "4") {
+                                        body = {
+                                          "vesselID": widget.vesselID,
+                                          "userEmail":
+                                              userEmailController.text.trim(),
+                                          "delegateAccessType":
+                                              selectedShareUpdate,
+                                          "fromDate": startDateText,
+                                          "toDate": endDate,
+                                        };
+                                      } else {
+                                        body = {
+                                          "vesselID": widget.vesselID,
+                                          "userEmail":
+                                              userEmailController.text.trim(),
+                                          "delegateAccessType":
+                                              selectedShareUpdate
+                                        };
+                                      }
 
                                       setState(() {
                                         isInviteDelegateBtnClicked = true;
                                       });
-bool? isSyncToCloud=await getVesselDataSyncToCloud();
+                                      bool? isSyncToCloud =
+                                          await getVesselDataSyncToCloud();
                                       commonProvider
                                           .createDelegate(
-                                          context,
-                                          commonProvider.loginModel!.token!,
-                                          widget.vesselID??'6400c54b7a70ad4eae7c550d',
-                                          userEmailController.text.trim(),
-                                          selectedShareUpdate!,
-                                          scaffoldKey)
+                                              context,
+                                              commonProvider.loginModel!.token!,
+                                              body,
+                                              scaffoldKey)
                                           .then((value) {
                                         if (value != null) {
                                           if (value.status!) {
                                             setState(() {
-                                              isInviteDelegateBtnClicked = false;
+                                              isInviteDelegateBtnClicked =
+                                                  false;
                                             });
 
-                                           Navigator.of(context).pop(true);
-                                          }
-                                          else
-                                          {
+                                            Navigator.of(context).pop(true);
+                                          } else {
                                             setState(() {
-                                              isInviteDelegateBtnClicked = false;
+                                              isInviteDelegateBtnClicked =
+                                                  false;
                                             });
                                           }
-                                        }
-                                        else
-                                        {
+                                        } else {
                                           setState(() {
                                             isInviteDelegateBtnClicked = false;
                                           });
                                         }
-                                      }).catchError((e){
+                                      }).catchError((e) {
                                         setState(() {
                                           isInviteDelegateBtnClicked = false;
                                         });
                                       });
+                                    } else {
+                                      Utils.showSnackBar(context,
+                                          scaffoldKey: scaffoldKey,
+                                          message:
+                                              'You cannot send an invitation to your own account.');
                                     }
-                                  else
-                                    {
-                                      Utils.showSnackBar(context, scaffoldKey: scaffoldKey, message: 'Please select access duration.');
-                                    }
+                                  } else {
+                                    Utils.showSnackBar(context,
+                                        scaffoldKey: scaffoldKey,
+                                        message:
+                                            'Please select access duration.');
+                                  }
                                 }
                               },
                               width: displayWidth(context) / 1.3,
@@ -666,8 +796,10 @@ bool? isSyncToCloud=await getVesselDataSyncToCloud();
               setState(() {
                 if (isCustomTime1) {
                   isCustomTime = true;
+                  isCalenderVisible = true;
                 } else {
                   isCustomTime = false;
+                  isCalenderVisible = false;
                 }
                 selectedDuration = value.toString();
               });
@@ -677,8 +809,12 @@ bool? isSyncToCloud=await getVesselDataSyncToCloud();
         ]));
   }
 
-  Widget fromToDate(String title, String date) {
+  Widget fromToDate(
+    String title,
+    String date,
+  ) {
     return Container(
+      alignment: Alignment.centerLeft,
       // color: Colors.amber,
       child: RichText(
           text: TextSpan(children: [
@@ -712,14 +848,14 @@ bool? isSyncToCloud=await getVesselDataSyncToCloud();
     return dateString;
   }
 
-
   Future<bool>? getVesselDataSyncToCloud() async {
-                            var vesselsSyncDetails =await _databaseService.vesselsSyncDetails();
-if(vesselsSyncDetails){
-      getVesselSyncToCloud = await _databaseService.syncAndSignOutVesselList().catchError((onError) {
-    });
+    var vesselsSyncDetails = await _databaseService.vesselsSyncDetails();
+    if (vesselsSyncDetails) {
+      getVesselSyncToCloud = await _databaseService
+          .syncAndSignOutVesselList()
+          .catchError((onError) {});
 
-        for (int i = 0; i < getVesselSyncToCloud!.length; i++) {
+      for (int i = 0; i < getVesselSyncToCloud!.length; i++) {
         var vesselSyncOrNot = getVesselSyncToCloud![i].isSync;
         Utils.customPrint(
             "VESSEL SUCCESS MESSAGE ${getVesselSyncToCloud![i].imageURLs}");
@@ -743,12 +879,12 @@ if(vesselsSyncDetails){
 
           await commonProvider
               .addVessel(
-                  context,
-                  getVesselSyncToCloud![i],
-                  commonProvider.loginModel!.userId!,
-                  commonProvider.loginModel!.token!,
-                  scaffoldKey,
-                  )
+            context,
+            getVesselSyncToCloud![i],
+            commonProvider.loginModel!.userId!,
+            commonProvider.loginModel!.token!,
+            scaffoldKey,
+          )
               .then((value) async {
             if (value!.status!) {
               await _databaseService.updateIsSyncStatus(
@@ -767,19 +903,16 @@ if(vesselsSyncDetails){
         } else {
           Utils.customPrint("VESSEL DATA NOT Uploaded");
         }
+      }
 
+      setState(() {});
 
-}
-
-    setState(() {});
-
-return Future.value(true);
-
-}else{
-return Future.value(false);
-}
-
+      return Future.value(true);
+    } else {
+      return Future.value(false);
+    }
   }
+
   void getShareAccessData() async {
     FirebaseRemoteConfig data = await setupRemoteConfig();
     String shareAccessData = data.getString('share_access_data');
@@ -792,10 +925,9 @@ return Future.value(false);
       shareAccessModel.add(ShareAccessModel.fromJson(data));
     }
     Utils.customPrint('LIST LENGTH ${shareAccessModel.length}');
-    if(mounted)
-      {
-        setState(() {});
-      }
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future<FirebaseRemoteConfig> setupRemoteConfig() async {
