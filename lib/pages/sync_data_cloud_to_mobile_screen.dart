@@ -539,7 +539,8 @@ class _SyncDataCloudToMobileScreenState
               }
             }
 
-            Utils.customPrint('FINAL IMAGEEEE: $downloadedCompressImageFile');
+            Utils.customPrint('FINAL IMAGEEEE SYNC FROM CLOUDE 1: $downloadedCompressImageFile');
+            Utils.customPrint('FINAL IMAGEEEE SYNC FROM CLOUDE 2: ${value.vessels![i].imageURLs![0]}');
             CustomLogger().logWithFile(Level.info, "FINAL IMAGEEEE: $downloadedCompressImageFile -> $page");
 
             CreateVessel vesselData = CreateVessel(
