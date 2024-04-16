@@ -61,11 +61,14 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
 
     commonProvider = context.read<CommonProvider>();
 
-    if (widget.isComingFromUnilink ?? false) {
-      debugPrint("COMING FROM UNILINK 1 ");
+
+    if(widget.isComingFromUnilink??false){
+      debugPrint("COMING FROM UNILINK ");
       adddelegateInvitation();
-      //future = commonProvider!.vesselDelegateData(context, commonProvider!.loginModel!.token!, widget.vesselID!, scaffoldKey);
-      getUserConfigData();
+     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+       getUserConfigData();
+     });
+
     }
 
     debugPrint("COMING FROM UNILINK");
@@ -322,6 +325,7 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
           textColor: blutoothDialogTitleColor),
     );
   }
+
 
   getUserConfigData() {
     Utils.customPrint("CLOUDE USER ID ${commonProvider!.loginModel!.userId}");

@@ -46,6 +46,9 @@ class _MyDelegateInvitesScreenState extends State<MyDelegateInvitesScreen> {
 
   @override
   void initState() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     commonProvider = context.read<CommonProvider>();
     getDelgateInvites();
     // TODO: implement initState
@@ -84,7 +87,7 @@ class _MyDelegateInvitesScreenState extends State<MyDelegateInvitesScreen> {
                 textSize: displayWidth(context) * 0.05,
                 textAlign: TextAlign.start),
             actions: [
-              InkWell(
+            /*  InkWell(
                 onTap: () async {},
                 child: Image.asset(
                   'assets/images/Trash.png',
@@ -92,7 +95,7 @@ class _MyDelegateInvitesScreenState extends State<MyDelegateInvitesScreen> {
                       ? displayWidth(context) * 0.05
                       : displayWidth(context) * 0.05,
                 ),
-              ),
+              ),*/
               Container(
                 margin: EdgeInsets.only(right: 8),
                 child: IconButton(
@@ -143,7 +146,7 @@ class _MyDelegateInvitesScreenState extends State<MyDelegateInvitesScreen> {
                             child: Center(
                                 child: const CircularProgressIndicator(
                                     color: blueColor)));
-                      } else if (snapShot.data == null ||
+                      } else if (snapShot.data == null || snapShot.data!.myDelegateInvities == null||
                           snapShot.data!.myDelegateInvities!.isEmpty) {
                         return Container(
                           height: displayHeight(context) / 1.4,
@@ -385,13 +388,15 @@ class _MyDelegateInvitesScreenState extends State<MyDelegateInvitesScreen> {
             var vesselExist = await _databaseService
                 .vesselsExistInCloud(value.vessels![i].id!);
 
-            Utils.customPrint('USER CONFIG DATA CLOUD $vesselExist');
+            Utils.customPrint('USER CONFIG DATA CLOUD VESSEL EXIST OR NOT $vesselExist');
             CustomLogger().logWithFile(
                 Level.info, "USER CONFIG DATA CLOUD $vesselExist -> $page");
 
             if (vesselExist) {
+              Utils.customPrint('UPDATE DETAILS');
               await _databaseService.updateVessel(vesselData);
             } else {
+              Utils.customPrint('INSERT DETAILS');
               await _databaseService.insertVessel(vesselData);
             }
           }

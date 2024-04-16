@@ -113,6 +113,7 @@ class _BottomNavigationState extends State<BottomNavigation>
 
   late TabController _tabController;
 
+
   @override
   void didUpdateWidget(covariant BottomNavigation oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -260,16 +261,16 @@ print('the get arguments was----'+Get.arguments.toString());
     // TODO: implement dispose
     super.dispose();
 
-    //WidgetsBinding.instance.removeObserver(this);
-// if(_bottomNavIndex==1){
-//     SystemChrome.setPreferredOrientations([
-//       DeviceOrientation.landscapeLeft,
-//       DeviceOrientation.landscapeRight,
-//       DeviceOrientation.portraitDown,
-//       DeviceOrientation.portraitUp
-//     ]);
+    WidgetsBinding.instance.removeObserver(this);
+if(_bottomNavIndex==1){
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp
+    ]);
 
-//}
+}
   }
 
 

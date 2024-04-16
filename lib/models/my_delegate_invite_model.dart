@@ -27,41 +27,41 @@ class MyDelegateInviteModel {
 }
 
 class MyDelegateInvite {
-    String? id;
     String? vesselId;
     int? status;
+    int? delegateAccessType;
     String? invitationLink;
-    String? myDelegateInvityId;
     String? vesselName;
-    String? invitedByUsername;
+    String? invitedBy;
+    String? userDelegateAccessId;
 
     MyDelegateInvite({
-        this.id,
         this.vesselId,
         this.status,
         this.invitationLink,
-        this.myDelegateInvityId,
         this.vesselName,
-        this.invitedByUsername,
+        this.userDelegateAccessId,
+        this.delegateAccessType,
+        this.invitedBy
     });
 
     factory MyDelegateInvite.fromJson(Map<String, dynamic> json) => MyDelegateInvite(
-        id: json["_id"],
         vesselId: json["vesselId"],
         status: json["status"],
         invitationLink: json["invitationLink"],
-        myDelegateInvityId: json["id"],
+        userDelegateAccessId: json["userDelegateAccessId"],
         vesselName: json["vesselName"],
-        invitedByUsername: json["invited_by_username"],
+        delegateAccessType:json["delegateAccessType"],
+        invitedBy: json["invitedBy"],
     );
 
     Map<String, dynamic> toJson() => {
-        "_id": id,
         "vesselId": vesselId,
         "status": status,
         "invitationLink": invitationLink,
-        "id": myDelegateInvityId,
         "vesselName": vesselName,
-        "invited_by_username": invitedByUsername,
+        "invitedBy": invitedBy,
+        "delegateAccessType":delegateAccessType,
+        "userDelegateAccessId":userDelegateAccessId
     };
 }

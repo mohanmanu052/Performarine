@@ -19,18 +19,18 @@ class CreateDelegateApiProvider with ChangeNotifier
   String page = "create_delegate_api_provider";
 
   Future<CommonModel?> createDelegate(BuildContext context,
-      String? accessToken, String vesselId, userEmail, delegateAccessType, GlobalKey<ScaffoldState> scaffoldKey) async {
+      String? accessToken, Map<String,dynamic> body, GlobalKey<ScaffoldState> scaffoldKey) async {
 
     var headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
       "x_access_token": '$accessToken',
     };
 
-    var body = {
-      "vesselID": vesselId,
-      "userEmail": userEmail,
-      "delegateAccessType" : delegateAccessType
-    };
+    // var body = {
+    //   "vesselID": vesselId,
+    //   "userEmail": userEmail,
+    //   "delegateAccessType" : delegateAccessType
+    // };
 
     Uri uri = Uri.https(Urls.baseUrl, Urls.createDelegate);
 
