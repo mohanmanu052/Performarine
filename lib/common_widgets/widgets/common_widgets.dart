@@ -1400,8 +1400,8 @@ Widget fleetVesselSingleViewCard(BuildContext context, FleetVessels vesselData,
                     : Stack(
                         children: [
                           //Image.memory(bytes)
-                          Image.file(
-                            File(vesselData.vesselInfo!.imageURLs!.first),
+                          Image.network(
+                            vesselData.vesselInfo!.imageURLs!.first,
                             fit: BoxFit.cover,
                             height: displayHeight(context) * 0.24,
                             width: displayWidth(context),
@@ -1468,7 +1468,7 @@ Widget fleetVesselSingleViewCard(BuildContext context, FleetVessels vesselData,
                       )),
           ),
           Positioned(
-            top: 10,
+            top: 60,
             right: 0,
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -1812,20 +1812,20 @@ Widget fleetVesselSingleViewCard(BuildContext context, FleetVessels vesselData,
                   SizedBox(
                     width: displayWidth(context) * 0.04,
                   ),
-                  Container(
-                    child: CommonButtons.getActionButton(
-                        title: 'View Details',
-                        context: context,
-                        fontSize: displayWidth(context) * 0.03,
-                        textColor: Colors.white,
-                        buttonPrimaryColor: blueColor,
-                        borderColor: blueColor,
-                        width: displayWidth(context) * 0.26,
-                        height: displayHeight(context) * 0.045,
-                        onTap: () async {
-                          onTap(vesselData);
-                        }),
-                  ),
+                  // Container(
+                  //   child: CommonButtons.getActionButton(
+                  //       title: 'View Details',
+                  //       context: context,
+                  //       fontSize: displayWidth(context) * 0.03,
+                  //       textColor: Colors.white,
+                  //       buttonPrimaryColor: blueColor,
+                  //       borderColor: blueColor,
+                  //       width: displayWidth(context) * 0.26,
+                  //       height: displayHeight(context) * 0.045,
+                  //       onTap: () async {
+                  //         onTap(vesselData);
+                  //       }),
+                  // ),
                   SizedBox(
                     width: displayWidth(context) * 0.02,
                   ),

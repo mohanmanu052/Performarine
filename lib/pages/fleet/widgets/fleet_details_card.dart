@@ -85,10 +85,10 @@ class _FleetDetailsCardState extends State<FleetDetailsCard> {
                                   isCloud: 1,
                                   hullType: value.vesselInfo!.hullShape
                               );
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=> VesselSingleView(
-                            vessel: vesselData,
-                            isCalledFromFleetScreen: true,
-                          )));
+                          // Navigator.push(context, MaterialPageRoute(builder: (context)=> VesselSingleView(
+                          //   vessel: vesselData,
+                          //   isCalledFromFleetScreen: true,
+                          // )));
                         }, widget.scaffoldKey!
                       );
                     },
