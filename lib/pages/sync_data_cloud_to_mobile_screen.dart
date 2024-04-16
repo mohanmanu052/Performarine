@@ -570,7 +570,7 @@ class _SyncDataCloudToMobileScreenState
                 isSync: 1,
                 updatedBy: value.vessels![i].updatedBy.toString(),
                 isCloud: 1,
-                hullType: int.parse(value.vessels![i].hullType.toString())
+                hullType: value.vessels![i].hullType != null ? int.parse(value.vessels![i].hullType.toString()) : 0
             );
 
             var vesselExist = await _databaseService
