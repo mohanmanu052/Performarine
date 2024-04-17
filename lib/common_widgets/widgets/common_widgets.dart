@@ -1332,12 +1332,12 @@ Widget OldVesselSingleViewCard(BuildContext context, CreateVessel vesselData,
 }
 
 Widget fleetVesselSingleViewCard(BuildContext context, FleetVessels vesselData,
-    Function(FleetVessels) onTap, GlobalKey<ScaffoldState> scaffoldKey,
+    Function(FleetVessels) onTap, GlobalKey<ScaffoldState> scaffoldKey, String userId,
     {bool isTripIsRunning = false,
     bool isOwnerNameVisible = false,
     String ownerName = ''}) {
-  Utils.customPrint(
-      "IMAGE FROM HOME SINGLE WIDGET ${vesselData.vesselInfo!.imageURLs}");
+  Utils.customPrint("VESSEL CREATED BY PROVIDER ${vesselData.vesselCreatedBy}");
+  Utils.customPrint("USRR ID  BY PROVIDER $userId");
   CustomLogger().logWithFile(Level.info,
       "IMAGE FROM HOME SINGLE WIDGET ${vesselData.vesselInfo!.imageURLs}");
 
@@ -1400,8 +1400,8 @@ Widget fleetVesselSingleViewCard(BuildContext context, FleetVessels vesselData,
                     : Stack(
                         children: [
                           //Image.memory(bytes)
-                          Image.file(
-                            File(vesselData.vesselInfo!.imageURLs!.first),
+                          Image.network(
+                            vesselData.vesselInfo!.imageURLs!.first,
                             fit: BoxFit.cover,
                             height: displayHeight(context) * 0.24,
                             width: displayWidth(context),
@@ -1468,7 +1468,7 @@ Widget fleetVesselSingleViewCard(BuildContext context, FleetVessels vesselData,
                       )),
           ),
           Positioned(
-            top: 10,
+            top: 60,
             right: 0,
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -1812,20 +1812,20 @@ Widget fleetVesselSingleViewCard(BuildContext context, FleetVessels vesselData,
                   SizedBox(
                     width: displayWidth(context) * 0.04,
                   ),
-                  Container(
-                    child: CommonButtons.getActionButton(
-                        title: 'View Details',
-                        context: context,
-                        fontSize: displayWidth(context) * 0.03,
-                        textColor: Colors.white,
-                        buttonPrimaryColor: blueColor,
-                        borderColor: blueColor,
-                        width: displayWidth(context) * 0.26,
-                        height: displayHeight(context) * 0.045,
-                        onTap: () async {
-                          onTap(vesselData);
-                        }),
-                  ),
+                  // Container(
+                  //   child: CommonButtons.getActionButton(
+                  //       title: 'View Details',
+                  //       context: context,
+                  //       fontSize: displayWidth(context) * 0.03,
+                  //       textColor: Colors.white,
+                  //       buttonPrimaryColor: blueColor,
+                  //       borderColor: blueColor,
+                  //       width: displayWidth(context) * 0.26,
+                  //       height: displayHeight(context) * 0.045,
+                  //       onTap: () async {
+                  //         onTap(vesselData);
+                  //       }),
+                  // ),
                   SizedBox(
                     width: displayWidth(context) * 0.02,
                   ),
@@ -1833,6 +1833,54 @@ Widget fleetVesselSingleViewCard(BuildContext context, FleetVessels vesselData,
               ),
             ),
           ),
+          vesselData.vesselCreatedBy == userId
+              ? Positioned(
+            top: 15,
+            left: 0,
+            child: Stack(
+              children: [
+                RotatedBox(
+                  quarterTurns: 2,
+                  child: Container(
+                    alignment: Alignment.centerLeft,
+                    child: CustomPaint(
+                      painter: StatusTag(color: Colors.black.withOpacity(.7)),
+                      child: Container(
+                        width: displayWidth(context) * 0.36,
+                        height: displayHeight(context) * 0.034,
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: commonText(
+                                context: context,
+                                text: "",
+                                fontWeight: FontWeight.w500,
+                                textColor: Colors.white,
+                                textSize: displayWidth(context) * 0.03,
+                                fontFamily: poppins
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: commonText(
+                        context: context,
+                        text: "MY Vessel",
+                        fontWeight: FontWeight.w500,
+                        textColor: Colors.white,
+                        textSize: displayWidth(context) * 0.03,
+                        fontFamily: poppins
+                    ),
+                  ),
+                )
+              ],
+            ),)
+              : SizedBox(),
         ],
       ),
     ),

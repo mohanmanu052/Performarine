@@ -108,7 +108,7 @@ class _SingleDelegateCardState extends State<SingleDelegateCard> {
                                   context)
                                   .pop();
 
-                                  commonProvider.removeDelegate(context, commonProvider.loginModel!.token!, widget.vesselID!, delegates!.id, widget.scaffoldKey!).then((value)
+                                  commonProvider.removeDelegate(context, commonProvider.loginModel!.token!, widget.vesselID!, delegates!.delegateUserId, widget.scaffoldKey!).then((value)
                                   {
                                     if(value != null)
                                       {

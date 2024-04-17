@@ -515,7 +515,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 String? ownerId=JwtUtils.getOwnerId(uri.queryParameters['verify'].toString());
                 if(isSameUser){
                   Get.to(
-                      DelegatesScreen(isComingFromUnilink:true, vesselID: vesselId,uri: uri,
+                      DelegatesScreen(isComingFromUnilink:true, vesselID: vesselId, uri: uri,
                       ownerId: ownerId,
                       
                       ),

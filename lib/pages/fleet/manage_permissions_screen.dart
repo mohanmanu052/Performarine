@@ -709,7 +709,11 @@ if(mounted) {
               decoration: BoxDecoration(
                 color: reportTripsListColor,
                 borderRadius: BorderRadius.circular(15),
-                image: DecorationImage(
+                image: vesselData.imageURLs != null && vesselData.imageURLs !.isNotEmpty
+                            ? DecorationImage(
+                                fit: BoxFit.cover,
+                                image: FileImage(File(vesselData.imageURLs  ?? ''))):
+                DecorationImage(
                     fit: BoxFit.cover,
                     image: AssetImage(
                       "assets/images/vessel_default_img.png",

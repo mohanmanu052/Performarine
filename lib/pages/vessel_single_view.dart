@@ -417,6 +417,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                             tilePadding: EdgeInsets.zero,
                                             childrenPadding: EdgeInsets.zero,
                                             iconColor: Colors.black,
+                                            initiallyExpanded: true,
                                             title: commonText(
                                                 context: context,
                                                 text: 'Delegate access',
@@ -428,13 +429,13 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                 textAlign: TextAlign.start),
                                             children: [
                                               isDelegateApiCalled
-                                              ? SizedBox(
-                                               /* height: 25,
-                                                  width: 25,*/
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(4.0),
-                                                    child: CircularProgressIndicator(),
-                                                  ))
+                                              ? Padding(
+                                                padding: const EdgeInsets.all(4.0),
+                                                child: SizedBox(
+                                                  height: 25,
+                                                    width: 25,
+                                                    child: CircularProgressIndicator(color: blueColor, strokeWidth: 3,)),
+                                              )
                                               : Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment

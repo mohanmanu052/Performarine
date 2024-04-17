@@ -274,10 +274,13 @@ class _SignInScreenState extends State<SignInScreen> {
                                     }
                                   }
                                 }).catchError((e) {
-                                  setState(() {
-                                    isGoogleSignInBtnClicked =
-                                    false;
-                                  });
+                                  if(mounted)
+                                    {
+                                      setState(() {
+                                        isGoogleSignInBtnClicked =
+                                        false;
+                                      });
+                                    }
                                 });
                               } catch (e) {
                                 Utils.customPrint('EXE: $e');

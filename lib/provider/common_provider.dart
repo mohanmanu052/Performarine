@@ -646,10 +646,12 @@ Map<String,dynamic> body,
 
 Future<MyDelegateInviteModel> getDelegateInvites(BuildContext context,String accessToken,GlobalKey<ScaffoldState> scaffoldKey)async{
   var res=await MyDelegateInviteProvider().getDelegateInvites(context, accessToken, scaffoldKey);
+  List<MyDelegateInvite> tempList = res.myDelegateInvities!.where((element) => element.status == 0 || element.status == 3).toList();
+  res.myDelegateInvities!.clear();
+  res.myDelegateInvities!.addAll(tempList);
   return res;
   
 }
-
 
   Future<CommonModel> delegateAcceptReject(
       BuildContext context,String accessToken,GlobalKey<ScaffoldState> scaffoldKey,String flag,String verifyToken) async {

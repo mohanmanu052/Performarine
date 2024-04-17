@@ -8,6 +8,7 @@ import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/custom_fleet_dailog.dart';
+import 'package:performarine/models/fleet_dashboard_model.dart' as dash;
 import 'package:performarine/models/fleet_details_model.dart';
 import 'package:performarine/models/fleet_list_model.dart';
 import 'package:performarine/models/vessel.dart';
@@ -20,10 +21,16 @@ import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
 class FleetVesselScreen extends StatefulWidget {
-  FleetVesselScreen({super.key, this.tabIndex, this.isCalledFromMyFleet= false, this.fleetId});
+  FleetVesselScreen(
+      {super.key,
+      this.tabIndex,
+      this.isCalledFromMyFleet = false,
+      this.fleetId, this.fleetsIamIn, this.myFleets});
   int? tabIndex;
   String? fleetId;
   final bool? isCalledFromMyFleet;
+  dash.FleetsIamIn? fleetsIamIn;
+  dash.MyFleets? myFleets;
   @override
   State<FleetVesselScreen> createState() => _FleetVesselScreenState();
 }
@@ -70,26 +77,45 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
         token: commonProvider.loginModel!.token,
         scaffoldKey: _scafoldKey,
         context: context);
-if(fleetdata!.data!=null && fleetdata!.data!.isNotEmpty){
+    if (fleetdata!.data != null && fleetdata!.data!.isNotEmpty) {
+      if (widget.isCalledFromMyFleet!) {
+        if(widget.fleetsIamIn != null){
+          selectedFleetvalue = (fleetdata!.data ?? [])
+              .firstWhere((element) => element.id == widget.fleetId, orElse: () {
+            (fleetdata!.data ?? []).add(FleetData(
+              createdBy: widget.fleetsIamIn!.fleetCreatedBy,
+              fleetName: widget.fleetsIamIn!.fleetName,
+              id: widget.fleetsIamIn!.fleetId,
+            ));
+                return (fleetdata!.data ?? []).last;
+              });
+        }
+        else if(widget.myFleets != null){
+          selectedFleetvalue = (fleetdata!.data ?? [])
+              .firstWhere((element) => element.id == widget.fleetId, orElse: () {
+                return FleetData(
+            fleetName: widget.myFleets!.fleetName,
+            id: widget.myFleets!.id,
+          );
+              });
+        }
 
-    if(widget.isCalledFromMyFleet!)
-      {
-        selectedFleetvalue = (fleetdata!.data ?? []).firstWhere((element) => element.id == widget.fleetId);
-      }
-    else
-      {
+      } else {
         selectedFleetvalue = fleetdata!.data!.first;
       }
-   // selectedFleetvalue = fleetdata!.data!.first;
+      // selectedFleetvalue = fleetdata!.data!.first;
 
-    future = commonProvider.getFleetDetailsData(context, commonProvider.loginModel!.token!, selectedFleetvalue!.id!, _scafoldKey);
-    setState(() {});
-  }else{
-    setState(() {
-      
-    });
+      future = commonProvider.getFleetDetailsData(
+          context,
+          commonProvider.loginModel!.token!,
+          selectedFleetvalue!.id!,
+          _scafoldKey);
+      setState(() {});
+    } else {
+      setState(() {});
+    }
   }
-  }
+
   void _handleTabSelection() {
     if (_tabController!.indexIsChanging) {
       switch (_tabController!.index) {
@@ -143,8 +169,7 @@ if(fleetdata!.data!=null && fleetdata!.data!.isNotEmpty){
                       context: context,
                       fleetData: fleetdata!.data,
                       selectedFleetValue: selectedFleetvalue,
-                      onUpdateChange: (value){
-
+                      onUpdateChange: (value) {
                         Navigator.pop(context);
                         setState(() {
                           isUpdateFleetBtnClicked = true;
@@ -153,48 +178,48 @@ if(fleetdata!.data!=null && fleetdata!.data!.isNotEmpty){
                         debugPrint("EDIT FLEET ${value.first}");
                         debugPrint("EDIT FLEET ${value.last}");
 
-                        commonProvider.editFleetDetails(context, commonProvider.loginModel!.token!, value.first, value.last, _scafoldKey).then((value)
-                        {
-                          if(value != null)
-                          {
-                            if(value.status!)
-                            {
+                        commonProvider
+                            .editFleetDetails(
+                                context,
+                                commonProvider.loginModel!.token!,
+                                value.first,
+                                value.last,
+                                _scafoldKey)
+                            .then((value) {
+                          if (value != null) {
+                            if (value.status!) {
                               setState(() {
                                 isUpdateFleetBtnClicked = false;
                               });
                               getFleetDetails();
-                            }
-                            else
-                            {
+                            } else {
                               setState(() {
                                 isUpdateFleetBtnClicked = false;
                               });
                             }
-                          }
-                          else
-                          {
+                          } else {
                             setState(() {
                               isUpdateFleetBtnClicked = false;
                             });
                           }
-                        }).catchError((e){
+                        }).catchError((e) {
                           setState(() {
                             isUpdateFleetBtnClicked = false;
                           });
                         });
                       });
-
                 },
                 child: isUpdateFleetBtnClicked!
-                    ? CircularProgressIndicator(color: blueColor,)
+                    ? CircularProgressIndicator(
+                        color: blueColor,
+                      )
                     : commonText(
-                    text: 'Edit Fleet',
-                    textColor: blueColor,
-                    fontWeight: FontWeight.w500,
-                    textSize: 13),
+                        text: 'Edit Fleet',
+                        textColor: blueColor,
+                        fontWeight: FontWeight.w500,
+                        textSize: 13),
               ),
             ),
-
             Container(
               margin: EdgeInsets.only(right: 8),
               child: IconButton(
@@ -224,7 +249,6 @@ if(fleetdata!.data!=null && fleetdata!.data!.isNotEmpty){
               SizedBox(
                 height: 20,
               ),
-
               SizedBox(
                 child: fleetdata != null && fleetdata!.data != null
                     ? DropdownButtonHideUnderline(
@@ -313,21 +337,23 @@ if(fleetdata!.data!=null && fleetdata!.data!.isNotEmpty){
                                   ))
                               .toList(),
                           onChanged: (newValue) {
+                            debugPrint(
+                                "SELECTED FLEET ID ${newValue!.fleetName}");
 
-                            debugPrint("SELECTED FLEET ID ${newValue!.fleetName}");
-
-                            future = commonProvider.getFleetDetailsData(context, commonProvider.loginModel!.token!, newValue.id!, _scafoldKey);
+                            future = commonProvider.getFleetDetailsData(
+                                context,
+                                commonProvider.loginModel!.token!,
+                                newValue.id!,
+                                _scafoldKey);
                             setState(() {});
                           },
                         ),
                       )
                     : CircularProgressIndicator(color: blueColor),
               ),
-
               SizedBox(
                 height: 20,
               ),
-
               Container(
                   child: Stack(
                 children: [
@@ -379,59 +405,67 @@ if(fleetdata!.data!=null && fleetdata!.data!.isNotEmpty){
                   ),
                 ],
               )),
-
               fleetdata != null && fleetdata!.data != null
-              ? Expanded(
-                child: FutureBuilder<FleetDetailsModel>(
-                  future: future,
-                  builder: (context, snapShot)
-                  {
-                    if (snapShot.connectionState == ConnectionState.waiting) {
-                      return SizedBox(
-                          height: displayHeight(context)/1.5,
-                          child: Center(child: const CircularProgressIndicator(color: blueColor)));
-                    }
-                    else if (snapShot.data == null) {
-                      return  Container(
-                        height: displayHeight(context)/ 1.4,
-                        child: Center(
-                          child: commonText(
-                              context: context,
-                              text: 'No data found',
-                              fontWeight: FontWeight.w500,
-                              textColor: Colors.black,
-                              textSize: displayWidth(context) * 0.05,
-                              textAlign: TextAlign.start),
-                        ),
-                      );
-                    }
-                    else
-                    {
-                      return StatefulBuilder(
-                          builder: (BuildContext context, StateSetter setter)
-                          {
-                           // debugPrint("MEMBERS ${snapShot.data!.myFleets!.isEmpty}");
-                            return TabBarView(
-                              physics: NeverScrollableScrollPhysics(),
-                              children: [
-                                MemberDetailsWidget(memberList: (snapShot.data!.myFleets ?? []).isEmpty ? [] : snapShot.data!.myFleets![0].members ?? []),
-                                FleetDetailsCard(
-                                  scaffoldKey: _scafoldKey,
-                                    fleetVesselsList: (snapShot.data!.myFleets ?? []).isEmpty ? [] : snapShot.data!.myFleets![0].fleetVessels! ?? []
-                                )
-                              ],
-                              controller: _tabController,
+                  ? Expanded(
+                      child: FutureBuilder<FleetDetailsModel>(
+                        future: future,
+                        builder: (context, snapShot) {
+                          if (snapShot.connectionState ==
+                              ConnectionState.waiting) {
+                            return SizedBox(
+                                height: displayHeight(context) / 1.5,
+                                child: Center(
+                                    child: const CircularProgressIndicator(
+                                        color: blueColor)));
+                          } else if (snapShot.data == null) {
+                            return Container(
+                              height: displayHeight(context) / 1.4,
+                              child: Center(
+                                child: commonText(
+                                    context: context,
+                                    text: 'No data found',
+                                    fontWeight: FontWeight.w500,
+                                    textColor: Colors.black,
+                                    textSize: displayWidth(context) * 0.05,
+                                    textAlign: TextAlign.start),
+                              ),
                             );
+                          } else {
+                            return StatefulBuilder(builder:
+                                (BuildContext context, StateSetter setter) {
+                              // debugPrint("MEMBERS ${snapShot.data!.myFleets!.isEmpty}");
+                              return TabBarView(
+                                physics: NeverScrollableScrollPhysics(),
+                                children: [
+                                  MemberDetailsWidget(
+                                      memberList: (snapShot.data!.myFleets ?? []).isEmpty
+                                              ? []
+                                              : snapShot.data!.myFleets![0].members ?? [],
+                                    isMyFleetData: widget.myFleets != null,
+                                  ),
+                                  FleetDetailsCard(
+                                      scaffoldKey: _scafoldKey,
+                                      fleetVesselsList:
+                                          (snapShot.data!.myFleets ?? [])
+                                                  .isEmpty
+                                              ? []
+                                              : snapShot.data!.myFleets![0]
+                                                      .fleetVessels! ??
+                                                  [])
+                                ],
+                                controller: _tabController,
+                              );
+                            });
                           }
-                      );
-                    }
-
-                  },
-                ),
-              )
-              : Container(
-                height: displayHeight(context) / 2,
-                  child: Center(child: CircularProgressIndicator(color: blueColor,))),
+                        },
+                      ),
+                    )
+                  : Container(
+                      height: displayHeight(context) / 2,
+                      child: Center(
+                          child: CircularProgressIndicator(
+                        color: blueColor,
+                      ))),
             ],
           ),
         ));

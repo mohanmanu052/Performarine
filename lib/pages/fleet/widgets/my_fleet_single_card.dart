@@ -38,7 +38,10 @@ class _MyFleetSingleCardState extends State<MyFleetSingleCard> {
   @override
   Widget build(BuildContext context) {
     commonProvider = context.watch<CommonProvider>();
-    return Container(
+    return InkWell(
+      onTap: (){
+
+      },
       child: Padding(
         padding: const EdgeInsets.only(bottom: 12.0),
         child: Column(
@@ -226,6 +229,7 @@ class _MyFleetSingleCardState extends State<MyFleetSingleCard> {
                             tabIndex: 1,
                             isCalledFromMyFleet: true,
                             fleetId: widget.myFleets!.id,
+                            myFleets: widget.myFleets,
                           ))));
                         },
                         child: Container(

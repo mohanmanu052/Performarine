@@ -6,7 +6,9 @@ import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/models/fleet_details_model.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/pages/vessel_single_view.dart';
+import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
+import 'package:provider/provider.dart';
 
 class FleetDetailsCard extends StatefulWidget {
   List<FleetVessels>? fleetVesselsList;
@@ -20,14 +22,20 @@ class _FleetDetailsCardState extends State<FleetDetailsCard> {
     final DatabaseService _databaseService = DatabaseService();
   late Future<List<CreateVessel>> getVesselFuture;
 
+  late CommonProvider commonProvider;
+
   @override
   void initState() {
    // getVesselFuture = _databaseService.vessels();
     // TODO: implement initState
     super.initState();
+
+    commonProvider = context.read<CommonProvider>();
   }
   @override
   Widget build(BuildContext context) {
+
+    commonProvider = context.watch<CommonProvider>();
 
     debugPrint("FLEET VESSEL LIST LENGTH ${widget.fleetVesselsList!.length}");
     return widget.fleetVesselsList == null || widget.fleetVesselsList!.isEmpty
@@ -86,11 +94,12 @@ class _FleetDetailsCardState extends State<FleetDetailsCard> {
                                   isCloud: 1,
                                   hullType: value.vesselInfo!.hullShape
                               );
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=> VesselSingleView(
-                            vessel: vesselData,
-                            isCalledFromFleetScreen: true,
-                          )));
-                        }, widget.scaffoldKey!
+                          // Navigator.push(context, MaterialPageRoute(builder: (context)=> VesselSingleView(
+                          //   vessel: vesselData,
+                          //   isCalledFromFleetScreen: true,
+                          // )));
+                        }, widget.scaffoldKey!,
+                        commonProvider.loginModel!.userId!,
                       );
                     },
                   ),

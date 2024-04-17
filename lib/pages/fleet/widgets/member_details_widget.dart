@@ -15,7 +15,8 @@ import 'package:screenshot/screenshot.dart';
 
 class MemberDetailsWidget extends StatefulWidget {
   List<Members>? memberList;
-  MemberDetailsWidget({super.key, this.memberList});
+  bool? isMyFleetData;
+  MemberDetailsWidget({super.key, this.memberList, this.isMyFleetData = false});
 
   @override
   State<MemberDetailsWidget> createState() => _MemberDetailsWidgetState();
@@ -23,48 +24,6 @@ class MemberDetailsWidget extends StatefulWidget {
 
 class _MemberDetailsWidgetState extends State<MemberDetailsWidget> {
   ScreenshotController controller = ScreenshotController();
-
-  List<FleetDetailsInviteModel> fleetInviteData = [
-    FleetDetailsInviteModel(
-        email: 'abc70@gmail.com',
-        dateOfJoin: '03-05-2023',
-        numberofVessels: 3,
-        status: 'Accepted'),
-    FleetDetailsInviteModel(
-        email: 'xyz80@gmail.com',
-        dateOfJoin: '03-06-2023',
-        numberofVessels: 5,
-        status: 'Accepted'),
-    FleetDetailsInviteModel(
-        email: 'abkjjkjk@gmail.com',
-        dateOfJoin: '08-11-2023',
-        numberofVessels: 3,
-        status: 'Accepted'),
-    FleetDetailsInviteModel(
-        email: 'abc7poppsopo@gmail.com',
-        dateOfJoin: '29-08-2023',
-        status: 'Pending'),
-    FleetDetailsInviteModel(
-        email: 'abc7poppsopo@gmail.com',
-        dateOfJoin: '29-08-2023',
-        status: 'Pending'),
-    FleetDetailsInviteModel(
-        email: 'abc7poppsopo@gmail.com',
-        dateOfJoin: '29-08-2023',
-        status: 'Pending'),
-    FleetDetailsInviteModel(
-        email: 'abc7poppsopo@gmail.com',
-        dateOfJoin: '29-08-2023',
-        status: 'Pending'),
-    FleetDetailsInviteModel(
-        email: 'abc7poppsopo@gmail.com',
-        dateOfJoin: '29-08-2023',
-        status: 'Pending'),
-    FleetDetailsInviteModel(
-        email: 'abc7poppsopo@gmail.com',
-        dateOfJoin: '29-08-2023',
-        status: 'Pending')
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +93,8 @@ class _MemberDetailsWidgetState extends State<MemberDetailsWidget> {
                                           pendingBacgroundRed,
                                           pendingTextRed),
                                 ),
-                                Container(
+                                widget.isMyFleetData!
+                                ? Container(
                                   margin: EdgeInsets.only(left: 8, right: 2),
                                   child: InkWell(
                                       onTap: () {
@@ -143,7 +103,7 @@ class _MemberDetailsWidgetState extends State<MemberDetailsWidget> {
                                           title:
                                               'Are you sure you want to remove this fleet member?',
                                           subtext:
-                                              fleetInviteData[index].email ??
+                                          widget.memberList![index].memberName ??
                                                   '',
                                           description:
                                               'Your permissions to their vessels will be removed & cannot be viewed',
@@ -158,6 +118,7 @@ class _MemberDetailsWidgetState extends State<MemberDetailsWidget> {
                                         width: 20,
                                       )),
                                 )
+                                    : SizedBox()
                               ],
                             ),
                           ],
@@ -174,7 +135,7 @@ class _MemberDetailsWidgetState extends State<MemberDetailsWidget> {
                                       fleetJoinDate != null ?
                                       (DateFormat("yyyy-MM-dd").format(fleetJoinDate)) : '-',
                                       Colors.black)),
-                              if (fleetInviteData[index].numberofVessels !=
+                              if (widget.memberList![index].vesselCount !=
                                   null)
                                 Container(
                                     padding:
@@ -193,7 +154,8 @@ class _MemberDetailsWidgetState extends State<MemberDetailsWidget> {
                     );
                   }),
             ),
-            Positioned(
+            widget.isMyFleetData!
+                ? Positioned(
               bottom: 0,
               left: 0,
               right: 0,
@@ -244,6 +206,7 @@ class _MemberDetailsWidgetState extends State<MemberDetailsWidget> {
                 ),
               ),
             )
+                : SizedBox()
           ],
         ),
       ),
@@ -292,11 +255,3 @@ class _MemberDetailsWidgetState extends State<MemberDetailsWidget> {
   }
 }
 
-class FleetDetailsInviteModel {
-  String? email;
-  String? dateOfJoin;
-  int? numberofVessels;
-  String? status;
-  FleetDetailsInviteModel(
-      {this.email, this.dateOfJoin, this.numberofVessels, this.status});
-}
