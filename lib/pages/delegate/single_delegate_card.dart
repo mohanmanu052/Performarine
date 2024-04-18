@@ -68,14 +68,15 @@ class _SingleDelegateCardState extends State<SingleDelegateCard> {
                   Visibility(
                       child: commonText(
                           text: delegates!.status,
-                          textColor: Colors.black,
-                          fontWeight:
-                          FontWeight.w500,
+                          textColor: delegates!.status == 'Removed' ? Colors.red : delegates!.status == 'Accepted' ? Colors.green : Colors.orange,
+                          fontWeight: FontWeight.w500,
                           textSize: displayWidth(
                               context) *
                               0.03)),
                   SizedBox(width: displayWidth(context) * 0.02,),
-                  InkWell(
+                  delegates!.status!.toLowerCase() == 'removed'
+                  ? SizedBox()
+                  : InkWell(
                       onTap: () {
                         CustomFleetDailog()
                             .showFleetDialog(
@@ -84,7 +85,7 @@ class _SingleDelegateCardState extends State<SingleDelegateCard> {
                             title:
                             'Are you sure you want to remove this Delegate Member?',
                             subtext:
-                            'First Name Last Name',
+                            '${delegates!.delegateUserName}',
                             description:
                             'Your permissions to their vessels will be removed & cannot be viewed',
                             postiveButtonColor:
@@ -108,7 +109,7 @@ class _SingleDelegateCardState extends State<SingleDelegateCard> {
                                   context)
                                   .pop();
 
-                                  commonProvider.removeDelegate(context, commonProvider.loginModel!.token!, widget.vesselID!, delegates!.delegateUserId, widget.scaffoldKey!).then((value)
+                                  commonProvider.removeDelegate(context, commonProvider.loginModel!.token!, widget.vesselID!, delegates!.id, widget.scaffoldKey!).then((value)
                                   {
                                     if(value != null)
                                       {

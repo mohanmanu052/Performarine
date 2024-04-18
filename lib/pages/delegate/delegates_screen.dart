@@ -63,9 +63,11 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
 
     if(widget.isComingFromUnilink??false){
       debugPrint("COMING FROM UNILINK ");
+      debugPrint("COMING FROM UNILINK ${widget.vesselID}");
       adddelegateInvitation();
      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
        getUserConfigData();
+       future = commonProvider!.vesselDelegateData(context, commonProvider!.loginModel!.token!, widget.vesselID!, scaffoldKey);
      });
     }
 

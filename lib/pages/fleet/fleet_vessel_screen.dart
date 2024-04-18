@@ -6,6 +6,7 @@ import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
+import 'package:performarine/common_widgets/widgets/common_text_feild.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/custom_fleet_dailog.dart';
 import 'package:performarine/models/fleet_dashboard_model.dart' as dash;
@@ -21,16 +22,17 @@ import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
 class FleetVesselScreen extends StatefulWidget {
+  int? tabIndex;
+  String? fleetId, fleetName;
+  final bool? isCalledFromMyFleetScreen, isCalledFromFleetsImInWidget;
+
   FleetVesselScreen(
       {super.key,
-      this.tabIndex,
-      this.isCalledFromMyFleet = false,
-      this.fleetId, this.fleetsIamIn, this.myFleets});
-  int? tabIndex;
-  String? fleetId;
-  final bool? isCalledFromMyFleet;
-  dash.FleetsIamIn? fleetsIamIn;
-  dash.MyFleets? myFleets;
+        this.tabIndex,
+        this.isCalledFromMyFleetScreen = false,
+        this.isCalledFromFleetsImInWidget = false,
+        this.fleetId, this.fleetName});
+
   @override
   State<FleetVesselScreen> createState() => _FleetVesselScreenState();
 }
@@ -40,7 +42,6 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
   GlobalKey<ScaffoldState> _scafoldKey = GlobalKey();
 
   final DatabaseService _databaseService = DatabaseService();
-  List<String> fleetDataDummy = ['Fleet1', 'Fleet2', 'Fleet3', 'Fleet4'];
   late Future<List<CreateVessel>> getVesselFuture;
   TabController? _tabController;
 
@@ -51,6 +52,8 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
   int currentTabIndex = 0;
   Future<FleetDetailsModel>? future;
   bool? isUpdateFleetBtnClicked = false;
+
+  TextEditingController fleetIdController = TextEditingController();
 
   @override
   void initState() {
@@ -64,9 +67,17 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
       currentTabIndex = widget.tabIndex!;
       setState(() {});
     }
+
+    debugPrint("TABINDEX FLEET ID ${widget.fleetName}");
+
+    if(widget.isCalledFromFleetsImInWidget!)
+      {
+        fleetIdController.text = '${widget.fleetName}';
+      }
+
     getFleetDetails();
 
-    debugPrint("TABINDEX ${widget.tabIndex}");
+    debugPrint("TABINDEX ${widget.isCalledFromFleetsImInWidget}");
 
     // TODO: implement initState
     super.initState();
@@ -77,18 +88,37 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
         token: commonProvider.loginModel!.token,
         scaffoldKey: _scafoldKey,
         context: context);
-    if (fleetdata!.data != null && fleetdata!.data!.isNotEmpty) {
-      if (widget.isCalledFromMyFleet!) {
+    if(widget.isCalledFromFleetsImInWidget!)
+      {
+        future = commonProvider.getFleetDetailsData(context, commonProvider.loginModel!.token!, widget.fleetId!, _scafoldKey);
+        setState(() {});
+      }else
+        {
+          if(fleetdata!.data!=null && fleetdata!.data!.isNotEmpty){
+
+            if(widget.isCalledFromMyFleetScreen!)
+            {
+              selectedFleetvalue = (fleetdata!.data ?? []).firstWhere((element) => element.id == widget.fleetId);
+            }
+            else
+            {
+              selectedFleetvalue = fleetdata!.data!.first;
+            }
+            // selectedFleetvalue = fleetdata!.data!.first;
+
+            future = commonProvider.getFleetDetailsData(context, commonProvider.loginModel!.token!, selectedFleetvalue!.id!, _scafoldKey);
+            setState(() {});
+          }else{
+            setState(() {
+
+            });
+          }
+        }
+    /*if (fleetdata!.data != null && fleetdata!.data!.isNotEmpty) {
+      if (widget.isCalledFromMyFleetScreen!) {
         if(widget.fleetsIamIn != null){
           selectedFleetvalue = (fleetdata!.data ?? [])
-              .firstWhere((element) => element.id == widget.fleetId, orElse: () {
-            (fleetdata!.data ?? []).add(FleetData(
-              createdBy: widget.fleetsIamIn!.fleetCreatedBy,
-              fleetName: widget.fleetsIamIn!.fleetName,
-              id: widget.fleetsIamIn!.fleetId,
-            ));
-                return (fleetdata!.data ?? []).last;
-              });
+              .firstWhere((element) => element.id == widget.fleetId);
         }
         else if(widget.myFleets != null){
           selectedFleetvalue = (fleetdata!.data ?? [])
@@ -113,7 +143,7 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
       setState(() {});
     } else {
       setState(() {});
-    }
+    }*/
   }
 
   void _handleTabSelection() {
@@ -158,7 +188,9 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
             textSize: displayWidth(context) * 0.045,
           ),
           actions: [
-            Container(
+           widget.isCalledFromFleetsImInWidget!
+            ? SizedBox()
+           : Container(
               margin: EdgeInsets.only(right: 10),
               alignment: Alignment.center,
               child: InkWell(
@@ -250,7 +282,25 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
                 height: 20,
               ),
               SizedBox(
-                child: fleetdata != null && fleetdata!.data != null
+                child: widget.isCalledFromFleetsImInWidget!
+                ? Container(
+                  alignment: Alignment.centerLeft,
+                  height: 55,
+                  width: displayWidth(context),
+                  decoration: BoxDecoration(
+                    color: dropDownBackgroundColor,
+                    borderRadius: BorderRadius.circular(15)
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: commonText(
+                        text: '${widget.fleetName}',
+                        textColor: buttonBGColor,
+                        fontWeight: FontWeight.w500,
+                        textSize: 16),
+                  ),
+                )
+                : fleetdata != null && fleetdata!.data != null
                     ? DropdownButtonHideUnderline(
                         child: DropdownButtonFormField2<FleetData>(
                           value: selectedFleetvalue,
@@ -441,7 +491,7 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
                                       memberList: (snapShot.data!.myFleets ?? []).isEmpty
                                               ? []
                                               : snapShot.data!.myFleets![0].members ?? [],
-                                    isMyFleetData: widget.myFleets != null,
+                                    isCalledFromFleetsImIn:  widget.isCalledFromFleetsImInWidget!,
                                   ),
                                   FleetDetailsCard(
                                       scaffoldKey: _scafoldKey,

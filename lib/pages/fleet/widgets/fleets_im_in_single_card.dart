@@ -44,9 +44,11 @@ class _FleetsImInSingleCardState extends State<FleetsImInSingleCard> {
       onTap: (){
         Navigator.push(context, MaterialPageRoute(builder: ((context) => FleetVesselScreen(
           tabIndex: 1,
-          isCalledFromMyFleet: true,
-          fleetsIamIn: widget.fleetsIamIn!,
+          isCalledFromMyFleetScreen: true,
+          isCalledFromFleetsImInWidget: true,
+          //fleetsIamIn: widget.fleetsIamIn!,
           fleetId: widget.fleetsIamIn!.fleetId,
+          fleetName: widget.fleetsIamIn!.fleetName,
         ))));
       },
       child: Padding(
@@ -62,7 +64,7 @@ class _FleetsImInSingleCardState extends State<FleetsImInSingleCard> {
                   context: context,
                   text: widget.fleetsIamIn!.fleetName,
                   fontWeight: FontWeight.w500,
-                  textColor: Colors.black,
+                  textColor: blueColor,
                   textSize: displayWidth(context) * 0.04,
                   textAlign: TextAlign.start,),
                 SizedBox(height: 4,),

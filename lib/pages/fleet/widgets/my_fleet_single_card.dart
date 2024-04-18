@@ -227,9 +227,11 @@ class _MyFleetSingleCardState extends State<MyFleetSingleCard> {
                         onTap: (){
                           Navigator.push(context, MaterialPageRoute(builder: ((context) => FleetVesselScreen(
                             tabIndex: 1,
-                            isCalledFromMyFleet: true,
+                            isCalledFromMyFleetScreen: true,
                             fleetId: widget.myFleets!.id,
-                            myFleets: widget.myFleets,
+                            isCalledFromFleetsImInWidget: false,
+                            fleetName: widget.myFleets!.fleetName,
+                           // myFleets: widget.myFleets,
                           ))));
                         },
                         child: Container(
