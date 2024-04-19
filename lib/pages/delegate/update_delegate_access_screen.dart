@@ -14,6 +14,7 @@ import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/custom_time_picker.dart';
 import 'package:performarine/common_widgets/widgets/user_feed_back.dart';
 import 'package:performarine/models/vessel.dart';
+import 'package:performarine/models/vessel_delegate_model.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
 import 'package:performarine/pages/delegate/invite_delegate.dart';
 import 'package:performarine/pages/feedback_report.dart';
@@ -25,13 +26,16 @@ import 'package:table_calendar/table_calendar.dart';
 
 class UpdateDelegateAccessScreen extends StatefulWidget {
   String? vesselID;
-  UpdateDelegateAccessScreen({super.key, this.vesselID});
+  Delegates? delegates;
+  UpdateDelegateAccessScreen({super.key, this.vesselID, this.delegates});
 
   @override
-  State<UpdateDelegateAccessScreen> createState() => _UpdateDelegateAccessScreenState();
+  State<UpdateDelegateAccessScreen> createState() =>
+      _UpdateDelegateAccessScreenState();
 }
 
-class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen> {
+class _UpdateDelegateAccessScreenState
+    extends State<UpdateDelegateAccessScreen> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
   final controller = ScreenshotController();
@@ -50,8 +54,8 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
       lastDate = DateTime(2100),
       focusedDay = DateTime.now(),
       startDate = DateTime.now();
-    DateTime?  selectedEndDate;
-      
+  DateTime? selectedEndDate;
+
   Duration duration = const Duration();
   String startTime = '01:00 AM',
       endTime = '01:00 AM',
@@ -59,15 +63,15 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
       selectedDuration = '24 hrs',
       startDateText = '';
   int calenderType = 0;
-      bool isCalenderVisible=false;
-
+  bool isCalenderVisible = false;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     debugPrint("VESSEL ID UPDATE DELEGATE SCREEN  ${widget.vesselID}");
-    singleVesselDetails = _databaseService.getVesselFromVesselID(widget.vesselID!);
+    singleVesselDetails =
+        _databaseService.getVesselFromVesselID(widget.vesselID!);
     singleVesselDetails!.then((value) {
       vesselData = value;
       setState(() {});
@@ -106,14 +110,14 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
               fontFamily: outfit),
           actions: [
             InkWell(
-                    onTap: () async {},
-                    child: Image.asset(
-                      'assets/images/Trash.png',
-                      width: Platform.isAndroid
-                          ? displayWidth(context) * 0.055
-                          : displayWidth(context) * 0.05,
-                    ),
-                  ),
+              onTap: () async {},
+              child: Image.asset(
+                'assets/images/Trash.png',
+                width: Platform.isAndroid
+                    ? displayWidth(context) * 0.055
+                    : displayWidth(context) * 0.05,
+              ),
+            ),
             Container(
               margin: EdgeInsets.only(right: 8),
               child: IconButton(
@@ -127,8 +131,7 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
                           builder: (context) => BottomNavigation()),
                       ModalRoute.withName(""));
                 },
-                icon: Image.asset(
-                    'assets/icons/performarine_appbar_icon.png'),
+                icon: Image.asset('assets/icons/performarine_appbar_icon.png'),
                 color: Theme.of(context).brightness == Brightness.dark
                     ? Colors.white
                     : Colors.black,
@@ -142,7 +145,8 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
             children: [
               SingleChildScrollView(
                 child: Container(
-                  margin: EdgeInsets.only(bottom: displayHeight(context) * 0.14),
+                  margin:
+                      EdgeInsets.only(bottom: displayHeight(context) * 0.14),
                   child: Column(
                     children: [
                       Row(
@@ -150,71 +154,78 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
                           ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: vesselData?.imageURLs == null ||
-                                vesselData!.imageURLs!.isEmpty ||
-                                vesselData?.imageURLs == 'string' ||
-                                vesselData?.imageURLs == '[]'
+                                    vesselData!.imageURLs!.isEmpty ||
+                                    vesselData?.imageURLs == 'string' ||
+                                    vesselData?.imageURLs == '[]'
                                 ? Stack(
-                              children: [
-                                Container(
-                                  color: Colors.white,
-                                  child: Image.asset(
-                                    'assets/images/vessel_default_img.png',
-                                    height: displayHeight(context) * 0.1,
-                                    width: displayWidth(context) * 0.22,
-                                    fit: BoxFit.contain,
-                                  ),
-                                ),
-                                Positioned(
-                                    bottom: 0,
-                                    right: 0,
-                                    left: 0,
-                                    child: Container(
-                                      height: displayHeight(context) * 0.14,
-                                      width: displayWidth(context),
-                                      padding: const EdgeInsets.only(top: 20),
-                                      decoration: BoxDecoration(boxShadow: [
-                                        BoxShadow(
-                                            color:
-                                            Colors.black.withOpacity(0.1),
-                                            blurRadius: 50,
-                                            spreadRadius: 5,
-                                            offset: const Offset(0, 50))
-                                      ]),
-                                    ))
-                              ],
-                            )
+                                    children: [
+                                      Container(
+                                        color: Colors.white,
+                                        child: Image.asset(
+                                          'assets/images/vessel_default_img.png',
+                                          height: displayHeight(context) * 0.1,
+                                          width: displayWidth(context) * 0.22,
+                                          fit: BoxFit.contain,
+                                        ),
+                                      ),
+                                      Positioned(
+                                          bottom: 0,
+                                          right: 0,
+                                          left: 0,
+                                          child: Container(
+                                            height:
+                                                displayHeight(context) * 0.14,
+                                            width: displayWidth(context),
+                                            padding:
+                                                const EdgeInsets.only(top: 20),
+                                            decoration:
+                                                BoxDecoration(boxShadow: [
+                                              BoxShadow(
+                                                  color: Colors.black
+                                                      .withOpacity(0.1),
+                                                  blurRadius: 50,
+                                                  spreadRadius: 5,
+                                                  offset: const Offset(0, 50))
+                                            ]),
+                                          ))
+                                    ],
+                                  )
                                 : Stack(
-                              children: [
-                                Container(
-                                  height: displayHeight(context) * 0.22,
-                                  width: displayWidth(context),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    image: DecorationImage(
-                                      image: FileImage(
-                                          File(vesselData!.imageURLs!)),
-                                      fit: BoxFit.cover,
-                                    ),
+                                    children: [
+                                      Container(
+                                        height: displayHeight(context) * 0.1,
+                                        width: displayWidth(context) * 0.22,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          image: DecorationImage(
+                                            image: FileImage(
+                                                File(vesselData!.imageURLs!)),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                          bottom: 0,
+                                          right: 0,
+                                          left: 0,
+                                          child: Container(
+                                            height: displayHeight(context) * 0.14,
+                                            width: displayWidth(context),
+                                            padding:
+                                                const EdgeInsets.only(top: 20),
+                                            decoration:
+                                                BoxDecoration(boxShadow: [
+                                              BoxShadow(
+                                                  color: Colors.black
+                                                      .withOpacity(0.5),
+                                                  blurRadius: 50,
+                                                  spreadRadius: 5,
+                                                  offset: const Offset(0, 50))
+                                            ]),
+                                          ))
+                                    ],
                                   ),
-                                ),
-                                Positioned(
-                                    bottom: 0,
-                                    right: 0,
-                                    left: 0,
-                                    child: Container(
-                                      height: displayHeight(context) * 0.14,
-                                      width: displayWidth(context),
-                                      padding: const EdgeInsets.only(top: 20),
-                                      decoration: BoxDecoration(boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.black.withOpacity(0.5),
-                                            blurRadius: 50,
-                                            spreadRadius: 5,
-                                            offset: const Offset(0, 50))
-                                      ]),
-                                    ))
-                              ],
-                            ),
                           ),
                           Container(
                             margin: EdgeInsets.symmetric(horizontal: 10),
@@ -224,36 +235,47 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
                               children: [
                                 commonText(
                                     context: context,
-                                    text: vesselData?.name??"",
+                                    text: vesselData?.name ?? "",
                                     fontWeight: FontWeight.w600,
                                     textColor: Colors.black87,
                                     textSize: displayWidth(context) * 0.042,
                                     fontFamily: outfit),
-
                                 Padding(
-                                  padding: const EdgeInsets.only(top: 4,bottom: 2),
+                                  padding:
+                                      const EdgeInsets.only(top: 4, bottom: 2),
                                   child: Row(
                                     children: [
-                                      Icon(Icons.person_2_outlined, color: blueColor, ),
-                                      SizedBox(width: 4,),
+                                      Icon(
+                                        Icons.person_2_outlined,
+                                        color: blueColor,
+                                      ),
+                                      SizedBox(
+                                        width: 4,
+                                      ),
                                       commonText(
                                           context: context,
-                                          text: 'Abhiram Pawan',
+                                          text: '${widget.delegates!.delegateUserName}',
                                           fontWeight: FontWeight.w600,
                                           textColor: Colors.black87,
-                                          textSize: displayWidth(context) * 0.036,
+                                          textSize:
+                                              displayWidth(context) * 0.036,
                                           fontFamily: outfit),
                                     ],
                                   ),
                                 ),
-
                                 Row(
                                   children: [
-                                    Icon(Icons.mail_lock_outlined, color: blueColor,size: displayWidth(context) * 0.05, ),
-                                    SizedBox(width: 4,),
+                                    Icon(
+                                      Icons.mail_lock_outlined,
+                                      color: blueColor,
+                                      size: displayWidth(context) * 0.05,
+                                    ),
+                                    SizedBox(
+                                      width: 4,
+                                    ),
                                     commonText(
                                         context: context,
-                                        text: 'abhiram90@gmail.com',
+                                        text: '${widget.delegates!.delegateUserEmail}',
                                         fontWeight: FontWeight.w400,
                                         textColor: Colors.black87,
                                         textSize: displayWidth(context) * 0.036,
@@ -291,20 +313,24 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
                                 itemCount: shareAccessModel.length,
                                 shrinkWrap: true,
                                 padding: EdgeInsets.zero,
-                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3 ,childAspectRatio:2.5, mainAxisSpacing: 4),
-                                itemBuilder: (BuildContext context,int index){
-
-                                  return  InkWell(
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3,
+                                        childAspectRatio: 2.5,
+                                        mainAxisSpacing: 4),
+                                itemBuilder: (BuildContext context, int index) {
+                                  return InkWell(
                                     onTap: () {
                                       setState(() {
-                                        selectedShareUpdate = shareAccessModel[index].value;
-                                        if (shareAccessModel[index].value == "4") {
+                                        selectedShareUpdate =
+                                            shareAccessModel[index].value;
+                                        if (shareAccessModel[index].value ==
+                                            "4") {
                                           isCustomTime = true;
-                                          isCalenderVisible=true;
+                                          isCalenderVisible = true;
                                         } else {
                                           isCustomTime = false;
-                                                                                    isCalenderVisible=false;
-
+                                          isCalenderVisible = false;
                                         }
                                       });
                                       debugPrint(
@@ -312,11 +338,12 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
                                     },
                                     child: Row(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.start,
+                                            MainAxisAlignment.start,
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Radio<String>(
-                                            value: shareAccessModel[index].value!,
+                                            value:
+                                                shareAccessModel[index].value!,
                                             groupValue: selectedShareUpdate,
                                             onChanged: (value) {
                                               setState(() {
@@ -325,9 +352,9 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
                                                 if (selectedShareUpdate ==
                                                     "4") {
                                                   isCustomTime = true;
-                                                  isCalenderVisible=true;
+                                                  isCalenderVisible = true;
                                                 } else {
-                                                  isCalenderVisible=false;
+                                                  isCalenderVisible = false;
                                                   isCustomTime = false;
                                                 }
                                               });
@@ -366,7 +393,7 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
                                           child: InkWell(
                                               onTap: () {
                                                 calenderType = 0;
-                                                isCalenderVisible=true;
+                                                isCalenderVisible = true;
                                                 setState(() {});
                                               },
                                               child: fromToDate('From Date: ',
@@ -382,7 +409,7 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
                                           child: InkWell(
                                               onTap: () {
                                                 calenderType = 1;
-                                                                                                isCalenderVisible=true;
+                                                isCalenderVisible = true;
 
                                                 setState(() {});
                                               },
@@ -394,57 +421,64 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
                                 SizedBox(
                                   height: displayHeight(context) * 0.01,
                                 ),
-                                                                Visibility(
+                                Visibility(
                                   visible: isCalenderVisible,
                                   child: Column(
                                     children: [
-
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      left: displayWidth(context) * 0.045,
-                                      right: displayWidth(context) * 0.045,
-                                      top: 8,
-                                      bottom: 8),
-                                  child: Container(
-                                    width: displayWidth(context),
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                        color: calenderHeaderBackgroundColor,
-                                        borderRadius: BorderRadius.only(
-                                          topRight: Radius.circular(
-                                            30,
-                                          ),
-                                          topLeft: Radius.circular(
-                                            30,
-                                          ),
-                                        )),
-                                    child: Padding(
-                                      padding: EdgeInsets.only(
-                                          left: displayWidth(context) * 0.03,
-                                          top: displayWidth(context) * 0.05),
-                                      child: Text(
-                                        calenderType == 0
-                                            ? "Select Start Date"
-                                            : 'Select End Date',
-                                        style: TextStyle(
-                                            fontSize:
-                                                displayWidth(context) * 0.038,
-                                            fontWeight: FontWeight.w600,
-                                            fontFamily: dmsans),
-                                      ),
-                                    ),
-                                  ),
-                                ),
                                       Padding(
                                         padding: EdgeInsets.only(
                                             left: displayWidth(context) * 0.045,
-                                            right: displayWidth(context) * 0.045),
+                                            right:
+                                                displayWidth(context) * 0.045,
+                                            top: 8,
+                                            bottom: 8),
+                                        child: Container(
+                                          width: displayWidth(context),
+                                          height: 50,
+                                          decoration: BoxDecoration(
+                                              color:
+                                                  calenderHeaderBackgroundColor,
+                                              borderRadius: BorderRadius.only(
+                                                topRight: Radius.circular(
+                                                  30,
+                                                ),
+                                                topLeft: Radius.circular(
+                                                  30,
+                                                ),
+                                              )),
+                                          child: Padding(
+                                            padding: EdgeInsets.only(
+                                                left: displayWidth(context) *
+                                                    0.03,
+                                                top: displayWidth(context) *
+                                                    0.05),
+                                            child: Text(
+                                              calenderType == 0
+                                                  ? "Select Start Date"
+                                                  : 'Select End Date',
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      displayWidth(context) *
+                                                          0.038,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontFamily: dmsans),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left: displayWidth(context) * 0.045,
+                                            right:
+                                                displayWidth(context) * 0.045),
                                         child: Container(
                                           decoration: BoxDecoration(
                                               color: calenderBackgroundColor,
                                               borderRadius: BorderRadius.only(
-                                                  bottomLeft: Radius.circular(20),
-                                                  bottomRight: Radius.circular(20))),
+                                                  bottomLeft:
+                                                      Radius.circular(20),
+                                                  bottomRight:
+                                                      Radius.circular(20))),
                                           child: TableCalendar(
                                             daysOfWeekVisible: true,
                                             focusedDay: focusedDay,
@@ -456,14 +490,16 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
                                               selectedBuilder:
                                                   (context, date, events) =>
                                                       Container(
-                                                margin: const EdgeInsets.all(5.0),
+                                                margin:
+                                                    const EdgeInsets.all(5.0),
                                                 alignment: Alignment.center,
                                                 decoration: BoxDecoration(
                                                     color: blueColor,
                                                     borderRadius:
-                                                        BorderRadius.circular(15)
+                                                        BorderRadius.circular(
+                                                            15)
                                                     //shape: BoxShape.circle
-                                          
+
                                                     ),
                                                 child: commonText(
                                                     context: context,
@@ -479,15 +515,17 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
                                             calendarStyle: CalendarStyle(
                                                 todayDecoration: BoxDecoration(
                                                     borderRadius:
-                                                        BorderRadius.circular(20),
+                                                        BorderRadius.circular(
+                                                            20),
                                                     border: Border.all(
                                                       color: blueColor,
                                                     )),
                                                 isTodayHighlighted: true,
-                                                selectedDecoration: BoxDecoration(
+                                                selectedDecoration:
+                                                    BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.circular(8),
-                                          
+
                                                   // color: blueColor,
                                                   shape: BoxShape.rectangle,
                                                 ),
@@ -499,89 +537,107 @@ class _UpdateDelegateAccessScreenState extends State<UpdateDelegateAccessScreen>
                                                     fontFamily: dmsans,
                                                     color: Colors.pink),
                                                 todayTextStyle: TextStyle(
-                                                    fontWeight: FontWeight.normal,
+                                                    fontWeight:
+                                                        FontWeight.normal,
                                                     fontSize:
                                                         displayWidth(context) *
                                                             0.03,
                                                     fontFamily: dmsans,
-                                                    color:
-                                                        focusedDay == DateTime.now()
-                                                            ? Colors.white
-                                                            : blueColor)),
-                                            selectedDayPredicate: (DateTime date) {
-                                              return isSameDay(focusedDay, date);
+                                                    color: focusedDay ==
+                                                            DateTime.now()
+                                                        ? Colors.white
+                                                        : blueColor)),
+                                            selectedDayPredicate:
+                                                (DateTime date) {
+                                              return isSameDay(
+                                                  focusedDay, date);
                                             },
                                             startingDayOfWeek:
                                                 StartingDayOfWeek.monday,
                                             onDaySelected: (DateTime? selectDay,
                                                 DateTime? focusDay) {
                                               setState(() {
-                                              //  focusedDay = focusDay!;
+                                                //  focusedDay = focusDay!;
                                                 if (calenderType == 0) {
-focusedDay=startDate;
-                                                  if(selectedEndDate!=null){
-                                                          if(selectDay!.isAfter(selectedEndDate!)||selectDay.isAtSameMomentAs(selectedEndDate!))  {
-                                                  Utils.showSnackBar(context, scaffoldKey: scaffoldKey, message: 'Start date should be below than end date');
-return null;
-                                                          } else{
-                                                            isCalenderVisible=false;
-                                                          }                                            
- 
+                                                  focusedDay = startDate;
+                                                  if (selectedEndDate != null) {
+                                                    if (selectDay!.isAfter(
+                                                            selectedEndDate!) ||
+                                                        selectDay.isAtSameMomentAs(
+                                                            selectedEndDate!)) {
+                                                      Utils.showSnackBar(
+                                                          context,
+                                                          scaffoldKey:
+                                                              scaffoldKey,
+                                                          message:
+                                                              'Start date should be below than end date');
+                                                      return null;
+                                                    } else {
+                                                      isCalenderVisible = false;
+                                                    }
                                                   }
 
-
-                                                   startDate = selectDay!;
-                                          focusedDay=selectDay;
+                                                  startDate = selectDay!;
+                                                  focusedDay = selectDay;
                                                   startDateText =
                                                       convertIntoMonthDayYear(
                                                           selectDay);
                                                   calenderType = 1;
                                                   setState(() {});
                                                 } else {
-                                                  focusedDay=selectedEndDate??DateTime.now();
+                                                  focusedDay =
+                                                      selectedEndDate ??
+                                                          DateTime.now();
 
-                                                  if(selectDay!.isBefore(startDate)||selectDay.isAtSameMomentAs(startDate!)){
-                                                  Utils.showSnackBar(context, scaffoldKey: scaffoldKey, message: 'End date should be greater than start date');
-                                          
-                                                  }else{
-      selectedEndDate=selectDay;
-focusedDay=selectDay;
+                                                  if (selectDay!.isBefore(
+                                                          startDate) ||
+                                                      selectDay
+                                                          .isAtSameMomentAs(
+                                                              startDate!)) {
+                                                    Utils.showSnackBar(context,
+                                                        scaffoldKey:
+                                                            scaffoldKey,
+                                                        message:
+                                                            'End date should be greater than start date');
+                                                  } else {
+                                                    selectedEndDate = selectDay;
+                                                    focusedDay = selectDay;
 
-                                                  endDate = convertIntoMonthDayYear(
-                                                      selectDay);
-                                                      isCalenderVisible=false;
-                                          
+                                                    endDate =
+                                                        convertIntoMonthDayYear(
+                                                            selectDay);
+                                                    isCalenderVisible = false;
                                                   }
                                                 }
                                               });
                                             },
                                             headerStyle: HeaderStyle(
                                               titleCentered: true,
-                                          
+
                                               titleTextStyle: TextStyle(
                                                   fontSize:
-                                                      displayWidth(context) * 0.032,
+                                                      displayWidth(context) *
+                                                          0.032,
                                                   fontFamily: dmsans,
                                                   fontWeight: FontWeight.w600,
                                                   color: blackcolorCalender),
                                               // Center the month title
-                                          
+
                                               formatButtonVisible: false,
-                                              formatButtonDecoration: BoxDecoration(
+                                              formatButtonDecoration:
+                                                  BoxDecoration(
                                                 color: Colors.black,
                                                 borderRadius:
                                                     BorderRadius.circular(22.0),
                                               ),
-                                              formatButtonTextStyle:
-                                                  TextStyle(color: Colors.white),
+                                              formatButtonTextStyle: TextStyle(
+                                                  color: Colors.white),
                                               formatButtonShowsNext: false,
                                             ),
                                           ),
                                         ),
                                       ),
                                     ],
-                                                                 
-                                                                 
                                   ),
                                 ),
                                 SizedBox(
@@ -592,28 +648,26 @@ focusedDay=selectDay;
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Flexible(
-                                      flex: 6,
-                                      fit: FlexFit.tight,
-                                      child: 
-
-                                    Container(
-                                      margin: EdgeInsets.only(left: 2),
-                                      alignment: Alignment.centerRight,
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 4),
-                                      child:
-                                          fromToDate('Start Time: ', startTime),
-                                    )),
-Flexible(
+                                        flex: 6,
+                                        fit: FlexFit.tight,
+                                        child: Container(
+                                          margin: EdgeInsets.only(left: 2),
+                                          alignment: Alignment.centerRight,
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 8, vertical: 4),
+                                          child: fromToDate(
+                                              'Start Time: ', startTime),
+                                        )),
+                                    Flexible(
                                       flex: 4,
                                       fit: FlexFit.tight,
                                       child: Container(
                                           alignment: Alignment.centerLeft,
                                           padding: EdgeInsets.symmetric(
                                               horizontal: 10, vertical: 4),
-                                                                                                                      child:
-                                            fromToDate('End Time: ', endTime)),
-)
+                                          child: fromToDate(
+                                              'End Time: ', endTime)),
+                                    )
                                   ],
                                 ),
                                 Row(
@@ -658,26 +712,25 @@ Flexible(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       isUpdateBtnClicked
-                          ? CircularProgressIndicator(color: blueColor,)
+                          ? CircularProgressIndicator(
+                              color: blueColor,
+                            )
                           : CommonButtons.getActionButton(
-                        title: 'Update',
-                        context: context,
-                        fontSize: displayWidth(context) * 0.044,
-                        textColor: Colors.white,
-                        buttonPrimaryColor: blueColor,
-                        borderColor: blueColor,
-                        onTap: () {
-                          if((selectedShareUpdate ?? '').isNotEmpty)
-                          {
-
-                            /*setState(() {
+                              title: 'Update',
+                              context: context,
+                              fontSize: displayWidth(context) * 0.044,
+                              textColor: Colors.white,
+                              buttonPrimaryColor: blueColor,
+                              borderColor: blueColor,
+                              onTap: () {
+                                if ((selectedShareUpdate ?? '').isNotEmpty) {
+                                  /*setState(() {
                               isUpdateBtnClicked = true;
                             });*/
-
-                          }
-                        },
-                        width: displayWidth(context) / 1.3,
-                      ),
+                                }
+                              },
+                              width: displayWidth(context) / 1.3,
+                            ),
                       GestureDetector(
                           onTap: (() async {
                             final image = await controller.capture();
@@ -688,9 +741,9 @@ Flexible(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => FeedbackReport(
-                                      imagePath: image.toString(),
-                                      uIntList: image,
-                                    )));
+                                          imagePath: image.toString(),
+                                          uIntList: image,
+                                        )));
                           }),
                           child: UserFeedback().getUserFeedback(
                             context,
@@ -720,25 +773,25 @@ Flexible(
       // color: Colors.amber,
       child: RichText(
           text: TextSpan(children: [
-            TextSpan(
-                text: title,
-                style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: displayWidth(context) * 0.03,
-                    fontFamily: outfit,
-                    color: Colors.black)),
-            WidgetSpan(
-                child: SizedBox(
-                  width: 5,
-                )),
-            TextSpan(
-                text: date,
-                style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: displayWidth(context) * 0.03,
-                    fontFamily: outfit,
-                    color: blueColor)),
-          ])),
+        TextSpan(
+            text: title,
+            style: TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: displayWidth(context) * 0.03,
+                fontFamily: outfit,
+                color: Colors.black)),
+        WidgetSpan(
+            child: SizedBox(
+          width: 5,
+        )),
+        TextSpan(
+            text: date,
+            style: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: displayWidth(context) * 0.03,
+                fontFamily: outfit,
+                color: blueColor)),
+      ])),
     );
   }
 

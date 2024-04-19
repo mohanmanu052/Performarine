@@ -180,7 +180,8 @@ class _SingleDelegateCardState extends State<SingleDelegateCard> {
                   MaterialPageRoute(
                       builder: (context) =>
                           UpdateDelegateAccessScreen(
-                            //vesselID: widget.vesselID,
+                            vesselID: widget.vesselID,
+                            delegates: widget.delegates,
                           )),
                 );
               },
