@@ -172,17 +172,24 @@ class _SingleDelegateCardState extends State<SingleDelegateCard> {
             ),
             SizedBox(height: displayHeight(context) * 0.005,),
             InkWell(
-              onTap: () {
+              onTap: ()async {
                 //debugPrint("VESSEL ID DELEGATE SCREEN 2 - ${widget.vesselID}");
 
-                Navigator.push(
+                var result = await Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
                           UpdateDelegateAccessScreen(
-                            //vesselID: widget.vesselID,
+                            vesselID: widget.vesselID,
+                              delegates: delegates,
                           )),
                 );
+
+                if (result != null) {
+                  if (result) {
+                    widget.onTap!.call();
+                  }
+                }
               },
               child: Container(
                 alignment:

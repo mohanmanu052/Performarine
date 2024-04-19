@@ -52,7 +52,7 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
   final DatabaseService _databaseService = DatabaseService();
   CommonProvider? commonProvider;
 
-  late Future<VesselDelegateModel> future;
+  Future<VesselDelegateModel>? future;
 
   @override
   void initState() {
@@ -67,12 +67,12 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
       adddelegateInvitation();
      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
        getUserConfigData();
-       future = commonProvider!.vesselDelegateData(context, commonProvider!.loginModel!.token!, widget.vesselID!, scaffoldKey);
      });
     }
-
-    debugPrint("COMING FROM UNILINK");
-    future = commonProvider!.vesselDelegateData(context, commonProvider!.loginModel!.token!, widget.vesselID!, scaffoldKey);
+    else
+      {
+        future = commonProvider!.vesselDelegateData(context, commonProvider!.loginModel!.token!, widget.vesselID!, scaffoldKey);
+      }
 
     // TODO: implement initState
     super.initState();
@@ -82,7 +82,10 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
     if (widget.isComingFromUnilink ?? false) {
       var res = await commonProvider?.acceptDelegateInvite(widget.uri ?? Uri());
       if (res!.statusCode == 200) {
-        Future.delayed(Duration(milliseconds: 500)).then((value) {});
+        Future.delayed(Duration(milliseconds: 500)).then((value) {
+          future = commonProvider!.vesselDelegateData(context, commonProvider!.loginModel!.token!, widget.vesselID!, scaffoldKey);
+        });
+
       }
     }
   }
@@ -518,7 +521,8 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                 isSync: 1,
                 updatedBy: value.vessels![i].updatedBy.toString(),
                 isCloud: 1,
-                hullType: int.parse(value.vessels![i].hullType.toString()));
+                hullType: value.vessels![i].hullType != null ? int.parse(value.vessels![i].hullType.toString()) : 0
+            );
 
             var vesselExist = await _databaseService
                 .vesselsExistInCloud(value.vessels![i].id!);
