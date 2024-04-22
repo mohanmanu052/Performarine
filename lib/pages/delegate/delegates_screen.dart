@@ -82,7 +82,7 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
     if (widget.isComingFromUnilink ?? false) {
       var res = await commonProvider?.acceptDelegateInvite(widget.uri ?? Uri());
       if (res!.statusCode == 200) {
-        Future.delayed(Duration(milliseconds: 500)).then((value) {
+        Future.delayed(Duration(milliseconds: 200)).then((value) {
           future = commonProvider!.vesselDelegateData(context, commonProvider!.loginModel!.token!, widget.vesselID!, scaffoldKey);
         });
 

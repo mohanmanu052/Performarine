@@ -8,6 +8,7 @@ class GetUserConfigModel {
   String? message;
   bool? status;
   int? statusCode;
+  List<DelegateVessels>? delegateVessels;
 
   GetUserConfigModel(
       {this.userId,
@@ -62,6 +63,7 @@ class GetUserConfigModel {
 }
 
 class Vessels {
+  String? vesselOwner;
   String? name;
   String? model;
   String? builderName;
@@ -352,6 +354,127 @@ class DeviceInfo {
     data['make'] = this.make;
     data['board'] = this.board;
     data['deviceType'] = this.deviceType;
+    return data;
+  }
+}
+
+class DelegateVessels {
+  String? vesselOwner;
+  String? name;
+  String? model;
+  String? builderName;
+  String? regNumber;
+  String? mMSI;
+  String? engineType;
+  int? fuelCapacity;
+  int? batteryCapacity;
+  String? weight;
+  List<String>? imageURLs;
+  double? freeBoard;
+  double? lengthOverall;
+  int? beam;
+  double? depth;
+  String? vesselSize;
+  String? capacity;
+  int? hullShape;
+  int? builtYear;
+  int? vesselStatus;
+  String? createdBy;
+  String? createdAt;
+  String? updatedBy;
+  String? updatedAt;
+  String? syncCreatedAt;
+  String? syncUpdatedAt;
+  String? id;
+
+  DelegateVessels(
+      {this.vesselOwner,
+        this.name,
+        this.model,
+        this.builderName,
+        this.regNumber,
+        this.mMSI,
+        this.engineType,
+        this.fuelCapacity,
+        this.batteryCapacity,
+        this.weight,
+        this.imageURLs,
+        this.freeBoard,
+        this.lengthOverall,
+        this.beam,
+        this.depth,
+        this.vesselSize,
+        this.capacity,
+        this.hullShape,
+        this.builtYear,
+        this.vesselStatus,
+        this.createdBy,
+        this.createdAt,
+        this.updatedBy,
+        this.updatedAt,
+        this.syncCreatedAt,
+        this.syncUpdatedAt,
+        this.id});
+
+  DelegateVessels.fromJson(Map<String, dynamic> json) {
+    vesselOwner = json['vesselOwner'];
+    name = json['name'];
+    model = json['model'];
+    builderName = json['builderName'];
+    regNumber = json['regNumber'];
+    mMSI = json['MMSI'];
+    engineType = json['engineType'];
+    fuelCapacity = json['fuelCapacity'];
+    batteryCapacity = json['batteryCapacity'];
+    weight = json['weight'];
+    imageURLs = json['imageURLs'].cast<String>();
+    freeBoard = json['freeBoard'];
+    lengthOverall = json['lengthOverall'];
+    beam = json['beam'];
+    depth = json['depth'];
+    vesselSize = json['vesselSize'];
+    capacity = json['capacity'];
+    hullShape = json['hullShape'];
+    builtYear = json['builtYear'];
+    vesselStatus = json['vesselStatus'];
+    createdBy = json['createdBy'];
+    createdAt = json['createdAt'];
+    updatedBy = json['updatedBy'];
+    updatedAt = json['updatedAt'];
+    syncCreatedAt = json['syncCreatedAt'];
+    syncUpdatedAt = json['syncUpdatedAt'];
+    id = json['id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['vesselOwner'] = this.vesselOwner;
+    data['name'] = this.name;
+    data['model'] = this.model;
+    data['builderName'] = this.builderName;
+    data['regNumber'] = this.regNumber;
+    data['MMSI'] = this.mMSI;
+    data['engineType'] = this.engineType;
+    data['fuelCapacity'] = this.fuelCapacity;
+    data['batteryCapacity'] = this.batteryCapacity;
+    data['weight'] = this.weight;
+    data['imageURLs'] = this.imageURLs;
+    data['freeBoard'] = this.freeBoard;
+    data['lengthOverall'] = this.lengthOverall;
+    data['beam'] = this.beam;
+    data['depth'] = this.depth;
+    data['vesselSize'] = this.vesselSize;
+    data['capacity'] = this.capacity;
+    data['hullShape'] = this.hullShape;
+    data['builtYear'] = this.builtYear;
+    data['vesselStatus'] = this.vesselStatus;
+    data['createdBy'] = this.createdBy;
+    data['createdAt'] = this.createdAt;
+    data['updatedBy'] = this.updatedBy;
+    data['updatedAt'] = this.updatedAt;
+    data['syncCreatedAt'] = this.syncCreatedAt;
+    data['syncUpdatedAt'] = this.syncUpdatedAt;
+    data['id'] = this.id;
     return data;
   }
 }

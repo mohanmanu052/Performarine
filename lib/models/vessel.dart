@@ -17,7 +17,7 @@ class CreateVessel {
   String? imageURLs;
   double? freeBoard;
   double? lengthOverall;
-  double? beam;
+  dynamic beam;
   double? draft;
   dynamic vesselSize;
   int? capacity;
