@@ -111,6 +111,9 @@ class _MemberDetailsWidgetState extends State<MemberDetailsWidget> {
                                             postiveButtonColor:
                                             deleteTripBtnColor,
                                             positiveButtonText: 'Remove',
+                                            onPositiveButtonTap: (){
+
+                                            },
                                           );
                                         },
                                         child: Image.asset(

@@ -47,7 +47,7 @@ class LeaveFleetApiProvider with ChangeNotifier
         Utils.customPrint('LEAVE FLEETr Response : ' + response.body);
 
         CustomLogger().logWithFile(Level.info, "LEAVE FLEET Response : ' + ${response.body}-> $page");
-        CustomLogger().logWithFile(Level.info, "API success of ${Urls.baseUrl}${Urls.deleteFleet}  is: ${response.statusCode}-> $page");
+        CustomLogger().logWithFile(Level.info, "API success of ${Urls.baseUrl}${Urls.leaveFleet}  is: ${response.statusCode}-> $page");
 
 
         commonModel = CommonModel.fromJson(json.decode(response.body));
