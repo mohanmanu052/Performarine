@@ -57,6 +57,7 @@ static const delegateAccessAcceptReject='/delegateaccess';
 static const vesselDelegates='/api/vesselDelegates';
 static const removeDelegate='/api/removeDelegate';
 static const manageDelegate='/api/managedelegate';
+static const removeFleetMember='/api/removeFleetMember';
 
 
 static String baseUrlVersion = '';

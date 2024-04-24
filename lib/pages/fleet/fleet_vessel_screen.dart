@@ -492,6 +492,8 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
                                               ? []
                                               : snapShot.data!.myFleets![0].members ?? [],
                                     isCalledFromFleetsImIn:  widget.isCalledFromFleetsImInWidget!,
+                                    scaffoldKey: _scafoldKey,
+                                    fleetId :widget.fleetId
                                   ),
                                   FleetDetailsCard(
                                       scaffoldKey: _scafoldKey,

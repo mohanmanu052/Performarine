@@ -11,12 +11,16 @@ import 'package:performarine/common_widgets/widgets/user_feed_back.dart';
 import 'package:performarine/models/fleet_details_model.dart';
 import 'package:performarine/pages/feedback_report.dart';
 import 'package:performarine/pages/fleet/send_invite_screen.dart';
+import 'package:performarine/provider/common_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
 class MemberDetailsWidget extends StatefulWidget {
   List<Members>? memberList;
   bool? isCalledFromFleetsImIn;
-  MemberDetailsWidget({super.key, this.memberList, this.isCalledFromFleetsImIn = false});
+  String? fleetId;
+  final GlobalKey<ScaffoldState>? scaffoldKey;
+  MemberDetailsWidget({super.key, this.memberList, this.scaffoldKey, this.isCalledFromFleetsImIn = false, this.fleetId});
 
   @override
   State<MemberDetailsWidget> createState() => _MemberDetailsWidgetState();
@@ -25,8 +29,21 @@ class MemberDetailsWidget extends StatefulWidget {
 class _MemberDetailsWidgetState extends State<MemberDetailsWidget> {
   ScreenshotController controller = ScreenshotController();
 
+
+  bool? removeMemberBtnColor = false;
+  late CommonProvider commonProvider;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    commonProvider = context.read<CommonProvider>();
+  }
+
   @override
   Widget build(BuildContext context) {
+    commonProvider = context.watch<CommonProvider>();
 
     debugPrint("MEMBER DETAILS FLEET ${widget.isCalledFromFleetsImIn}");
 
@@ -111,9 +128,51 @@ class _MemberDetailsWidgetState extends State<MemberDetailsWidget> {
                                             postiveButtonColor:
                                             deleteTripBtnColor,
                                             positiveButtonText: 'Remove',
+                                            onPositiveButtonTap: (){
+                                              setState(() {
+                                                removeMemberBtnColor = true;
+                                              });
+
+                                              Map<String, dynamic>? body = {
+                                                "fleetId": widget.fleetId,
+                                                "fleetmemberId": widget.memberList![index].memberId,
+                                              };
+
+                                              commonProvider.removeFleetMember(context, commonProvider.loginModel!.token!, body, widget.scaffoldKey!).then((value)
+                                              {
+                                                if(value != null)
+                                                  {
+                                                    if(value.status!)
+                                                      {
+                                                        setState(() {
+                                                          removeMemberBtnColor = false;
+                                                        });
+                                                      }
+                                                    else
+                                                      {
+                                                        setState(() {
+                                                          removeMemberBtnColor = false;
+                                                        });
+                                                      }
+                                                  }
+                                                else
+                                                  {
+                                                    setState(() {
+                                                    removeMemberBtnColor = false;
+                                                  });
+
+                                                  }
+                                              }).catchError((e){
+                                                setState(() {
+                                                  removeMemberBtnColor = false;
+                                                });
+                                              });
+                                            }
                                           );
                                         },
-                                        child: Image.asset(
+                                        child: removeMemberBtnColor!
+                                               ? CircularProgressIndicator()
+                                        : Image.asset(
                                           'assets/images/Trash.png',
                                           height: 20,
                                           width: 20,

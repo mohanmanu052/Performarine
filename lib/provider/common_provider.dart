@@ -45,6 +45,7 @@ import 'package:performarine/provider/manage_delegate_api_provider.dart';
 import 'package:performarine/provider/my_delegate_invite_provider.dart';
 import 'package:performarine/provider/registration_api_provider.dart';
 import 'package:performarine/provider/remove_delegate_api_provider.dart';
+import 'package:performarine/provider/remove_fleet_member.dart';
 import 'package:performarine/provider/report_module_provider.dart';
 import 'package:performarine/provider/reset_password_provider.dart';
 import 'package:performarine/provider/send_sensor_info_api_provider.dart';
@@ -95,6 +96,7 @@ class CommonProvider with ChangeNotifier {
   CommonModel? editFleetDetailsModel;
   CommonModel? createDelegateModel;
   CommonModel? manageDelegateModel;
+  CommonModel? removeFleetMemberModel;
   CommonModel? myDelegateInviteModel;
   FleetDetailsModel? fleetDetailsModel;
   VesselDelegateModel? vesselDelegateModel;
@@ -698,6 +700,18 @@ Future<Response> acceptDelegateInvite(Uri uri)async{
     notifyListeners();
 
     return manageDelegateModel!;
+  }
+
+  Future<CommonModel> removeFleetMember(
+      BuildContext context,
+      String token,
+      Map<String,dynamic> body,
+      GlobalKey<ScaffoldState> scaffoldKey) async {
+    removeFleetMemberModel = CommonModel();
+    removeFleetMemberModel = await RemoveFleetMember().removeFleetMember(context, token, body, scaffoldKey);
+    notifyListeners();
+
+    return removeFleetMemberModel!;
   }
 
 }
