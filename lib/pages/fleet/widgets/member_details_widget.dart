@@ -11,6 +11,7 @@ import 'package:performarine/common_widgets/widgets/user_feed_back.dart';
 import 'package:performarine/models/fleet_details_model.dart';
 import 'package:performarine/pages/feedback_report.dart';
 import 'package:performarine/pages/fleet/send_invite_screen.dart';
+import 'package:performarine/pages/fleet/single_member_details_card.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
@@ -20,7 +21,8 @@ class MemberDetailsWidget extends StatefulWidget {
   bool? isCalledFromFleetsImIn;
   String? fleetId;
   final GlobalKey<ScaffoldState>? scaffoldKey;
-  MemberDetailsWidget({super.key, this.memberList, this.scaffoldKey, this.isCalledFromFleetsImIn = false, this.fleetId});
+  final Function()? onTap;
+  MemberDetailsWidget({super.key, this.memberList, this.scaffoldKey, this.isCalledFromFleetsImIn = false, this.fleetId, this.onTap});
 
   @override
   State<MemberDetailsWidget> createState() => _MemberDetailsWidgetState();
@@ -54,14 +56,17 @@ class _MemberDetailsWidgetState extends State<MemberDetailsWidget> {
           Column(
             children: [
               widget.memberList == null || widget.memberList!.isEmpty
-                ? Center(
-                  child: commonText(
-                    context: context,
-                    text: 'No data found',
-                    fontWeight: FontWeight.w500,
-                    textColor: Colors.black,
-                    textSize: displayWidth(context) * 0.045,
-                    textAlign: TextAlign.start),
+                ? Container(
+                height: displayHeight(context) / 1.5,
+                  child: Center(
+                    child: commonText(
+                      context: context,
+                      text: 'No data found',
+                      fontWeight: FontWeight.w500,
+                      textColor: Colors.black,
+                      textSize: displayWidth(context) * 0.045,
+                      textAlign: TextAlign.start),
+                  ),
                 )
               : Container(
                 margin: EdgeInsets.only(bottom: displayHeight(context) / 9, top: 20),
@@ -83,133 +88,15 @@ class _MemberDetailsWidgetState extends State<MemberDetailsWidget> {
                         fleetJoinDate = DateTime.parse(joinDate.substring(0,10));
                       }
 
-                      return Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                child: commonText(
-                                    text: widget.memberList![index].memberName!,
-                                    fontWeight: FontWeight.w600,
-                                    textSize: 16,
-                                    textAlign: TextAlign.start),
-                              ),
-                              Row(
-                                children: [
-                                  Container(
-                                    child: widget.memberList![index].memberStatus ==
-                                        1
-                                        ? statusTag(
-                                        'Accepted',
-                                        acceptBackgrounGreen,
-                                        acceptTextGreen)
-                                        : statusTag(
-                                        'Pending',
-                                        pendingBacgroundRed,
-                                        pendingTextRed),
-                                  ),
-                                  widget.isCalledFromFleetsImIn!
-                                      ? SizedBox()
-                                      : Container(
-                                    margin: EdgeInsets.only(left: 8, right: 2),
-                                    child: InkWell(
-                                        onTap: () {
-                                          CustomFleetDailog().showFleetDialog(
-                                            context: context,
-                                            title:
-                                            'Are you sure you want to remove this fleet member?',
-                                            subtext:
-                                            widget.memberList![index].memberName ??
-                                                '',
-                                            description:
-                                            'Your permissions to their vessels will be removed & cannot be viewed',
-                                            postiveButtonColor:
-                                            deleteTripBtnColor,
-                                            positiveButtonText: 'Remove',
-                                            onPositiveButtonTap: (){
-                                              setState(() {
-                                                removeMemberBtnColor = true;
-                                              });
+                      return SingleMemberDetailsCard(
+                        memberList: widget.memberList![index],
+                        scaffoldKey: widget.scaffoldKey,
+                        fleetId: widget.fleetId,
+                        isCalledFromFleetsImIn: widget.isCalledFromFleetsImIn,
+                        onTap: (){
+                          widget.onTap!.call();
+                        },
 
-                                              Map<String, dynamic>? body = {
-                                                "fleetId": widget.fleetId,
-                                                "fleetmemberId": widget.memberList![index].memberId,
-                                              };
-
-                                              commonProvider.removeFleetMember(context, commonProvider.loginModel!.token!, body, widget.scaffoldKey!).then((value)
-                                              {
-                                                if(value != null)
-                                                  {
-                                                    if(value.status!)
-                                                      {
-                                                        setState(() {
-                                                          removeMemberBtnColor = false;
-                                                        });
-                                                      }
-                                                    else
-                                                      {
-                                                        setState(() {
-                                                          removeMemberBtnColor = false;
-                                                        });
-                                                      }
-                                                  }
-                                                else
-                                                  {
-                                                    setState(() {
-                                                    removeMemberBtnColor = false;
-                                                  });
-
-                                                  }
-                                              }).catchError((e){
-                                                setState(() {
-                                                  removeMemberBtnColor = false;
-                                                });
-                                              });
-                                            }
-                                          );
-                                        },
-                                        child: removeMemberBtnColor!
-                                               ? CircularProgressIndicator()
-                                        : Image.asset(
-                                          'assets/images/Trash.png',
-                                          height: 20,
-                                          width: 20,
-                                        )),
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
-                          Container(
-                            padding: EdgeInsets.symmetric(vertical: 4),
-                            child: Row(
-                              children: [
-                                Container(
-                                    width: displayWidth(context) * 0.36,
-                                    // padding: EdgeInsets.only(right: 4),
-                                    child: dateofJoin(
-                                        'Date of join:',
-                                        fleetJoinDate != null ?
-                                        (DateFormat("yyyy-MM-dd").format(fleetJoinDate)) : '-',
-                                        Colors.black)),
-                                if (widget.memberList![index].vesselCount !=
-                                    null)
-                                  Container(
-                                      padding:
-                                      EdgeInsets.symmetric(horizontal: 4),
-                                      child: dateofJoin(
-                                          'No of Vessels:',
-                                          widget.memberList![index]
-                                              .vesselCount
-                                              .toString(),
-                                          buttonBGColor))
-                              ],
-                            ),
-                          ),
-                          Divider(),
-                        ],
                       );
                     }),
               ),
