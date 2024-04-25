@@ -49,9 +49,9 @@ class _VesselBuilderState extends State<VesselBuilder> {
   void initState() {
     super.initState();
 
-    // SystemChrome.setPreferredOrientations([
-    //   DeviceOrientation.portraitUp,
-    // ]);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
 
   }
 

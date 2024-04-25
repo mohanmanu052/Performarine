@@ -90,7 +90,7 @@ class _InviteDelegateState extends State<InviteDelegate> {
 
     getShareAccessData();
 
-    checkIfDateIsSameAndSetTime();
+    //checkIfDateIsSameAndSetTime();
 
     // TODO: implement initState
     super.initState();
@@ -656,9 +656,11 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                     SizedBox(
                                       height: 20,
                                     ),
-                                    startDateText.isEmpty && endDate.isEmpty
-                                    ? SizedBox()
-                                    : Row(
+                                    // startDateText.isEmpty && endDate.isEmpty
+                                    // ? SizedBox()
+                                    // : 
+                                    
+                                    Row(
                                       mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                       children: [
@@ -685,9 +687,11 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                         )
                                       ],
                                     ),
-                                    startDateText.isEmpty && endDate.isEmpty
-                                        ? SizedBox()
-                                        : Row(
+                                    // startDateText.isEmpty && endDate.isEmpty
+                                    //     ? SizedBox()
+                                    //     : 
+                                        
+                                        Row(
                                       mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                       children: [
@@ -754,7 +758,7 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                       userEmailController.text
                                           .toLowerCase()) {
                                     if (selectedShareUpdate == '4') {
-                                      if (globalStartDate
+                                      if (startDateText
                                           .toString()
                                           .isEmpty) {
                                         Utils.showSnackBar(context,
@@ -763,7 +767,8 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                             'Please select start date');
                                         return null;
                                       }
-                                      if (globalEndDate.toString().isEmpty) {
+
+                                      if (endDate.toString().isEmpty) {
                                         Utils.showSnackBar(context,
                                             scaffoldKey: scaffoldKey,
                                             message:

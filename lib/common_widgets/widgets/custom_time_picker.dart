@@ -31,88 +31,96 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
   @override
   void initState() {
     super.initState();
+      // hour = DateTime.now().hour > 12
+      //     ? DateTime.now().hour - 12
+      //     : DateTime.now().hour;
+      // minHour = DateTime.now().hour > 12
+      //     ? DateTime.now().hour - 12
+      //     : DateTime.now().hour;
+      // minute = DateTime.now().minute;
+      
 
-    if (checkIfDateIsSame()) {
-      hour = DateTime.now().hour > 12
-          ? DateTime.now().hour - 12
-          : DateTime.now().hour;
-      minHour = DateTime.now().hour > 12
-          ? DateTime.now().hour - 12
-          : DateTime.now().hour;
-      minute = DateTime.now().minute;
-      minMinute = DateTime.now().minute;
-    } else {
-      hour = 01;
-      minHour = 01;
-      minute = 00;
-      minMinute = 00;
-    }
+    // if (checkIfDateIsSame()) {
+    //   hour = DateTime.now().hour > 12
+    //       ? DateTime.now().hour - 12
+    //       : DateTime.now().hour;
+    //   minHour = DateTime.now().hour > 12
+    //       ? DateTime.now().hour - 12
+    //       : DateTime.now().hour;
+    //   minute = DateTime.now().minute;
+    //   minMinute = DateTime.now().minute;
+    // } else {
+    //   hour = 01;
+    //   minHour = 01;
+    //   minute = 00;
+    //   minMinute = 00;
+    // }
 
-    commonProvider = context.read<CommonProvider>();
-    commonProvider.resetCustomTimePicker = () {
-      Future.delayed(Duration(milliseconds: 200), () {
-        setState(() {
-          print('CHECK IF:${checkIfDateIsSame()}');
-          print('CHECK IF:${widget.selectedDate}');
-          if (checkIfDateIsSame()) {
-            if (DateTime.now().hour > hour) {
-              hour = DateTime.now().hour > 12
-                  ? DateTime.now().hour - 12
-                  : DateTime.now().hour;
-              minHour = DateTime.now().hour > 12
-                  ? DateTime.now().hour - 12
-                  : DateTime.now().hour;
-            } else {
-              hour = 01;
-              minHour = 01;
-            }
+    // commonProvider = context.read<CommonProvider>();
+    // commonProvider.resetCustomTimePicker = () {
+    //   Future.delayed(Duration(milliseconds: 200), () {
+    //     setState(() {
+    //       print('CHECK IF:${checkIfDateIsSame()}');
+    //       print('CHECK IF:${widget.selectedDate}');
+    //       if (checkIfDateIsSame()) {
+    //         if (DateTime.now().hour > hour) {
+    //           hour = DateTime.now().hour > 12
+    //               ? DateTime.now().hour - 12
+    //               : DateTime.now().hour;
+    //           minHour = DateTime.now().hour > 12
+    //               ? DateTime.now().hour - 12
+    //               : DateTime.now().hour;
+    //         } else {
+    //           hour = 01;
+    //           minHour = 01;
+    //         }
 
-            if (DateTime.now().minute > minute) {
-              minute = DateTime.now().minute;
-              minMinute = DateTime.now().minute;
-            } else {
-              minute = 00;
-              minMinute = 00;
-            }
+    //         if (DateTime.now().minute > minute) {
+    //           minute = DateTime.now().minute;
+    //           minMinute = DateTime.now().minute;
+    //         } else {
+    //           minute = 00;
+    //           minMinute = 00;
+    //         }
 
-            if (hour < 10) {
-              formattedHour = hour.toString().padLeft(2, '0');
-            } else {
-              formattedHour = hour.toString();
-            }
+    //         if (hour < 10) {
+    //           formattedHour = hour.toString().padLeft(2, '0');
+    //         } else {
+    //           formattedHour = hour.toString();
+    //         }
 
-            if (minute < 10) {
-              formattedMinute = minute.toString().padLeft(2, '0');
-            } else {
-              formattedMinute = minute.toString();
-            }
+    //         if (minute < 10) {
+    //           formattedMinute = minute.toString().padLeft(2, '0');
+    //         } else {
+    //           formattedMinute = minute.toString();
+    //         }
 
-            widget.getTime!(
-                '$formattedHour : $formattedMinute $timeFormat');
-          } else {
-            hour = 01;
-            minHour = 01;
-            minute = 00;
-            minMinute = 00;
+    //         widget.getTime!(
+    //             '$formattedHour : $formattedMinute $timeFormat');
+    //       } else {
+    //         hour = 01;
+    //         minHour = 01;
+    //         minute = 00;
+    //         minMinute = 00;
 
-            if (hour < 10) {
-              formattedHour = hour.toString().padLeft(2, '0');
-            } else {
-              formattedHour = hour.toString();
-            }
+    //         if (hour < 10) {
+    //           formattedHour = hour.toString().padLeft(2, '0');
+    //         } else {
+    //           formattedHour = hour.toString();
+    //         }
 
-            if (minute < 10) {
-              formattedMinute = minute.toString().padLeft(2, '0');
-            } else {
-              formattedMinute = minute.toString();
-            }
+    //         if (minute < 10) {
+    //           formattedMinute = minute.toString().padLeft(2, '0');
+    //         } else {
+    //           formattedMinute = minute.toString();
+    //         }
 
-            widget.getTime!(
-                '$formattedHour : $formattedMinute $timeFormat');
-          }
-        });
-      });
-    };
+    //         widget.getTime!(
+    //             '$formattedHour : $formattedMinute $timeFormat');
+    //       }
+    //     });
+    //   });
+    // };
   }
 
   @override
@@ -338,88 +346,88 @@ class _EndCustomTimePickerState extends State<EndCustomTimePicker> {
   void initState() {
     super.initState();
 
-    if (checkIfDateIsSame()) {
-      hour = DateTime.now().hour > 12
-          ? DateTime.now().hour - 12
-          : DateTime.now().hour;
-      minHour = DateTime.now().hour > 12
-          ? DateTime.now().hour - 12
-          : DateTime.now().hour;
-      minute = DateTime.now().minute;
-      minMinute = DateTime.now().minute;
-    } else {
-      hour = 01;
-      minHour = 01;
-      minute = 00;
-      minMinute = 00;
-    }
+    // if (checkIfDateIsSame()) {
+    //   hour = DateTime.now().hour > 12
+    //       ? DateTime.now().hour - 12
+    //       : DateTime.now().hour;
+    //   minHour = DateTime.now().hour > 12
+    //       ? DateTime.now().hour - 12
+    //       : DateTime.now().hour;
+    //   minute = DateTime.now().minute;
+    //   minMinute = DateTime.now().minute;
+    // } else {
+    //   hour = 01;
+    //   minHour = 01;
+    //   minute = 00;
+    //   minMinute = 00;
+    // }
 
-    commonProvider = context.read<CommonProvider>();
-    commonProvider.resetEndCustomTimePicker = () {
-      Future.delayed(Duration(milliseconds: 200), () {
-        setState(() {
-          print('CHECK IF:${checkIfDateIsSame()}');
-          print('CHECK IF:${widget.selectedDate}');
-          if (checkIfDateIsSame()) {
-            if (DateTime.now().hour > hour) {
-              hour = DateTime.now().hour > 12
-                  ? DateTime.now().hour - 12
-                  : DateTime.now().hour;
-              minHour = DateTime.now().hour > 12
-                  ? DateTime.now().hour - 12
-                  : DateTime.now().hour;
-            } else {
-              hour = 01;
-              minHour = 01;
-            }
+    // commonProvider = context.read<CommonProvider>();
+    // commonProvider.resetEndCustomTimePicker = () {
+    //   Future.delayed(Duration(milliseconds: 200), () {
+    //     setState(() {
+    //       print('CHECK IF:${checkIfDateIsSame()}');
+    //       print('CHECK IF:${widget.selectedDate}');
+    //       if (checkIfDateIsSame()) {
+    //         if (DateTime.now().hour > hour) {
+    //           hour = DateTime.now().hour > 12
+    //               ? DateTime.now().hour - 12
+    //               : DateTime.now().hour;
+    //           minHour = DateTime.now().hour > 12
+    //               ? DateTime.now().hour - 12
+    //               : DateTime.now().hour;
+    //         } else {
+    //           hour = 01;
+    //           minHour = 01;
+    //         }
 
-            if (DateTime.now().minute > minute) {
-              minute = DateTime.now().minute;
-              minMinute = DateTime.now().minute;
-            } else {
-              minute = 00;
-              minMinute = 00;
-            }
+    //         if (DateTime.now().minute > minute) {
+    //           minute = DateTime.now().minute;
+    //           minMinute = DateTime.now().minute;
+    //         } else {
+    //           minute = 00;
+    //           minMinute = 00;
+    //         }
 
-            if (hour < 10) {
-              formattedHour = hour.toString().padLeft(2, '0');
-            } else {
-              formattedHour = hour.toString();
-            }
+    //         if (hour < 10) {
+    //           formattedHour = hour.toString().padLeft(2, '0');
+    //         } else {
+    //           formattedHour = hour.toString();
+    //         }
 
-            if (minute < 10) {
-              formattedMinute = minute.toString().padLeft(2, '0');
-            } else {
-              formattedMinute = minute.toString();
-            }
+    //         if (minute < 10) {
+    //           formattedMinute = minute.toString().padLeft(2, '0');
+    //         } else {
+    //           formattedMinute = minute.toString();
+    //         }
 
-            widget.getTime!(
-                '$formattedHour : $formattedMinute $timeFormat');
+    //         widget.getTime!(
+    //             '$formattedHour : $formattedMinute $timeFormat');
 
-          } else {
-            hour = 01;
-            minHour = 01;
-            minute = 00;
-            minMinute = 00;
+    //       } else {
+    //         hour = 01;
+    //         minHour = 01;
+    //         minute = 00;
+    //         minMinute = 00;
 
-            if (hour < 10) {
-              formattedHour = hour.toString().padLeft(2, '0');
-            } else {
-              formattedHour = hour.toString();
-            }
+    //         if (hour < 10) {
+    //           formattedHour = hour.toString().padLeft(2, '0');
+    //         } else {
+    //           formattedHour = hour.toString();
+    //         }
 
-            if (minute < 10) {
-              formattedMinute = minute.toString().padLeft(2, '0');
-            } else {
-              formattedMinute = minute.toString();
-            }
+    //         if (minute < 10) {
+    //           formattedMinute = minute.toString().padLeft(2, '0');
+    //         } else {
+    //           formattedMinute = minute.toString();
+    //         }
 
-            widget.getTime!(
-                '$formattedHour : $formattedMinute $timeFormat');
-          }
-        });
-      });
-    };
+    //         widget.getTime!(
+    //             '$formattedHour : $formattedMinute $timeFormat');
+    //       }
+    //     });
+    //   });
+    // };
   }
 
   @override

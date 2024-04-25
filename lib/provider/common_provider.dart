@@ -109,12 +109,12 @@ class CommonProvider with ChangeNotifier {
   VoidCallback? resetEndCustomTimePicker;
 
   callReset(){
-    resetCustomTimePicker!.call();
+    resetCustomTimePicker?.call();
     notifyListeners();
   }
 
   callEndReset(){
-    resetEndCustomTimePicker!.call();
+    resetEndCustomTimePicker?.call();
     notifyListeners();
   }
 
