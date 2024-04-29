@@ -20,6 +20,7 @@ class LoginApiProvider with ChangeNotifier {
       String email,
       String password,
       bool isLoginWithGoogle,
+      bool isLoginWithApple,
       String socialLoginId,
       GlobalKey<ScaffoldState> scaffoldKey) async {
 
@@ -35,7 +36,7 @@ class LoginApiProvider with ChangeNotifier {
       queryParameters = {
         "userEmail": email.toLowerCase(),
         "password": password,
-        "loginType": "gmail",
+        "loginType": isLoginWithApple ? "apple" :"gmail",
         "socialLoginId": socialLoginId,
       };
     } else {

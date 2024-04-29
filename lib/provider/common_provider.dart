@@ -247,13 +247,14 @@ class CommonProvider with ChangeNotifier {
       String email,
       String password,
       bool isLoginWithGoogle,
+      bool isLoginWithApple,
       String socialLoginId,
       GlobalKey<ScaffoldState> scaffoldKey
       ) async {
     loginModel = LoginModel();
 
     loginModel = await LoginApiProvider().login(context, email, password,
-        isLoginWithGoogle, socialLoginId, scaffoldKey);
+        isLoginWithGoogle, isLoginWithApple, socialLoginId, scaffoldKey);
     notifyListeners();
 
     return loginModel!;
@@ -271,6 +272,7 @@ class CommonProvider with ChangeNotifier {
       dynamic lat,
       dynamic long,
       bool isRegisterWithGoogle,
+      bool isRegisterWithApple,
       String socialLoginId,
       String profileImage,
       GlobalKey<ScaffoldState> scaffoldKey,
@@ -290,6 +292,7 @@ class CommonProvider with ChangeNotifier {
         lat,
         long,
         isRegisterWithGoogle,
+        isRegisterWithApple,
         socialLoginId,
         profileImage,
         scaffoldKey,

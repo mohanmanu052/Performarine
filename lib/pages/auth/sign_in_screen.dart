@@ -268,6 +268,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                                       googleSignInAccount.email,
                                                       "",
                                                       true,
+                                                      false,
                                                       googleSignInAccount.id,
                                                       scaffoldKey)
                                                   .then((value) async {
@@ -355,6 +356,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                             context,
                                             emailController.text.trim(),
                                             passwordController.text.trim(),
+                                            false,
                                             false,
                                             "",
                                             scaffoldKey)

@@ -231,6 +231,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                               '',
                                               '',
                                               true,
+                                              false,
                                               googleSignInAccount.id,
                                               googleSignInAccount.photoUrl ??
                                                   '',
@@ -625,6 +626,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       zipCodeController.text.trim(),
                                       "",
                                       "",
+                                      false,
                                       false,
                                       "",
                                       "",
