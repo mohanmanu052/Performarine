@@ -96,7 +96,6 @@ class _MemberDetailsWidgetState extends State<MemberDetailsWidget> {
                         onTap: (){
                           widget.onTap!.call();
                         },
-
                       );
                     }),
               ),

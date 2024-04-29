@@ -102,6 +102,26 @@ class CommonProvider with ChangeNotifier {
   VesselDelegateModel? vesselDelegateModel;
   CommonModel? removeDelegateModel;
 
+  //Custom Time Picker Constants
+  var hour = 01;
+  var minute = 00;
+  var timeFormat = "AM";
+  String formattedHour = '01';
+  String formattedMinute = '00';
+
+  VoidCallback? resetCustomTimePicker;
+  VoidCallback? resetEndCustomTimePicker;
+
+  callReset(){
+    resetCustomTimePicker?.call();
+    notifyListeners();
+  }
+
+  callEndReset(){
+    resetEndCustomTimePicker?.call();
+    notifyListeners();
+  }
+
 
   init()async {
     final storage = new FlutterSecureStorage();
@@ -122,7 +142,7 @@ class CommonProvider with ChangeNotifier {
     //Utils.customPrint('LOGIN DATA: $loginData');
     if (loginData != null) {
       loginModel = LoginModel.fromJson(json.decode(loginData));
-       notifyListeners();
+      notifyListeners();
     }
   }
 
@@ -223,13 +243,13 @@ class CommonProvider with ChangeNotifier {
 
   /// Login
   Future<LoginModel> login(
-    BuildContext context,
-    String email,
-    String password,
-    bool isLoginWithGoogle,
-    String socialLoginId,
-    GlobalKey<ScaffoldState> scaffoldKey
-  ) async {
+      BuildContext context,
+      String email,
+      String password,
+      bool isLoginWithGoogle,
+      String socialLoginId,
+      GlobalKey<ScaffoldState> scaffoldKey
+      ) async {
     loginModel = LoginModel();
 
     loginModel = await LoginApiProvider().login(context, email, password,
@@ -241,22 +261,22 @@ class CommonProvider with ChangeNotifier {
 
   /// Sign Up
   Future<RegistrationModel> registerUser(
-    BuildContext context,
-    String email,
-    String password,
-    String countryCode,
-    String phoneNumber,
-    String country,
-    String zipcode,
-    dynamic lat,
-    dynamic long,
-    bool isRegisterWithGoogle,
-    String socialLoginId,
-    String profileImage,
-    GlobalKey<ScaffoldState> scaffoldKey,
-    String? firstName,
+      BuildContext context,
+      String email,
+      String password,
+      String countryCode,
+      String phoneNumber,
+      String country,
+      String zipcode,
+      dynamic lat,
+      dynamic long,
+      bool isRegisterWithGoogle,
+      String socialLoginId,
+      String profileImage,
+      GlobalKey<ScaffoldState> scaffoldKey,
+      String? firstName,
       String? lastName
-  ) async {
+      ) async {
     registrationModel = RegistrationModel();
 
     registrationModel = await RegistrationApiProvider().registerUser(
@@ -273,7 +293,7 @@ class CommonProvider with ChangeNotifier {
         socialLoginId,
         profileImage,
         scaffoldKey,
-    firstName, lastName);
+        firstName, lastName);
     notifyListeners();
 
     return registrationModel!;
@@ -403,18 +423,18 @@ class CommonProvider with ChangeNotifier {
     return reportModel;
   }
 
-Future<ExportDataModel> exportReportData(Map<String,dynamic>body,String token,BuildContext context,GlobalKey<ScaffoldState> scaffoldKey ) async{
-  var data= await ReportModuleProvider().exportReportData(body, token, context, scaffoldKey);
-  notifyListeners();
-  return data;
-}
+  Future<ExportDataModel> exportReportData(Map<String,dynamic>body,String token,BuildContext context,GlobalKey<ScaffoldState> scaffoldKey ) async{
+    var data= await ReportModuleProvider().exportReportData(body, token, context, scaffoldKey);
+    notifyListeners();
+    return data;
+  }
   /// All Trip list
   Future<TripList> tripListData(
-    String vesselID,
-    BuildContext context,
-    String accessToken,
-    GlobalKey<ScaffoldState> scaffoldKey,
-  ) async {
+      String vesselID,
+      BuildContext context,
+      String accessToken,
+      GlobalKey<ScaffoldState> scaffoldKey,
+      ) async {
     tripListModel = TripList();
     tripListModel = await TripListApiProvider()
         .tripListData(vesselID, context, accessToken, scaffoldKey);
@@ -520,26 +540,26 @@ Future<ExportDataModel> exportReportData(Map<String,dynamic>body,String token,Bu
     return userInfoCommonModel!;
   }
 
-Future<CreateFleetResponse> createNewFleet(String token, BuildContext context,GlobalKey<ScaffoldState> scaffoldKey, Map<String,dynamic>? data, )async{
-  var response =CreateNewFleetProvider().createFleet(token, scaffoldKey,context,  data!);
-return response;
-}
+  Future<CreateFleetResponse> createNewFleet(String token, BuildContext context,GlobalKey<ScaffoldState> scaffoldKey, Map<String,dynamic>? data, )async{
+    var response =CreateNewFleetProvider().createFleet(token, scaffoldKey,context,  data!);
+    return response;
+  }
 
-Future<CreateFleetResponse> sendFleetInvite(String token, BuildContext context,GlobalKey<ScaffoldState> scaffoldKey, Map<String,dynamic>? data)async{
-  var response =SendInviteProvider ().sendFleetInvite(token: token,context: context,scaffoldKey: scaffoldKey,data: data);
-return response;
-}
+  Future<CreateFleetResponse> sendFleetInvite(String token, BuildContext context,GlobalKey<ScaffoldState> scaffoldKey, Map<String,dynamic>? data)async{
+    var response =SendInviteProvider ().sendFleetInvite(token: token,context: context,scaffoldKey: scaffoldKey,data: data);
+    return response;
+  }
 
-Future<FleetListModel> getFleetListdata(
-  {BuildContext? context,String? token,GlobalKey<ScaffoldState>? scaffoldKey}
-)async{
-  var response=await FleetListProvider().getFleetDetails(context: context,token: token,scaffoldKey: scaffoldKey);
-return response;
-}
-Future<CommonModel> addFleetVessels( {BuildContext? context,String? token,GlobalKey<ScaffoldState>? scaffoldKey,Map<String,dynamic>? data})async{
-var res=await FleetAssignVesselsProvider().addVesselAndGrantAccess(context: context,token: token,scaffoldKey: scaffoldKey,data: data);
-return res;
-}
+  Future<FleetListModel> getFleetListdata(
+      {BuildContext? context,String? token,GlobalKey<ScaffoldState>? scaffoldKey}
+      )async{
+    var response=await FleetListProvider().getFleetDetails(context: context,token: token,scaffoldKey: scaffoldKey);
+    return response;
+  }
+  Future<CommonModel> addFleetVessels( {BuildContext? context,String? token,GlobalKey<ScaffoldState>? scaffoldKey,Map<String,dynamic>? data})async{
+    var res=await FleetAssignVesselsProvider().addVesselAndGrantAccess(context: context,token: token,scaffoldKey: scaffoldKey,data: data);
+    return res;
+  }
   Future<FleetDashboardModel> fleetDashboardDetails(
       BuildContext context,
       String token,
@@ -551,16 +571,16 @@ return res;
     fleetDashboardModel = await FleetDashboardApiProvider().fleetDashboardData(context, token, scaffoldKey);
 
     if(fleetDashboardModel!.myFleets!.isNotEmpty)
-      {
-        debugPrint("IS LIST EMPTY ${fleetDashboardModel!.myFleets!.isNotEmpty}");
-        isMyFleetNotEmpty = true;
-        notifyListeners();
-      }
+    {
+      debugPrint("IS LIST EMPTY ${fleetDashboardModel!.myFleets!.isNotEmpty}");
+      isMyFleetNotEmpty = true;
+      notifyListeners();
+    }
     else
-      {
-        isMyFleetNotEmpty = false;
-        notifyListeners();
-      }
+    {
+      isMyFleetNotEmpty = false;
+      notifyListeners();
+    }
 
 
     return fleetDashboardModel!;
@@ -638,7 +658,7 @@ return res;
   Future<CommonModel> createDelegate(
       BuildContext context,
       String token,
-Map<String,dynamic> body,
+      Map<String,dynamic> body,
       GlobalKey<ScaffoldState> scaffoldKey) async {
     createDelegateModel = CommonModel();
     createDelegateModel = await CreateDelegateApiProvider().createDelegate(context, token, body, scaffoldKey);
@@ -648,14 +668,14 @@ Map<String,dynamic> body,
   }
 
 
-Future<MyDelegateInviteModel> getDelegateInvites(BuildContext context,String accessToken,GlobalKey<ScaffoldState> scaffoldKey)async{
-  var res=await MyDelegateInviteProvider().getDelegateInvites(context, accessToken, scaffoldKey);
-  List<MyDelegateInvite> tempList = res.myDelegateInvities!.where((element) => element.status == 0 || element.status == 3).toList();
-  res.myDelegateInvities!.clear();
-  res.myDelegateInvities!.addAll(tempList);
-  return res;
-  
-}
+  Future<MyDelegateInviteModel> getDelegateInvites(BuildContext context,String accessToken,GlobalKey<ScaffoldState> scaffoldKey)async{
+    var res=await MyDelegateInviteProvider().getDelegateInvites(context, accessToken, scaffoldKey);
+    List<MyDelegateInvite> tempList = res.myDelegateInvities!.where((element) => element.status == 0 || element.status == 3).toList();
+    res.myDelegateInvities!.clear();
+    res.myDelegateInvities!.addAll(tempList);
+    return res;
+
+  }
 
   Future<CommonModel> delegateAcceptReject(
       BuildContext context,String accessToken,GlobalKey<ScaffoldState> scaffoldKey,String flag,String verifyToken) async {
@@ -666,11 +686,11 @@ Future<MyDelegateInviteModel> getDelegateInvites(BuildContext context,String acc
     return myDelegateInviteModel!;
   }
 
-Future<Response> acceptDelegateInvite(Uri uri)async{
-  var res=DelegateProvider().acceptDelegateInvitation(uri);
-  return res;
+  Future<Response> acceptDelegateInvite(Uri uri)async{
+    var res=DelegateProvider().acceptDelegateInvitation(uri);
+    return res;
 
-}
+  }
 
   Future<VesselDelegateModel> vesselDelegateData(
       BuildContext context, String accessToken, String vesselId, GlobalKey<ScaffoldState> scaffoldKey) async {

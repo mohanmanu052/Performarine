@@ -68,13 +68,14 @@ class _UpdateDelegateAccessScreenState
       globalStartTime = '',
       globalEndTime = '';
   int calenderType = 0, hour = 0, min = 0;
+
   bool isCalenderVisible = false;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    debugPrint("VESSEL ID UPDATE DELEGATE SCREEN  ${widget.delegates!.delegateaccessType}");
+    debugPrint("VESSEL ID UPDATE DELEGATE SCREEN  ${widget.vesselID}");
     singleVesselDetails =
         _databaseService.getVesselFromVesselID(widget.vesselID!);
     singleVesselDetails!.then((value) {
@@ -344,7 +345,8 @@ class _UpdateDelegateAccessScreenState
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Radio<String>(
-                                            value: shareAccessModel[index].value!,
+                                            value:
+                                                shareAccessModel[index].value!,
                                             groupValue: selectedShareUpdate,
                                             onChanged: (value) {
                                               setState(() {
