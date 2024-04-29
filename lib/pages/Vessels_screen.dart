@@ -106,7 +106,7 @@ class _VesselsScreenState extends State<VesselsScreen> {
                       fullscreenDialog: true,
                     ),
                   );
-                  commonProvider.getTripsCount();
+               //   commonProvider.getTripsCount();
                   if (result != null) {
                     Utils.customPrint('RESULT HOME PAGE $result');
                     if (result) {
