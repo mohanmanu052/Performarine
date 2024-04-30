@@ -169,9 +169,10 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                     right: 0,
                     left: 0,
                     child: Container(
-                      height: displayHeight(context) / 8.5,
-                      padding: EdgeInsets.all(8),
+                      height: Platform.isAndroid ? displayHeight(context) / 8.5 :displayHeight(context) / 8,
+                      padding: EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 6),
                       child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           CommonButtons.getActionButton(
                               title: 'Invite Delegate',

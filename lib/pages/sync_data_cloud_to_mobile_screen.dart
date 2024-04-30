@@ -632,13 +632,13 @@ class _SyncDataCloudToMobileScreenState
           }
           }
 
-         /*if(value.delegateVessels != null || value.delegateVessels!.isNotEmpty)
+         if(value.delegateVessels != null && value.delegateVessels!.isNotEmpty)
            {
              /// Adding Delegate Vessel Details into Database
              for (int i = 0; i < value.delegateVessels!.length; i++) {
 
                Utils.customPrint(
-                   'USER CONFIG DATA CLOUD IMAGE 1212 ${value.delegateVessels![i].imageURLs!}');
+                   'DELEGATE USER CONFIG DATA CLOUD IMAGE 1212 ${value.delegateVessels![i].imageURLs!}');
                CustomLogger().logWithFile(Level.info, "USER CONFIG DATA CLOUD IMAGE 1212 ${value.delegateVessels![i].imageURLs!} -> $page");
                String cloudImage;
                if (value.delegateVessels![i].imageURLs!.length > 1) {
@@ -761,7 +761,7 @@ class _SyncDataCloudToMobileScreenState
                }
 
                Utils.customPrint('FINAL IMAGEEEE: $downloadedCompressImageFile');
-               Utils.customPrint('FINAL IMAGEEEE HULL TYPE : ${value.delegateVessels![i].hullShape.toString()}');
+               Utils.customPrint('DELEGATE FINAL IMAGEEEE HULL TYPE : ${value.delegateVessels![i].hullShape.toString()}');
 
                CustomLogger().logWithFile(Level.info, "FINAL IMAGEEEE: $downloadedCompressImageFile -> $page");
 
@@ -798,10 +798,10 @@ class _SyncDataCloudToMobileScreenState
 
                );
 
-               var vesselExist = await _databaseService
-                   .vesselsExistInCloud(value.vessels![i].id!);
+               var vesselExist = await _databaseService.vesselsExistInCloud(value.delegateVessels![i].id!);
 
                Utils.customPrint('USER CONFIG DATA CLOUD $vesselExist');
+               Utils.customPrint('DELEGATE JSON DATA  $vesselData');
                CustomLogger().logWithFile(Level.info, "USER CONFIG DATA CLOUD $vesselExist -> $page");
 
                if (vesselExist) {
@@ -810,7 +810,7 @@ class _SyncDataCloudToMobileScreenState
                  await _databaseService.insertVessel(vesselData);
                }
              }
-           }*/
+           }
 
           Future.delayed(Duration(seconds: 1), () {
             setState(() {
