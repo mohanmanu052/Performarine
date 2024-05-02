@@ -5,6 +5,7 @@ import 'package:performarine/models/device_model.dart';
 
 class Trip {
   final String? id;
+  final String? name;
   final String? vesselId;
   final String? vesselName;
   final String? currentLoad;
@@ -26,7 +27,9 @@ class Trip {
   String? createdBy;
 
   Trip(
-      {this.id,
+      {
+        this.id,
+        this.name,
       this.vesselId,
       this.vesselName,
       required this.currentLoad,
@@ -52,6 +55,7 @@ class Trip {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'name': name,
       'vesselId': vesselId,
       'vesselName': vesselName,
       'currentLoad': currentLoad,
@@ -76,6 +80,7 @@ class Trip {
   factory Trip.fromMap(Map<String, dynamic> map) {
     return Trip(
       id: map['id'] ?? 0,
+      name: map['name'] ?? '',
       vesselId: map['vesselId'] ?? '',
       vesselName: map['vesselName'] ?? '',
       currentLoad: map['currentLoad'] ?? '',
