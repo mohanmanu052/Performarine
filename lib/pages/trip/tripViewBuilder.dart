@@ -189,7 +189,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                               //snapshot.data![index].tripStatus = 1;
                                             });
                                           }
-                                          commonProvider.getTripsCount();
+                                         // commonProvider.getTripsCount();
                                         },
                                         onTap: () async {
 
@@ -303,7 +303,7 @@ class _TripViewListingState extends State<TripViewListing> {
                                               //snapshot.data![index].tripStatus = 1;
                                             });
                                           }
-                                          commonProvider.getTripsCount();
+                                        //  commonProvider.getTripsCount();
                                         },
                                         onTap: () async {
 

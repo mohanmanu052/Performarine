@@ -1118,32 +1118,34 @@ showLocationDailog();
     commonProvider = context.watch<CommonProvider>();
     locationController = context.watch<LocationController>();
 
-    return Screenshot(
-      controller: controller,
-      child: PopScope(
-        canPop: false,
-        key: tripState,
-        onPopInvoked: (didPop) async {
-          if(didPop) return;
-          if (commonProvider.bottomNavIndex == 1) {
-            SystemChrome.setPreferredOrientations([
-              DeviceOrientation.portraitUp,
-              DeviceOrientation.portraitDown,
-              DeviceOrientation.landscapeLeft,
-              DeviceOrientation.landscapeRight,
-            ]);
+    return PopScope(
+      canPop: false,
+     // key: tripState,
+      onPopInvoked: (didPop) async {
+        if(didPop) return;
+        if (commonProvider.bottomNavIndex == 1) {
+          SystemChrome.setPreferredOrientations([
+            DeviceOrientation.portraitUp,
+            DeviceOrientation.portraitDown,
+            DeviceOrientation.landscapeLeft,
+            DeviceOrientation.landscapeRight,
+          ]);
+        }
+    
+        bool? isTripStarted =
+            sharedPreferences!.getBool('trip_started') ?? false;
+        if (!isTripStarted ?? false) {
+          for (int i = 0; i < FlutterBluePlus.connectedDevices.length; i++) {
+            await FlutterBluePlus.connectedDevices[i]
+                .disconnect()
+                .then((value) {});
           }
+        }
+                          Navigator.of(context).pop(true);
 
-          bool? isTripStarted =
-              sharedPreferences!.getBool('trip_started') ?? false;
-          if (!isTripStarted ?? false) {
-            for (int i = 0; i < FlutterBluePlus.connectedDevices.length; i++) {
-              await FlutterBluePlus.connectedDevices[i]
-                  .disconnect()
-                  .then((value) {});
-            }
-          }
-        },
+      },
+      child: Screenshot(
+        controller: controller,
         child: SafeArea(
           child: Scaffold(
             backgroundColor: backgroundColor,
@@ -1161,7 +1163,7 @@ showLocationDailog();
                       DeviceOrientation.landscapeRight,
                     ]);
                   }
-
+            
                   Navigator.of(context).pop(true);
                 },
                 icon: const Icon(Icons.arrow_back),
@@ -1184,7 +1186,7 @@ showLocationDailog();
                       await SystemChrome.setPreferredOrientations([
                         DeviceOrientation.portraitUp,
                       ]);
-
+            
                       Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
@@ -1575,7 +1577,7 @@ showLocationDailog();
                                                     .text =
                                                     (passengerValue)
                                                         .toString();
-
+            
                                                 if (val == sliderMinVal) {
                                                   if (mounted) {
                                                     setState(() {
@@ -1823,7 +1825,7 @@ showLocationDailog();
                                                       await Permission
                                                           .bluetoothConnect
                                                           .isPermanentlyDenied;
-
+            
                                                       if (isNDPermDenied) {
                                                         showDialog(
                                                             context:
@@ -1859,7 +1861,7 @@ showLocationDailog();
                                                                 showBluetoothDialog(
                                                                     context);
                                                               });
-
+            
                                                           if (isBluetoothEnable !=
                                                               null) {
                                                             if (isBluetoothEnable) {
@@ -1884,7 +1886,7 @@ showLocationDailog();
                                                                           () async {
                           if(!isLocationDialogBoxOpen){
                           showLocationDailog();
-
+            
                           }
                                                                       });
                                                                 } else {
@@ -1913,7 +1915,7 @@ showLocationDailog();
                                                           await Permission
                                                               .bluetoothConnect
                                                               .isGranted;
-
+            
                                                           if (isNDPermittedOne) {
                                                             bool isBluetoothEnable = Platform
                                                                 .isAndroid
@@ -1924,7 +1926,7 @@ showLocationDailog();
                                                                   showBluetoothDialog(
                                                                       context);
                                                                 });
-
+            
                                                             if (isBluetoothEnable) {
                                                               if (Platform
                                                                   .isIOS) {
@@ -1947,7 +1949,7 @@ showLocationDailog();
                                                                           () async {
                           if(!isLocationDialogBoxOpen){
                           showLocationDailog();
-
+            
                           }
                                                                       });
                                                                 } else {
@@ -1969,7 +1971,7 @@ showLocationDailog();
                                                                               () async {
                           if(!isLocationDialogBoxOpen){
                           showLocationDailog();
-
+            
                           }
                                                                           });
                                                                     } else {
@@ -2000,7 +2002,7 @@ showLocationDailog();
                                                                       () {
                                                                     showBluetoothDialog(context);
                                                                   });
-
+            
                                                               if (isBluetoothEnable) {
                                                                 if (Platform
                                                                     .isIOS) {
@@ -2021,7 +2023,7 @@ showLocationDailog();
                                                                             () async {
                           if(!isLocationDialogBoxOpen){
                           showLocationDailog();
-
+            
                           }
                                                                         });
                                                                   } else {
@@ -2060,7 +2062,7 @@ showLocationDailog();
                                                                         buttonText: 'OK',
                                                                         buttonOnTap: () async {
                                                                           Get.back();
-
+            
                                                                           await openAppSettings();
                                                                         },
                                                                       );
@@ -2232,7 +2234,7 @@ showLocationDailog();
                                                 ));
                                             return;
                                           }
-
+            
                                           if (isCheck) {
                                             if (textEditingController
                                                 .text.isEmpty ||
@@ -2254,7 +2256,7 @@ showLocationDailog();
                                                   ));
                                               return;
                                             }
-
+            
                                             if (int.parse(
                                                 textEditingController
                                                     .text) >
@@ -2274,13 +2276,13 @@ showLocationDailog();
                                             }
                                           }
                                         }*/
-
+            
                                         checkAllPermission(true);
-
+            
                                         Utils.customPrint(
                                             'SELECTED VESSEL WEIGHT $selectedVesselWeight');
                                       }
-
+            
                                       List<BluetoothDevice>
                                       connectedDeviceList =
                                           FlutterBluePlus
@@ -2316,7 +2318,7 @@ showLocationDailog();
                                         .setPreferredOrientations([
                                       DeviceOrientation.portraitUp,
                                     ]);
-
+            
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(

@@ -60,13 +60,13 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
 
     Utils.customPrint("IS APP KILLED FROM BG 1212 $isTripStarted");
 
-   Future.delayed(Duration(milliseconds: 200), (){
-     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+  // Future.delayed(Duration(milliseconds: 200), (){
+    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
        SystemChrome.setPreferredOrientations([
          DeviceOrientation.portraitUp,
        ]);
-     });
-   });
+     //});
+   //});
   }
   @override
   void dispose() {
@@ -127,7 +127,7 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
                               fullscreenDialog: true,
                             ),
                           );
-                          commonProvider.getTripsCount();
+                         // commonProvider.getTripsCount();
                           if (result != null) {
                             Utils.customPrint('RESULT HOME PAGE $result');
                             if (result) {

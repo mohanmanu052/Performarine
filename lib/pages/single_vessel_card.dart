@@ -27,9 +27,9 @@ class _SingleVesselCardState extends State<SingleVesselCard> {
 
   @override
   void initState() {
-    //     SystemChrome.setPreferredOrientations([
-    //   DeviceOrientation.portraitUp,
-    // ]);
+        SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
 
     // TODO: implement initState
     super.initState();
@@ -52,6 +52,7 @@ class _SingleVesselCardState extends State<SingleVesselCard> {
 
   @override
   Widget build(BuildContext context) {
+
     commonProvider = context.watch<CommonProvider>();
     return vesselSingleViewCard(
       context,
