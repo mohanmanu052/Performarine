@@ -339,12 +339,10 @@ class _SignInScreenState extends State<SignInScreen> {
                                     .login(
                                   context,
                                   user.email!,
-                                  //'paccoretesting@gmail.com',
                                   "",
                                   true,
                                   true,
                                   user.uid,
-                                  //'114993051138200889304',
                                   scaffoldKey,
                                 )
                                     .then((value) async {

@@ -354,6 +354,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           debugPrint("APPLE SIGN UP FIRST NAME ${user.displayName?.split(' ').first}");
                           debugPrint("APPLE SIGN UP LAST NAME ${user.displayName?.split(' ').last}");
 
+                         // String? firstName = user.displayName == null ? ' ' : user.displayName?.split(' ').first == null ? ' ' : user.displayName?.split(' ').first;
+                         // String? lastName = user.displayName == null ? ' ' : user.displayName?.split(' ').last == null ?  ' ' : user.displayName?.split(' ').last;
+
                           commonProvider
                               .registerUser(
                             context,
@@ -370,8 +373,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             user.uid,
                             user.photoURL ?? '',
                             scaffoldKey,
-                            user.displayName?.split(' ').first ?? '',
-                            user.displayName?.split(' ').last ?? '',
+                            user.displayName?.split(' ').first ?? ' ',
+                            user.displayName?.split(' ').last ?? ' ' ,
                           )
                               .then((value) {
                             setState(() {
