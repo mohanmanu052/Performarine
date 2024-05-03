@@ -402,10 +402,12 @@ class _ReportsModuleState extends State<ReportsModule>
             });
           }
         }).catchError((e) {
+          if(mounted)
           setState(() {
             isVesselDataLoading = true;
           });
-        });
+          
+      });
       } else {
         setState(() {
           isVesselDataLoading = true;
@@ -1111,13 +1113,14 @@ setState(() {
 
   @override
   void dispose() {
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     subscription.cancel();
+        SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+
     // TODO: implement dispose
     super.dispose();
-    // SystemChrome.setPreferredOrientations([
-    //   DeviceOrientation.portraitUp,
-    // ]);
   }
 
   @override

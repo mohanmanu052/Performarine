@@ -262,15 +262,15 @@ print('the get arguments was----'+Get.arguments.toString());
     super.dispose();
 
     WidgetsBinding.instance.removeObserver(this);
-if(_bottomNavIndex==1){
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.portraitUp
-    ]);
+// if(_bottomNavIndex==1){
+//     SystemChrome.setPreferredOrientations([
+//       DeviceOrientation.landscapeLeft,
+//       DeviceOrientation.landscapeRight,
+//       DeviceOrientation.portraitDown,
+//       DeviceOrientation.portraitUp
+//     ]);
 
-}
+//}
   }
 
 

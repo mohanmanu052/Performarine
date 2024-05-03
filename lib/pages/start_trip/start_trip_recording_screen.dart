@@ -64,9 +64,9 @@ class StartTripRecordingScreen extends StatefulWidget {
 
   const StartTripRecordingScreen(
       {super.key,
-        this.bottomNavIndex,
-        /*this.isLocationPermitted = false, this.isBluetoothConnected = false,*/ this.calledFrom =
-      ''});
+      this.bottomNavIndex,
+      /*this.isLocationPermitted = false, this.isBluetoothConnected = false,*/ this.calledFrom =
+          ''});
 
   @override
   State<StartTripRecordingScreen> createState() =>
@@ -126,6 +126,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
   late AnimationController popupAnimationController;
   late TextEditingController textEditingController;
+  TextEditingController tripNameController = TextEditingController();
   FocusNode _focusNode = FocusNode();
 
   bool openedSettingsPageForPermission = false;
@@ -183,13 +184,10 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     });
   }
 
-  
-  
-  
   checkGPS(BuildContext context) {
     StreamSubscription<geo.ServiceStatus> serviceStatusStream =
-    geo.Geolocator.getServiceStatusStream()
-        .listen((geo.ServiceStatus status) {
+        geo.Geolocator.getServiceStatusStream()
+            .listen((geo.ServiceStatus status) {
       print(status);
 
       if (status == geo.ServiceStatus.disabled) {
@@ -246,11 +244,11 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
           Utils.showSnackBar(context,
               scaffoldKey: scaffoldKey,
               message:
-              'Location permissions are denied without permissions we are unable to start the trip');
+                  'Location permissions are denied without permissions we are unable to start the trip');
           Future.delayed(Duration(seconds: 2), () async {
             openedSettingsPageForPermission = true;
-            if(!isLocationDialogBoxOpen){
-showLocationDailog();
+            if (!isLocationDialogBoxOpen) {
+              showLocationDailog();
             }
             //await openAppSettings();
           });
@@ -261,8 +259,8 @@ showLocationDailog();
               dynamic isBluetoothEnable = Platform.isAndroid
                   ? await blueIsOn()
                   : await checkIfBluetoothIsEnabled(scaffoldKey, () {
-                showBluetoothDialog(context, autoConnect: true);
-              });
+                      showBluetoothDialog(context, autoConnect: true);
+                    });
 
               if (isBluetoothEnable != null) {
                 if (isBluetoothEnable) {
@@ -294,8 +292,8 @@ showLocationDailog();
                 dynamic isBluetoothEnable = Platform.isAndroid
                     ? await blueIsOn()
                     : await checkIfBluetoothIsEnabled(scaffoldKey, () {
-                  showBluetoothDialog(context, autoConnect: true);
-                });
+                        showBluetoothDialog(context, autoConnect: true);
+                      });
 
                 if (isBluetoothEnable != null) {
                   if (isBluetoothEnable) {
@@ -320,7 +318,7 @@ showLocationDailog();
                 // }
               });
             } else {
-             // await Permission.locationAlways.request();
+              // await Permission.locationAlways.request();
               if (Platform.isIOS) {
                 Permission.locationAlways.request();
               }
@@ -328,8 +326,8 @@ showLocationDailog();
                 dynamic isBluetoothEnable = Platform.isAndroid
                     ? await blueIsOn()
                     : await checkIfBluetoothIsEnabled(scaffoldKey, () {
-                  showBluetoothDialog(context, autoConnect: true);
-                });
+                        showBluetoothDialog(context, autoConnect: true);
+                      });
 
                 if (isBluetoothEnable != null) {
                   if (isBluetoothEnable) {
@@ -361,11 +359,11 @@ showLocationDailog();
                 Utils.showSnackBar(context,
                     scaffoldKey: scaffoldKey,
                     message:
-                    'Location permissions are denied without permissions we are unable to start the trip');
+                        'Location permissions are denied without permissions we are unable to start the trip');
                 Future.delayed(Duration(seconds: 2), () async {
-            if(!isLocationDialogBoxOpen){
-showLocationDailog();
-            }
+                  if (!isLocationDialogBoxOpen) {
+                    showLocationDailog();
+                  }
                   //await openAppSettings();
                 });
               }
@@ -376,14 +374,14 @@ showLocationDailog();
               Utils.showSnackBar(context,
                   scaffoldKey: scaffoldKey,
                   message:
-                  'Location permissions are denied without permissions we are unable to start the trip');
+                      'Location permissions are denied without permissions we are unable to start the trip');
               Future.delayed(Duration(seconds: 2), () async {
                 openedSettingsPageForPermission = true;
-                            if(!isLocationDialogBoxOpen){
-showLocationDailog();
-            }
+                if (!isLocationDialogBoxOpen) {
+                  showLocationDailog();
+                }
 
-               // await openAppSettings();
+                // await openAppSettings();
               });
             } else {
               await Permission.locationWhenInUse.request();
@@ -394,8 +392,8 @@ showLocationDailog();
                   dynamic isBluetoothEnable = Platform.isAndroid
                       ? await blueIsOn()
                       : await checkIfBluetoothIsEnabled(scaffoldKey, () {
-                    showBluetoothDialog(context, autoConnect: true);
-                  });
+                          showBluetoothDialog(context, autoConnect: true);
+                        });
 
                   if (isBluetoothEnable != null) {
                     if (isBluetoothEnable) {
@@ -430,8 +428,8 @@ showLocationDailog();
                     dynamic isBluetoothEnable = Platform.isAndroid
                         ? await blueIsOn()
                         : await checkIfBluetoothIsEnabled(scaffoldKey, () {
-                      showBluetoothDialog(context, autoConnect: true);
-                    });
+                            showBluetoothDialog(context, autoConnect: true);
+                          });
 
                     if (isBluetoothEnable != null) {
                       if (isBluetoothEnable) {
@@ -461,13 +459,13 @@ showLocationDailog();
                     Permission.locationAlways.request();
                   }
 
-                //  await Permission.locationAlways.request();
+                  //  await Permission.locationAlways.request();
                   if (await Permission.locationAlways.isGranted) {
                     dynamic isBluetoothEnable = Platform.isAndroid
                         ? await blueIsOn()
                         : await checkIfBluetoothIsEnabled(scaffoldKey, () {
-                      showBluetoothDialog(context, autoConnect: true);
-                    });
+                            showBluetoothDialog(context, autoConnect: true);
+                          });
 
                     if (isBluetoothEnable != null) {
                       if (isBluetoothEnable) {
@@ -500,13 +498,13 @@ showLocationDailog();
                     Utils.showSnackBar(context,
                         scaffoldKey: scaffoldKey,
                         message:
-                        'Location permissions are denied without permissions we are unable to start the trip');
+                            'Location permissions are denied without permissions we are unable to start the trip');
                     Future.delayed(Duration(seconds: 2), () async {
-                                  if(!isLocationDialogBoxOpen){
-showLocationDailog();
-            }
+                      if (!isLocationDialogBoxOpen) {
+                        showLocationDailog();
+                      }
 
-                     // await openAppSettings();
+                      // await openAppSettings();
                     });
                   }
                 }
@@ -524,12 +522,12 @@ showLocationDailog();
             Utils.showSnackBar(context,
                 scaffoldKey: scaffoldKey,
                 message:
-                'Location permissions are denied without permissions we are unable to start the trip');
+                    'Location permissions are denied without permissions we are unable to start the trip');
             Future.delayed(Duration(seconds: 2), () async {
               openedSettingsPageForPermission = true;
-                          if(!isLocationDialogBoxOpen){
-showLocationDailog();
-            }
+              if (!isLocationDialogBoxOpen) {
+                showLocationDailog();
+              }
 
               //await openAppSettings();
             });
@@ -555,8 +553,8 @@ showLocationDailog();
               bool isBluetoothEnable = Platform.isAndroid
                   ? await blueIsOn()
                   : await checkIfBluetoothIsEnabled(scaffoldKey, () {
-                showBluetoothDialog(context, autoConnect: true);
-              });
+                      showBluetoothDialog(context, autoConnect: true);
+                    });
               if (isBluetoothEnable) {
                 autoConnectToDevice();
               } else {
@@ -569,12 +567,12 @@ showLocationDailog();
                 Utils.showSnackBar(context,
                     scaffoldKey: scaffoldKey,
                     message:
-                    'Location permissions are denied without permissions we are unable to start the trip');
+                        'Location permissions are denied without permissions we are unable to start the trip');
                 Future.delayed(Duration(seconds: 2), () async {
                   openedSettingsPageForPermission = true;
-                              if(!isLocationDialogBoxOpen){
-showLocationDailog();
-            }
+                  if (!isLocationDialogBoxOpen) {
+                    showLocationDailog();
+                  }
 
                   //await openAppSettings();
                 });
@@ -602,8 +600,8 @@ showLocationDailog();
                   bool isBluetoothEnable = Platform.isAndroid
                       ? await blueIsOn()
                       : await checkIfBluetoothIsEnabled(scaffoldKey, () {
-                    showBluetoothDialog(context, autoConnect: true);
-                  });
+                          showBluetoothDialog(context, autoConnect: true);
+                        });
                   if (isBluetoothEnable) {
                     autoConnectToDevice();
                   } else {
@@ -625,12 +623,12 @@ showLocationDailog();
               Utils.showSnackBar(context,
                   scaffoldKey: scaffoldKey,
                   message:
-                  'Location permissions are denied without permissions we are unable to start the trip');
+                      'Location permissions are denied without permissions we are unable to start the trip');
               Future.delayed(Duration(seconds: 2), () async {
                 openedSettingsPageForPermission = true;
-                            if(!isLocationDialogBoxOpen){
-showLocationDailog();
-            }
+                if (!isLocationDialogBoxOpen) {
+                  showLocationDailog();
+                }
 
                 //await openAppSettings();
               });
@@ -656,8 +654,8 @@ showLocationDailog();
                 bool isBluetoothEnable = Platform.isAndroid
                     ? await blueIsOn()
                     : await checkIfBluetoothIsEnabled(scaffoldKey, () {
-                  showBluetoothDialog(context, autoConnect: true);
-                });
+                        showBluetoothDialog(context, autoConnect: true);
+                      });
                 if (isBluetoothEnable) {
                   autoConnectToDevice();
                 } else {
@@ -670,14 +668,14 @@ showLocationDailog();
                   Utils.showSnackBar(context,
                       scaffoldKey: scaffoldKey,
                       message:
-                      'Location permissions are denied without permissions we are unable to start the trip');
+                          'Location permissions are denied without permissions we are unable to start the trip');
                   Future.delayed(Duration(seconds: 2), () async {
                     openedSettingsPageForPermission = true;
-                                if(!isLocationDialogBoxOpen){
-showLocationDailog();
-            }
+                    if (!isLocationDialogBoxOpen) {
+                      showLocationDailog();
+                    }
 
-                   // await openAppSettings();
+                    // await openAppSettings();
                   });
                 } else {
                   await Permission.locationWhenInUse.request();
@@ -703,8 +701,8 @@ showLocationDailog();
                     bool isBluetoothEnable = Platform.isAndroid
                         ? await blueIsOn()
                         : await checkIfBluetoothIsEnabled(scaffoldKey, () {
-                      showBluetoothDialog(context, autoConnect: true);
-                    });
+                            showBluetoothDialog(context, autoConnect: true);
+                          });
                     if (isBluetoothEnable) {
                       autoConnectToDevice();
                     } else {
@@ -742,7 +740,7 @@ showLocationDailog();
       }
     }
   }
-    
+
   autoConnectToDevice() async {
     final FlutterSecureStorage storage = FlutterSecureStorage();
     var lprDeviceId = sharedPreferences!.getString('lprDeviceId');
@@ -777,252 +775,251 @@ showLocationDailog();
 
       autoConnectStreamSubscription =
           FlutterBluePlus.scanResults.listen((value) {
-            Utils.customPrint('BLED - SCAN RESULT - ${value.isEmpty}');
-            streamOfScanResultList = value;
-          });
+        Utils.customPrint('BLED - SCAN RESULT - ${value.isEmpty}');
+        streamOfScanResultList = value;
+      });
 
       autoConnectIsScanningStreamSubscription =
           FlutterBluePlus.isScanning.listen((event) {
-            Utils.customPrint('BLED - IS SCANNING: $event');
-            Utils.customPrint(
-                'BLED - IS SCANNING: ${streamOfScanResultList.length}');
-            if (!event) {
-              autoConnectIsScanningStreamSubscription!.cancel();
-              if (streamOfScanResultList.isNotEmpty) {
-                if (lprDeviceId != null) {
-                  List<ScanResult> storedDeviceIdResultList = streamOfScanResultList
-                      .where(
-                          (element) => element.device.remoteId.str == lprDeviceId)
-                      .toList();
-                  if (storedDeviceIdResultList.isNotEmpty) {
-                    ScanResult r = storedDeviceIdResultList.first;
-                    r.device.connect().then((value) {
-                      Utils.customPrint('CONNECTED TO DEVICE BLE');
-                      LPRDeviceHandler().setLPRDevice(r.device);
-                      LPRDeviceHandler().setDeviceDisconnectCallback(() {
-                        if (mounted) {
-                          setState(() {});
-                        }
-                      });
+        Utils.customPrint('BLED - IS SCANNING: $event');
+        Utils.customPrint(
+            'BLED - IS SCANNING: ${streamOfScanResultList.length}');
+        if (!event) {
+          autoConnectIsScanningStreamSubscription!.cancel();
+          if (streamOfScanResultList.isNotEmpty) {
+            if (lprDeviceId != null) {
+              List<ScanResult> storedDeviceIdResultList = streamOfScanResultList
+                  .where(
+                      (element) => element.device.remoteId.str == lprDeviceId)
+                  .toList();
+              if (storedDeviceIdResultList.isNotEmpty) {
+                ScanResult r = storedDeviceIdResultList.first;
+                r.device.connect().then((value) {
+                  Utils.customPrint('CONNECTED TO DEVICE BLE');
+                  LPRDeviceHandler().setLPRDevice(r.device);
+                  LPRDeviceHandler().setDeviceDisconnectCallback(() {
+                    if (mounted) {
                       setState(() {});
-                    }).catchError((onError) {
-                      Utils.customPrint('ERROR BLE: $onError');
-                    });
+                    }
+                  });
+                  setState(() {});
+                }).catchError((onError) {
+                  Utils.customPrint('ERROR BLE: $onError');
+                });
 
-                    bluetoothName = r.device.platformName.isEmpty
-                        ? r.device.remoteId.str
-                        : r.device.platformName;
-                    //await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
-                    deviceId = r.device.remoteId.str;
-                    connectedBluetoothDevice = r.device;
-                    setState(() {
-                      bluetoothName = r.device.platformName.isEmpty
-                          ? r.device.remoteId.str
-                          : r.device.platformName;
-                      isBluetoothPermitted = true;
-                      progress = 1.0;
-                      lprSensorProgress = 1.0;
-                      isStartButton = true;
-                      isBluetoothSearching = false;
-                    });
-                    FlutterBluePlus.stopScan();
-                    EasyLoading.dismiss();
-                  } else {
-                    List<ScanResult> lprNameResultList = streamOfScanResultList
-                        .where((element) => element.device.platformName
+                bluetoothName = r.device.platformName.isEmpty
+                    ? r.device.remoteId.str
+                    : r.device.platformName;
+                //await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
+                deviceId = r.device.remoteId.str;
+                connectedBluetoothDevice = r.device;
+                setState(() {
+                  bluetoothName = r.device.platformName.isEmpty
+                      ? r.device.remoteId.str
+                      : r.device.platformName;
+                  isBluetoothPermitted = true;
+                  progress = 1.0;
+                  lprSensorProgress = 1.0;
+                  isStartButton = true;
+                  isBluetoothSearching = false;
+                });
+                FlutterBluePlus.stopScan();
+                EasyLoading.dismiss();
+              } else {
+                List<ScanResult> lprNameResultList = streamOfScanResultList
+                    .where((element) => element.device.platformName
                         .toLowerCase()
                         .contains('lpr'))
-                        .toList();
-                    if (lprNameResultList.isNotEmpty) {
-                      ScanResult r = lprNameResultList.first;
-                      r.device.connect().then((value) {
-                        LPRDeviceHandler().setLPRDevice(r.device);
-                        LPRDeviceHandler().setDeviceDisconnectCallback(() {
-                          if (mounted) {
-                            setState(() {});
-                          }
-                        });
-                        setState(() {});
-                      });
-                      bluetoothName = r.device.platformName.isEmpty
-                          ? r.device.remoteId.str
-                          : r.device.platformName;
-                      // await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
-                      deviceId = r.device.remoteId.str;
-                      connectedBluetoothDevice = r.device;
-                      setState(() {
-                        bluetoothName = r.device.platformName.isEmpty
-                            ? r.device.remoteId.str
-                            : r.device.platformName;
-                        isBluetoothPermitted = true;
-                        progress = 1.0;
-                        lprSensorProgress = 1.0;
-                        isStartButton = true;
-                        isBluetoothSearching = false;
-                      });
-                      FlutterBluePlus.stopScan();
-                      EasyLoading.dismiss();
-                    } else {
+                    .toList();
+                if (lprNameResultList.isNotEmpty) {
+                  ScanResult r = lprNameResultList.first;
+                  r.device.connect().then((value) {
+                    LPRDeviceHandler().setLPRDevice(r.device);
+                    LPRDeviceHandler().setDeviceDisconnectCallback(() {
                       if (mounted) {
-                        Future.delayed(Duration(seconds: 1), () {
-                          EasyLoading.dismiss();
-                          isBluetoothSearching = false;
-
-                          showBluetoothListDialog(context, null, null);
-                        });
+                        setState(() {});
                       }
-                    }
-                  }
-                } else {
-                  List<ScanResult> lprNameResultList = streamOfScanResultList
-                      .where((element) =>
-                      element.device.platformName.toLowerCase().contains('lpr'))
-                      .toList();
-                  if (lprNameResultList.isNotEmpty) {
-                    ScanResult r = lprNameResultList.first;
-                    r.device.connect().then((value) {
-                      LPRDeviceHandler().setLPRDevice(r.device);
-                      LPRDeviceHandler().setDeviceDisconnectCallback(() {
-                        if (mounted) {
-                          setState(() {});
-                        }
-                      });
-                      setState(() {});
                     });
+                    setState(() {});
+                  });
+                  bluetoothName = r.device.platformName.isEmpty
+                      ? r.device.remoteId.str
+                      : r.device.platformName;
+                  // await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
+                  deviceId = r.device.remoteId.str;
+                  connectedBluetoothDevice = r.device;
+                  setState(() {
                     bluetoothName = r.device.platformName.isEmpty
                         ? r.device.remoteId.str
                         : r.device.platformName;
-                    // await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
-                    deviceId = r.device.remoteId.str;
-                    connectedBluetoothDevice = r.device;
-                    setState(() {
-                      bluetoothName = r.device.platformName.isEmpty
-                          ? r.device.remoteId.str
-                          : r.device.platformName;
-                      isBluetoothPermitted = true;
-                      progress = 1.0;
-                      lprSensorProgress = 1.0;
-                      isStartButton = true;
+                    isBluetoothPermitted = true;
+                    progress = 1.0;
+                    lprSensorProgress = 1.0;
+                    isStartButton = true;
+                    isBluetoothSearching = false;
+                  });
+                  FlutterBluePlus.stopScan();
+                  EasyLoading.dismiss();
+                } else {
+                  if (mounted) {
+                    Future.delayed(Duration(seconds: 1), () {
+                      EasyLoading.dismiss();
                       isBluetoothSearching = false;
+
+                      showBluetoothListDialog(context, null, null);
                     });
-                    FlutterBluePlus.stopScan();
-                    EasyLoading.dismiss();
-                  } else {
-                    if (mounted) {
-                      Future.delayed(Duration(seconds: 1), () {
-                        EasyLoading.dismiss();
-                        isBluetoothSearching = false;
-                        if(mounted){
-                        showBluetoothListDialog(context, null, null);
-                        }
-                      });
-                    }
                   }
                 }
-
-                // for (int i = 0; i < streamOfScanResultList.length; i++) {
-                //   ScanResult r = streamOfScanResultList[i];
-                //
-                //   if(lprDeviceId != null)
-                //   {
-                //     Utils.customPrint('STORED ID: $lprDeviceId - ${r.device.remoteId.str}');
-                //     if(r.device.remoteId.str == lprDeviceId)
-                //     {
-                //       r.device.connect().then((value) {
-                //         Utils.customPrint('CONNECTED TO DEVICE BLE');
-                //       }).catchError((onError){
-                //         Utils.customPrint('ERROR BLE: $onError');
-                //       });
-                //
-                //       bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
-                //       //await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
-                //       deviceId = r.device.remoteId.str;
-                //       connectedBluetoothDevice = r.device;
-                //       setState(() {
-                //         bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
-                //         isBluetoothPermitted = true;
-                //         progress = 1.0;
-                //         lprSensorProgress = 1.0;
-                //         isStartButton = true;
-                //       });
-                //       FlutterBluePlus.stopScan();
-                //       EasyLoading.dismiss();
-                //       break;
-                //     }
-                //     else
-                //     {
-                //       if (r.device.platformName.toLowerCase().contains("lpr")) {
-                //         r.device.connect().then((value) {});
-                //         bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
-                //         // await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
-                //         deviceId = r.device.remoteId.str;
-                //         connectedBluetoothDevice = r.device;
-                //         setState(() {
-                //           bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
-                //           isBluetoothPermitted = true;
-                //           progress = 1.0;
-                //           lprSensorProgress = 1.0;
-                //           isStartButton = true;
-                //         });
-                //         FlutterBluePlus.stopScan();
-                //         EasyLoading.dismiss();
-                //         break;
-                //       }
-                //       else{
-                //         if(mounted){
-                //           Future.delayed(Duration(seconds: 2), (){
-                //             EasyLoading.dismiss();
-                //             showBluetoothListDialog(context, null, null);
-                //           });
-                //
-                //         }
-                //
-                //       }
-                //     }
-                //   }
-                //   else
-                //   {
-                //     Utils.customPrint('BLED - ELSE COND');
-                //     if (r.device.platformName.toLowerCase().contains("lpr")) {
-                //       r.device.connect().then((value) {});
-                //       bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
-                //       //await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
-                //       deviceId = r.device.remoteId.str;
-                //       connectedBluetoothDevice = r.device;
-                //       setState(() {
-                //         bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
-                //         isBluetoothPermitted = true;
-                //         progress = 1.0;
-                //         lprSensorProgress = 1.0;
-                //         isStartButton = true;
-                //       });
-                //       FlutterBluePlus.stopScan();
-                //       EasyLoading.dismiss();
-                //       break;
-                //     }
-                //     else{
-                //       if(mounted){
-                //         Future.delayed(Duration(seconds: 2), (){
-                //           EasyLoading.dismiss();
-                //           showBluetoothListDialog(context, null, null);
-                //         });
-                //       }
-                //     }
-                //   }
-                // }
+              }
+            } else {
+              List<ScanResult> lprNameResultList = streamOfScanResultList
+                  .where((element) =>
+                      element.device.platformName.toLowerCase().contains('lpr'))
+                  .toList();
+              if (lprNameResultList.isNotEmpty) {
+                ScanResult r = lprNameResultList.first;
+                r.device.connect().then((value) {
+                  LPRDeviceHandler().setLPRDevice(r.device);
+                  LPRDeviceHandler().setDeviceDisconnectCallback(() {
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  });
+                  setState(() {});
+                });
+                bluetoothName = r.device.platformName.isEmpty
+                    ? r.device.remoteId.str
+                    : r.device.platformName;
+                // await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
+                deviceId = r.device.remoteId.str;
+                connectedBluetoothDevice = r.device;
+                setState(() {
+                  bluetoothName = r.device.platformName.isEmpty
+                      ? r.device.remoteId.str
+                      : r.device.platformName;
+                  isBluetoothPermitted = true;
+                  progress = 1.0;
+                  lprSensorProgress = 1.0;
+                  isStartButton = true;
+                  isBluetoothSearching = false;
+                });
+                FlutterBluePlus.stopScan();
+                EasyLoading.dismiss();
               } else {
                 if (mounted) {
-                  Future.delayed(Duration(seconds: 2), () {
+                  Future.delayed(Duration(seconds: 1), () {
                     EasyLoading.dismiss();
-                    if(mounted){
-                    showBluetoothListDialog(context, null, null);
-
+                    isBluetoothSearching = false;
+                    if (mounted) {
+                      showBluetoothListDialog(context, null, null);
                     }
                   });
                 }
               }
             }
-          });
+
+            // for (int i = 0; i < streamOfScanResultList.length; i++) {
+            //   ScanResult r = streamOfScanResultList[i];
+            //
+            //   if(lprDeviceId != null)
+            //   {
+            //     Utils.customPrint('STORED ID: $lprDeviceId - ${r.device.remoteId.str}');
+            //     if(r.device.remoteId.str == lprDeviceId)
+            //     {
+            //       r.device.connect().then((value) {
+            //         Utils.customPrint('CONNECTED TO DEVICE BLE');
+            //       }).catchError((onError){
+            //         Utils.customPrint('ERROR BLE: $onError');
+            //       });
+            //
+            //       bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+            //       //await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
+            //       deviceId = r.device.remoteId.str;
+            //       connectedBluetoothDevice = r.device;
+            //       setState(() {
+            //         bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+            //         isBluetoothPermitted = true;
+            //         progress = 1.0;
+            //         lprSensorProgress = 1.0;
+            //         isStartButton = true;
+            //       });
+            //       FlutterBluePlus.stopScan();
+            //       EasyLoading.dismiss();
+            //       break;
+            //     }
+            //     else
+            //     {
+            //       if (r.device.platformName.toLowerCase().contains("lpr")) {
+            //         r.device.connect().then((value) {});
+            //         bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+            //         // await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
+            //         deviceId = r.device.remoteId.str;
+            //         connectedBluetoothDevice = r.device;
+            //         setState(() {
+            //           bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+            //           isBluetoothPermitted = true;
+            //           progress = 1.0;
+            //           lprSensorProgress = 1.0;
+            //           isStartButton = true;
+            //         });
+            //         FlutterBluePlus.stopScan();
+            //         EasyLoading.dismiss();
+            //         break;
+            //       }
+            //       else{
+            //         if(mounted){
+            //           Future.delayed(Duration(seconds: 2), (){
+            //             EasyLoading.dismiss();
+            //             showBluetoothListDialog(context, null, null);
+            //           });
+            //
+            //         }
+            //
+            //       }
+            //     }
+            //   }
+            //   else
+            //   {
+            //     Utils.customPrint('BLED - ELSE COND');
+            //     if (r.device.platformName.toLowerCase().contains("lpr")) {
+            //       r.device.connect().then((value) {});
+            //       bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+            //       //await storage.write(key: 'lprDeviceId', value: r.device.remoteId.str);
+            //       deviceId = r.device.remoteId.str;
+            //       connectedBluetoothDevice = r.device;
+            //       setState(() {
+            //         bluetoothName = r.device.platformName.isEmpty ? r.device.remoteId.str : r.device.platformName;
+            //         isBluetoothPermitted = true;
+            //         progress = 1.0;
+            //         lprSensorProgress = 1.0;
+            //         isStartButton = true;
+            //       });
+            //       FlutterBluePlus.stopScan();
+            //       EasyLoading.dismiss();
+            //       break;
+            //     }
+            //     else{
+            //       if(mounted){
+            //         Future.delayed(Duration(seconds: 2), (){
+            //           EasyLoading.dismiss();
+            //           showBluetoothListDialog(context, null, null);
+            //         });
+            //       }
+            //     }
+            //   }
+            // }
+          } else {
+            if (mounted) {
+              Future.delayed(Duration(seconds: 2), () {
+                EasyLoading.dismiss();
+                if (mounted) {
+                  showBluetoothListDialog(context, null, null);
+                }
+              });
+            }
+          }
+        }
+      });
     } else {
       // Show snack bar -> "Connected to <device_name> device."
       Future.delayed(Duration(seconds: 4), () async {
@@ -1089,14 +1086,13 @@ showLocationDailog();
   @override
   void dispose() {
     // TODO: implement dispose
-       autoConnectStreamSubscription?.cancel();
-   autoConnectIsScanningStreamSubscription?.cancel();
+    autoConnectStreamSubscription?.cancel();
+    autoConnectIsScanningStreamSubscription?.cancel();
 
     if (widget.bottomNavIndex == 1) {}
     popupAnimationController.dispose();
     WidgetsBinding.instance.removeObserver(this);
-        super.dispose();
-
+    super.dispose();
   }
 
   @override
@@ -1118,32 +1114,33 @@ showLocationDailog();
     commonProvider = context.watch<CommonProvider>();
     locationController = context.watch<LocationController>();
 
-    return Screenshot(
-      controller: controller,
-      child: PopScope(
-        canPop: false,
-        key: tripState,
-        onPopInvoked: (didPop) async {
-          if(didPop) return;
-          if (commonProvider.bottomNavIndex == 1) {
-            SystemChrome.setPreferredOrientations([
-              DeviceOrientation.portraitUp,
-              DeviceOrientation.portraitDown,
-              DeviceOrientation.landscapeLeft,
-              DeviceOrientation.landscapeRight,
-            ]);
-          }
+    return PopScope(
+      canPop: false,
+      // key: tripState,
+      onPopInvoked: (didPop) async {
+        if (didPop) return;
+        if (commonProvider.bottomNavIndex == 1) {
+          SystemChrome.setPreferredOrientations([
+            DeviceOrientation.portraitUp,
+            DeviceOrientation.portraitDown,
+            DeviceOrientation.landscapeLeft,
+            DeviceOrientation.landscapeRight,
+          ]);
+        }
 
-          bool? isTripStarted =
-              sharedPreferences!.getBool('trip_started') ?? false;
-          if (!isTripStarted ?? false) {
-            for (int i = 0; i < FlutterBluePlus.connectedDevices.length; i++) {
-              await FlutterBluePlus.connectedDevices[i]
-                  .disconnect()
-                  .then((value) {});
-            }
+        bool? isTripStarted =
+            sharedPreferences!.getBool('trip_started') ?? false;
+        if (!isTripStarted ?? false) {
+          for (int i = 0; i < FlutterBluePlus.connectedDevices.length; i++) {
+            await FlutterBluePlus.connectedDevices[i]
+                .disconnect()
+                .then((value) {});
           }
-        },
+        }
+        Navigator.of(context).pop(true);
+      },
+      child: Screenshot(
+        controller: controller,
         child: SafeArea(
           child: Scaffold(
             backgroundColor: backgroundColor,
@@ -1186,14 +1183,14 @@ showLocationDailog();
                       ]);
 
                       Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BottomNavigation()),
-                          ModalRoute.withName(""))
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => BottomNavigation()),
+                              ModalRoute.withName(""))
                           .then(
                               (value) => SystemChrome.setPreferredOrientations([
-                            DeviceOrientation.portraitUp,
-                          ]));
+                                    DeviceOrientation.portraitUp,
+                                  ]));
                     },
                     icon: Image.asset(
                         'assets/icons/performarine_appbar_icon.png'),
@@ -1259,849 +1256,881 @@ showLocationDailog();
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(30),
                           child: locationController!.lattitude == null &&
-                              locationController!.longitude == null
+                                  locationController!.longitude == null
                               ? const Center(child: CircularProgressIndicator())
                               : FlutterMap(
-                              options: MapOptions(
-                                //By Default Coordinates Setted To Delhi
-                                center: LatLng(
-                                    locationController!.lattitude ??
-                                        28.6139,
-                                    locationController!.longitude ??
-                                        77.2090),
-                                zoom: 13,
-                                maxZoom: 16,
-                                minZoom: 10,
-                              ),
-                              children: [
-                                TileLayer(
-                                  urlTemplate:
-                                  'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                                  userAgentPackageName: 'com.example.app',
-                                  tileProvider: FMTC
-                                      .instance('mapStore')
-                                      .getTileProvider(),
-                                ),
-                                MarkerLayer(
-                                  markers: [
-                                    Marker(
-                                      rotate: false,
-                                      point: LatLng(
-                                          locationController!.lattitude ??
-                                              14.2002691,
-                                          locationController!.longitude ??
-                                              75.8869918),
-                                      width: 250,
-                                      height: 250,
-                                      builder: (context) => const Icon(
-                                        Icons.location_on_sharp,
-                                        color: Colors.red,
-                                        size: 40,
+                                  options: MapOptions(
+                                    //By Default Coordinates Setted To Delhi
+                                    center: LatLng(
+                                        locationController!.lattitude ??
+                                            28.6139,
+                                        locationController!.longitude ??
+                                            77.2090),
+                                    zoom: 13,
+                                    maxZoom: 16,
+                                    minZoom: 10,
+                                  ),
+                                  children: [
+                                      TileLayer(
+                                        urlTemplate:
+                                            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                        userAgentPackageName: 'com.example.app',
+                                        tileProvider: FMTC
+                                            .instance('mapStore')
+                                            .getTileProvider(),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ]),
+                                      MarkerLayer(
+                                        markers: [
+                                          Marker(
+                                            rotate: false,
+                                            point: LatLng(
+                                                locationController!.lattitude ??
+                                                    14.2002691,
+                                                locationController!.longitude ??
+                                                    75.8869918),
+                                            width: 250,
+                                            height: 250,
+                                            builder: (context) => const Icon(
+                                              Icons.location_on_sharp,
+                                              color: Colors.red,
+                                              size: 40,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ]),
                         ),
                       ),
                     ),
                     isVesselDataLoading
                         ? Container(
-                      height: displayHeight(context) * 0.1,
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          valueColor:
-                          AlwaysStoppedAnimation<Color>(blueColor),
-                        ),
-                      ),
-                    )
+                            height: displayHeight(context) * 0.1,
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                valueColor:
+                                    AlwaysStoppedAnimation<Color>(blueColor),
+                              ),
+                            ),
+                          )
                         : Container(
-                      margin: EdgeInsets.only(top: 20),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: Color(0xffECF3F9)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
-                              children: [
-                                commonText(
-                                  context: context,
-                                  text: 'Pre Departure Checklist',
-                                  fontWeight: FontWeight.w600,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.038,
-                                ),
-                                SizedBox(
-                                  height: displayHeight(context) * 0.008,
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    if (vesselData.isEmpty) {
-                                      addNewVesselDialogBox(context);
-                                    }
-                                  },
-                                  child: DropdownButtonHideUnderline(
-                                    child: DropdownButton2<
-                                        VesselDropdownItem>(
-                                      isExpanded: true,
-                                      hint: Text(
-                                        'Select Vessel',
-                                        style: TextStyle(
-                                            color: Theme.of(context)
-                                                .brightness ==
-                                                Brightness.dark
-                                                ? "Select Vessel" ==
-                                                'User SubRole'
-                                                ? Colors.black54
-                                                : Colors.white
-                                                : Colors.black54,
-                                            fontSize:
-                                            displayWidth(context) *
-                                                0.032,
-                                            fontFamily: outfit,
-                                            fontWeight: FontWeight.w400),
-                                        overflow: TextOverflow.ellipsis,
+                            margin: EdgeInsets.only(top: 20),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                color: Color(0xffECF3F9)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      commonText(
+                                        context: context,
+                                        text: 'Pre Departure Checklist',
+                                        fontWeight: FontWeight.w600,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(context) * 0.038,
                                       ),
-                                      value: selectedValue,
-                                      items: vesselData.map((item) {
-                                        return DropdownMenuItem<
-                                            VesselDropdownItem>(
-                                          value: item,
-                                          child: Text(
-                                            item.name!,
-                                            style: TextStyle(
-                                                fontSize: displayWidth(
-                                                    context) *
+                                      SizedBox(
+                                        height: displayHeight(context) * 0.012,
+                                      ),
+                                      Container(
+                                        height: displayHeight(context) * 0.06,
+                                        child: TextFormField(
+                                          controller: tripNameController,
+                                          decoration: InputDecoration(
+                                            labelText: 'Enter Trip Name',
+                                            labelStyle: TextStyle(
+                                                color: Colors.black54,
+                                                fontSize:
+                                                displayWidth(context) *
                                                     0.032,
-                                                color: Theme.of(context)
-                                                    .brightness ==
-                                                    Brightness.dark
-                                                    ? "Select Vessel" ==
-                                                    'User SubRole'
-                                                    ? Colors.black
-                                                    : Colors.white
-                                                    : Colors.black,
-                                                fontWeight:
-                                                FontWeight.w500),
-                                            overflow:
-                                            TextOverflow.ellipsis,
+                                                fontFamily: outfit,
+                                                fontWeight: FontWeight.w400),
+                                            filled: true,
+                                            fillColor: Color(0xffE6E9F0),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.blue.shade50),
+                                              borderRadius:
+                                              BorderRadius.circular(14),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.blue.shade50),
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(14),
+                                              ),
+                                            ),
                                           ),
-                                        );
-                                      }).toList(),
-                                      onChanged: (item) {
-                                        Utils.customPrint(
-                                            "id is: ${item?.id} ");
-                                        CustomLogger().logWithFile(
-                                            Level.info,
-                                            "id is: ${item?.id}-> $page");
-                                        setState(() {
-                                          selectedValue = item;
-                                          vesselId = item!.id;
-                                          selectedVesselName = item.name;
-                                        });
-                                      },
-                                      buttonStyleData: ButtonStyleData(
-                                        height:
-                                        displayHeight(context) * 0.06,
-                                        width:
-                                        displayWidth(context) * 0.9,
-                                        padding: EdgeInsets.only(
-                                            left: 14, right: 14),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                          BorderRadius.circular(14),
-                                          border: Border.all(
-                                            color: Colors.transparent,
-                                          ),
-                                          color: Color(0xffE6E9F0),
+                                          onChanged: (value) {},
+                                          onFieldSubmitted: (value) {},
                                         ),
                                       ),
-                                      iconStyleData: IconStyleData(
-                                        icon: Icon(
-                                          Icons.keyboard_arrow_down,
-                                        ),
-                                        iconSize:
-                                        displayHeight(context) * 0.03,
-                                        iconEnabledColor: Colors.black,
-                                        iconDisabledColor: Colors.grey,
+                                      SizedBox(
+                                        height: displayHeight(context) * 0.01,
                                       ),
-                                      dropdownStyleData:
-                                      DropdownStyleData(
-                                        maxHeight:
-                                        displayHeight(context) * 0.25,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                          BorderRadius.circular(14),
-                                          // color: backgroundColor,
-                                        ),
-                                        offset: const Offset(0, 0),
-                                        scrollbarTheme:
-                                        ScrollbarThemeData(
-                                          radius:
-                                          const Radius.circular(20),
-                                          thickness: MaterialStateProperty
-                                              .all<double>(6),
-                                          thumbVisibility:
-                                          MaterialStateProperty.all<
-                                              bool>(true),
-                                        ),
-                                      ),
-                                      menuItemStyleData:
-                                      const MenuItemStyleData(
-                                        padding: EdgeInsets.only(
-                                            left: 18,
-                                            right: 18,
-                                            top: 8,
-                                            bottom: 8),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: displayHeight(context) * 0.02,
-                                ),
-                                commonText(
-                                  context: context,
-                                  text: 'Number of Passengers',
-                                  fontWeight: FontWeight.w500,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.034,
-                                ),
-                                SizedBox(
-                                  height: displayHeight(context) * 0.008,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Stack(
-                                      children: [
-                                        Container(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 12),
-                                          child: Container(
-                                            height:
-                                            displayHeight(context) *
-                                                0.06,
-                                            width: !isSliderDisable
-                                                ? displayWidth(context) *
-                                                0.78
-                                                : displayWidth(context) *
-                                                0.5,
-                                            child: FlutterSlider(
-                                              values: [
-                                                // 10
-                                                numberOfPassengers
-                                                    .toDouble()
-                                              ],
-                                              max: sliderMinVal,
-                                              min: 1,
-                                              trackBar: FlutterSliderTrackBar(
-                                                  activeTrackBarHeight:
-                                                  4.5,
-                                                  inactiveTrackBarHeight:
-                                                  4.5,
-                                                  activeTrackBar:
-                                                  BoxDecoration(
-                                                      color: Color(
-                                                          0xff2663DB))),
-                                              tooltip:
-                                              FlutterSliderTooltip(
-                                                  custom: (value) {
-                                                    debugPrint(
-                                                        "NUMBER OF PASS 1 $value");
-                                                    String data = value
-                                                        .toInt()
-                                                        .toString();
-                                                    numberOfPassengers =
-                                                        value.toInt();
-                                                    return Container(
-                                                      padding: EdgeInsets.symmetric(
-                                                          horizontal:
-                                                          6,
-                                                          vertical:
-                                                          displayHeight(context) *
-                                                              0.02),
-                                                      child:
-                                                      commonText(
-                                                        context:
-                                                        context,
-                                                        text: '$data',
-                                                        fontWeight:
-                                                        FontWeight
-                                                            .w500,
-                                                        textColor:
-                                                        Colors
-                                                            .black,
-                                                        textSize:
-                                                        displayWidth(
-                                                            context) *
-                                                            0.028,
-                                                      ),
-                                                    );
-                                                  },
-                                                  alwaysShowTooltip:
-                                                  true,
-                                                  positionOffset:
-                                                  FlutterSliderTooltipPositionOffset(
-                                                      top: -15)),
-                                              handlerWidth: 15,
-                                              handlerHeight: 15,
-                                              // onDragStarted: (int value,dynamic val,dynamic val1){
-                                              //   FocusScope.of(context).requestFocus(FocusNode());
-                                              // },
-                                              onDragging: (int value,
-                                                  dynamic val,
-                                                  dynamic val1) {
-                                                // setState(() {
-                                                //   isSliderDisable = false;
-                                                // });
-                                                //val != 11 ? passengerValue = val.toInt() : val;
-                                                passengerValue = val == 11
-                                                    ? (val.toInt() - 1)
-                                                    : val.toInt();
-                                                print(
-                                                    "On dragging: value: $value, val: $val, val1: $val1");
-                                                numberOfPassengers =
-                                                    passengerValue;
-                                                textEditingController
-                                                    .text =
-                                                    (passengerValue)
-                                                        .toString();
-
-                                                if (val == sliderMinVal) {
-                                                  if (mounted) {
-                                                    setState(() {
-                                                      isCheck = true;
-                                                      isSliderDisable =
-                                                      true;
-                                                      popupAnimationController
-                                                          .forward()
-                                                          .then((value) {
-                                                        _focusNode
-                                                            .requestFocus();
-                                                      });
-                                                    });
-                                                  }
-                                                }
-                                                textEditingController
-                                                    .selection =
-                                                    TextSelection(
-                                                        baseOffset: 0,
-                                                        extentOffset:
-                                                        textEditingController
-                                                            .value
-                                                            .text
-                                                            .length);
-                                              },
-                                              handler:
-                                              FlutterSliderHandler(
-                                                  child: Container(
-                                                    height: 15,
-                                                    width: 15,
-                                                    decoration: BoxDecoration(
-                                                        shape:
-                                                        BoxShape.circle,
-                                                        color: Color(
-                                                            0xff2663DB)),
-                                                  )),
+                                      InkWell(
+                                        onTap: () {
+                                          if (vesselData.isEmpty) {
+                                            addNewVesselDialogBox(context);
+                                          }
+                                        },
+                                        child: DropdownButtonHideUnderline(
+                                          child: DropdownButton2<
+                                              VesselDropdownItem>(
+                                            isExpanded: true,
+                                            hint: Text(
+                                              'Select Vessel',
+                                              style: TextStyle(
+                                                  color: Theme.of(context)
+                                                              .brightness ==
+                                                          Brightness.dark
+                                                      ? "Select Vessel" ==
+                                                              'User SubRole'
+                                                          ? Colors.black54
+                                                          : Colors.white
+                                                      : Colors.black54,
+                                                  fontSize:
+                                                      displayWidth(context) *
+                                                          0.032,
+                                                  fontFamily: outfit,
+                                                  fontWeight: FontWeight.w400),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            value: selectedValue,
+                                            items: vesselData.map((item) {
+                                              return DropdownMenuItem<
+                                                  VesselDropdownItem>(
+                                                value: item,
+                                                child: Text(
+                                                  item.name!,
+                                                  style: TextStyle(
+                                                      fontSize: displayWidth(
+                                                              context) *
+                                                          0.032,
+                                                      color: Theme.of(context)
+                                                                  .brightness ==
+                                                              Brightness.dark
+                                                          ? "Select Vessel" ==
+                                                                  'User SubRole'
+                                                              ? Colors.black
+                                                              : Colors.white
+                                                          : Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.w500),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              );
+                                            }).toList(),
+                                            onChanged: (item) {
+                                              Utils.customPrint(
+                                                  "id is: ${item?.id} ");
+                                              CustomLogger().logWithFile(
+                                                  Level.info,
+                                                  "id is: ${item?.id}-> $page");
+                                              setState(() {
+                                                selectedValue = item;
+                                                vesselId = item!.id;
+                                                selectedVesselName = item.name;
+                                              });
+                                            },
+                                            buttonStyleData: ButtonStyleData(
+                                              height:
+                                                  displayHeight(context) * 0.06,
+                                              width:
+                                                  displayWidth(context) * 0.9,
+                                              padding: EdgeInsets.only(
+                                                  left: 14, right: 14),
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(14),
+                                                border: Border.all(
+                                                  color: Colors.transparent,
+                                                ),
+                                                color: Color(0xffE6E9F0),
+                                              ),
+                                            ),
+                                            iconStyleData: IconStyleData(
+                                              icon: Icon(
+                                                Icons.keyboard_arrow_down,
+                                              ),
+                                              iconSize:
+                                                  displayHeight(context) * 0.03,
+                                              iconEnabledColor: Colors.black,
+                                              iconDisabledColor: Colors.grey,
+                                            ),
+                                            dropdownStyleData:
+                                                DropdownStyleData(
+                                              maxHeight:
+                                                  displayHeight(context) * 0.25,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(14),
+                                                // color: backgroundColor,
+                                              ),
+                                              offset: const Offset(0, 0),
+                                              scrollbarTheme:
+                                                  ScrollbarThemeData(
+                                                radius:
+                                                    const Radius.circular(20),
+                                                thickness: MaterialStateProperty
+                                                    .all<double>(6),
+                                                thumbVisibility:
+                                                    MaterialStateProperty.all<
+                                                        bool>(true),
+                                              ),
+                                            ),
+                                            menuItemStyleData:
+                                                const MenuItemStyleData(
+                                              padding: EdgeInsets.only(
+                                                  left: 18,
+                                                  right: 18,
+                                                  top: 8,
+                                                  bottom: 8),
                                             ),
                                           ),
                                         ),
-                                        Container(
-                                          width: isSliderDisable
-                                              ? displayWidth(context) *
-                                              0.5
-                                              : displayWidth(context) *
-                                              0.82,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment
-                                                .spaceBetween,
+                                      ),
+                                      SizedBox(
+                                        height: displayHeight(context) * 0.02,
+                                      ),
+                                      commonText(
+                                        context: context,
+                                        text: 'Number of Passengers',
+                                        fontWeight: FontWeight.w500,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(context) * 0.034,
+                                      ),
+                                      SizedBox(
+                                        height: displayHeight(context) * 0.008,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Stack(
                                             children: [
                                               Container(
-                                                padding:
-                                                EdgeInsets.symmetric(
-                                                    horizontal: 4,
-                                                    vertical: 5),
-                                                child: commonText(
-                                                  context: context,
-                                                  text: '01',
-                                                  fontWeight:
-                                                  FontWeight.w500,
-                                                  textColor: Colors.black,
-                                                  textSize: displayWidth(
-                                                      context) *
-                                                      0.028,
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 12),
+                                                child: Container(
+                                                  height:
+                                                      displayHeight(context) *
+                                                          0.06,
+                                                  width: !isSliderDisable
+                                                      ? displayWidth(context) *
+                                                          0.78
+                                                      : displayWidth(context) *
+                                                          0.5,
+                                                  child: FlutterSlider(
+                                                    values: [
+                                                      // 10
+                                                      numberOfPassengers
+                                                          .toDouble()
+                                                    ],
+                                                    max: sliderMinVal,
+                                                    min: 1,
+                                                    trackBar: FlutterSliderTrackBar(
+                                                        activeTrackBarHeight:
+                                                            4.5,
+                                                        inactiveTrackBarHeight:
+                                                            4.5,
+                                                        activeTrackBar:
+                                                            BoxDecoration(
+                                                                color: Color(
+                                                                    0xff2663DB))),
+                                                    tooltip:
+                                                        FlutterSliderTooltip(
+                                                            custom: (value) {
+                                                              debugPrint(
+                                                                  "NUMBER OF PASS 1 $value");
+                                                              String data = value
+                                                                  .toInt()
+                                                                  .toString();
+                                                              numberOfPassengers =
+                                                                  value.toInt();
+                                                              return Container(
+                                                                padding: EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        6,
+                                                                    vertical:
+                                                                        displayHeight(context) *
+                                                                            0.02),
+                                                                child:
+                                                                    commonText(
+                                                                  context:
+                                                                      context,
+                                                                  text: '$data',
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  textColor:
+                                                                      Colors
+                                                                          .black,
+                                                                  textSize:
+                                                                      displayWidth(
+                                                                              context) *
+                                                                          0.028,
+                                                                ),
+                                                              );
+                                                            },
+                                                            alwaysShowTooltip:
+                                                                true,
+                                                            positionOffset:
+                                                                FlutterSliderTooltipPositionOffset(
+                                                                    top: -15)),
+                                                    handlerWidth: 15,
+                                                    handlerHeight: 15,
+                                                    // onDragStarted: (int value,dynamic val,dynamic val1){
+                                                    //   FocusScope.of(context).requestFocus(FocusNode());
+                                                    // },
+                                                    onDragging: (int value,
+                                                        dynamic val,
+                                                        dynamic val1) {
+                                                      // setState(() {
+                                                      //   isSliderDisable = false;
+                                                      // });
+                                                      //val != 11 ? passengerValue = val.toInt() : val;
+                                                      passengerValue = val == 11
+                                                          ? (val.toInt() - 1)
+                                                          : val.toInt();
+                                                      print(
+                                                          "On dragging: value: $value, val: $val, val1: $val1");
+                                                      numberOfPassengers =
+                                                          passengerValue;
+                                                      textEditingController
+                                                              .text =
+                                                          (passengerValue)
+                                                              .toString();
+
+                                                      if (val == sliderMinVal) {
+                                                        if (mounted) {
+                                                          setState(() {
+                                                            isCheck = true;
+                                                            isSliderDisable =
+                                                                true;
+                                                            popupAnimationController
+                                                                .forward()
+                                                                .then((value) {
+                                                              _focusNode
+                                                                  .requestFocus();
+                                                            });
+                                                          });
+                                                        }
+                                                      }
+                                                      textEditingController
+                                                              .selection =
+                                                          TextSelection(
+                                                              baseOffset: 0,
+                                                              extentOffset:
+                                                                  textEditingController
+                                                                      .value
+                                                                      .text
+                                                                      .length);
+                                                    },
+                                                    handler:
+                                                        FlutterSliderHandler(
+                                                            child: Container(
+                                                      height: 15,
+                                                      width: 15,
+                                                      decoration: BoxDecoration(
+                                                          shape:
+                                                              BoxShape.circle,
+                                                          color: Color(
+                                                              0xff2663DB)),
+                                                    )),
+                                                  ),
                                                 ),
                                               ),
                                               Container(
-                                                padding:
-                                                EdgeInsets.symmetric(
-                                                    horizontal: 4,
-                                                    vertical: 0),
-                                                child: commonText(
-                                                  context: context,
-                                                  text: sliderCount,
-                                                  fontWeight:
-                                                  FontWeight.w500,
-                                                  textColor: Colors.black,
-                                                  textSize: displayWidth(
-                                                      context) *
-                                                      0.028,
+                                                width: isSliderDisable
+                                                    ? displayWidth(context) *
+                                                        0.5
+                                                    : displayWidth(context) *
+                                                        0.82,
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Container(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 4,
+                                                              vertical: 5),
+                                                      child: commonText(
+                                                        context: context,
+                                                        text: '01',
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        textColor: Colors.black,
+                                                        textSize: displayWidth(
+                                                                context) *
+                                                            0.028,
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 4,
+                                                              vertical: 0),
+                                                      child: commonText(
+                                                        context: context,
+                                                        text: sliderCount,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        textColor: Colors.black,
+                                                        textSize: displayWidth(
+                                                                context) *
+                                                            0.028,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ],
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    isSliderDisable
-                                        ? textFieldPopUp()
-                                        : Container(
-                                      width: 0,
-                                      height: 0,
-                                    )
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: displayHeight(context) * 0.02,
-                                ),
-                                Container(
-                                  margin: EdgeInsets.symmetric(
-                                      horizontal: 20),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: [
-                                      commonText(
-                                        context: context,
-                                        text: 'Sensor Information',
-                                        fontWeight: FontWeight.w500,
-                                        textColor: Colors.black,
-                                        textSize:
-                                        displayWidth(context) * 0.034,
+                                          isSliderDisable
+                                              ? textFieldPopUp()
+                                              : Container(
+                                                  width: 0,
+                                                  height: 0,
+                                                )
+                                        ],
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 8.0,
-                                            right: 8.0,
-                                            top: 10),
+                                      SizedBox(
+                                        height: displayHeight(context) * 0.02,
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal: 20),
                                         child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                              MainAxisAlignment
-                                                  .spaceBetween,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    Image.asset(
-                                                      'assets/icons/location.png',
-                                                      height: displayHeight(
-                                                          context) *
-                                                          0.04,
-                                                      width: displayWidth(
-                                                          context) *
-                                                          0.07,
-                                                    ),
-                                                    SizedBox(
-                                                      width: displayWidth(
-                                                          context) *
-                                                          0.04,
-                                                    ),
-                                                    commonText(
-                                                      context: context,
-                                                      text: 'GPS Signal',
-                                                      fontWeight:
-                                                      FontWeight.w400,
-                                                      textColor:
-                                                      Colors.black45,
-                                                      textSize:
-                                                      displayWidth(
-                                                          context) *
-                                                          0.034,
-                                                    ),
-                                                  ],
-                                                ),
-                                                commonText(
-                                                  context: context,
-                                                  text: isLocationPermitted
-                                                      ? 'OK'
-                                                      : 'No Connected',
-                                                  fontWeight:
-                                                  FontWeight.w500,
-                                                  textColor:
-                                                  isLocationPermitted
-                                                      ? Colors.green
-                                                      : Colors.grey,
-                                                  textSize: displayWidth(
-                                                      context) *
-                                                      0.03,
-                                                ),
-                                              ],
+                                            commonText(
+                                              context: context,
+                                              text: 'Sensor Information',
+                                              fontWeight: FontWeight.w500,
+                                              textColor: Colors.black,
+                                              textSize:
+                                                  displayWidth(context) * 0.034,
                                             ),
-                                            SizedBox(
-                                              height:
-                                              displayHeight(context) *
-                                                  0.007,
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                              MainAxisAlignment
-                                                  .spaceBetween,
-                                              mainAxisSize:
-                                              MainAxisSize.min,
-                                              children: [
-                                                Expanded(
-                                                  child: Row(
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 8.0,
+                                                  right: 8.0,
+                                                  top: 10),
+                                              child: Column(
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
                                                     children: [
-                                                      Image.asset(
-                                                        'assets/icons/lpr.png',
-                                                        height: displayHeight(
-                                                            context) *
-                                                            0.04,
-                                                        width: displayWidth(
-                                                            context) *
-                                                            0.07,
+                                                      Row(
+                                                        children: [
+                                                          Image.asset(
+                                                            'assets/icons/location.png',
+                                                            height: displayHeight(
+                                                                    context) *
+                                                                0.04,
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.07,
+                                                          ),
+                                                          SizedBox(
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.04,
+                                                          ),
+                                                          commonText(
+                                                            context: context,
+                                                            text: 'GPS Signal',
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            textColor:
+                                                                Colors.black45,
+                                                            textSize:
+                                                                displayWidth(
+                                                                        context) *
+                                                                    0.034,
+                                                          ),
+                                                        ],
                                                       ),
-                                                      SizedBox(
-                                                        width: displayWidth(
-                                                            context) *
-                                                            0.034,
-                                                      ),
-                                                      Expanded(
-                                                        child: Text(
-                                                          FlutterBluePlus
-                                                              .connectedDevices
-                                                              .isEmpty
-                                                              ? 'LPR'
-                                                              : '${FlutterBluePlus.connectedDevices.first.platformName.isEmpty ? FlutterBluePlus.connectedDevices.first.remoteId.str : FlutterBluePlus.connectedDevices.first.platformName}',
-                                                          textAlign:
-                                                          TextAlign
-                                                              .start,
-                                                          textScaleFactor:
-                                                          1,
-                                                          style: TextStyle(
-                                                              fontSize:
-                                                              displayWidth(context) *
-                                                                  0.034,
-                                                              color: Colors
-                                                                  .black45,
-                                                              fontFamily:
-                                                              outfit,
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .w400),
-                                                          overflow:
-                                                          TextOverflow
-                                                              .ellipsis,
-                                                          softWrap: false,
-                                                        ),
+                                                      commonText(
+                                                        context: context,
+                                                        text: isLocationPermitted
+                                                            ? 'OK'
+                                                            : 'No Connected',
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        textColor:
+                                                            isLocationPermitted
+                                                                ? Colors.green
+                                                                : Colors.grey,
+                                                        textSize: displayWidth(
+                                                                context) *
+                                                            0.03,
                                                       ),
                                                     ],
                                                   ),
-                                                ),
-                                                Container(
-                                                  // color: Colors.red,
-                                                  child: TextButton(
-                                                    style: TextButton
-                                                        .styleFrom(
-                                                        padding:
-                                                        EdgeInsets
-                                                            .zero),
-                                                    onPressed: () async {
-                                                      bool
-                                                      isNDPermDenied =
-                                                      await Permission
-                                                          .bluetoothConnect
-                                                          .isPermanentlyDenied;
-
-                                                      if (isNDPermDenied) {
-                                                        showDialog(
-                                                            context:
-                                                            context,
-                                                            builder:
-                                                                (BuildContext
-                                                            context) {
-                                                              return LocationPermissionCustomDialog(
-                                                                isLocationDialogBox:
-                                                                false,
-                                                                text:
-                                                                'Allow nearby devices',
-                                                                subText:
-                                                                'Allow nearby devices to connect to the app',
-                                                                buttonText:
-                                                                'OK',
-                                                                buttonOnTap:
-                                                                    () async {
-                                                                  Get.back();
-                                                                },
-                                                              );
-                                                            });
-                                                        return;
-                                                      } else {
-                                                        if (Platform
-                                                            .isIOS) {
-                                                          dynamic isBluetoothEnable = Platform
-                                                              .isAndroid
-                                                              ? await blueIsOn()
-                                                              : await checkIfBluetoothIsEnabled(
-                                                              scaffoldKey,
-                                                                  () {
-                                                                showBluetoothDialog(
-                                                                    context);
-                                                              });
-
-                                                          if (isBluetoothEnable !=
-                                                              null) {
-                                                            if (isBluetoothEnable) {
-                                                              if (Platform
-                                                                  .isIOS) {
-                                                                forgetDeviceOrConnectToNewDevice();
-                                                                // checkAndGetLPRList(
-                                                                //     context);
-                                                                // showBluetoothListDialog(context);
-                                                              } else {
-                                                                if (await Permission
-                                                                    .location
-                                                                    .isPermanentlyDenied) {
-                                                                  Utils.showSnackBar(
-                                                                      context,
-                                                                      scaffoldKey:
-                                                                      scaffoldKey,
-                                                                      message:
-                                                                      'Location permissions are denied without permissions we are unable to start the trip');
-                                                                  Future.delayed(
-                                                                      Duration(seconds: 2),
-                                                                          () async {
-                          if(!isLocationDialogBoxOpen){
-                          showLocationDailog();
-
-                          }
-                                                                      });
-                                                                } else {
-                                                                  if (await Permission
-                                                                      .location
-                                                                      .isGranted) {
-                                                                    forgetDeviceOrConnectToNewDevice();
-                                                                    // checkAndGetLPRList(
-                                                                    //     context);
-                                                                    // showBluetoothListDialog(context);
-                                                                  } else {
-                                                                    await Permission
-                                                                        .location
-                                                                        .request();
-                                                                  }
-                                                                }
-                                                              }
-                                                            } else {
-                                                              showBluetoothDialog(
-                                                                  context);
-                                                            }
-                                                          }
-                                                        } else {
-                                                          bool
-                                                          isNDPermittedOne =
-                                                          await Permission
-                                                              .bluetoothConnect
-                                                              .isGranted;
-
-                                                          if (isNDPermittedOne) {
-                                                            bool isBluetoothEnable = Platform
-                                                                .isAndroid
-                                                                ? await blueIsOn()
-                                                                : await checkIfBluetoothIsEnabled(
-                                                                scaffoldKey,
-                                                                    () {
-                                                                  showBluetoothDialog(
-                                                                      context);
-                                                                });
-
-                                                            if (isBluetoothEnable) {
-                                                              if (Platform
-                                                                  .isIOS) {
-                                                                forgetDeviceOrConnectToNewDevice();
-                                                                // checkAndGetLPRList(
-                                                                //     context);
-                                                                // showBluetoothListDialog(context);
-                                                              } else {
-                                                                if (await Permission
-                                                                    .location
-                                                                    .isPermanentlyDenied) {
-                                                                  Utils.showSnackBar(
-                                                                      context,
-                                                                      scaffoldKey:
-                                                                      scaffoldKey,
-                                                                      message:
-                                                                      'Location permissions are denied without permissions we are unable to start the trip');
-                                                                  Future.delayed(
-                                                                      Duration(seconds: 2),
-                                                                          () async {
-                          if(!isLocationDialogBoxOpen){
-                          showLocationDailog();
-
-                          }
-                                                                      });
-                                                                } else {
-                                                                  if (await Permission
-                                                                      .location
-                                                                      .isGranted) {
-                                                                    forgetDeviceOrConnectToNewDevice();
-                                                                    // checkAndGetLPRList(
-                                                                    //     context);
-                                                                    // showBluetoothListDialog(context);
-                                                                  } else {
-                                                                    if (!(await Permission
-                                                                        .location
-                                                                        .shouldShowRequestRationale)) {
-                                                                      Utils.showSnackBar(context,
-                                                                          scaffoldKey: scaffoldKey,
-                                                                          message: 'Location permissions are denied without permissions we are unable to start the trip');
-                                                                      Future.delayed(Duration(seconds: 2),
-                                                                              () async {
-                          if(!isLocationDialogBoxOpen){
-                          showLocationDailog();
-
-                          }
-                                                                          });
-                                                                    } else {
-                                                                      await Permission.location.request();
-                                                                    }
-                                                                  }
-                                                                }
-                                                              }
-                                                            } else {
-                                                              showBluetoothDialog(
-                                                                  context);
-                                                            }
-                                                          } else {
-                                                            await Permission
-                                                                .bluetoothConnect
-                                                                .request();
+                                                  SizedBox(
+                                                    height:
+                                                        displayHeight(context) *
+                                                            0.007,
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      Expanded(
+                                                        child: Row(
+                                                          children: [
+                                                            Image.asset(
+                                                              'assets/icons/lpr.png',
+                                                              height: displayHeight(
+                                                                      context) *
+                                                                  0.04,
+                                                              width: displayWidth(
+                                                                      context) *
+                                                                  0.07,
+                                                            ),
+                                                            SizedBox(
+                                                              width: displayWidth(
+                                                                      context) *
+                                                                  0.034,
+                                                            ),
+                                                            Expanded(
+                                                              child: Text(
+                                                                FlutterBluePlus
+                                                                        .connectedDevices
+                                                                        .isEmpty
+                                                                    ? 'LPR'
+                                                                    : '${FlutterBluePlus.connectedDevices.first.platformName.isEmpty ? FlutterBluePlus.connectedDevices.first.remoteId.str : FlutterBluePlus.connectedDevices.first.platformName}',
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .start,
+                                                                textScaleFactor:
+                                                                    1,
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        displayWidth(context) *
+                                                                            0.034,
+                                                                    color: Colors
+                                                                        .black45,
+                                                                    fontFamily:
+                                                                        outfit,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400),
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                softWrap: false,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        // color: Colors.red,
+                                                        child: TextButton(
+                                                          style: TextButton
+                                                              .styleFrom(
+                                                                  padding:
+                                                                      EdgeInsets
+                                                                          .zero),
+                                                          onPressed: () async {
                                                             bool
-                                                            isNDPermitted =
-                                                            await Permission
-                                                                .bluetoothConnect
-                                                                .isGranted;
-                                                            if (isNDPermitted) {
-                                                              bool isBluetoothEnable = Platform
-                                                                  .isAndroid
-                                                                  ? await blueIsOn()
-                                                                  : await checkIfBluetoothIsEnabled(
-                                                                  scaffoldKey,
-                                                                      () {
-                                                                    showBluetoothDialog(context);
+                                                                isNDPermDenied =
+                                                                await Permission
+                                                                    .bluetoothConnect
+                                                                    .isPermanentlyDenied;
+
+                                                            if (isNDPermDenied) {
+                                                              showDialog(
+                                                                  context:
+                                                                      context,
+                                                                  builder:
+                                                                      (BuildContext
+                                                                          context) {
+                                                                    return LocationPermissionCustomDialog(
+                                                                      isLocationDialogBox:
+                                                                          false,
+                                                                      text:
+                                                                          'Allow nearby devices',
+                                                                      subText:
+                                                                          'Allow nearby devices to connect to the app',
+                                                                      buttonText:
+                                                                          'OK',
+                                                                      buttonOnTap:
+                                                                          () async {
+                                                                        Get.back();
+                                                                      },
+                                                                    );
                                                                   });
+                                                              return;
+                                                            } else {
+                                                              if (Platform
+                                                                  .isIOS) {
+                                                                dynamic isBluetoothEnable = Platform
+                                                                        .isAndroid
+                                                                    ? await blueIsOn()
+                                                                    : await checkIfBluetoothIsEnabled(
+                                                                        scaffoldKey,
+                                                                        () {
+                                                                        showBluetoothDialog(
+                                                                            context);
+                                                                      });
 
-                                                              if (isBluetoothEnable) {
-                                                                if (Platform
-                                                                    .isIOS) {
-                                                                  forgetDeviceOrConnectToNewDevice();
-                                                                  // checkAndGetLPRList(
-                                                                  //     context);
-                                                                  // showBluetoothListDialog(context);
-                                                                } else {
-                                                                  if (await Permission
-                                                                      .location
-                                                                      .isPermanentlyDenied) {
-                                                                    Utils.showSnackBar(
-                                                                        context,
-                                                                        scaffoldKey: scaffoldKey,
-                                                                        message: 'Location permissions are denied without permissions we are unable to start the trip');
-                                                                    Future.delayed(
-                                                                        Duration(seconds: 2),
-                                                                            () async {
-                          if(!isLocationDialogBoxOpen){
-                          showLocationDailog();
-
-                          }
-                                                                        });
-                                                                  } else {
-                                                                    if (await Permission
-                                                                        .location
-                                                                        .isGranted) {
+                                                                if (isBluetoothEnable !=
+                                                                    null) {
+                                                                  if (isBluetoothEnable) {
+                                                                    if (Platform
+                                                                        .isIOS) {
                                                                       forgetDeviceOrConnectToNewDevice();
                                                                       // checkAndGetLPRList(
                                                                       //     context);
                                                                       // showBluetoothListDialog(context);
                                                                     } else {
-                                                                      await Permission.location.request();
+                                                                      if (await Permission
+                                                                          .location
+                                                                          .isPermanentlyDenied) {
+                                                                        Utils.showSnackBar(
+                                                                            context,
+                                                                            scaffoldKey:
+                                                                                scaffoldKey,
+                                                                            message:
+                                                                                'Location permissions are denied without permissions we are unable to start the trip');
+                                                                        Future.delayed(
+                                                                            Duration(seconds: 2),
+                                                                            () async {
+                                                                          if (!isLocationDialogBoxOpen) {
+                                                                            showLocationDailog();
+                                                                          }
+                                                                        });
+                                                                      } else {
+                                                                        if (await Permission
+                                                                            .location
+                                                                            .isGranted) {
+                                                                          forgetDeviceOrConnectToNewDevice();
+                                                                          // checkAndGetLPRList(
+                                                                          //     context);
+                                                                          // showBluetoothListDialog(context);
+                                                                        } else {
+                                                                          await Permission
+                                                                              .location
+                                                                              .request();
+                                                                        }
+                                                                      }
                                                                     }
+                                                                  } else {
+                                                                    showBluetoothDialog(
+                                                                        context);
                                                                   }
                                                                 }
                                                               } else {
-                                                                showBluetoothDialog(
-                                                                    context);
-                                                              }
-                                                            } else {
-                                                              if (await Permission
-                                                                  .bluetoothConnect
-                                                                  .isDenied ||
+                                                                bool
+                                                                    isNDPermittedOne =
+                                                                    await Permission
+                                                                        .bluetoothConnect
+                                                                        .isGranted;
+
+                                                                if (isNDPermittedOne) {
+                                                                  bool isBluetoothEnable = Platform
+                                                                          .isAndroid
+                                                                      ? await blueIsOn()
+                                                                      : await checkIfBluetoothIsEnabled(
+                                                                          scaffoldKey,
+                                                                          () {
+                                                                          showBluetoothDialog(
+                                                                              context);
+                                                                        });
+
+                                                                  if (isBluetoothEnable) {
+                                                                    if (Platform
+                                                                        .isIOS) {
+                                                                      forgetDeviceOrConnectToNewDevice();
+                                                                      // checkAndGetLPRList(
+                                                                      //     context);
+                                                                      // showBluetoothListDialog(context);
+                                                                    } else {
+                                                                      if (await Permission
+                                                                          .location
+                                                                          .isPermanentlyDenied) {
+                                                                        Utils.showSnackBar(
+                                                                            context,
+                                                                            scaffoldKey:
+                                                                                scaffoldKey,
+                                                                            message:
+                                                                                'Location permissions are denied without permissions we are unable to start the trip');
+                                                                        Future.delayed(
+                                                                            Duration(seconds: 2),
+                                                                            () async {
+                                                                          if (!isLocationDialogBoxOpen) {
+                                                                            showLocationDailog();
+                                                                          }
+                                                                        });
+                                                                      } else {
+                                                                        if (await Permission
+                                                                            .location
+                                                                            .isGranted) {
+                                                                          forgetDeviceOrConnectToNewDevice();
+                                                                          // checkAndGetLPRList(
+                                                                          //     context);
+                                                                          // showBluetoothListDialog(context);
+                                                                        } else {
+                                                                          if (!(await Permission
+                                                                              .location
+                                                                              .shouldShowRequestRationale)) {
+                                                                            Utils.showSnackBar(context,
+                                                                                scaffoldKey: scaffoldKey,
+                                                                                message: 'Location permissions are denied without permissions we are unable to start the trip');
+                                                                            Future.delayed(Duration(seconds: 2),
+                                                                                () async {
+                                                                              if (!isLocationDialogBoxOpen) {
+                                                                                showLocationDailog();
+                                                                              }
+                                                                            });
+                                                                          } else {
+                                                                            await Permission.location.request();
+                                                                          }
+                                                                        }
+                                                                      }
+                                                                    }
+                                                                  } else {
+                                                                    showBluetoothDialog(
+                                                                        context);
+                                                                  }
+                                                                } else {
                                                                   await Permission
                                                                       .bluetoothConnect
-                                                                      .isPermanentlyDenied) {
-                                                                showDialog(
-                                                                    context:
-                                                                    context,
-                                                                    builder:
-                                                                        (BuildContext context) {
-                                                                      return LocationPermissionCustomDialog(
-                                                                        isLocationDialogBox: false,
-                                                                        text: 'Allow nearby devices',
-                                                                        subText: 'Allow nearby devices to connect to the app',
-                                                                        buttonText: 'OK',
-                                                                        buttonOnTap: () async {
-                                                                          Get.back();
+                                                                      .request();
+                                                                  bool
+                                                                      isNDPermitted =
+                                                                      await Permission
+                                                                          .bluetoothConnect
+                                                                          .isGranted;
+                                                                  if (isNDPermitted) {
+                                                                    bool isBluetoothEnable = Platform
+                                                                            .isAndroid
+                                                                        ? await blueIsOn()
+                                                                        : await checkIfBluetoothIsEnabled(
+                                                                            scaffoldKey,
+                                                                            () {
+                                                                            showBluetoothDialog(context);
+                                                                          });
 
-                                                                          await openAppSettings();
-                                                                        },
-                                                                      );
-                                                                    });
+                                                                    if (isBluetoothEnable) {
+                                                                      if (Platform
+                                                                          .isIOS) {
+                                                                        forgetDeviceOrConnectToNewDevice();
+                                                                        // checkAndGetLPRList(
+                                                                        //     context);
+                                                                        // showBluetoothListDialog(context);
+                                                                      } else {
+                                                                        if (await Permission
+                                                                            .location
+                                                                            .isPermanentlyDenied) {
+                                                                          Utils.showSnackBar(
+                                                                              context,
+                                                                              scaffoldKey: scaffoldKey,
+                                                                              message: 'Location permissions are denied without permissions we are unable to start the trip');
+                                                                          Future.delayed(
+                                                                              Duration(seconds: 2),
+                                                                              () async {
+                                                                            if (!isLocationDialogBoxOpen) {
+                                                                              showLocationDailog();
+                                                                            }
+                                                                          });
+                                                                        } else {
+                                                                          if (await Permission
+                                                                              .location
+                                                                              .isGranted) {
+                                                                            forgetDeviceOrConnectToNewDevice();
+                                                                            // checkAndGetLPRList(
+                                                                            //     context);
+                                                                            // showBluetoothListDialog(context);
+                                                                          } else {
+                                                                            await Permission.location.request();
+                                                                          }
+                                                                        }
+                                                                      }
+                                                                    } else {
+                                                                      showBluetoothDialog(
+                                                                          context);
+                                                                    }
+                                                                  } else {
+                                                                    if (await Permission
+                                                                            .bluetoothConnect
+                                                                            .isDenied ||
+                                                                        await Permission
+                                                                            .bluetoothConnect
+                                                                            .isPermanentlyDenied) {
+                                                                      showDialog(
+                                                                          context:
+                                                                              context,
+                                                                          builder:
+                                                                              (BuildContext context) {
+                                                                            return LocationPermissionCustomDialog(
+                                                                              isLocationDialogBox: false,
+                                                                              text: 'Allow nearby devices',
+                                                                              subText: 'Allow nearby devices to connect to the app',
+                                                                              buttonText: 'OK',
+                                                                              buttonOnTap: () async {
+                                                                                Get.back();
+
+                                                                                await openAppSettings();
+                                                                              },
+                                                                            );
+                                                                          });
+                                                                    }
+                                                                  }
+                                                                }
                                                               }
                                                             }
-                                                          }
-                                                        }
-                                                      }
-                                                    },
-                                                    child:
-                                                    isBluetoothSearching
-                                                        ? SizedBox(
-                                                        height:
-                                                        30,
-                                                        width: 30,
-                                                        child:
-                                                        CircularProgressIndicator())
-                                                        : commonText(
-                                                      context:
-                                                      context,
-                                                      text: FlutterBluePlus
-                                                          .connectedDevices
-                                                          .isEmpty
-                                                          ? 'Connect to Device'
-                                                          : 'Forget Device',
-                                                      fontWeight:
-                                                      FontWeight
-                                                          .w500,
-                                                      textColor:
-                                                      blueColor,
-                                                      textAlign:
-                                                      TextAlign
-                                                          .end,
-                                                      textSize:
-                                                      displayWidth(context) *
-                                                          0.03,
-                                                    ),
-                                                  ),
-                                                ),
-                                                /*commonText(
+                                                          },
+                                                          child:
+                                                              isBluetoothSearching
+                                                                  ? SizedBox(
+                                                                      height:
+                                                                          30,
+                                                                      width: 30,
+                                                                      child:
+                                                                          CircularProgressIndicator())
+                                                                  : commonText(
+                                                                      context:
+                                                                          context,
+                                                                      text: FlutterBluePlus
+                                                                              .connectedDevices
+                                                                              .isEmpty
+                                                                          ? 'Connect to Device'
+                                                                          : 'Forget Device',
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                      textColor:
+                                                                          blueColor,
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .end,
+                                                                      textSize:
+                                                                          displayWidth(context) *
+                                                                              0.03,
+                                                                    ),
+                                                        ),
+                                                      ),
+                                                      /*commonText(
                                                 context: context,
                                                 text: isBluetoothPermitted
                                                     ? 'Connected'
@@ -2116,102 +2145,102 @@ showLocationDailog();
                                                     context) *
                                                     0.03,
                                               ),*/
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              height:
-                                              displayHeight(context) *
-                                                  0.007,
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                              MainAxisAlignment
-                                                  .spaceBetween,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    Image.asset(
-                                                      'assets/icons/ble.png',
-                                                      height: displayHeight(
-                                                          context) *
-                                                          0.04,
-                                                      width: displayWidth(
-                                                          context) *
-                                                          0.06,
-                                                    ),
-                                                    SizedBox(
-                                                      width: displayWidth(
-                                                          context) *
-                                                          0.04,
-                                                    ),
-                                                    commonText(
-                                                      context: context,
-                                                      text:
-                                                      'Wireless NMEA',
-                                                      fontWeight:
-                                                      FontWeight.w400,
-                                                      textColor:
-                                                      Colors.black45,
-                                                      textSize:
-                                                      displayWidth(
-                                                          context) *
-                                                          0.034,
-                                                    ),
-                                                  ],
-                                                ),
-                                                commonText(
-                                                  context: context,
-                                                  text: 'Not Configured',
-                                                  fontWeight:
-                                                  FontWeight.w500,
-                                                  textColor: Colors.amber,
-                                                  textSize: displayWidth(
-                                                      context) *
-                                                      0.03,
-                                                ),
-                                              ],
+                                                    ],
+                                                  ),
+                                                  SizedBox(
+                                                    height:
+                                                        displayHeight(context) *
+                                                            0.007,
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Image.asset(
+                                                            'assets/icons/ble.png',
+                                                            height: displayHeight(
+                                                                    context) *
+                                                                0.04,
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.06,
+                                                          ),
+                                                          SizedBox(
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.04,
+                                                          ),
+                                                          commonText(
+                                                            context: context,
+                                                            text:
+                                                                'Wireless NMEA',
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            textColor:
+                                                                Colors.black45,
+                                                            textSize:
+                                                                displayWidth(
+                                                                        context) *
+                                                                    0.034,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      commonText(
+                                                        context: context,
+                                                        text: 'Not Configured',
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        textColor: Colors.amber,
+                                                        textSize: displayWidth(
+                                                                context) *
+                                                            0.03,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ],
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: displayHeight(context) * 0.03,
-                                ),
-                                addingDataToDB
-                                    ? Center(
-                                    child: CircularProgressIndicator(
-                                        valueColor:
-                                        AlwaysStoppedAnimation<
-                                            Color>(blueColor)))
-                                    : Container(
-                                  child: CommonButtons
-                                      .getRichTextActionButton(
-                                    icon: Image.asset(
-                                      'assets/icons/start_btn.png',
-                                      height:
-                                      displayHeight(context) *
-                                          0.055,
-                                      width: displayWidth(context) *
-                                          0.12,
-                                    ),
-                                    title: 'Start Trip',
-                                    context: context,
-                                    fontSize:
-                                    displayWidth(context) *
-                                        0.042,
-                                    textColor: Colors.white,
-                                    buttonPrimaryColor: blueColor,
-                                    borderColor: blueColor,
-                                    width: displayWidth(context),
-                                    onTap: () async {
-                                      if (vesselData.isEmpty) {
-                                        addNewVesselDialogBox(
-                                            context);
-                                      } else {
-                                        /*if (Platform.isIOS) {
+                                      SizedBox(
+                                        height: displayHeight(context) * 0.03,
+                                      ),
+                                      addingDataToDB
+                                          ? Center(
+                                              child: CircularProgressIndicator(
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation<
+                                                          Color>(blueColor)))
+                                          : Container(
+                                              child: CommonButtons
+                                                  .getRichTextActionButton(
+                                                icon: Image.asset(
+                                                  'assets/icons/start_btn.png',
+                                                  height:
+                                                      displayHeight(context) *
+                                                          0.055,
+                                                  width: displayWidth(context) *
+                                                      0.12,
+                                                ),
+                                                title: 'Start Trip',
+                                                context: context,
+                                                fontSize:
+                                                    displayWidth(context) *
+                                                        0.042,
+                                                textColor: Colors.white,
+                                                buttonPrimaryColor: blueColor,
+                                                borderColor: blueColor,
+                                                width: displayWidth(context),
+                                                onTap: () async {
+                                                  if (vesselData.isEmpty) {
+                                                    addNewVesselDialogBox(
+                                                        context);
+                                                  } else {
+                                                    /*if (Platform.isIOS) {
                                           if (selectedValue ==
                                               null) {
                                             Utils.customPrint(
@@ -2275,65 +2304,65 @@ showLocationDailog();
                                           }
                                         }*/
 
-                                        checkAllPermission(true);
+                                                    checkAllPermission(true);
 
-                                        Utils.customPrint(
-                                            'SELECTED VESSEL WEIGHT $selectedVesselWeight');
-                                      }
+                                                    Utils.customPrint(
+                                                        'SELECTED VESSEL WEIGHT $selectedVesselWeight');
+                                                  }
 
-                                      List<BluetoothDevice>
-                                      connectedDeviceList =
-                                          FlutterBluePlus
-                                              .connectedDevices;
-                                      final FlutterSecureStorage
-                                      storage =
-                                      FlutterSecureStorage();
-                                      if (connectedDeviceList
-                                          .isNotEmpty) {
-                                        sharedPreferences!.setBool(
-                                            'onStartTripLPRDeviceConnected',
-                                            true);
-                                      } else {
-                                        sharedPreferences!.setBool(
-                                            'onStartTripLPRDeviceConnected',
-                                            false);
-                                      }
-                                    },
+                                                  List<BluetoothDevice>
+                                                      connectedDeviceList =
+                                                      FlutterBluePlus
+                                                          .connectedDevices;
+                                                  final FlutterSecureStorage
+                                                      storage =
+                                                      FlutterSecureStorage();
+                                                  if (connectedDeviceList
+                                                      .isNotEmpty) {
+                                                    sharedPreferences!.setBool(
+                                                        'onStartTripLPRDeviceConnected',
+                                                        true);
+                                                  } else {
+                                                    sharedPreferences!.setBool(
+                                                        'onStartTripLPRDeviceConnected',
+                                                        false);
+                                                  }
+                                                },
+                                              ),
+                                            ),
+                                    ],
                                   ),
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                top: displayWidth(context) * 0.01,
-                                bottom: displayWidth(context) * 0.01,
-                              ),
-                              child: GestureDetector(
-                                  onTap: () async {
-                                    final image =
-                                    await controller.capture();
-                                    await SystemChrome
-                                        .setPreferredOrientations([
-                                      DeviceOrientation.portraitUp,
-                                    ]);
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      top: displayWidth(context) * 0.01,
+                                      bottom: displayWidth(context) * 0.01,
+                                    ),
+                                    child: GestureDetector(
+                                        onTap: () async {
+                                          final image =
+                                              await controller.capture();
+                                          await SystemChrome
+                                              .setPreferredOrientations([
+                                            DeviceOrientation.portraitUp,
+                                          ]);
 
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                FeedbackReport(
-                                                  imagePath:
-                                                  image.toString(),
-                                                  uIntList: image,
-                                                )));
-                                  },
-                                  child: UserFeedback()
-                                      .getUserFeedback(context)),
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      FeedbackReport(
+                                                        imagePath:
+                                                            image.toString(),
+                                                        uIntList: image,
+                                                      )));
+                                        },
+                                        child: UserFeedback()
+                                            .getUserFeedback(context)),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
+                          ),
                   ],
                 ),
               ),
@@ -2388,8 +2417,8 @@ showLocationDailog();
                       controller: textEditingController,
                       onFieldSubmitted: (String value) {
                         if (int.parse(textEditingController.text.trim().isEmpty
-                            ? '1'
-                            : textEditingController.text.trim()) !=
+                                ? '1'
+                                : textEditingController.text.trim()) !=
                             0) {
                           FocusScope.of(context).requestFocus(FocusNode());
                         } else {
@@ -2400,15 +2429,15 @@ showLocationDailog();
                       },
                       onEditingComplete: () {
                         if (int.parse(textEditingController.text.trim().isEmpty
-                            ? '1'
-                            : textEditingController.text.trim()) !=
+                                ? '1'
+                                : textEditingController.text.trim()) !=
                             0) {
                           // setState(() {
                           //textEditingController.text.isNotEmpty ? numberOfPassengers = int.parse(textEditingController.text) : numberOfPassengers = passengerValue;
                           if (textEditingController.text.isEmpty) {
                             setState(() {
                               numberOfPassengers =
-                              passengerValue > 10 ? 10 : passengerValue;
+                                  passengerValue > 10 ? 10 : passengerValue;
                               sliderMinVal = 11;
                               sliderCount = '10+';
                             });
@@ -2424,9 +2453,9 @@ showLocationDailog();
 
                             if (numberOfPassengers.toString().length == 3) {
                               sliderMinVal =
-                              (numberOfPassengers.toDouble()) > 999
-                                  ? numberOfPassengers.toDouble()
-                                  : numberOfPassengers.toDouble();
+                                  (numberOfPassengers.toDouble()) > 999
+                                      ? numberOfPassengers.toDouble()
+                                      : numberOfPassengers.toDouble();
                             } else {
                               sliderMinVal = numberOfPassengers.toDouble();
                             }
@@ -2449,9 +2478,9 @@ showLocationDailog();
 
                               if (numberOfPassengers.toString().length == 3) {
                                 sliderMinVal =
-                                (numberOfPassengers.toDouble()) > 999
-                                    ? numberOfPassengers.toDouble()
-                                    : numberOfPassengers.toDouble();
+                                    (numberOfPassengers.toDouble()) > 999
+                                        ? numberOfPassengers.toDouble()
+                                        : numberOfPassengers.toDouble();
                               } else {
                                 sliderMinVal = numberOfPassengers.toDouble();
                               }
@@ -2472,7 +2501,7 @@ showLocationDailog();
                         else if (value.length == 0) {
                           setState(() {
                             numberOfPassengers =
-                            passengerValue > 10 ? 10 : passengerValue;
+                                passengerValue > 10 ? 10 : passengerValue;
                             /*if(numberOfPassengers.toString().length == 3)
                              {
                                sliderMinVal = numberOfPassengers.toDouble() + 20;
@@ -2511,8 +2540,8 @@ showLocationDailog();
                     ),
                     onPressed: () {
                       if (int.parse(textEditingController.text.trim().isEmpty
-                          ? '1'
-                          : textEditingController.text.trim()) !=
+                              ? '1'
+                              : textEditingController.text.trim()) !=
                           0) {
                         setState(() {
                           isOKClick = true;
@@ -2520,7 +2549,7 @@ showLocationDailog();
                             sliderMinVal = 11;
 
                             numberOfPassengers =
-                            passengerValue > 10 ? 10 : passengerValue;
+                                passengerValue > 10 ? 10 : passengerValue;
 
                             sliderCount = '10+';
                             isSliderDisable = false;
@@ -2532,9 +2561,9 @@ showLocationDailog();
 
                             if (numberOfPassengers.toString().length == 3) {
                               sliderMinVal =
-                              (numberOfPassengers.toDouble()) > 999
-                                  ? numberOfPassengers.toDouble()
-                                  : numberOfPassengers.toDouble();
+                                  (numberOfPassengers.toDouble()) > 999
+                                      ? numberOfPassengers.toDouble()
+                                      : numberOfPassengers.toDouble();
                             } else {
                               sliderMinVal = numberOfPassengers.toDouble();
                             }
@@ -2555,7 +2584,7 @@ showLocationDailog();
                         kReleaseMode
                             ? null
                             : debugPrint(
-                            'Number of passengers $numberOfPassengers');
+                                'Number of passengers $numberOfPassengers');
 
                         // popupAnimationController.reset();
                       } else {
@@ -2583,7 +2612,7 @@ showLocationDailog();
       if (isTripStarted != null) {
         if (isTripStarted) {
           List<String>? tripData =
-          sharedPreferences!.getStringList('trip_data');
+              sharedPreferences!.getStringList('trip_data');
           Trip tripDetails = await _databaseService.getTrip(tripData![0]);
 
           if (isTripStarted) {
@@ -2597,7 +2626,7 @@ showLocationDailog();
 
       if (isLocationPermitted) {
         bool isNDPermDenied =
-        await Permission.bluetoothConnect.isPermanentlyDenied;
+            await Permission.bluetoothConnect.isPermanentlyDenied;
 
         if (isNDPermDenied) {
           showDialog(
@@ -2619,8 +2648,8 @@ showLocationDailog();
             dynamic isBluetoothEnable = Platform.isAndroid
                 ? await blueIsOn()
                 : await checkIfBluetoothIsEnabled(scaffoldKey, () {
-              showBluetoothDialog(context);
-            });
+                    showBluetoothDialog(context);
+                  });
 
             if (isBluetoothEnable != null) {
               if (isBluetoothEnable) {
@@ -2637,8 +2666,8 @@ showLocationDailog();
               bool isBluetoothEnable = Platform.isAndroid
                   ? await blueIsOn()
                   : await checkIfBluetoothIsEnabled(scaffoldKey, () {
-                showBluetoothDialog(context);
-              });
+                      showBluetoothDialog(context);
+                    });
 
               if (isBluetoothEnable) {
                 // vessel!.add(widget.vessel!);
@@ -2654,8 +2683,8 @@ showLocationDailog();
                 bool isBluetoothEnable = Platform.isAndroid
                     ? await blueIsOn()
                     : await checkIfBluetoothIsEnabled(scaffoldKey, () {
-                  showBluetoothDialog(context);
-                });
+                        showBluetoothDialog(context);
+                      });
 
                 if (isBluetoothEnable) {
                   // vessel!.add(widget.vessel!);
@@ -2689,7 +2718,7 @@ showLocationDailog();
       } else {
         /// WIU
         bool isWIULocationPermitted =
-        await Permission.locationWhenInUse.isGranted;
+            await Permission.locationWhenInUse.isGranted;
 
         if (!isWIULocationPermitted) {
           await Utils.getLocationPermission(context, scaffoldKey);
@@ -2713,7 +2742,7 @@ showLocationDailog();
                       isLocationDialogBox: true,
                       text: 'Always Allow Access to “Location”',
                       subText:
-                      "To track your trip while you use other apps we need background access to your location",
+                          "To track your trip while you use other apps we need background access to your location",
                       buttonText: 'Ok',
                       buttonOnTap: () async {
                         Get.back();
@@ -2726,9 +2755,8 @@ showLocationDailog();
               });
             }
           } else {
-            if(Platform.isIOS){
+            if (Platform.isIOS) {
               await Permission.locationAlways.request();
-
             }
 
             bool isGranted = await Permission.locationAlways.isGranted;
@@ -2737,14 +2765,14 @@ showLocationDailog();
               Utils.showSnackBar(context,
                   scaffoldKey: scaffoldKey,
                   message:
-                  '"Always Allow" location permissions are denied, without permissions we are unable to start the trip');
+                      '"Always Allow" location permissions are denied, without permissions we are unable to start the trip');
             }
           }
         } else {
           bool isLocationPermitted = await Permission.locationAlways.isGranted;
           if (isLocationPermitted) {
             bool isNDPermDenied =
-            await Permission.bluetoothConnect.isPermanentlyDenied;
+                await Permission.bluetoothConnect.isPermanentlyDenied;
 
             if (isNDPermDenied) {
               showDialog(
@@ -2770,8 +2798,8 @@ showLocationDailog();
                 bool isBluetoothEnable = Platform.isAndroid
                     ? await blueIsOn()
                     : await checkIfBluetoothIsEnabled(scaffoldKey, () {
-                  showBluetoothDialog(context);
-                });
+                        showBluetoothDialog(context);
+                      });
 
                 if (isBluetoothEnable) {
                   // vessel!.add(widget.vessel!);
@@ -2782,13 +2810,13 @@ showLocationDailog();
               } else {
                 await Permission.bluetoothConnect.request();
                 bool isNDPermitted =
-                await Permission.bluetoothConnect.isGranted;
+                    await Permission.bluetoothConnect.isGranted;
                 if (isNDPermitted) {
                   bool isBluetoothEnable = Platform.isAndroid
                       ? await blueIsOn()
                       : await checkIfBluetoothIsEnabled(scaffoldKey, () {
-                    showBluetoothDialog(context);
-                  });
+                          showBluetoothDialog(context);
+                        });
 
                   if (isBluetoothEnable) {
                     // vessel!.add(widget.vessel!);
@@ -2809,13 +2837,12 @@ showLocationDailog();
                 Utils.showSnackBar(context,
                     scaffoldKey: scaffoldKey,
                     message:
-                    "Location permissions are denied without permissions we are unable to start the trip");
+                        "Location permissions are denied without permissions we are unable to start the trip");
 
                 Future.delayed(Duration(seconds: 3), () async {
-                          if(!isLocationDialogBoxOpen){
-                          showLocationDailog();
-
-                          }
+                  if (!isLocationDialogBoxOpen) {
+                    showLocationDailog();
+                  }
                 });
                 return PermissionStatus.denied;
               });
@@ -2825,13 +2852,12 @@ showLocationDailog();
                 Utils.showSnackBar(context,
                     scaffoldKey: scaffoldKey,
                     message:
-                    "Location permissions are denied without permissions we are unable to start the trip");
+                        "Location permissions are denied without permissions we are unable to start the trip");
 
                 Future.delayed(Duration(seconds: 3), () async {
-                          if(!isLocationDialogBoxOpen){
-                          showLocationDailog();
-
-                          }
+                  if (!isLocationDialogBoxOpen) {
+                    showLocationDailog();
+                  }
                 });
               }
             } else {
@@ -2846,7 +2872,7 @@ showLocationDailog();
                         isLocationDialogBox: true,
                         text: 'Always Allow Access to “Location”',
                         subText:
-                        "To track your trip while you use other apps we need background access to your location",
+                            "To track your trip while you use other apps we need background access to your location",
                         buttonText: 'Ok',
                         buttonOnTap: () async {
                           Get.back();
@@ -2864,7 +2890,7 @@ showLocationDailog();
               await Permission.locationAlways.request();
 
               bool isLocationAlwaysPermitted =
-              await Permission.locationAlways.isGranted;
+                  await Permission.locationAlways.isGranted;
 
               Utils.customPrint('IOS PERMISSION GIVEN OUTSIDE');
 
@@ -2877,13 +2903,12 @@ showLocationDailog();
                 Utils.showSnackBar(context,
                     scaffoldKey: scaffoldKey,
                     message:
-                    'Location permissions are denied without permissions we are unable to start the trip');
+                        'Location permissions are denied without permissions we are unable to start the trip');
 
                 Future.delayed(Duration(seconds: 3), () async {
-                          if(!isLocationDialogBoxOpen){
-                          showLocationDailog();
-
-                          }
+                  if (!isLocationDialogBoxOpen) {
+                    showLocationDailog();
+                  }
                 });
               }
             } else {
@@ -2898,7 +2923,7 @@ showLocationDailog();
                           isLocationDialogBox: true,
                           text: 'Always Allow Access to “Location”',
                           subText:
-                          "To track your trip while you use other apps we need background access to your location",
+                              "To track your trip while you use other apps we need background access to your location",
                           buttonText: 'Ok',
                           buttonOnTap: () async {
                             Get.back();
@@ -2939,7 +2964,7 @@ showLocationDailog();
     });
 
     List<CreateVessel> localVesselList =
-    await _databaseService.vessels().catchError((onError) {
+        await _databaseService.vessels().catchError((onError) {
       setState(() {
         isVesselDataLoading = false;
       });
@@ -2956,7 +2981,7 @@ showLocationDailog();
   Future<bool> blueIsOn() async {
     // FlutterBluePlus _flutterBlue = FlutterBluePlus.instance;
     BluetoothAdapterState adapterState =
-    await FlutterBluePlus.adapterState.first;
+        await FlutterBluePlus.adapterState.first;
     final isOn = adapterState == BluetoothAdapterState.on;
     // if (isOn) return true;
     //
@@ -2979,7 +3004,7 @@ showLocationDailog();
         Utils.customPrint(" bluetooth state$value");
       } else {
         bool isNearByDevicePermitted =
-        await Permission.bluetoothConnect.isGranted;
+            await Permission.bluetoothConnect.isGranted;
         if (!isNearByDevicePermitted) {
           await Permission.bluetoothConnect.request();
         } else {
@@ -2996,7 +3021,7 @@ showLocationDailog();
       VoidCallback showBluetoothDialog) async {
     bool isBluetoothEnabled = false;
     BluetoothAdapterState adapterState =
-    await FlutterBluePlus.adapterState.first;
+        await FlutterBluePlus.adapterState.first;
     bool isBLEEnabled = adapterState == BluetoothAdapterState.on;
     // bool isBLEEnabled = await flutterBluePlus!.isOn;
     Utils.customPrint('isBLEEnabled: $isBLEEnabled');
@@ -3011,13 +3036,13 @@ showLocationDailog();
         if (isPermGranted) {
           // FlutterBluePlus _flutterBlue = FlutterBluePlus();
           BluetoothAdapterState adapterState =
-          await FlutterBluePlus.adapterState.first;
+              await FlutterBluePlus.adapterState.first;
           final isOn = adapterState == BluetoothAdapterState.on;
           if (isOn) isBluetoothEnabled = true;
 
           await Future.delayed(const Duration(seconds: 1));
           BluetoothAdapterState tempAdapterState =
-          await FlutterBluePlus.adapterState.first;
+              await FlutterBluePlus.adapterState.first;
           isBluetoothEnabled = adapterState == BluetoothAdapterState.on;
           // isBluetoothEnabled = await FlutterBluePlus.isOn;
           if (!isBluetoothEnabled) openedSettingsPageForPermission = true;
@@ -3026,7 +3051,7 @@ showLocationDailog();
           Utils.showSnackBar(scaffoldKey.currentContext!,
               scaffoldKey: scaffoldKey,
               message:
-              'Bluetooth permission is needed. Please enable bluetooth permission from app\'s settings.');
+                  'Bluetooth permission is needed. Please enable bluetooth permission from app\'s settings.');
 
           Future.delayed(Duration(seconds: 3), () async {
             openedSettingsPageForPermission = true;
@@ -3037,14 +3062,14 @@ showLocationDailog();
       } else {
         // FlutterBluePlus _flutterBlue = FlutterBluePlus();
         BluetoothAdapterState adapterState =
-        await FlutterBluePlus.adapterState.first;
+            await FlutterBluePlus.adapterState.first;
         final isOn = adapterState == BluetoothAdapterState.on;
         // final isOn = await _flutterBlue.isOn;
         if (isOn) isBluetoothEnabled = true;
 
         await Future.delayed(const Duration(seconds: 1));
         BluetoothAdapterState tempAdapterState =
-        await FlutterBluePlus.adapterState.first;
+            await FlutterBluePlus.adapterState.first;
         isBluetoothEnabled = tempAdapterState == BluetoothAdapterState.on;
         // isBluetoothEnabled = await FlutterBluePlus.instance.isOn;
         if (!isBluetoothEnabled) openedSettingsPageForPermission = true;
@@ -3058,7 +3083,7 @@ showLocationDailog();
           Utils.showSnackBar(scaffoldKey.currentContext!,
               scaffoldKey: scaffoldKey,
               message:
-              'Bluetooth permission is needed. Please enable bluetooth permission from app\'s settings.');
+                  'Bluetooth permission is needed. Please enable bluetooth permission from app\'s settings.');
 
           Future.delayed(Duration(seconds: 3), () async {
             openedSettingsPageForPermission = true;
@@ -3072,14 +3097,14 @@ showLocationDailog();
       } else {
         // FlutterBluePlus _flutterBlue = FlutterBluePlus();
         BluetoothAdapterState adapterState =
-        await FlutterBluePlus.adapterState.first;
+            await FlutterBluePlus.adapterState.first;
         final isOn = adapterState == BluetoothAdapterState.on;
         // final isOn = await _flutterBlue.isOn;
         if (isOn) isBluetoothEnabled = true;
 
         await Future.delayed(const Duration(seconds: 1));
         BluetoothAdapterState tempAdapterState =
-        await FlutterBluePlus.adapterState.first;
+            await FlutterBluePlus.adapterState.first;
         isBluetoothEnabled = tempAdapterState == BluetoothAdapterState.on;
         // isBluetoothEnabled = await FlutterBluePlus.instance.isOn;
         if (!isBluetoothEnabled) openedSettingsPageForPermission = true;
@@ -3091,9 +3116,10 @@ showLocationDailog();
   /// It will save data to local database when trip is start
   Future<void> onSave(String file, BuildContext context,
       bool savingDataWhileStartService) async {
-        if(commonProvider.loginModel!.token==null||commonProvider.loginModel!.token!.isEmpty){
-          commonProvider.getToken();
-        }
+    if (commonProvider.loginModel!.token == null ||
+        commonProvider.loginModel!.token!.isEmpty) {
+      commonProvider.getToken();
+    }
     final vesselName = selectedVesselName;
     final currentLoad = selectedVesselWeight;
 
@@ -3113,6 +3139,7 @@ showLocationDailog();
     try {
       await _databaseService.insertTrip(Trip(
         id: getTripId,
+        name: tripNameController.text,
         vesselId: vesselId,
         vesselName: selectedVesselName,
         currentLoad: 'Empty',
@@ -3124,8 +3151,8 @@ showLocationDailog();
         createdAt: Utils.getCurrentTZDateTime(),
         updatedAt: Utils.getCurrentTZDateTime(),
         startPosition: [latitude, longitude].join(","),
-       //createdBy:'64e4b01076c86cc1877b4497' ,
-        createdBy: commonProvider.loginModel?.userId??"",
+        //createdBy:'64e4b01076c86cc1877b4497' ,
+        createdBy: commonProvider.loginModel?.userId ?? "",
         endPosition: [latitude, longitude].join(","),
         deviceInfo: deviceDetails!.toJson().toString(),
       ));
@@ -3263,35 +3290,35 @@ showLocationDailog();
 
     Map<String, dynamic> data = {'countInit': 1};
     return await BackgroundLocator.registerLocationUpdate(
-        LocationCallbackHandler.callback,
-        initCallback: LocationCallbackHandler.initCallback,
-        initDataCallback: data,
-        disposeCallback: LocationCallbackHandler.disposeCallback,
-        iosSettings: IOSSettings(
-            accuracy: LocationAccuracy.NAVIGATION,
-            distanceFilter: 0,
-            stopWithTerminate: true),
-        autoStop: false,
-        androidSettings: AndroidSettings(
-            accuracy: LocationAccuracy.NAVIGATION,
-            interval: 1,
-            distanceFilter: 0,
-            androidNotificationSettings: AndroidNotificationSettings(
-                notificationChannelName: 'Location tracking',
-                notificationTitle: '',
-                notificationMsg: 'Trip is in progress',
-                notificationBigMsg: '',
-                notificationIconColor: Colors.grey,
-                notificationIcon: '@drawable/noti_logo',
-                notificationTapCallback:
-                LocationCallbackHandler.notificationCallback)))
+            LocationCallbackHandler.callback,
+            initCallback: LocationCallbackHandler.initCallback,
+            initDataCallback: data,
+            disposeCallback: LocationCallbackHandler.disposeCallback,
+            iosSettings: IOSSettings(
+                accuracy: LocationAccuracy.NAVIGATION,
+                distanceFilter: 0,
+                stopWithTerminate: true),
+            autoStop: false,
+            androidSettings: AndroidSettings(
+                accuracy: LocationAccuracy.NAVIGATION,
+                interval: 1,
+                distanceFilter: 0,
+                androidNotificationSettings: AndroidNotificationSettings(
+                    notificationChannelName: 'Location tracking',
+                    notificationTitle: '',
+                    notificationMsg: 'Trip is in progress',
+                    notificationBigMsg: '',
+                    notificationIconColor: Colors.grey,
+                    notificationIcon: '@drawable/noti_logo',
+                    notificationTapCallback:
+                        LocationCallbackHandler.notificationCallback)))
         .then((value) async {
       StartTrip().startBGLocatorTrip(getTripId, DateTime.now());
 
       notiTimer = Timer.periodic(Duration(seconds: 1), (timer) async {
         var activeNotifications = await flutterLocalNotificationsPlugin
             .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
+                AndroidFlutterLocalNotificationsPlugin>()
             ?.getActiveNotifications();
 
         if (activeNotifications != null && activeNotifications.isNotEmpty) {
@@ -3357,7 +3384,7 @@ showLocationDailog();
                               commonText(
                                   context: context,
                                   text:
-                                  'There is a trip in progress from another Vessel. Please end the trip and come back here',
+                                      'There is a trip in progress from another Vessel. Please end the trip and come back here',
                                   fontWeight: FontWeight.w500,
                                   textColor: Colors.black87,
                                   textSize: displayWidth(context) * 0.038,
@@ -3378,41 +3405,41 @@ showLocationDailog();
                                 child: Center(
                                   child: CommonButtons.getAcceptButton(
                                       'Go to trip', context, blueColor,
-                                          () async {
-                                        Utils.customPrint("Click on GO TO TRIP 1");
+                                      () async {
+                                    Utils.customPrint("Click on GO TO TRIP 1");
 
-                                        List<String>? tripData = sharedPreferences!
-                                            .getStringList('trip_data');
-                                        bool? runningTrip = sharedPreferences!
-                                            .getBool("trip_started");
+                                    List<String>? tripData = sharedPreferences!
+                                        .getStringList('trip_data');
+                                    bool? runningTrip = sharedPreferences!
+                                        .getBool("trip_started");
 
-                                        String tripId = '', vesselName = '';
-                                        if (tripData != null) {
-                                          tripId = tripData[0];
-                                          vesselName = tripData[1];
-                                        }
+                                    String tripId = '', vesselName = '';
+                                    if (tripData != null) {
+                                      tripId = tripData[0];
+                                      vesselName = tripData[1];
+                                    }
 
-                                        Utils.customPrint("Click on GO TO TRIP 2");
+                                    Utils.customPrint("Click on GO TO TRIP 2");
 
-                                        Navigator.of(dialogContext).pop();
+                                    Navigator.of(dialogContext).pop();
 
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  TripRecordingScreen(
-                                                      tripId: tripId,
-                                                      vesselId: tripData![1],
-                                                      vesselName: tripData[2],
-                                                      tripIsRunningOrNot:
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              TripRecordingScreen(
+                                                  tripId: tripId,
+                                                  vesselId: tripData![1],
+                                                  vesselName: tripData[2],
+                                                  tripIsRunningOrNot:
                                                       runningTrip)),
-                                        ).then((value) =>
-                                            SystemChrome.setPreferredOrientations([
-                                              DeviceOrientation.portraitUp,
-                                            ]));
+                                    ).then((value) =>
+                                        SystemChrome.setPreferredOrientations([
+                                          DeviceOrientation.portraitUp,
+                                        ]));
 
-                                        Utils.customPrint("Click on GO TO TRIP 3");
-                                      },
+                                    Utils.customPrint("Click on GO TO TRIP 3");
+                                  },
                                       displayWidth(context) * 0.65,
                                       displayHeight(context) * 0.054,
                                       primaryColor,
@@ -3429,14 +3456,14 @@ showLocationDailog();
                               Center(
                                 child: CommonButtons.getAcceptButton(
                                     'Ok go back', context, Colors.transparent,
-                                        () {
-                                      Navigator.of(context).pop();
-                                    },
+                                    () {
+                                  Navigator.of(context).pop();
+                                },
                                     displayWidth(context) * 0.65,
                                     displayHeight(context) * 0.054,
                                     primaryColor,
                                     Theme.of(context).brightness ==
-                                        Brightness.dark
+                                            Brightness.dark
                                         ? Colors.white
                                         : blueColor,
                                     displayHeight(context) * 0.018,
@@ -3521,7 +3548,7 @@ showLocationDailog();
                               decoration: BoxDecoration(
                                 color: bluetoothCancelBtnBackColor,
                                 borderRadius:
-                                BorderRadius.all(Radius.circular(10)),
+                                    BorderRadius.all(Radius.circular(10)),
                               ),
                               height: displayWidth(context) * 0.12,
                               width: displayWidth(context) * 0.34,
@@ -3547,7 +3574,7 @@ showLocationDailog();
                               decoration: BoxDecoration(
                                 color: blueColor,
                                 borderRadius:
-                                BorderRadius.all(Radius.circular(10)),
+                                    BorderRadius.all(Radius.circular(10)),
                               ),
                               height: displayWidth(context) * 0.12,
                               width: displayWidth(context) * 0.34,
@@ -3591,19 +3618,19 @@ showLocationDailog();
 
     deviceDetails = Platform.isAndroid
         ? DeviceInfo(
-        board: androidDeviceInfo?.board,
-        deviceId: androidDeviceInfo?.id,
-        deviceType: androidDeviceInfo?.type,
-        make: androidDeviceInfo?.manufacturer,
-        model: androidDeviceInfo?.model,
-        version: androidDeviceInfo?.version.release)
+            board: androidDeviceInfo?.board,
+            deviceId: androidDeviceInfo?.id,
+            deviceType: androidDeviceInfo?.type,
+            make: androidDeviceInfo?.manufacturer,
+            model: androidDeviceInfo?.model,
+            version: androidDeviceInfo?.version.release)
         : DeviceInfo(
-        board: iosDeviceInfo?.utsname.machine,
-        deviceId: '',
-        deviceType: iosDeviceInfo?.utsname.machine,
-        make: iosDeviceInfo?.utsname.machine,
-        model: iosDeviceInfo?.model,
-        version: iosDeviceInfo?.utsname.release);
+            board: iosDeviceInfo?.utsname.machine,
+            deviceId: '',
+            deviceType: iosDeviceInfo?.utsname.machine,
+            make: iosDeviceInfo?.utsname.machine,
+            model: iosDeviceInfo?.model,
+            version: iosDeviceInfo?.utsname.release);
     Utils.customPrint("deviceDetails:${deviceDetails!.toJson().toString()}");
   }
 
@@ -3618,7 +3645,7 @@ showLocationDailog();
 
     /// TODO
     List<BluetoothDevice> connectedDevicesList =
-    await FlutterBluePlus.connectedDevices;
+        await FlutterBluePlus.connectedDevices;
     Utils.customPrint("BONDED LIST $connectedDevicesList");
 
     if (connectedDevicesList.isNotEmpty) {
@@ -3764,14 +3791,15 @@ showLocationDailog();
       });
 
       FlutterBluePlus.startScan(timeout: Duration(seconds: 4));
-if(mounted){
-      Future.delayed(Duration(seconds: 4), () {
-        showBluetoothListDialog(context, deviceId, connectedBluetoothDevice);
-        isBluetoothSearching = false;
-     //   setState(() {});
-        EasyLoading.dismiss();
-      });
-    }}
+      if (mounted) {
+        Future.delayed(Duration(seconds: 4), () {
+          showBluetoothListDialog(context, deviceId, connectedBluetoothDevice);
+          isBluetoothSearching = false;
+          //   setState(() {});
+          EasyLoading.dismiss();
+        });
+      }
+    }
     return;
     FlutterBluePlus.scanResults.listen((results) async {
       for (ScanResult r in results) {
@@ -3933,14 +3961,14 @@ if(mounted){
                 var isStoragePermitted = await Permission.storage.status;
                 if (isStoragePermitted.isGranted) {
                   bool isNotificationPermitted =
-                  await Permission.notification.isGranted;
+                      await Permission.notification.isGranted;
 
                   if (isNotificationPermitted) {
                     startWritingDataToDB(context);
                   } else {
                     await Utils.getNotificationPermission(context);
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
                     if (isNotificationPermitted) {
                       startWritingDataToDB(context);
                     }
@@ -3953,14 +3981,14 @@ if(mounted){
 
                   if (isStoragePermitted.isGranted) {
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
 
                     if (isNotificationPermitted) {
                       startWritingDataToDB(context);
                     } else {
                       await Utils.getNotificationPermission(context);
                       bool isNotificationPermitted =
-                      await Permission.notification.isGranted;
+                          await Permission.notification.isGranted;
                       if (isNotificationPermitted) {
                         startWritingDataToDB(context);
                       }
@@ -3969,14 +3997,14 @@ if(mounted){
                 }
               } else {
                 bool isNotificationPermitted =
-                await Permission.notification.isGranted;
+                    await Permission.notification.isGranted;
 
                 if (isNotificationPermitted) {
                   startWritingDataToDB(context);
                 } else {
                   await Utils.getNotificationPermission(context);
                   bool isNotificationPermitted =
-                  await Permission.notification.isGranted;
+                      await Permission.notification.isGranted;
                   if (isNotificationPermitted) {
                     startWritingDataToDB(context);
                   }
@@ -3984,14 +4012,14 @@ if(mounted){
               }
             } else {
               bool isNotificationPermitted =
-              await Permission.notification.isGranted;
+                  await Permission.notification.isGranted;
 
               if (isNotificationPermitted) {
                 startWritingDataToDB(context);
               } else {
                 await Utils.getNotificationPermission(context);
                 bool isNotificationPermitted =
-                await Permission.notification.isGranted;
+                    await Permission.notification.isGranted;
                 if (isNotificationPermitted) {
                   startWritingDataToDB(context);
                 }
@@ -4011,14 +4039,14 @@ if(mounted){
                   var isStoragePermitted = await Permission.storage.status;
                   if (isStoragePermitted.isGranted) {
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
 
                     if (isNotificationPermitted) {
                       startWritingDataToDB(context);
                     } else {
                       await Utils.getNotificationPermission(context);
                       bool isNotificationPermitted =
-                      await Permission.notification.isGranted;
+                          await Permission.notification.isGranted;
                       if (isNotificationPermitted) {
                         startWritingDataToDB(context);
                       }
@@ -4031,14 +4059,14 @@ if(mounted){
 
                     if (isStoragePermitted.isGranted) {
                       bool isNotificationPermitted =
-                      await Permission.notification.isGranted;
+                          await Permission.notification.isGranted;
 
                       if (isNotificationPermitted) {
                         startWritingDataToDB(context);
                       } else {
                         await Utils.getNotificationPermission(context);
                         bool isNotificationPermitted =
-                        await Permission.notification.isGranted;
+                            await Permission.notification.isGranted;
                         if (isNotificationPermitted) {
                           startWritingDataToDB(context);
                         }
@@ -4047,14 +4075,14 @@ if(mounted){
                   }
                 } else {
                   bool isNotificationPermitted =
-                  await Permission.notification.isGranted;
+                      await Permission.notification.isGranted;
 
                   if (isNotificationPermitted) {
                     startWritingDataToDB(context);
                   } else {
                     await Utils.getNotificationPermission(context);
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
                     if (isNotificationPermitted) {
                       startWritingDataToDB(context);
                     }
@@ -4062,14 +4090,14 @@ if(mounted){
                 }
               } else {
                 bool isNotificationPermitted =
-                await Permission.notification.isGranted;
+                    await Permission.notification.isGranted;
 
                 if (isNotificationPermitted) {
                   startWritingDataToDB(context);
                 } else {
                   await Utils.getNotificationPermission(context);
                   bool isNotificationPermitted =
-                  await Permission.notification.isGranted;
+                      await Permission.notification.isGranted;
                   if (isNotificationPermitted) {
                     startWritingDataToDB(
                       context,
@@ -4194,14 +4222,14 @@ if(mounted){
                   var isStoragePermitted = await Permission.storage.status;
                   if (isStoragePermitted.isGranted) {
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
 
                     if (isNotificationPermitted) {
                       startWritingDataToDB(context);
                     } else {
                       await Utils.getNotificationPermission(context);
                       bool isNotificationPermitted =
-                      await Permission.notification.isGranted;
+                          await Permission.notification.isGranted;
                       if (isNotificationPermitted) {
                         startWritingDataToDB(context);
                       }
@@ -4214,14 +4242,14 @@ if(mounted){
 
                     if (isStoragePermitted.isGranted) {
                       bool isNotificationPermitted =
-                      await Permission.notification.isGranted;
+                          await Permission.notification.isGranted;
 
                       if (isNotificationPermitted) {
                         startWritingDataToDB(context);
                       } else {
                         await Utils.getNotificationPermission(context);
                         bool isNotificationPermitted =
-                        await Permission.notification.isGranted;
+                            await Permission.notification.isGranted;
                         if (isNotificationPermitted) {
                           startWritingDataToDB(context);
                         }
@@ -4230,14 +4258,14 @@ if(mounted){
                   }
                 } else {
                   bool isNotificationPermitted =
-                  await Permission.notification.isGranted;
+                      await Permission.notification.isGranted;
 
                   if (isNotificationPermitted) {
                     startWritingDataToDB(context);
                   } else {
                     await Utils.getNotificationPermission(context);
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
                     if (isNotificationPermitted) {
                       startWritingDataToDB(context);
                     }
@@ -4245,14 +4273,14 @@ if(mounted){
                 }
               } else {
                 bool isNotificationPermitted =
-                await Permission.notification.isGranted;
+                    await Permission.notification.isGranted;
 
                 if (isNotificationPermitted) {
                   startWritingDataToDB(context);
                 } else {
                   await Utils.getNotificationPermission(context);
                   bool isNotificationPermitted =
-                  await Permission.notification.isGranted;
+                      await Permission.notification.isGranted;
                   if (isNotificationPermitted) {
                     startWritingDataToDB(context);
                   }
@@ -4272,14 +4300,14 @@ if(mounted){
                     var isStoragePermitted = await Permission.storage.status;
                     if (isStoragePermitted.isGranted) {
                       bool isNotificationPermitted =
-                      await Permission.notification.isGranted;
+                          await Permission.notification.isGranted;
 
                       if (isNotificationPermitted) {
                         startWritingDataToDB(context);
                       } else {
                         await Utils.getNotificationPermission(context);
                         bool isNotificationPermitted =
-                        await Permission.notification.isGranted;
+                            await Permission.notification.isGranted;
                         if (isNotificationPermitted) {
                           startWritingDataToDB(context);
                         }
@@ -4292,14 +4320,14 @@ if(mounted){
 
                       if (isStoragePermitted.isGranted) {
                         bool isNotificationPermitted =
-                        await Permission.notification.isGranted;
+                            await Permission.notification.isGranted;
 
                         if (isNotificationPermitted) {
                           startWritingDataToDB(context);
                         } else {
                           await Utils.getNotificationPermission(context);
                           bool isNotificationPermitted =
-                          await Permission.notification.isGranted;
+                              await Permission.notification.isGranted;
                           if (isNotificationPermitted) {
                             startWritingDataToDB(context);
                           }
@@ -4308,14 +4336,14 @@ if(mounted){
                     }
                   } else {
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
 
                     if (isNotificationPermitted) {
                       startWritingDataToDB(context);
                     } else {
                       await Utils.getNotificationPermission(context);
                       bool isNotificationPermitted =
-                      await Permission.notification.isGranted;
+                          await Permission.notification.isGranted;
                       if (isNotificationPermitted) {
                         startWritingDataToDB(context);
                       }
@@ -4323,14 +4351,14 @@ if(mounted){
                   }
                 } else {
                   bool isNotificationPermitted =
-                  await Permission.notification.isGranted;
+                      await Permission.notification.isGranted;
 
                   if (isNotificationPermitted) {
                     startWritingDataToDB(context);
                   } else {
                     await Utils.getNotificationPermission(context);
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
                     if (isNotificationPermitted) {
                       startWritingDataToDB(
                         context,
@@ -4465,14 +4493,14 @@ if(mounted){
                 var isStoragePermitted = await Permission.storage.status;
                 if (isStoragePermitted.isGranted) {
                   bool isNotificationPermitted =
-                  await Permission.notification.isGranted;
+                      await Permission.notification.isGranted;
 
                   if (isNotificationPermitted) {
                     startWritingDataToDB(context);
                   } else {
                     await Utils.getNotificationPermission(context);
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
                     if (isNotificationPermitted) {
                       startWritingDataToDB(context);
                     }
@@ -4485,14 +4513,14 @@ if(mounted){
 
                   if (isStoragePermitted.isGranted) {
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
 
                     if (isNotificationPermitted) {
                       startWritingDataToDB(context);
                     } else {
                       await Utils.getNotificationPermission(context);
                       bool isNotificationPermitted =
-                      await Permission.notification.isGranted;
+                          await Permission.notification.isGranted;
                       if (isNotificationPermitted) {
                         startWritingDataToDB(context);
                       }
@@ -4501,14 +4529,14 @@ if(mounted){
                 }
               } else {
                 bool isNotificationPermitted =
-                await Permission.notification.isGranted;
+                    await Permission.notification.isGranted;
 
                 if (isNotificationPermitted) {
                   startWritingDataToDB(context);
                 } else {
                   await Utils.getNotificationPermission(context);
                   bool isNotificationPermitted =
-                  await Permission.notification.isGranted;
+                      await Permission.notification.isGranted;
                   if (isNotificationPermitted) {
                     startWritingDataToDB(context);
                   }
@@ -4516,14 +4544,14 @@ if(mounted){
               }
             } else {
               bool isNotificationPermitted =
-              await Permission.notification.isGranted;
+                  await Permission.notification.isGranted;
 
               if (isNotificationPermitted) {
                 startWritingDataToDB(context);
               } else {
                 await Utils.getNotificationPermission(context);
                 bool isNotificationPermitted =
-                await Permission.notification.isGranted;
+                    await Permission.notification.isGranted;
                 if (isNotificationPermitted) {
                   startWritingDataToDB(context);
                 }
@@ -4543,14 +4571,14 @@ if(mounted){
                   var isStoragePermitted = await Permission.storage.status;
                   if (isStoragePermitted.isGranted) {
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
 
                     if (isNotificationPermitted) {
                       startWritingDataToDB(context);
                     } else {
                       await Utils.getNotificationPermission(context);
                       bool isNotificationPermitted =
-                      await Permission.notification.isGranted;
+                          await Permission.notification.isGranted;
                       if (isNotificationPermitted) {
                         startWritingDataToDB(context);
                       }
@@ -4563,14 +4591,14 @@ if(mounted){
 
                     if (isStoragePermitted.isGranted) {
                       bool isNotificationPermitted =
-                      await Permission.notification.isGranted;
+                          await Permission.notification.isGranted;
 
                       if (isNotificationPermitted) {
                         startWritingDataToDB(context);
                       } else {
                         await Utils.getNotificationPermission(context);
                         bool isNotificationPermitted =
-                        await Permission.notification.isGranted;
+                            await Permission.notification.isGranted;
                         if (isNotificationPermitted) {
                           startWritingDataToDB(context);
                         }
@@ -4579,14 +4607,14 @@ if(mounted){
                   }
                 } else {
                   bool isNotificationPermitted =
-                  await Permission.notification.isGranted;
+                      await Permission.notification.isGranted;
 
                   if (isNotificationPermitted) {
                     startWritingDataToDB(context);
                   } else {
                     await Utils.getNotificationPermission(context);
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
                     if (isNotificationPermitted) {
                       startWritingDataToDB(context);
                     }
@@ -4594,14 +4622,14 @@ if(mounted){
                 }
               } else {
                 bool isNotificationPermitted =
-                await Permission.notification.isGranted;
+                    await Permission.notification.isGranted;
 
                 if (isNotificationPermitted) {
                   startWritingDataToDB(context);
                 } else {
                   await Utils.getNotificationPermission(context);
                   bool isNotificationPermitted =
-                  await Permission.notification.isGranted;
+                      await Permission.notification.isGranted;
                   if (isNotificationPermitted) {
                     startWritingDataToDB(
                       context,
@@ -4679,14 +4707,14 @@ if(mounted){
                   var isStoragePermitted = await Permission.storage.status;
                   if (isStoragePermitted.isGranted) {
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
 
                     if (isNotificationPermitted) {
                       startWritingDataToDB(context);
                     } else {
                       await Utils.getNotificationPermission(context);
                       bool isNotificationPermitted =
-                      await Permission.notification.isGranted;
+                          await Permission.notification.isGranted;
                       if (isNotificationPermitted) {
                         startWritingDataToDB(context);
                       }
@@ -4699,14 +4727,14 @@ if(mounted){
 
                     if (isStoragePermitted.isGranted) {
                       bool isNotificationPermitted =
-                      await Permission.notification.isGranted;
+                          await Permission.notification.isGranted;
 
                       if (isNotificationPermitted) {
                         startWritingDataToDB(context);
                       } else {
                         await Utils.getNotificationPermission(context);
                         bool isNotificationPermitted =
-                        await Permission.notification.isGranted;
+                            await Permission.notification.isGranted;
                         if (isNotificationPermitted) {
                           startWritingDataToDB(context);
                         }
@@ -4715,14 +4743,14 @@ if(mounted){
                   }
                 } else {
                   bool isNotificationPermitted =
-                  await Permission.notification.isGranted;
+                      await Permission.notification.isGranted;
 
                   if (isNotificationPermitted) {
                     startWritingDataToDB(context);
                   } else {
                     await Utils.getNotificationPermission(context);
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
                     if (isNotificationPermitted) {
                       startWritingDataToDB(context);
                     }
@@ -4730,14 +4758,14 @@ if(mounted){
                 }
               } else {
                 bool isNotificationPermitted =
-                await Permission.notification.isGranted;
+                    await Permission.notification.isGranted;
 
                 if (isNotificationPermitted) {
                   startWritingDataToDB(context);
                 } else {
                   await Utils.getNotificationPermission(context);
                   bool isNotificationPermitted =
-                  await Permission.notification.isGranted;
+                      await Permission.notification.isGranted;
                   if (isNotificationPermitted) {
                     startWritingDataToDB(context);
                   }
@@ -4757,14 +4785,14 @@ if(mounted){
                     var isStoragePermitted = await Permission.storage.status;
                     if (isStoragePermitted.isGranted) {
                       bool isNotificationPermitted =
-                      await Permission.notification.isGranted;
+                          await Permission.notification.isGranted;
 
                       if (isNotificationPermitted) {
                         startWritingDataToDB(context);
                       } else {
                         await Utils.getNotificationPermission(context);
                         bool isNotificationPermitted =
-                        await Permission.notification.isGranted;
+                            await Permission.notification.isGranted;
                         if (isNotificationPermitted) {
                           startWritingDataToDB(context);
                         }
@@ -4777,14 +4805,14 @@ if(mounted){
 
                       if (isStoragePermitted.isGranted) {
                         bool isNotificationPermitted =
-                        await Permission.notification.isGranted;
+                            await Permission.notification.isGranted;
 
                         if (isNotificationPermitted) {
                           startWritingDataToDB(context);
                         } else {
                           await Utils.getNotificationPermission(context);
                           bool isNotificationPermitted =
-                          await Permission.notification.isGranted;
+                              await Permission.notification.isGranted;
                           if (isNotificationPermitted) {
                             startWritingDataToDB(context);
                           }
@@ -4793,14 +4821,14 @@ if(mounted){
                     }
                   } else {
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
 
                     if (isNotificationPermitted) {
                       startWritingDataToDB(context);
                     } else {
                       await Utils.getNotificationPermission(context);
                       bool isNotificationPermitted =
-                      await Permission.notification.isGranted;
+                          await Permission.notification.isGranted;
                       if (isNotificationPermitted) {
                         startWritingDataToDB(context);
                       }
@@ -4808,14 +4836,14 @@ if(mounted){
                   }
                 } else {
                   bool isNotificationPermitted =
-                  await Permission.notification.isGranted;
+                      await Permission.notification.isGranted;
 
                   if (isNotificationPermitted) {
                     startWritingDataToDB(context);
                   } else {
                     await Utils.getNotificationPermission(context);
                     bool isNotificationPermitted =
-                    await Permission.notification.isGranted;
+                        await Permission.notification.isGranted;
                     if (isNotificationPermitted) {
                       startWritingDataToDB(
                         context,
@@ -4846,300 +4874,300 @@ if(mounted){
     // });
 
     // checkAndGetLPRList();
-    if(mounted&&context!=null){
+    if (mounted && context != null) {
+      if (autoConnectStreamSubscription != null)
+        autoConnectStreamSubscription!.cancel();
+      if (autoConnectIsScanningStreamSubscription != null)
+        autoConnectIsScanningStreamSubscription!.cancel();
 
-    if (autoConnectStreamSubscription != null)
-      autoConnectStreamSubscription!.cancel();
-    if (autoConnectIsScanningStreamSubscription != null)
-      autoConnectIsScanningStreamSubscription!.cancel();
+      if (!FlutterBluePlus.isScanningNow) {
+        FlutterBluePlus.startScan(timeout: Duration(seconds: 4))
+            .onError((error, stackTrace) {
+          Utils.customPrint('EDEDED: $error');
+        });
+      }
 
-    if (!FlutterBluePlus.isScanningNow) {
-      FlutterBluePlus.startScan(timeout: Duration(seconds: 4))
-          .onError((error, stackTrace) {
-        Utils.customPrint('EDEDED: $error');
-      });
-    }
+      return showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext dialogContext) {
+            return Dialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: StatefulBuilder(builder: (context, setDialogState) {
+                  return Container(
+                    width: displayWidth(context),
+                    height: displayHeight(context) * 0.6,
+                    decoration: new BoxDecoration(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.black
+                          : Colors.white,
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          height: displayHeight(context) * 0.03,
+                        ),
 
-    return showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (BuildContext dialogContext) {
-          return Dialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: StatefulBuilder(builder: (context, setDialogState) {
-                return Container(
-                  width: displayWidth(context),
-                  height: displayHeight(context) * 0.6,
-                  decoration: new BoxDecoration(
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.black
-                        : Colors.white,
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        height: displayHeight(context) * 0.03,
-                      ),
+                        Image.asset(
+                          'assets/icons/web.png',
+                          width: displayWidth(context) * 0.25,
+                        ),
 
-                      Image.asset(
-                        'assets/icons/web.png',
-                        width: displayWidth(context) * 0.25,
-                      ),
+                        SizedBox(
+                          height: displayHeight(context) * 0.02,
+                        ),
 
-                      SizedBox(
-                        height: displayHeight(context) * 0.02,
-                      ),
+                        Padding(
+                            padding: EdgeInsets.only(top: 10),
+                            child: commonText(
+                                context: context,
+                                text: 'Available Devices',
+                                fontWeight: FontWeight.w500,
+                                textColor: blutoothDialogTitleColor,
+                                textSize: displayWidth(context) * 0.042,
+                                fontFamily: outfit)),
 
-                      Padding(
-                          padding: EdgeInsets.only(top: 10),
-                          child: commonText(
-                              context: context,
-                              text: 'Available Devices',
-                              fontWeight: FontWeight.w500,
-                              textColor: blutoothDialogTitleColor,
-                              textSize: displayWidth(context) * 0.042,
-                              fontFamily: outfit)),
+                        Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20.0, vertical: 8.0),
+                            child: commonText(
+                                context: context,
+                                text:
+                                    'Tap to connect with LPR Devices to track Trip Details',
+                                fontWeight: FontWeight.w400,
+                                textColor: Colors.grey[600],
+                                textSize: displayWidth(context) * 0.032,
+                                textAlign: TextAlign.center,
+                                fontFamily: inter)),
 
-                      Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20.0, vertical: 8.0),
-                          child: commonText(
-                              context: context,
-                              text:
-                              'Tap to connect with LPR Devices to track Trip Details',
-                              fontWeight: FontWeight.w400,
-                              textColor: Colors.grey[600],
-                              textSize: displayWidth(context) * 0.032,
-                              textAlign: TextAlign.center,
-                              fontFamily: inter)),
+                        // Implement listView for bluetooth devices
+                        Expanded(
+                          child: isRefreshList == true
+                              ? Container(
+                                  width: displayWidth(context),
+                                  height: displayHeight(context) * 0.28,
+                                  child: LPRBluetoothList(
+                                    dialogContext: dialogContext,
+                                    setDialogSet: setDialogState,
+                                    connectedDeviceId: connectedDeviceId,
+                                    connectedBluetoothDevice:
+                                        connectedBluetoothDevice,
+                                    onSelected: (value) {
+                                      if (mounted) {
+                                        setState(() {
+                                          bluetoothName = value;
+                                        });
+                                      }
+                                      Future.delayed(Duration(seconds: 1), () {
+                                        setState(() {});
+                                      });
+                                      LPRDeviceHandler()
+                                          .setDeviceDisconnectCallback(() {
+                                        if (mounted) {
+                                          setState(() {});
+                                        }
+                                      });
+                                    },
+                                    onBluetoothConnection: (value) {
+                                      if (mounted) {
+                                        setState(() {
+                                          isBluetoothPermitted = value;
+                                          debugPrint(
+                                              "BLUETOOTH PERMISSION CODE 1 $isBluetoothPermitted");
+                                        });
+                                      }
+                                      Future.delayed(Duration(seconds: 1), () {
+                                        setState(() {});
+                                      });
+                                      LPRDeviceHandler()
+                                          .setDeviceDisconnectCallback(() {
+                                        if (mounted) {
+                                          setState(() {});
+                                        }
+                                      });
+                                    },
+                                  ))
+                              : Container(
+                                  width: displayWidth(context),
+                                  height: displayHeight(context) * 0.28,
+                                  child: LPRBluetoothList(
+                                    dialogContext: dialogContext,
+                                    setDialogSet: setDialogState,
+                                    connectedDeviceId: connectedDeviceId,
+                                    connectedBluetoothDevice:
+                                        connectedBluetoothDevice,
+                                    onSelected: (value) {
+                                      if (mounted) {
+                                        setState(() {
+                                          bluetoothName = value;
+                                        });
+                                      }
+                                      Future.delayed(Duration(seconds: 1), () {
+                                        setState(() {});
+                                      });
+                                      LPRDeviceHandler()
+                                          .setDeviceDisconnectCallback(() {
+                                        if (mounted) {
+                                          setState(() {});
+                                        }
+                                      });
+                                    },
+                                    onBluetoothConnection: (value) {
+                                      if (mounted) {
+                                        setState(() {
+                                          isBluetoothPermitted = value;
+                                          debugPrint(
+                                              "BLUETOOTH PERMISSION CODE 2 $isBluetoothPermitted");
+                                        });
+                                      }
+                                      Future.delayed(Duration(seconds: 1), () {
+                                        setState(() {});
+                                      });
+                                      LPRDeviceHandler()
+                                          .setDeviceDisconnectCallback(() {
+                                        if (mounted) {
+                                          setState(() {});
+                                        }
+                                      });
+                                    },
+                                  )),
+                        ),
 
-                      // Implement listView for bluetooth devices
-                      Expanded(
-                        child: isRefreshList == true
-                            ? Container(
-                            width: displayWidth(context),
-                            height: displayHeight(context) * 0.28,
-                            child: LPRBluetoothList(
-                              dialogContext: dialogContext,
-                              setDialogSet: setDialogState,
-                              connectedDeviceId: connectedDeviceId,
-                              connectedBluetoothDevice:
-                              connectedBluetoothDevice,
-                              onSelected: (value) {
-                                if (mounted) {
-                                  setState(() {
-                                    bluetoothName = value;
-                                  });
-                                }
-                                Future.delayed(Duration(seconds: 1), () {
-                                  setState(() {});
-                                });
-                                LPRDeviceHandler()
-                                    .setDeviceDisconnectCallback(() {
+                        SizedBox(
+                          height: displayWidth(context) * 0.04,
+                        ),
+
+                        Container(
+                          width: displayWidth(context),
+                          margin:
+                              EdgeInsets.only(left: 15, right: 15, bottom: 15),
+                          child: Column(
+                            //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Utils.customPrint("Tapped on scan button");
+
                                   if (mounted) {
-                                    setState(() {});
-                                  }
-                                });
-                              },
-                              onBluetoothConnection: (value) {
-                                if (mounted) {
-                                  setState(() {
-                                    isBluetoothPermitted = value;
-                                    debugPrint(
-                                        "BLUETOOTH PERMISSION CODE 1 $isBluetoothPermitted");
-                                  });
-                                }
-                                Future.delayed(Duration(seconds: 1), () {
-                                  setState(() {});
-                                });
-                                LPRDeviceHandler()
-                                    .setDeviceDisconnectCallback(() {
-                                  if (mounted) {
-                                    setState(() {});
-                                  }
-                                });
-                              },
-                            ))
-                            : Container(
-                            width: displayWidth(context),
-                            height: displayHeight(context) * 0.28,
-                            child: LPRBluetoothList(
-                              dialogContext: dialogContext,
-                              setDialogSet: setDialogState,
-                              connectedDeviceId: connectedDeviceId,
-                              connectedBluetoothDevice:
-                              connectedBluetoothDevice,
-                              onSelected: (value) {
-                                if (mounted) {
-                                  setState(() {
-                                    bluetoothName = value;
-                                  });
-                                }
-                                Future.delayed(Duration(seconds: 1), () {
-                                  setState(() {});
-                                });
-                                LPRDeviceHandler()
-                                    .setDeviceDisconnectCallback(() {
-                                  if (mounted) {
-                                    setState(() {});
-                                  }
-                                });
-                              },
-                              onBluetoothConnection: (value) {
-                                if (mounted) {
-                                  setState(() {
-                                    isBluetoothPermitted = value;
-                                    debugPrint(
-                                        "BLUETOOTH PERMISSION CODE 2 $isBluetoothPermitted");
-                                  });
-                                }
-                                Future.delayed(Duration(seconds: 1), () {
-                                  setState(() {});
-                                });
-                                LPRDeviceHandler()
-                                    .setDeviceDisconnectCallback(() {
-                                  if (mounted) {
-                                    setState(() {});
-                                  }
-                                });
-                              },
-                            )),
-                      ),
-
-                      SizedBox(
-                        height: displayWidth(context) * 0.04,
-                      ),
-
-                      Container(
-                        width: displayWidth(context),
-                        margin:
-                        EdgeInsets.only(left: 15, right: 15, bottom: 15),
-                        child: Column(
-                          //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                Utils.customPrint("Tapped on scan button");
-
-                                if (mounted) {
-                                  /*setDialogState(() {
+                                    /*setDialogState(() {
                                    isScanningBluetooth = true;
                                  });*/
-                                }
+                                  }
 
-                                FlutterBluePlus.startScan(
-                                    timeout: const Duration(seconds: 2));
+                                  FlutterBluePlus.startScan(
+                                      timeout: const Duration(seconds: 2));
 
-                                if (mounted) {
-                                  Future.delayed(Duration(seconds: 2), () {
-                                    /* setDialogState(() {
+                                  if (mounted) {
+                                    Future.delayed(Duration(seconds: 2), () {
+                                      /* setDialogState(() {
                                      isScanningBluetooth = false;
                                    });*/
-                                  });
-                                }
+                                    });
+                                  }
 
-                                if (mounted) {
-                                  setState(() {
-                                    isRefreshList = true;
-                                    progress = 0.9;
-                                    lprSensorProgress = 0.0;
-                                    isStartButton = false;
-                                    bluetoothName = '';
-                                  });
-                                }
-                              },
-                              child: isScanningBluetooth
-                                  ? Center(
-                                child: Container(
-                                    margin: EdgeInsets.only(
-                                      top: displayWidth(context) * 0.02,
-                                    ),
-                                    width: displayWidth(context) * 0.34,
-                                    child: Center(
-                                        child: CircularProgressIndicator(
+                                  if (mounted) {
+                                    setState(() {
+                                      isRefreshList = true;
+                                      progress = 0.9;
+                                      lprSensorProgress = 0.0;
+                                      isStartButton = false;
+                                      bluetoothName = '';
+                                    });
+                                  }
+                                },
+                                child: isScanningBluetooth
+                                    ? Center(
+                                        child: Container(
+                                            margin: EdgeInsets.only(
+                                              top: displayWidth(context) * 0.02,
+                                            ),
+                                            width: displayWidth(context) * 0.34,
+                                            child: Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                              color: blueColor,
+                                            ))),
+                                      )
+                                    : Container(
+                                        decoration: BoxDecoration(
                                           color: blueColor,
-                                        ))),
-                              )
-                                  : Container(
-                                decoration: BoxDecoration(
-                                  color: blueColor,
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(8)),
-                                ),
-                                height: displayHeight(context) * 0.055,
-                                width: displayWidth(context) / 1.6,
-                                // color: HexColor(AppColors.introButtonColor),
-                                child: Center(
-                                    child: commonText(
-                                        context: context,
-                                        text: 'Scan for Devices',
-                                        fontWeight: FontWeight.w500,
-                                        textColor:
-                                        bluetoothConnectBtncolor,
-                                        textSize:
-                                        displayWidth(context) * 0.04,
-                                        fontFamily: outfit)),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(8)),
+                                        ),
+                                        height: displayHeight(context) * 0.055,
+                                        width: displayWidth(context) / 1.6,
+                                        // color: HexColor(AppColors.introButtonColor),
+                                        child: Center(
+                                            child: commonText(
+                                                context: context,
+                                                text: 'Scan for Devices',
+                                                fontWeight: FontWeight.w500,
+                                                textColor:
+                                                    bluetoothConnectBtncolor,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.04,
+                                                fontFamily: outfit)),
+                                      ),
                               ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                // FlutterBluePlus.instance.
+                              GestureDetector(
+                                onTap: () {
+                                  // FlutterBluePlus.instance.
 
-                                FlutterBluePlus.stopScan();
+                                  FlutterBluePlus.stopScan();
 
-                                setDialogState(() {
-                                  isScanningBluetooth = false;
-                                });
-                                if(mounted&&context!=null){
-                                Navigator.pop(context);
-
-                                }else{
-                                  Get.back();
-                                }
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.transparent,
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
+                                  setDialogState(() {
+                                    isScanningBluetooth = false;
+                                  });
+                                  if (mounted && context != null) {
+                                    Navigator.pop(context);
+                                  } else {
+                                    Get.back();
+                                  }
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.transparent,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
+                                  ),
+                                  height: displayHeight(context) * 0.055,
+                                  width: displayWidth(context) / 1.6,
+                                  // color: HexColor(AppColors.introButtonColor),
+                                  child: Center(
+                                      child: commonText(
+                                          context: context,
+                                          text: 'Cancel',
+                                          fontWeight: FontWeight.w500,
+                                          textColor: blueColor,
+                                          textSize:
+                                              displayWidth(context) * 0.038,
+                                          fontFamily: outfit)),
                                 ),
-                                height: displayHeight(context) * 0.055,
-                                width: displayWidth(context) / 1.6,
-                                // color: HexColor(AppColors.introButtonColor),
-                                child: Center(
-                                    child: commonText(
-                                        context: context,
-                                        text: 'Cancel',
-                                        fontWeight: FontWeight.w500,
-                                        textColor: blueColor,
-                                        textSize: displayWidth(context) * 0.038,
-                                        fontFamily: outfit)),
                               ),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                );
-              }));
-        }).then((value) {
-          if(mounted){
-      setState(() {});
-      Future.delayed(Duration(microseconds: 500), () {
-        isBluetoothSearching = false;
-        setState(() {});
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  );
+                }));
+          }).then((value) {
+        if (mounted) {
+          setState(() {});
+          Future.delayed(Duration(microseconds: 500), () {
+            isBluetoothSearching = false;
+            setState(() {});
+          });
+        }
+        Utils.customPrint('DIALOG VALUE $value');
       });
-          }
-      Utils.customPrint('DIALOG VALUE $value');
-    });
-    
     }
   }
 
@@ -5156,7 +5184,7 @@ if(mounted){
                   height: displayHeight(context) * 0.42,
                   width: MediaQuery.of(context).size.width,
                   decoration:
-                  BoxDecoration(borderRadius: BorderRadius.circular(20)),
+                      BoxDecoration(borderRadius: BorderRadius.circular(20)),
                   child: Padding(
                     padding: const EdgeInsets.only(
                         left: 8.0, right: 8.0, top: 15, bottom: 15),
@@ -5186,7 +5214,7 @@ if(mounted){
                           child: commonText(
                               context: context,
                               text:
-                              'Would you like to disconnect from the currently connected Bluetooth device and connect to a new device?',
+                                  'Would you like to disconnect from the currently connected Bluetooth device and connect to a new device?',
                               fontWeight: FontWeight.w500,
                               textColor: Colors.black87,
                               textSize: displayWidth(context) * 0.042,
@@ -5225,7 +5253,7 @@ if(mounted){
                                   displayHeight(context) * 0.05,
                                   Colors.transparent,
                                   Theme.of(context).brightness ==
-                                      Brightness.dark
+                                          Brightness.dark
                                       ? Colors.white
                                       : blueColor,
                                   displayHeight(context) * 0.018,
@@ -5291,7 +5319,7 @@ if(mounted){
                           child: commonText(
                               context: context,
                               text:
-                              'No vessel available, Please add vessel to continue',
+                                  'No vessel available, Please add vessel to continue',
                               fontWeight: FontWeight.w500,
                               textColor: Colors.black87,
                               textSize: displayWidth(context) * 0.038,
@@ -5310,22 +5338,22 @@ if(mounted){
                                 child: Center(
                                   child: CommonButtons.getAcceptButton(
                                       'Add Vessel', context, blueColor,
-                                          () async {
-                                        Navigator.of(context).pop();
-                                        await SystemChrome
-                                            .setPreferredOrientations([
-                                          DeviceOrientation.portraitUp,
-                                        ]);
+                                      () async {
+                                    Navigator.of(context).pop();
+                                    await SystemChrome
+                                        .setPreferredOrientations([
+                                      DeviceOrientation.portraitUp,
+                                    ]);
 
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    AddNewVesselPage(
-                                                      calledFrom:
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                AddNewVesselPage(
+                                                  calledFrom:
                                                       'startTripRecording',
-                                                    )));
-                                      },
+                                                )));
+                                  },
                                       displayWidth(context) * 0.65,
                                       displayHeight(context) * 0.054,
                                       primaryColor,
@@ -5348,7 +5376,7 @@ if(mounted){
                                     displayHeight(context) * 0.054,
                                     primaryColor,
                                     Theme.of(context).brightness ==
-                                        Brightness.dark
+                                            Brightness.dark
                                         ? Colors.white
                                         : blueColor,
                                     displayHeight(context) * 0.018,
@@ -5372,44 +5400,34 @@ if(mounted){
         });
   }
 
-  void showLocationDailog(){
-                    showDialog(
-                    context: scaffoldKey.currentContext!,
-                    builder: (BuildContext context) {
-                      isLocationDialogBoxOpen = true;
-                      return LocationPermissionCustomDialog(
-                          isLocationDialogBox: true,
-                          text: 'Always Allow Access to “Location”',
-                          subText:
-                          "To track your trip while you use other apps we need background access to your location",
-                          buttonText: 'Ok',
-                          buttonOnTap: () async {
-                            if(Platform.isAndroid){
-                              var permission=                      await Permission.locationAlways.request();
-                              if(permission.isGranted){
-
-                              }else{
-                            await openAppSettings();
-
-                              }
-
-                            }else{
-                                                          await openAppSettings();
-
-                            }
-                            Get.back();
-
-                          });
-                    }).then((value) {
-                  isLocationDialogBoxOpen = false;
-                });
-              }
-            }
-          
-        
-
-  
-
+  void showLocationDailog() {
+    showDialog(
+        context: scaffoldKey.currentContext!,
+        builder: (BuildContext context) {
+          isLocationDialogBoxOpen = true;
+          return LocationPermissionCustomDialog(
+              isLocationDialogBox: true,
+              text: 'Always Allow Access to “Location”',
+              subText:
+                  "To track your trip while you use other apps we need background access to your location",
+              buttonText: 'Ok',
+              buttonOnTap: () async {
+                if (Platform.isAndroid) {
+                  var permission = await Permission.locationAlways.request();
+                  if (permission.isGranted) {
+                  } else {
+                    await openAppSettings();
+                  }
+                } else {
+                  await openAppSettings();
+                }
+                Get.back();
+              });
+        }).then((value) {
+      isLocationDialogBoxOpen = false;
+    });
+  }
+}
 
 class VesselDropdownItem {
   final String? id;

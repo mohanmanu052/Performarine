@@ -38,6 +38,13 @@ class GetUserConfigModel {
         trips!.add(new Trips.fromJson(v));
       });
     }
+
+    if (json['delegateVessels'] != null) {
+      delegateVessels = <DelegateVessels>[];
+      json['delegateVessels'].forEach((v) {
+        delegateVessels!.add(new DelegateVessels.fromJson(v));
+      });
+    }
     message = json['message'];
     status = json['status'];
     statusCode = json['statusCode'];
@@ -54,6 +61,9 @@ class GetUserConfigModel {
     }
     if (this.trips != null) {
       data['trips'] = this.trips!.map((v) => v.toJson()).toList();
+    }
+    if (this.delegateVessels != null) {
+      data['delegateVessels'] = this.delegateVessels!.map((v) => v.toJson()).toList();
     }
     data['message'] = this.message;
     data['status'] = this.status;
@@ -372,7 +382,7 @@ class DelegateVessels {
   List<String>? imageURLs;
   double? freeBoard;
   double? lengthOverall;
-  int? beam;
+  double? beam;
   double? depth;
   String? vesselSize;
   String? capacity;

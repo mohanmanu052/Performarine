@@ -1488,7 +1488,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                               {
                                                 deleteFilePath('${ourDirectory!.path}/${tripId}.zip');
                                                 deleteFolder('${ourDirectory!.path}/${tripId}');
-                                                commonProvider.getTripsCount();
+                                               // commonProvider.getTripsCount();
                                                // widget.isTripDeleted!.call();
                                                 onDeleteCallBack.call();
                                 

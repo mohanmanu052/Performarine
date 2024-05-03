@@ -51,7 +51,7 @@ class _UpdateDelegateAccessScreenState
   bool isCustomTime = false, isUpdateBtnClicked = false;
 
   DateTime firstDate = DateTime.now(),
-      lastDate = DateTime(2100),
+      lastDate = DateTime(2100,1,1),
       focusedDay = DateTime.now(),
       startDate = DateTime.now(),
       globalStartDate = DateTime.now(),
@@ -370,7 +370,7 @@ class _UpdateDelegateAccessScreenState
                                           commonText(
                                               text: shareAccessModel[index].key,
                                               fontWeight: FontWeight.w400,
-                                              textSize: 12),
+                                              textSize: displaySize(context).width * 0.031),
                                         ]),
                                   );
                                 },
@@ -439,8 +439,7 @@ class _UpdateDelegateAccessScreenState
                                           width: displayWidth(context),
                                           height: 50,
                                           decoration: BoxDecoration(
-                                              color:
-                                                  calenderHeaderBackgroundColor,
+                                              color: calenderHeaderBackgroundColor,
                                               borderRadius: BorderRadius.only(
                                                 topRight: Radius.circular(
                                                   30,
@@ -712,9 +711,9 @@ class _UpdateDelegateAccessScreenState
                 child: Container(
                   color: Colors.white,
                   alignment: Alignment.bottomCenter,
-                  height: displayHeight(context) / 7.9,
+                  height: Platform.isAndroid ? displayHeight(context) / 7.9 : displayHeight(context) / 7.6,
                   width: displayWidth(context),
-                  padding: EdgeInsets.all(8),
+                  padding: EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 6),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
