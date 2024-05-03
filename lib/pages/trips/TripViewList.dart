@@ -156,7 +156,7 @@ class _TripViewListState extends State<TripViewList> {
                                       //snapshot.data![index].tripStatus = 1;
                                     });
                                   }
-                                  commonProvider.getTripsCount();
+                                 // commonProvider.getTripsCount();
                                 },
                                 onTap: () async {
 

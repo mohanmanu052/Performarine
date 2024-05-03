@@ -347,13 +347,13 @@ class CommonProvider with ChangeNotifier {
   }
 
   /// To get trip count from local database
-  getTripsCount() async {
-    final DatabaseService _databaseService = DatabaseService();
-    List<Trip> trips = await _databaseService.trips();
+  // getTripsCount() async {
+  //   final DatabaseService _databaseService = DatabaseService();
+  //   List<Trip> trips = await _databaseService.trips();
 
-    tripsCount = trips.length;
-    notifyListeners();
-  }
+  //   tripsCount = trips.length;
+  //   notifyListeners();
+  // }
 
   /// It will update trip status
   updateTripStatus(bool value) async {

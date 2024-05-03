@@ -28,11 +28,10 @@ import 'common_widgets/utils/common_size_helper.dart';
 import 'common_widgets/utils/utils.dart';
 
 class LPRDeviceHandler {
-  Function(String lprTransperntServiceId)? getLprServiceId; 
-Function (bool lprServiceIdStatus )? getLprServiceIdStatus;
-Function(String lprUartTX)? getLPRUartTxId;
-Function(bool lprUartTX)? getLPRUartTxIdStatus;
-
+  Function(String lprTransperntServiceId)? getLprServiceId;
+  Function(bool lprServiceIdStatus)? getLprServiceIdStatus;
+  Function(String lprUartTX)? getLPRUartTxId;
+  Function(bool lprUartTX)? getLPRUartTxIdStatus;
 
   static final LPRDeviceHandler _instance = LPRDeviceHandler._internal();
 
@@ -57,10 +56,7 @@ Function(bool lprUartTX)? getLPRUartTxIdStatus;
   bool isRefreshList = false;
   bool isSelfDisconnected = false;
 
-
-
-
-Future<Map<String,dynamic>>  getLPRConfigartion()async  {
+  Future<Map<String, dynamic>> getLPRConfigartion() async {
     FlutterSecureStorage storage = FlutterSecureStorage();
     String? lprConfig = await storage.read(key: 'lprConfig');
 
@@ -91,57 +87,50 @@ Future<Map<String,dynamic>>  getLPRConfigartion()async  {
     this.onDeviceDisconnectCallback = callback;
   }
 
-  void listenToDeviceConnectionState({
-    //Call back Functions to return the status and info related Ids And Other Things on MapScreen
-    Function(String lprTransperntServiceId, String lprUartTX)?callBackLprTanspernetserviecId,
-    Function(String status)?callBackLprTanspernetserviecIdStatus,
-        Function(String status)?callBackLprUartTxStatus,
-Function(String bluetoothDeviceName)? callBackconnectedDeviceName,
-Function(String lprSteamingData)? callBackLprStreamingData,
-bool isLoadLocalLprFile=false
-    
-     }
-    
-    
-    
-    )async {
-                  File? lprFile;
-  int fileIndex = 0;
+  void listenToDeviceConnectionState(
+      {
+      //Call back Functions to return the status and info related Ids And Other Things on MapScreen
+      Function(String lprTransperntServiceId, String lprUartTX)?
+          callBackLprTanspernetserviecId,
+      Function(String status)? callBackLprTanspernetserviecIdStatus,
+      Function(String status)? callBackLprUartTxStatus,
+      Function(String bluetoothDeviceName)? callBackconnectedDeviceName,
+      Function(String lprSteamingData)? callBackLprStreamingData,
+      bool isLoadLocalLprFile = false}) async {
+    File? lprFile;
+    int fileIndex = 0;
 
+    Map<String, dynamic> lpConfigValues = await getLPRConfigartion();
+    final Guid? _lprUartTX;
+    final Guid? _lprUartRX;
+    final Guid _lprTransparentServiceUUID = Guid(
+        lpConfigValues['lprTransparentServiceUUID'] ??
+            "49535343-FE7D-4AE5-8FA9-9FAFD205E455");
 
-        Map<String,dynamic> lpConfigValues= await    getLPRConfigartion();
-final Guid? _lprUartTX;
-final Guid? _lprUartRX; 
-  final Guid _lprTransparentServiceUUID = Guid(lpConfigValues['lprTransparentServiceUUID']??"49535343-FE7D-4AE5-8FA9-9FAFD205E455");
-
-         _lprUartTX = Guid( lpConfigValues['lprUartTX']?? "49535343-1E4D-4BD9-BA61-23C647249616");
-  // RX Characteristic, Write and Write without response
-  _lprUartRX = Guid(lpConfigValues['lprUartRX'] ??  "49535343-8841-43F4-A8D4-ECBE34729BB3");
-//Asigning default callback methods to aviod null check issue while calling the function and assign the values  
-  callBackLprTanspernetserviecId ??= (String lprTransperntServiceId, String lprUartTx) {
-  };
-    callBackLprStreamingData ??= (String lprTransperntServiceId) {
-  };
-callBackLprUartTxStatus ??= ( String status) {
-  };
-callBackconnectedDeviceName??=(String name){
-
-};
-  callBackLprTanspernetserviecIdStatus ??= (String transperntStats) {
-  };
+    _lprUartTX = Guid(
+        lpConfigValues['lprUartTX'] ?? "49535343-1E4D-4BD9-BA61-23C647249616");
+    // RX Characteristic, Write and Write without response
+    _lprUartRX = Guid(
+        lpConfigValues['lprUartRX'] ?? "49535343-8841-43F4-A8D4-ECBE34729BB3");
+//Asigning default callback methods to aviod null check issue while calling the function and assign the values
+    callBackLprTanspernetserviecId ??=
+        (String lprTransperntServiceId, String lprUartTx) {};
+    callBackLprStreamingData ??= (String lprTransperntServiceId) {};
+    callBackLprUartTxStatus ??= (String status) {};
+    callBackconnectedDeviceName ??= (String name) {};
+    callBackLprTanspernetserviecIdStatus ??= (String transperntStats) {};
 
 //This Function will return the LPR Transpernt ServiceId LPR UARTX ID In The Maps Screen To Show IDs Info
-  callBackLprTanspernetserviecId(_lprTransparentServiceUUID.toString(),_lprUartTX.toString());
-                                String fileContent = await rootBundle.loadString('assets/map/lpr_dummy_data.txt');
+    callBackLprTanspernetserviecId(
+        _lprTransparentServiceUUID.toString(), _lprUartTX.toString());
+    String fileContent =
+        await rootBundle.loadString('assets/map/lpr_dummy_data.txt');
 
-String? lprFileName;
-IOSink?
-       lprFileSink;
-               String tripId = '';
+    String? lprFileName;
+    IOSink? lprFileSink;
+    String tripId = '';
 
-            List<String>? tripData =
-    sharedPreferences!
-        .getStringList('trip_data');
+    List<String>? tripData = sharedPreferences!.getStringList('trip_data');
     if (tripData != null) {
       tripId = tripData[0];
     }
@@ -153,7 +142,7 @@ IOSink?
           // if(lprFileSink!=null){
           //   lprFileSink?.close();
           // }
-          
+
           Utils.customPrint(
               'BLE - DEVICE GOT DISCONNECTED: ${connectedDevice!.remoteId.str} - $event');
 
@@ -174,7 +163,6 @@ IOSink?
               onDeviceDisconnectCallback!.call();
           }
         } else if (event == BluetoothConnectionState.connected) {
-
 //Setting the lprfile name
 //        lprFileName = 'lpr_$fileIndex.csv';
 //        //Getting The Path Of the File
@@ -184,39 +172,34 @@ IOSink?
 //   //Opening the stream to push data (Opening the file)
 // lprFileSink = lprFile?.openWrite(mode: FileMode.append);
 
-
-
-List<BluetoothService> services =await  connectedDevice!.discoverServices();
+          List<BluetoothService> services =
+              await connectedDevice!.discoverServices();
 //This Function Will Return The Connected BlueTooth Name On Map Screen
-callBackconnectedDeviceName!(connectedDevice!.platformName);
-      callBackLprUartTxStatus!('Not Connected');
+          callBackconnectedDeviceName!(connectedDevice!.platformName);
+          callBackLprUartTxStatus!('Not Connected');
 
-    try {
-    //This Will Check LprService element UUID Matches With LPRTransparentServiceUUID 
-  services.forEach((element) {
-                  if (element.uuid == _lprTransparentServiceUUID) {
-                    lprService=element;
-                              callBackLprTanspernetserviecIdStatus!('Connected');
+          try {
+            //This Will Check LprService element UUID Matches With LPRTransparentServiceUUID
+            services.forEach((element) {
+              if (element.uuid == _lprTransparentServiceUUID) {
+                lprService = element;
+                callBackLprTanspernetserviecIdStatus!('Connected');
 
-              lprService!.characteristics.forEach((dataCharacteristic) {
-               if (dataCharacteristic.uuid == _lprUartTX) {
-      callBackLprUartTxStatus!('Connected');
-dataCharacteristic.setNotifyValue(true);
-                  //Start listening to the incoming data
-                  dataCharacteristic.value.listen((event)async {
-                    if (!event.isEmpty) {
-                      String dataLine = utf8.decode(event);
+                lprService!.characteristics.forEach((dataCharacteristic) {
+                  if (dataCharacteristic.uuid == _lprUartTX) {
+                    callBackLprUartTxStatus!('Connected');
+                    dataCharacteristic.setNotifyValue(true);
+                    //Start listening to the incoming data
+                    dataCharacteristic.value.listen((event) async {
+                      if (!event.isEmpty) {
+                        String dataLine = utf8.decode(event);
 
-                      debugPrint("LPR DATA WRITING CODE $dataLine ");
+                        debugPrint("LPR DATA WRITING CODE $dataLine ");
 //Saving The Data Into The File
-  DownloadTrip().saveLPRData(dataLine);
-  //Call Back Returning the data we can use this globally
-                               callBackLprStreamingData!(dataLine);
-
-
-                    }
-                    else{
-
+                        DownloadTrip().saveLPRData(dataLine);
+                        //Call Back Returning the data we can use this globally
+                        callBackLprStreamingData!(dataLine);
+                      } else {
 //DownloadTrip().saveLPRData('test LPR',lprFile!,lprFileSink!);
 
 // List<String> lines = fileContent.split('\n');
@@ -226,40 +209,33 @@ dataCharacteristic.setNotifyValue(true);
 //   DownloadTrip().saveLPRData(line);
 //     callBackLprStreamingData!(line);
 
-
 // }
-
-                    }
-                  });
-               }
-              });
-                  
+                      }
+                    });
+                  }
+                });
               }
-      
-    });
-      // lprService = services.singleWhere((element) =>
-      // element.uuid ==
-      //     Guid('eed6d5cc-c3b2-4d7b-8c6b-7acbf7965bb6'));
-          //If The Service UUID Match This Function Return The Call Back As Connected In The Maps Screen
-
-    }
-    //If we selected the wrong device (i.e. not the LPR) or if the service
-    //is disabled for some reason....
-    catch (ex){
-      //Callback it will return the exception to Map Screen
-      callBackLprTanspernetserviecIdStatus!(ex.toString());
-      Utils.customPrint(
-              'LPR Streaming Data Error: connected Device remote Str ${connectedDevice!.remoteId.str}  err : ${ex.toString()}')
-      ;
-    }
+            });
+            // lprService = services.singleWhere((element) =>
+            // element.uuid ==
+            //     Guid('eed6d5cc-c3b2-4d7b-8c6b-7acbf7965bb6'));
+            //If The Service UUID Match This Function Return The Call Back As Connected In The Maps Screen
+          }
+          //If we selected the wrong device (i.e. not the LPR) or if the service
+          //is disabled for some reason....
+          catch (ex) {
+            //Callback it will return the exception to Map Screen
+            callBackLprTanspernetserviecIdStatus!(ex.toString());
+            Utils.customPrint(
+                'LPR Streaming Data Error: connected Device remote Str ${connectedDevice!.remoteId.str}  err : ${ex.toString()}');
+          }
 
 //Testing Purpose This Will Load Data From Sample LPRData File From Assets Production Time It will be removed
-if(isLoadLocalLprFile){
-      String fileContent = await rootBundle.loadString('assets/map/lpr_dummy_data.txt');
-       callBackLprStreamingData!(fileContent);
-
-}
-
+          if (isLoadLocalLprFile) {
+            String fileContent =
+                await rootBundle.loadString('assets/map/lpr_dummy_data.txt');
+            callBackLprStreamingData!(fileContent);
+          }
 
           Utils.customPrint(
               'BLE - DEVICE GOT CONNECTED: ${connectedDevice!.remoteId.str} - $event');
@@ -269,215 +245,212 @@ if(isLoadLocalLprFile){
   }
 
   void showDeviceDisconnectedDialog(BluetoothDevice? previouslyConnectedDevice,
-      {int bottomNavIndex = 0,bool isNavigateToMaps=false}) {
+      {int bottomNavIndex = 0, bool isNavigateToMaps = false}) {
     isSelfDisconnected = false;
     bool isDailogShowing = true;
-    Get.dialog(barrierDismissible: false, Dialog(
-      shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-      child: OrientationBuilder(builder: (context, orientation) {
-        return WillPopScope(
-            onWillPop: () async => false,
-            child: Container(
-              height: orientation == Orientation.portrait
-                  ? displayHeight(Get.context!) * 0.45
-                  : displayHeight(Get.context!) * 0.70,
-              width: orientation == Orientation.portrait
-                  ? MediaQuery.of(Get.context!).size.width
-                  : MediaQuery.of(Get.context!).size.width / 1.5,
-              decoration:
-                  BoxDecoration(borderRadius: BorderRadius.circular(20)),
-              child: Padding(
-                padding: EdgeInsets.only(
-                    left: 8.0,
-                    right: 8.0,
-                    top: orientation == Orientation.portrait ? 15.0 : 0.0,
-                    bottom: orientation == Orientation.portrait ? 15.0 : 0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: displayHeight(Get.context!) * 0.02,
-                    ),
-                    ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Container(
-                          //color: Color(0xfff2fffb),
-                          child: Image.asset(
-                            'assets/images/boat.gif',
-                            height: orientation == Orientation.portrait
-                                ? displayHeight(Get.context!) * 0.1
-                                : displayHeight(Get.context!) * 0.2,
-                            width: displayWidth(Get.context!),
-                            fit: BoxFit.contain,
-                          ),
-                        )),
-                    SizedBox(
-                      height: displayHeight(Get.context!) * 0.02,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8.0, right: 8),
-                      child: commonText(
-                          context: context,
-                          text:
-                              'It seems like, LPR device is disconnected. Please connect again and ensure that it is connected.',
-                          fontWeight: FontWeight.w500,
-                          textColor: Colors.black87,
-                          textSize: orientation == Orientation.portrait
-                              ? displayWidth(Get.context!) * 0.042
-                              : displayWidth(Get.context!) * 0.023,
-                          textAlign: TextAlign.center),
-                    ),
+    Get.dialog(
+        barrierDismissible: false,
+        Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: OrientationBuilder(builder: (context, orientation) {
+            return WillPopScope(
+                onWillPop: () async => false,
+                child: Container(
+                  height: orientation == Orientation.portrait
+                      ? displayHeight(Get.context!) * 0.45
+                      : displayHeight(Get.context!) * 0.70,
+                  width: orientation == Orientation.portrait
+                      ? MediaQuery.of(Get.context!).size.width
+                      : MediaQuery.of(Get.context!).size.width / 1.5,
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(20)),
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        left: 8.0,
+                        right: 8.0,
+                        top: orientation == Orientation.portrait ? 15.0 : 0.0,
+                        bottom: orientation == Orientation.portrait ? 15.0 : 0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: displayHeight(Get.context!) * 0.02,
+                        ),
+                        ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              //color: Color(0xfff2fffb),
+                              child: Image.asset(
+                                'assets/images/boat.gif',
+                                height: orientation == Orientation.portrait
+                                    ? displayHeight(Get.context!) * 0.1
+                                    : displayHeight(Get.context!) * 0.2,
+                                width: displayWidth(Get.context!),
+                                fit: BoxFit.contain,
+                              ),
+                            )),
+                        SizedBox(
+                          height: displayHeight(Get.context!) * 0.02,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 8),
+                          child: commonText(
+                              context: context,
+                              text:
+                                  'It seems like, LPR device is disconnected. Please connect again and ensure that it is connected.',
+                              fontWeight: FontWeight.w500,
+                              textColor: Colors.black87,
+                              textSize: orientation == Orientation.portrait
+                                  ? displayWidth(Get.context!) * 0.042
+                                  : displayWidth(Get.context!) * 0.023,
+                              textAlign: TextAlign.center),
+                        ),
                         SizedBox(
                           height: displayHeight(context) * 0.012,
                         ),
-                    Column(
-                      children: [
-                        Center(
-                          child: CommonButtons.getAcceptButton(
-                              'End Trip', Get.context!, endTripBtnColor, () {
-                            endTrip();
-                          },
-                                                        orientation == Orientation.portrait
-                                  ? displayWidth(Get.context!) / 1.5
-                                  : displayWidth(Get.context!) / 3,
-                              orientation == Orientation.portrait
-                                  ? displayHeight(Get.context!) * 0.055
-                                  : displayHeight(Get.context!) * 0.095,
-                              primaryColor,
-                              Colors.white,
-                              orientation == Orientation.portrait
-                                  ? displayWidth(Get.context!) * 0.036
-                                  : displayWidth(Get.context!) * 0.023,
-                              endTripBtnColor,
-                              '',
-                              fontWeight: FontWeight.w500
-                              
+                        Column(
+                          children: [
+                            Center(
+                              child: CommonButtons.getAcceptButton(
+                                  'End Trip', Get.context!, endTripBtnColor,
+                                  () {
+                                endTrip();
+                              },
+                                  orientation == Orientation.portrait
+                                      ? displayWidth(Get.context!) / 1.5
+                                      : displayWidth(Get.context!) / 3,
+                                  orientation == Orientation.portrait
+                                      ? displayHeight(Get.context!) * 0.055
+                                      : displayHeight(Get.context!) * 0.095,
+                                  primaryColor,
+                                  Colors.white,
+                                  orientation == Orientation.portrait
+                                      ? displayWidth(Get.context!) * 0.036
+                                      : displayWidth(Get.context!) * 0.023,
+                                  endTripBtnColor,
+                                  '',
+                                  fontWeight: FontWeight.w500
 
-                              // displayWidth(Get.context!) * 0.5,
-                              // orientation == Orientation.portrait
-                              //     ? displayHeight(Get.context!) * 0.05
-                              //     : displayHeight(Get.context!) * 0.10,
-                              // Colors.transparent,
-                              // Theme.of(Get.context!).brightness ==
-                              //         Brightness.dark
-                              //     ? Colors.white
-                              //     : blueColor,
-                              // orientation == Orientation.portrait
-                              //     ? displayHeight(Get.context!) * 0.018
-                              //     : displayHeight(Get.context!) * 0.038,
-                              // Colors.transparent,
-                              // '',
-                              // fontWeight: FontWeight.w500,
-                              
-                              ),),
+                                  // displayWidth(Get.context!) * 0.5,
+                                  // orientation == Orientation.portrait
+                                  //     ? displayHeight(Get.context!) * 0.05
+                                  //     : displayHeight(Get.context!) * 0.10,
+                                  // Colors.transparent,
+                                  // Theme.of(Get.context!).brightness ==
+                                  //         Brightness.dark
+                                  //     ? Colors.white
+                                  //     : blueColor,
+                                  // orientation == Orientation.portrait
+                                  //     ? displayHeight(Get.context!) * 0.018
+                                  //     : displayHeight(Get.context!) * 0.038,
+                                  // Colors.transparent,
+                                  // '',
+                                  // fontWeight: FontWeight.w500,
 
-
-                                                      SizedBox(
-                          height: 10.0,
-                        ),
-
-                                                      Center(
-                          child: CommonButtons.getAcceptButton(
-                              'Re-connect', 
-                              
-                              
-                              Get.context!, Colors.transparent,
-
-
-                              () async {
-                            isDailogShowing = false;
-                            Get.back();
-                            EasyLoading.show(
-                                status: 'Connecting...',
-                                maskType: EasyLoadingMaskType.black);
-                            Utils.customPrint(
-                                'BLE - PREVIOUSLY CONNECTED DEVICE: ${previouslyConnectedDevice?.remoteId.str}');
-                            if (previouslyConnectedDevice != null) {
-                              previouslyConnectedDevice.connect().then((value) {
-                                connectedDevice = previouslyConnectedDevice;
-                                LPRDeviceHandler()
-                                    .setLPRDevice(connectedDevice!);
-                                Fluttertoast.showToast(
-                                    msg:
-                                        'Device Connected ${connectedDevice?.advName.toString()}',
-                                    toastLength: Toast.LENGTH_SHORT,
-                                    gravity: ToastGravity.CENTER,
-                                    timeInSecForIosWeb: 1,
-                                    backgroundColor: Colors.black,
-                                    textColor: Colors.white,
-                                    fontSize: 16.0);
-
-                                EasyLoading.dismiss();
-                                bool? runningTrip = sharedPreferences!
-                                            .getBool("trip_started");
-                                                                                    List<String>? tripData = sharedPreferences!
-                                            .getStringList('trip_data');
-
-if(isNavigateToMaps){
-                                                                                                                         Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    TripRecordingScreen(
-                                                      bottomNavIndex: bottomNavIndex,
-                                                      calledFrom: 'bottom_nav',
-                                                        tripId: tripData![0],
-                                                        vesselId: tripData[1],
-                                                        vesselName: tripData[2],
-                                                        tripIsRunningOrNot:
-                                                            runningTrip)));
-
-}
-                                
-                                //   Get.back();
-                                //Navigator.pop(context!);
-                              }).catchError((onError) {
+                                  ),
+                            ),
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                            Center(
+                              child: CommonButtons.getAcceptButton('Re-connect',
+                                  Get.context!, Colors.transparent, () async {
+                                isDailogShowing = false;
+                                Get.back();
+                                EasyLoading.show(
+                                    status: 'Connecting...',
+                                    maskType: EasyLoadingMaskType.black);
                                 Utils.customPrint(
-                                    'BLE - CAUGHT ERROR WHILE CONNECTING TO PREVIOUSLY CONNECTED DEVICE: ${previouslyConnectedDevice.remoteId.str}');
-                                EasyLoading.dismiss();
-                                autoConnectToDevice(isDailogShowing,isMapScreenNavigation: isNavigateToMaps);
-                                // Get.back();
-                              });
-                            } else {
-                              autoConnectToDevice(isDailogShowing,isMapScreenNavigation: isNavigateToMaps);
-                            }
-                          },
-                                                        displayWidth(Get.context!) * 0.65,
-                              orientation == Orientation.portrait
-                                  ? displayHeight(Get.context!) * 0.054
-                                  : displayHeight(Get.context!) * 0.10,
-                              Colors.transparent,
-                              Theme.of(Get.context!).brightness ==
-                                      Brightness.dark
-                                  ? Colors.white
-                                  : blueColor,
-                              orientation == Orientation.portrait
-                                  ? displayHeight(Get.context!) * 0.018
-                                  : displayHeight(Get.context!) * 0.038,
-                              Colors.transparent,
-                              '',
-                              fontWeight: FontWeight.w700
-                              ),
-                        ),
+                                    'BLE - PREVIOUSLY CONNECTED DEVICE: ${previouslyConnectedDevice?.remoteId.str}');
+                                if (previouslyConnectedDevice != null) {
+                                  previouslyConnectedDevice
+                                      .connect()
+                                      .then((value) {
+                                    connectedDevice = previouslyConnectedDevice;
+                                    LPRDeviceHandler()
+                                        .setLPRDevice(connectedDevice!);
+                                    Fluttertoast.showToast(
+                                        msg:
+                                            'Device Connected ${connectedDevice?.advName.toString()}',
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.CENTER,
+                                        timeInSecForIosWeb: 1,
+                                        backgroundColor: Colors.black,
+                                        textColor: Colors.white,
+                                        fontSize: 16.0);
 
-                        
-                        SizedBox(
-                          height: 10.0,
+                                    EasyLoading.dismiss();
+                                    bool? runningTrip = sharedPreferences!
+                                        .getBool("trip_started");
+                                    List<String>? tripData = sharedPreferences!
+                                        .getStringList('trip_data');
+
+                                    if (isNavigateToMaps) {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  TripRecordingScreen(
+                                                      bottomNavIndex:
+                                                          bottomNavIndex,
+                                                      calledFrom: 'bottom_nav',
+                                                      tripId: tripData![0],
+                                                      vesselId: tripData[1],
+                                                      vesselName: tripData[2],
+                                                      tripIsRunningOrNot:
+                                                          runningTrip)));
+                                    }
+
+                                    //   Get.back();
+                                    //Navigator.pop(context!);
+                                  }).catchError((onError) {
+                                    Utils.customPrint(
+                                        'BLE - CAUGHT ERROR WHILE CONNECTING TO PREVIOUSLY CONNECTED DEVICE: ${previouslyConnectedDevice.remoteId.str}');
+                                    EasyLoading.dismiss();
+                                    autoConnectToDevice(isDailogShowing,
+                                        isMapScreenNavigation:
+                                            isNavigateToMaps);
+                                    // Get.back();
+                                  });
+                                } else {
+                                  autoConnectToDevice(isDailogShowing,
+                                      isMapScreenNavigation: isNavigateToMaps);
+                                }
+                              },
+                                  displayWidth(Get.context!) * 0.65,
+                                  orientation == Orientation.portrait
+                                      ? displayHeight(Get.context!) * 0.054
+                                      : displayHeight(Get.context!) * 0.10,
+                                  Colors.transparent,
+                                  Theme.of(Get.context!).brightness ==
+                                          Brightness.dark
+                                      ? Colors.white
+                                      : blueColor,
+                                  orientation == Orientation.portrait
+                                      ? displayHeight(Get.context!) * 0.018
+                                      : displayHeight(Get.context!) * 0.038,
+                                  Colors.transparent,
+                                  '',
+                                  fontWeight: FontWeight.w700),
+                            ),
+                            SizedBox(
+                              height: 10.0,
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
-                ),
-              ),
-            ));
-      }),
-    ));
+                  ),
+                ));
+          }),
+        ));
   }
 
-  autoConnectToDevice(bool isDailogShowing,{bool isMapScreenNavigation=false}) async {
+  autoConnectToDevice(bool isDailogShowing,
+      {bool isMapScreenNavigation = false}) async {
     connectedDevice = null;
     final FlutterSecureStorage storage = FlutterSecureStorage();
     var lprDeviceId = sharedPreferences!.getString('lprDeviceId');
@@ -527,9 +500,6 @@ if(isNavigateToMaps){
               if (storedDeviceIdResultList.isNotEmpty) {
                 ScanResult r = storedDeviceIdResultList.first;
                 r.device.connect().then((value) {
-
-
-
                   Fluttertoast.showToast(
                       msg: "Connected to ${r.device.platformName}",
                       toastLength: Toast.LENGTH_SHORT,
@@ -542,29 +512,21 @@ if(isNavigateToMaps){
                   LPRDeviceHandler().setLPRDevice(r.device);
                   deviceId = r.device.remoteId.str;
                   connectedBluetoothDevice = r.device;
-                                                          List<String>? tripData = sharedPreferences!
-                                            .getStringList('trip_data');
-                                                                                                                        bool? runningTrip = sharedPreferences!
-                                            .getBool("trip_started");
+                  List<String>? tripData =
+                      sharedPreferences!.getStringList('trip_data');
+                  bool? runningTrip =
+                      sharedPreferences!.getBool("trip_started");
 
-
-
-
-                                                                                                               Navigator.push(
-                                            context!,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    TripRecordingScreen(
-                                                        tripId: tripData![0],
-                                                                                                              calledFrom: 'bottom_nav',
-
-                                                        vesselId: tripData![1],
-                                                        vesselName: tripData[2],
-                                                        tripIsRunningOrNot:
-                                                            runningTrip)),
-                                          );
-
-
+                  Navigator.push(
+                    context!,
+                    MaterialPageRoute(
+                        builder: (context) => TripRecordingScreen(
+                            tripId: tripData![0],
+                            calledFrom: 'bottom_nav',
+                            vesselId: tripData![1],
+                            vesselName: tripData[2],
+                            tripIsRunningOrNot: runningTrip)),
+                  );
                 }).catchError((onError) {
                   Utils.customPrint('ERROR BLE: $onError');
                 });
@@ -598,7 +560,8 @@ if(isNavigateToMaps){
                 } else {
                   Future.delayed(Duration(seconds: 2), () {
                     EasyLoading.dismiss();
-                    showBluetoothListDialog(context!, null, null,isMapScreenNavigation: isMapScreenNavigation);
+                    showBluetoothListDialog(context!, null, null,
+                        isMapScreenNavigation: isMapScreenNavigation);
                   });
                 }
               }
@@ -628,14 +591,16 @@ if(isNavigateToMaps){
               } else {
                 Future.delayed(Duration(seconds: 2), () {
                   EasyLoading.dismiss();
-                  showBluetoothListDialog(context!, null, null,isMapScreenNavigation: isMapScreenNavigation);
+                  showBluetoothListDialog(context!, null, null,
+                      isMapScreenNavigation: isMapScreenNavigation);
                 });
               }
             }
           } else {
             Future.delayed(Duration(seconds: 2), () {
               EasyLoading.dismiss();
-              showBluetoothListDialog(context!, null, null,isMapScreenNavigation:isMapScreenNavigation );
+              showBluetoothListDialog(context!, null, null,
+                  isMapScreenNavigation: isMapScreenNavigation);
             });
           }
         }
@@ -649,7 +614,8 @@ if(isNavigateToMaps){
   }
 
   showBluetoothListDialog(BuildContext context, String? connectedDeviceId,
-      BluetoothDevice? connectedBluetoothDevice,{bool isMapScreenNavigation=false}) {
+      BluetoothDevice? connectedBluetoothDevice,
+      {bool isMapScreenNavigation = false}) {
     // setState(() {
     //   progress = 0.9;
     //   lprSensorProgress = 0.0;
@@ -741,12 +707,8 @@ if(isNavigateToMaps){
                                   connectedDeviceId: connectedDeviceId,
                                   connectedBluetoothDevice:
                                       connectedBluetoothDevice,
-                                  onSelected: (value) {
-
-                                  },
-                                  onBluetoothConnection: (value) {
-
-                                  },
+                                  onSelected: (value) {},
+                                  onBluetoothConnection: (value) {},
                                 ))
                             : Container(
                                 width: displayWidth(context),
@@ -757,41 +719,27 @@ if(isNavigateToMaps){
                                   connectedDeviceId: connectedDeviceId,
                                   connectedBluetoothDevice:
                                       connectedBluetoothDevice,
-                                  onSelected: (value) {
-                                
-                                
-                                
-                                
-                                
-                                
-                                
-                                  },
+                                  onSelected: (value) {},
                                   onBluetoothConnection: (value) {
+                                    List<String>? tripData = sharedPreferences!
+                                        .getStringList('trip_data');
+                                    bool? runningTrip = sharedPreferences!
+                                        .getBool("trip_started");
 
-                                        List<String>? tripData = sharedPreferences!
-                                            .getStringList('trip_data');
-                                                                                                                        bool? runningTrip = sharedPreferences!
-                                            .getBool("trip_started");
+                                    Navigator.pop(context);
 
-                                            Navigator.pop(context);
-
-
-
-                                                                                                               Navigator.push(
-                                            dialogContext,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    TripRecordingScreen(
-                                                        tripId: tripData![0],
-                                                                                                              calledFrom: 'bottom_nav',
-
-                                                        vesselId: tripData[1],
-                                                        vesselName: tripData[2],
-                                                        tripIsRunningOrNot:
-                                                            runningTrip)),
-                                          );
-
-
+                                    Navigator.push(
+                                      dialogContext,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              TripRecordingScreen(
+                                                  tripId: tripData![0],
+                                                  calledFrom: 'bottom_nav',
+                                                  vesselId: tripData[1],
+                                                  vesselName: tripData[2],
+                                                  tripIsRunningOrNot:
+                                                      runningTrip)),
+                                    );
                                   },
                                 )),
                       ),
@@ -811,11 +759,9 @@ if(isNavigateToMaps){
                               onTap: () {
                                 Utils.customPrint("Tapped on scan button");
 
-                        var listener=        FlutterBluePlus.startScan(
+                                var listener = FlutterBluePlus.startScan(
                                     timeout: const Duration(seconds: 2),
-                               oneByOne: true     
-                                    
-                                    );
+                                    oneByOne: true);
 
                                 Future.delayed(Duration(seconds: 2), () {
                                   /* setDialogState(() {
@@ -851,7 +797,6 @@ if(isNavigateToMaps){
                                 if (connectedDeviceList.isNotEmpty) {
                                   print('connected to the device------');
 
-
                                   Fluttertoast.showToast(
                                       msg:
                                           "Connected to ${connectedDeviceList.first.platformName}",
@@ -865,8 +810,8 @@ if(isNavigateToMaps){
                                   FlutterBluePlus.stopScan();
                                   Navigator.pop(context);
                                 } else {
-                                                                 
-                                                                    print('connected to the device------empty dismiss');
+                                  print(
+                                      'connected to the device------empty dismiss');
 
                                   Navigator.pop(context);
                                   showDeviceDisconnectedDialog(null);

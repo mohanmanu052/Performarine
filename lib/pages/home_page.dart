@@ -127,7 +127,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
 
     commonProvider = context.read<CommonProvider>();
     commonProvider.init();
-    commonProvider.getTripsCount();
+   // commonProvider.getTripsCount();
 
     getVesselFuture = _databaseService.vessels();
 
@@ -386,7 +386,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                           fullscreenDialog: true,
                         ),
                       );
-                      commonProvider.getTripsCount();
+                    //  commonProvider.getTripsCount();
                       if (result != null) {
                         Utils.customPrint('RESULT HOME PAGE $result');
                         if (result) {

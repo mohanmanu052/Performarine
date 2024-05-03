@@ -30,7 +30,6 @@ import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
-import 'package:performarine/common_widgets/widgets/common_text_feild.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/location_permission_dialog.dart';
 import 'package:performarine/common_widgets/widgets/log_level.dart';
@@ -103,9 +102,9 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
       isSliderDisable = false,
       isCheck = false,
       isOKClick = false,
-      locationAccuracy = false,
-      isClickedOnForgetDevice = false,
-      openedSettingsPageForPermission = false;
+      locationAccuracy = false;
+
+  bool isClickedOnForgetDevice = false;
 
   final controller = ScreenshotController();
 
@@ -128,8 +127,9 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
   late AnimationController popupAnimationController;
   late TextEditingController textEditingController;
   TextEditingController tripNameController = TextEditingController();
-
   FocusNode _focusNode = FocusNode();
+
+  bool openedSettingsPageForPermission = false;
 
   StreamSubscription<List<ScanResult>>? autoConnectStreamSubscription;
   StreamSubscription<bool>? autoConnectIsScanningStreamSubscription;
@@ -140,6 +140,15 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    // Future.delayed(Duration(seconds: 1)).then((value) {
+    //
+    //   if(tripState.currentState!=null){
+    //     StartTripLprPermission().locationPermissions(true, tripState, scaffoldKey, context);
+    //
+    //   }
+    //
+    // });
 
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
@@ -1105,32 +1114,33 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     commonProvider = context.watch<CommonProvider>();
     locationController = context.watch<LocationController>();
 
-    return Screenshot(
-      controller: controller,
-      child: PopScope(
-        canPop: false,
-        key: tripState,
-        onPopInvoked: (didPop) async {
-          if (didPop) return;
-          if (commonProvider.bottomNavIndex == 1) {
-            SystemChrome.setPreferredOrientations([
-              DeviceOrientation.portraitUp,
-              DeviceOrientation.portraitDown,
-              DeviceOrientation.landscapeLeft,
-              DeviceOrientation.landscapeRight,
-            ]);
-          }
+    return PopScope(
+      canPop: false,
+      // key: tripState,
+      onPopInvoked: (didPop) async {
+        if (didPop) return;
+        if (commonProvider.bottomNavIndex == 1) {
+          SystemChrome.setPreferredOrientations([
+            DeviceOrientation.portraitUp,
+            DeviceOrientation.portraitDown,
+            DeviceOrientation.landscapeLeft,
+            DeviceOrientation.landscapeRight,
+          ]);
+        }
 
-          bool? isTripStarted =
-              sharedPreferences!.getBool('trip_started') ?? false;
-          if (!isTripStarted ?? false) {
-            for (int i = 0; i < FlutterBluePlus.connectedDevices.length; i++) {
-              await FlutterBluePlus.connectedDevices[i]
-                  .disconnect()
-                  .then((value) {});
-            }
+        bool? isTripStarted =
+            sharedPreferences!.getBool('trip_started') ?? false;
+        if (!isTripStarted ?? false) {
+          for (int i = 0; i < FlutterBluePlus.connectedDevices.length; i++) {
+            await FlutterBluePlus.connectedDevices[i]
+                .disconnect()
+                .then((value) {});
           }
-        },
+        }
+        Navigator.of(context).pop(true);
+      },
+      child: Screenshot(
+        controller: controller,
         child: SafeArea(
           child: Scaffold(
             backgroundColor: backgroundColor,
@@ -1337,8 +1347,8 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                             labelStyle: TextStyle(
                                                 color: Colors.black54,
                                                 fontSize:
-                                                    displayWidth(context) *
-                                                        0.032,
+                                                displayWidth(context) *
+                                                    0.032,
                                                 fontFamily: outfit,
                                                 fontWeight: FontWeight.w400),
                                             filled: true,
@@ -1347,7 +1357,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                               borderSide: BorderSide(
                                                   color: Colors.blue.shade50),
                                               borderRadius:
-                                                  BorderRadius.circular(14),
+                                              BorderRadius.circular(14),
                                             ),
                                             focusedBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
@@ -3125,7 +3135,6 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     await fetchDeviceData();
 
     debugPrint("NUMBER OF PASS 4 $numberOfPassengers");
-    debugPrint("NUMBER OF PASS 4 INSERT ${tripNameController.text}");
 
     try {
       await _databaseService.insertTrip(Trip(
@@ -3156,7 +3165,6 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
   /// It will start trip and called startBGLocatorTrip function from StartTrip.dart file
   startWritingDataToDB(BuildContext bottomSheetContext) async {
     Utils.customPrint('ISSSSS XXXXXXX: $isServiceRunning');
-    Utils.customPrint('TRIP NAME : ${tripNameController.text}');
 
     if (!await geo.Geolocator.isLocationServiceEnabled()) {
       showDialog(
@@ -3204,8 +3212,6 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
         .catchError((onError) {
       Utils.customPrint('IOS NOTI ERROR: $onError');
     });
-
-    Utils.customPrint('TRIP NAME ON SAVE : ${tripNameController.text}');
 
     await onSave('', bottomSheetContext, true);
 
