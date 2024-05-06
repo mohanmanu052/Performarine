@@ -1225,9 +1225,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                 ),
                               ),
                             ),
-                            widget.vessel!.createdBy != commonProvider.loginModel!.userId
-                            ? SizedBox(height: displayHeight(context) * 0.04,)
-                            : Theme(
+                            Theme(
                               data: Theme.of(context).copyWith(
                                   colorScheme: ColorScheme.light(
                                     primary: Colors.black,

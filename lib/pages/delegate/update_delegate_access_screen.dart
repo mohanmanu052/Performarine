@@ -75,7 +75,9 @@ class _UpdateDelegateAccessScreenState
   void initState() {
     // TODO: implement initState
     super.initState();
-    debugPrint("VESSEL ID UPDATE DELEGATE SCREEN  ${widget.vesselID}");
+    debugPrint("VESSEL ID UPDATE DELEGATE SCREEN TIME ${widget.delegates!.toJson()}");
+    debugPrint("VESSEL ID UPDATE DELEGATE SCREEN TYPE ${widget.delegates!.delegateaccessType}");
+    debugPrint("VESSEL ID UPDATE DELEGATE SCREEN STATUS ${widget.delegates!.status}");
     singleVesselDetails =
         _databaseService.getVesselFromVesselID(widget.vesselID!);
     singleVesselDetails!.then((value) {
@@ -743,6 +745,18 @@ class _UpdateDelegateAccessScreenState
                                           message: 'Please select end date');
                                       return null;
                                     }
+                                    if (globalStartTime.toString().isEmpty) {
+                                      Utils.showSnackBar(context,
+                                          scaffoldKey: scaffoldKey,
+                                          message: 'Please select start time');
+                                      return null;
+                                    }
+                                    if (globalEndTime.toString().isEmpty) {
+                                      Utils.showSnackBar(context,
+                                          scaffoldKey: scaffoldKey,
+                                          message: 'Please select end time');
+                                      return null;
+                                    }
                                   }
 
                                   debugPrint("IF EXECUTED");
@@ -842,7 +856,8 @@ class _UpdateDelegateAccessScreenState
   }
 
   String convertIntoUTCFormat(DateTime? date, String? time) {
-    if (date != null && time != null) {
+    debugPrint("SELECTED UTC Form TIME  ${time}");
+    if (date != null && (time != null && time.isNotEmpty)) {
       hour = int.parse(time.split(' : ').first);
       min = int.parse(time.split(' : ').last.split(' ').first);
       ampm = time.split(' : ').last.split(' ').last;
@@ -909,6 +924,16 @@ class _UpdateDelegateAccessScreenState
         setState(() {
           selectedShareUpdate = firstWhere.value;
         });
+
+        debugPrint("CUSTOM TIME TT ${selectedShareUpdate == "4"}");
+
+        if(selectedShareUpdate == "4")
+          {
+            setState(() {
+              isCustomTime = true;
+              isCalenderVisible = true;
+            });
+          }
       }
     Utils.customPrint('LIST LENGTH ${shareAccessModel.length}');
     setState(() {});
