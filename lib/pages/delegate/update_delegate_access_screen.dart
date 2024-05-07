@@ -745,13 +745,13 @@ class _UpdateDelegateAccessScreenState
                                           message: 'Please select end date');
                                       return null;
                                     }
-                                    if (globalStartTime.toString().isEmpty) {
+                                    if (globalStartTime.isEmpty) {
                                       Utils.showSnackBar(context,
                                           scaffoldKey: scaffoldKey,
                                           message: 'Please select start time');
                                       return null;
                                     }
-                                    if (globalEndTime.toString().isEmpty) {
+                                    if (globalEndTime.isEmpty) {
                                       Utils.showSnackBar(context,
                                           scaffoldKey: scaffoldKey,
                                           message: 'Please select end time');

@@ -758,9 +758,7 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                       userEmailController.text
                                           .toLowerCase()) {
                                     if (selectedShareUpdate == '4') {
-                                      if (startDateText
-                                          .toString()
-                                          .isEmpty) {
+                                      if (startDateText.toString().isEmpty) {
                                         Utils.showSnackBar(context,
                                             scaffoldKey: scaffoldKey,
                                             message:
@@ -773,6 +771,19 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                             scaffoldKey: scaffoldKey,
                                             message:
                                             'Please select end date');
+                                        return null;
+                                      }
+
+                                      if (globalStartTime.isEmpty) {
+                                        Utils.showSnackBar(context,
+                                            scaffoldKey: scaffoldKey,
+                                            message: 'Please select start time');
+                                        return null;
+                                      }
+                                      if (globalEndTime.isEmpty) {
+                                        Utils.showSnackBar(context,
+                                            scaffoldKey: scaffoldKey,
+                                            message: 'Please select end time');
                                         return null;
                                       }
                                     }
