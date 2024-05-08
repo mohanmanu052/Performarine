@@ -12,6 +12,7 @@ import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/custom_fleet_dailog.dart';
 import 'package:performarine/common_widgets/widgets/log_level.dart';
 import 'package:performarine/main.dart';
+import 'package:performarine/models/common_model.dart';
 import 'package:performarine/models/my_delegate_invite_model.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
@@ -355,7 +356,7 @@ class _SingleMyDelegateInviteCardState
     );
   }
 
-  getUserConfigData() {
+  getUserConfigData(BuildContext context, CommonModel value) {
     Utils.customPrint("CLOUDE USER ID ${commonProvider!.loginModel!.userId}");
     CustomLogger().logWithFile(
         Level.info, "CLOUDE USER ID ${commonProvider!.loginModel!.userId} -> ");
@@ -366,6 +367,7 @@ class _SingleMyDelegateInviteCardState
         .then((value) async {
       if (value != null) {
         if (value.status!) {
+
           Utils.customPrint('LENGTH: ${value.vessels!.length}');
           CustomLogger().logWithFile(
               Level.info, "LENGTH: ${value.vessels!.length} -> $page");
@@ -547,7 +549,7 @@ class _SingleMyDelegateInviteCardState
                 isSync: 1,
                 updatedBy: value.vessels![i].updatedBy.toString(),
                 isCloud: 1,
-                hullType: int.parse(value.vessels![i].hullType.toString()));
+                hullType: value.vessels![i].hullType != null ? int.parse(value.vessels![i].hullType.toString()) : 0);
 
             var vesselExist = await _databaseService
                 .vesselsExistInCloud(value.vessels![i].id!);
@@ -745,8 +747,7 @@ class _SingleMyDelegateInviteCardState
                   isCloud: 1,
                   hullType: value.delegateVessels![i].hullShape != null ? int.parse(value.delegateVessels![i].hullShape.toString()) : 0);
 
-              var vesselExist = await _databaseService
-                  .vesselsExistInCloud(value.delegateVessels![i].id!);
+              var vesselExist = await _databaseService.vesselsExistInCloud(value.delegateVessels![i].id!);
 
               Utils.customPrint('USER CONFIG DATA CLOUD $vesselExist');
               CustomLogger().logWithFile(
@@ -804,6 +805,17 @@ class _SingleMyDelegateInviteCardState
               }
             }
           }
+
+          if(mounted)
+          {
+            setState(() {
+              widget.onTap!.call();
+              isAcceptBtnClicked = false;
+              Utils.showSnackBar(context,
+                  scaffoldKey: widget.scaffoldKey, message: 'Successfully accepted the invitation');
+            });
+          }
+
         }
       }
     });
@@ -946,11 +958,12 @@ class _SingleMyDelegateInviteCardState
                           .then((value) {
                         if (value != null) {
                           if (value.status!) {
-                            setState(() {
-                              isAcceptBtnClicked = false;
-                            });
 
-                            widget.onTap!.call();
+                           setState(() {
+                             getUserConfigData(context, value);
+
+                           });
+
                           } else {
                             setState(() {
                               isAcceptBtnClicked = false;
@@ -966,7 +979,6 @@ class _SingleMyDelegateInviteCardState
                           isAcceptBtnClicked = false;
                         });
                       });
-                      getUserConfigData();
                     },
                   );
                 },
@@ -1019,4 +1031,6 @@ class _SingleMyDelegateInviteCardState
         ;
     }
   }
+
+
 }

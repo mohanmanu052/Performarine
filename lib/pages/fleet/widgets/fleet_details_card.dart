@@ -42,7 +42,7 @@ class _FleetDetailsCardState extends State<FleetDetailsCard> {
         ? Center(
       child: commonText(
           context: context,
-          text: 'No data found',
+          text: 'No vessels available',
           fontWeight: FontWeight.w500,
           textColor: Colors.black,
           textSize: displayWidth(context) * 0.045,

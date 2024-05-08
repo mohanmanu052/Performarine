@@ -241,7 +241,7 @@ class _DelegatesScreenState extends State<DelegatesScreen> {
                               child: Center(
                                 child: commonText(
                                     context: context,
-                                    text: 'No data found',
+                                    text: 'No delegates are available',
                                     fontWeight: FontWeight.w500,
                                     textColor: Colors.black,
                                     textSize: displayWidth(context) * 0.05,

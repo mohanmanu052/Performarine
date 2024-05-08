@@ -819,7 +819,7 @@ class _OldTripWidgetState extends State<OldTripWidget> {
   /// If data is not sync then using this function we can upload data
   /// First it will add vessel if its new and then trip
   uploadDataIfDataIsNotSync() async {
-    Utils.customPrint('VESSEL STATUS DATA ${widget.tripList!.toJson()}');
+    Utils.customPrint('VESSEL STATUS DATA OLD ${widget.tripList!.toJson()}');
     CustomLogger().logWithFile(Level.info, "VESSEL STATUS DATA ${widget.tripList!.toJson()} -> $page");
     commonProvider.updateTripUploadingStatus(true);
     await vesselIsSyncOrNot(widget.tripList!.vesselId.toString());
@@ -880,6 +880,8 @@ class _OldTripWidgetState extends State<OldTripWidget> {
           vesselData.vesselStatus;
       commonProvider.addVesselRequestModel!.batteryCapacity =
           vesselData.batteryCapacity;
+      commonProvider.addVesselRequestModel!.createdBy = vesselData.createdBy;
+      commonProvider.addVesselRequestModel!.updatedBy = vesselData.updatedBy;
       /*commonProvider.addVesselRequestModel!.displacement =
           vesselData.displacement;*/
 

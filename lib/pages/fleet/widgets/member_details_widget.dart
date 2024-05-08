@@ -61,7 +61,7 @@ class _MemberDetailsWidgetState extends State<MemberDetailsWidget> {
                   child: Center(
                     child: commonText(
                       context: context,
-                      text: 'No data found',
+                      text: 'No members available',
                       fontWeight: FontWeight.w500,
                       textColor: Colors.black,
                       textSize: displayWidth(context) * 0.045,

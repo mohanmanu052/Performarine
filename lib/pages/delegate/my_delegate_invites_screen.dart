@@ -44,6 +44,8 @@ class _MyDelegateInvitesScreenState extends State<MyDelegateInvitesScreen> {
 
   List<MyDelegateInvite>? myDelegateInvite;
 
+  bool inviteAccepted = false;
+
   @override
   void initState() {
     SystemChrome.setPreferredOrientations([
@@ -61,135 +63,164 @@ class _MyDelegateInvitesScreenState extends State<MyDelegateInvitesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Screenshot(
-        controller: controller,
-        child: Scaffold(
-          key: scfoldKey,
-          backgroundColor: Colors.white,
-          appBar: AppBar(
-            elevation: 0.0,
-            backgroundColor: Colors.white,
-            leading: IconButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              icon: const Icon(Icons.arrow_back),
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white
-                  : Colors.black,
-            ),
-            centerTitle: true,
-            title: commonText(
-                context: context,
-                text: 'My Delegate Invites',
-                fontWeight: FontWeight.w600,
-                textColor: Colors.black,
-                textSize: displayWidth(context) * 0.05,
-                textAlign: TextAlign.start),
-            actions: [
-            /*  InkWell(
-                onTap: () async {},
-                child: Image.asset(
-                  'assets/images/Trash.png',
-                  width: Platform.isAndroid
-                      ? displayWidth(context) * 0.05
-                      : displayWidth(context) * 0.05,
-                ),
-              ),*/
-              Container(
-                margin: EdgeInsets.only(right: 8),
-                child: IconButton(
-                  onPressed: () async {
-                    await SystemChrome.setPreferredOrientations(
-                        [DeviceOrientation.portraitUp]);
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        if(didPop) return;
+        if(inviteAccepted)
+          {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => BottomNavigation()),
+                ModalRoute.withName(""));
+          }
+        else
+          {
+            Navigator.of(context).pop();
+          }
 
-                    Navigator.pushAndRemoveUntil(
+      },
+      child: Screenshot(
+          controller: controller,
+          child: Scaffold(
+            key: scfoldKey,
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              elevation: 0.0,
+              backgroundColor: Colors.white,
+              leading: IconButton(
+                onPressed: () {
+                  if(inviteAccepted)
+                    {
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => BottomNavigation()),
+                          ModalRoute.withName(""));
+                    }
+                  else
+                      {
+                        Navigator.of(context).pop();
+                      }
+
+                },
+                icon: const Icon(Icons.arrow_back),
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black,
+              ),
+              centerTitle: true,
+              title: commonText(
+                  context: context,
+                  text: 'My Delegate Invites',
+                  fontWeight: FontWeight.w600,
+                  textColor: Colors.black,
+                  textSize: displayWidth(context) * 0.05,
+                  textAlign: TextAlign.start),
+              actions: [
+              /*  InkWell(
+                  onTap: () async {},
+                  child: Image.asset(
+                    'assets/images/Trash.png',
+                    width: Platform.isAndroid
+                        ? displayWidth(context) * 0.05
+                        : displayWidth(context) * 0.05,
+                  ),
+                ),*/
+                Container(
+                  margin: EdgeInsets.only(right: 8),
+                  child: IconButton(
+                    onPressed: () async {
+                      await SystemChrome.setPreferredOrientations(
+                          [DeviceOrientation.portraitUp]);
+
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BottomNavigation()),
+                          ModalRoute.withName(""));
+                    },
+                    icon:
+                        Image.asset('assets/icons/performarine_appbar_icon.png'),
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black,
+                  ),
+                ),
+              ],
+            ),
+            bottomNavigationBar: Container(
+              margin: EdgeInsets.only(bottom: 4),
+              child: GestureDetector(
+                  onTap: () async {
+                    final image = await controller.capture();
+
+                    Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => BottomNavigation()),
-                        ModalRoute.withName(""));
+                            builder: (context) => FeedbackReport(
+                                  imagePath: image.toString(),
+                                  uIntList: image,
+                                )));
                   },
-                  icon:
-                      Image.asset('assets/icons/performarine_appbar_icon.png'),
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white
-                      : Colors.black,
-                ),
-              ),
-            ],
-          ),
-          bottomNavigationBar: Container(
-            margin: EdgeInsets.only(bottom: 4),
-            child: GestureDetector(
-                onTap: () async {
-                  final image = await controller.capture();
-
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => FeedbackReport(
-                                imagePath: image.toString(),
-                                uIntList: image,
-                              )));
-                },
-                child: UserFeedback().getUserFeedback(context)),
-          ),
-          body: SingleChildScrollView(
-            child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 17, vertical: 17),
-                child: FutureBuilder<MyDelegateInviteModel>(
-                    future: future,
-                    builder: (context, snapShot) {
-                      if (snapShot.connectionState == ConnectionState.waiting) {
-                        return SizedBox(
-                            height: displayHeight(context) / 1.5,
+                  child: UserFeedback().getUserFeedback(context)),
+            ),
+            body: SingleChildScrollView(
+              child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 17, vertical: 17),
+                  child: FutureBuilder<MyDelegateInviteModel>(
+                      future: future,
+                      builder: (context, snapShot) {
+                        if (snapShot.connectionState == ConnectionState.waiting) {
+                          return SizedBox(
+                              height: displayHeight(context) / 1.5,
+                              child: Center(
+                                  child: const CircularProgressIndicator(
+                                      color: blueColor)));
+                        } else if (snapShot.data == null || snapShot.data!.myDelegateInvities == null||
+                            snapShot.data!.myDelegateInvities!.isEmpty) {
+                          return Container(
+                            height: displayHeight(context) / 1.4,
                             child: Center(
-                                child: const CircularProgressIndicator(
-                                    color: blueColor)));
-                      } else if (snapShot.data == null || snapShot.data!.myDelegateInvities == null||
-                          snapShot.data!.myDelegateInvities!.isEmpty) {
-                        return Container(
-                          height: displayHeight(context) / 1.4,
-                          child: Center(
-                            child: commonText(
-                                context: context,
-                                text: 'No data found',
-                                fontWeight: FontWeight.w500,
-                                textColor: Colors.black,
-                                textSize: displayWidth(context) * 0.05,
-                                textAlign: TextAlign.start),
-                          ),
-                        );
-                      } else {
-                        return Column(
-                          children: [
-                            SizedBox(
-                              height: displayHeight(context) * 0.01,
+                              child: commonText(
+                                  context: context,
+                                  text: 'Delegate invites not available.',
+                                  fontWeight: FontWeight.w500,
+                                  textColor: Colors.black,
+                                  textSize: displayWidth(context) * 0.05,
+                                  textAlign: TextAlign.start),
                             ),
-                            ListView.builder(
-                                physics: NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount:
-                                snapShot.data!.myDelegateInvities!.length,
-                                itemBuilder: (context, index) {
-                                  debugPrint("RESPONSE DELEGATE ${snapShot.data!.myDelegateInvities![index].status}");
-                                  return SingleMyDelegateInviteCard(
-                                    myDelegateInvite: snapShot.data!.myDelegateInvities![index],
-                                  scaffoldKey: scfoldKey,
-                                  onTap: (){
-                                    future = commonProvider?.getDelegateInvites(context, commonProvider!.loginModel!.token!, scfoldKey);
-                                    //myDelegateInvite!.removeAt(index);
-                                    setState(() {});
-                                    //myDelegateInvite![index].removeWhere((item) => item == 'Item 3');
-                                  },);
+                          );
+                        } else {
+                          return Column(
+                            children: [
+                              SizedBox(
+                                height: displayHeight(context) * 0.01,
+                              ),
+                              ListView.builder(
+                                  physics: NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount:
+                                  snapShot.data!.myDelegateInvities!.length,
+                                  itemBuilder: (context, index) {
+                                    debugPrint("RESPONSE DELEGATE ${snapShot.data!.myDelegateInvities![index].status}");
+                                    return SingleMyDelegateInviteCard(
+                                      myDelegateInvite: snapShot.data!.myDelegateInvities![index],
+                                    scaffoldKey: scfoldKey,
+                                    onTap: (){
+                                      setState(() {
+                                        future = commonProvider?.getDelegateInvites(context, commonProvider!.loginModel!.token!, scfoldKey);
+                                        inviteAccepted = true;
+                                      });
+                                    },);
 
-                                }),
-                          ],
-                        );
-                      }
-                    })),
-          ),
-        ));
+                                  }),
+                            ],
+                          );
+                        }
+                      })),
+            ),
+          )),
+    );
   }
 
   getUserConfigData() {

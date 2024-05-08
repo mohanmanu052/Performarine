@@ -92,8 +92,7 @@ class AddVesselApiProvider with ChangeNotifier {
           ? '2'
           : addVesselRequestModel.vesselStatus!.toString();
 
-      request.fields['batteryCapacity'] =
-          addVesselRequestModel.batteryCapacity!;
+      request.fields['batteryCapacity'] = addVesselRequestModel.batteryCapacity!;
       request.fields['hullShape'] = addVesselRequestModel.hullType!.toString();
       Utils.customPrint('Add VESSEL RESP : ' + jsonEncode(request.fields));
 
@@ -101,6 +100,8 @@ class AddVesselApiProvider with ChangeNotifier {
 
       http.Response responseValue = await http.Response.fromStream(response);
 
+      Utils.customPrint('Add VESSEL REQ  : ' + addVesselRequestModel.createdBy!.toString());
+      Utils.customPrint('Add VESSEL REQ  : ' + addVesselRequestModel.updatedBy!.toString());
       Utils.customPrint('Add VESSEL RESP : ' + responseValue.body);
       CustomLogger().logWithFile(Level.info, "Add VESSEL RESP : ' + ${jsonEncode(responseValue.body)}-> $page");
 

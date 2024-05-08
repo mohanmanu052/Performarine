@@ -112,7 +112,7 @@ class MyDelegateInviteProvider with ChangeNotifier {
       String? accessToken,
       GlobalKey<ScaffoldState> scaffoldKey,
       String flag,
-      String verifyToken) async {
+      String verifyToken,) async {
     var data;
     var headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
@@ -143,8 +143,10 @@ class MyDelegateInviteProvider with ChangeNotifier {
       if (response.statusCode == HttpStatus.ok) {
         delegateAcceptRejectModel =
             CommonModel.fromJson(json.decode(response.body));
-        Utils.showSnackBar(context,
+
+        /*Utils.showSnackBar(context,
             scaffoldKey: scaffoldKey, message: decodedData['message']);
+*/
 
         CustomLogger().logWithFile(Level.info,
             "My Delegate Invites Accept Reject Response : ' + ${response.body}");

@@ -1981,6 +1981,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
           vesselData.vesselStatus;
       commonProvider.addVesselRequestModel!.batteryCapacity =
           vesselData.batteryCapacity;
+      commonProvider.addVesselRequestModel!.createdBy = vesselData.createdBy;
+      commonProvider.addVesselRequestModel!.updatedBy = vesselData.updatedBy;
       /*commonProvider.addVesselRequestModel!.displacement =
           vesselData.displacement;*/
 
