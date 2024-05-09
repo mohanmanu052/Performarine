@@ -68,6 +68,13 @@ class _DashboardState extends State<Dashboard> with TickerProviderStateMixin, Wi
      //});
    //});
   }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    debugPrint("DID CHANGE DEPEND Called");
+  }
   @override
   void dispose() {
     // TODO: implement dispose

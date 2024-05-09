@@ -50,7 +50,7 @@ class _ManagePermissionsScreenState extends State<ManagePermissionsScreen> {
   bool isLoading = false;
 //List<String> fleetData=['Fleet1','Fleet2','Fleet3','Fleet4'];
   //FleetDashboardModel? fleetdata;
-  List<CreateVessel>? vesselsData;
+  List<CreateVessel> vesselsData = [];
   List<bool>? checkListItems = [];
   @override
   void initState() {
@@ -121,15 +121,36 @@ if(vesselsSyncDetails){
 
 
 }
-    vesselsData = await _databaseService.vessels();
-    checkListItems = List.generate(vesselsData!.length, (index) => false);
+      List<CreateVessel>? data = await _databaseService.vessels();
+
+        for(int i = 0; i <data.length; i++)
+          {
+            if(data[i].createdBy == commonProvider!.loginModel!.userId)
+              {
+               setState(() {
+                 vesselsData.add(data[i]);
+               });
+              }
+          }
+
+    checkListItems = List.generate(vesselsData.length, (index) => false);
 
     setState(() {});
 
 
 }else{
-    vesselsData = await _databaseService.vessels();
-    checkListItems = List.generate(vesselsData!.length, (index) => false);
+  List<CreateVessel>? data = await _databaseService.vessels();
+
+  for(int i = 0; i <data.length; i++)
+  {
+    if(data[i].createdBy == commonProvider!.loginModel!.userId)
+    {
+      setState(() {
+        vesselsData.add(data[i]);
+      });
+    }
+  }
+    checkListItems = List.generate(vesselsData.length, (index) => false);
 if(mounted) {
   setState(() {});
 }

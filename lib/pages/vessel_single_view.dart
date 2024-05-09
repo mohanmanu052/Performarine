@@ -490,7 +490,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
-                                              InkWell(
+                                              widget.vessel!.createdBy == commonProvider.loginModel!.userId
+                                              ? InkWell(
                                                 onTap: () async {
                                                   var result =
                                                       await Navigator.of(
@@ -525,7 +526,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                         displayWidth(context) *
                                                             0.045,
                                                     color: Colors.black),
-                                              ),
+                                              )
+                                              : SizedBox(),
                                               !isPropulsionDetails
                                                   ? Icon(
                                                       Icons
@@ -825,7 +827,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                   MainAxisAlignment
                                                       .spaceBetween,
                                               children: [
-                                                InkWell(
+                                                widget.vessel!.createdBy == commonProvider.loginModel!.userId
+                                                    ? InkWell(
                                                   onTap: () async {
                                                     var result =
                                                         await Navigator.of(
@@ -861,7 +864,8 @@ class VesselSingleViewState extends State<VesselSingleView> {
                                                               context) *
                                                           0.045,
                                                       color: Colors.black),
-                                                ),
+                                                )
+                                                : SizedBox(),
                                                 !isVesselParticularExpanded
                                                     ? Icon(
                                                         Icons
@@ -1346,9 +1350,14 @@ class VesselSingleViewState extends State<VesselSingleView> {
             isDelegateApiCalled = false;
           });
         }
-      }).catchError((e){setState(() {
-        isDelegateApiCalled = false;
-      });});
+      }).catchError((e){
+        if(mounted)
+          {
+            setState(() {
+              isDelegateApiCalled = false;
+            });
+          }
+      });
     }
   }
 }

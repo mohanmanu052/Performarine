@@ -62,8 +62,8 @@ class _InviteDelegateState extends State<InviteDelegate> {
       startDateText = '',
       startDateUtc = '',
       endDateUtc = '',
-      globalStartTime = '',
-      globalEndTime = '',
+      globalStartTime = '01 : 00 AM',
+      globalEndTime = '01 : 00 AM',
       ampm = '';
   int calenderType = 0, hour = 0, min = 0;
   String? selectedShareUpdate;

@@ -945,7 +945,7 @@ class _TripWidgetState extends State<TripWidget> {
   /// If data is not sync then using this function we can upload data
   /// First it will add vessel if its new and then trip
   uploadDataIfDataIsNotSync() async {
-    Utils.customPrint('VESSEL STATUS DATA ${widget.tripList!.toJson()}');
+    //Utils.customPrint('VESSEL STATUS DATA Widget ${widget.tripList!.toJson()}');
     CustomLogger().logWithFile(Level.info, "VESSEL STATUS DATA ${widget.tripList!.toJson()} -> $page");
     commonProvider.updateTripUploadingStatus(true);
     await vesselIsSyncOrNot(widget.tripList!.vesselId.toString());
@@ -979,6 +979,9 @@ class _TripWidgetState extends State<TripWidget> {
           .getVesselFromVesselID((widget.tripList!.vesselId.toString()));
 
       Utils.customPrint('VESSEL DATA ${vesselData!.id}');
+      Utils.customPrint('VESSEL DATA ${vesselData.name}');
+      Utils.customPrint('VESSEL DATA CREATED BY ${vesselData.createdBy}');
+      Utils.customPrint('VESSEL DATA CREATED BY ${vesselData.updatedBy}');
       CustomLogger().logWithFile(Level.info, "VESSEL DATA ${vesselData.id} -> $page");
 
       commonProvider.addVesselRequestModel = CreateVessel();
@@ -1008,6 +1011,8 @@ class _TripWidgetState extends State<TripWidget> {
           vesselData.batteryCapacity;
       commonProvider.addVesselRequestModel!.hullType =
           vesselData.hullType;
+      commonProvider.addVesselRequestModel!.createdBy = vesselData.createdBy;
+      commonProvider.addVesselRequestModel!.updatedBy = vesselData.updatedBy;
 
       if (vesselData.imageURLs != null && vesselData.imageURLs!.isNotEmpty) {
         if (vesselData.imageURLs!.startsWith("https")) {

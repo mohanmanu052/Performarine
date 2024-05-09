@@ -65,8 +65,8 @@ class _UpdateDelegateAccessScreenState
       selectedDuration = '24 hrs',
       startDateText = '',
       ampm = '',
-      globalStartTime = '',
-      globalEndTime = '';
+      globalStartTime = '01 : 00 AM',
+      globalEndTime = '01 : 00 AM';
   int calenderType = 0, hour = 0, min = 0;
 
   bool isCalenderVisible = false;
@@ -759,7 +759,7 @@ class _UpdateDelegateAccessScreenState
                                     }
                                   }
 
-                                  debugPrint("IF EXECUTED");
+                                  debugPrint("IF EXECUTED $globalStartTime");
                                   Map<String, dynamic>? body;
                                   if (selectedShareUpdate == "4") {
                                     body = {
