@@ -75,11 +75,10 @@ class _LPRTripsDataState extends State<LPRTripsData> {
   @override
   void initState() {
     getVesselFuture = _databaseService.vessels();
-    getVesselFuture.then((value) {
-      vesselData = value[0];
-      setState(() {});
-    });
-
+      getVesselFuture.then((value) {
+        vesselData = value[0];
+        setState(() {});
+      });
     // TODO: implement initState
     super.initState();
   }
@@ -199,16 +198,17 @@ class _LPRTripsDataState extends State<LPRTripsData> {
                         ),
                       ),
 
-                      Container(
+                      vesselData != null
+                          ? Container(
                           margin: EdgeInsets.symmetric(
                             horizontal: 15,
                           ),
                           width: displayWidth(context),
                           //height: displayHeight(context)*0.2,
-
                           child: VesselinfoCard(
                             vesselData: vesselData,
-                          )),
+                          ))
+                      : SizedBox(),
 
                       SizedBox(height: displayHeight(context) * 0.02),
 

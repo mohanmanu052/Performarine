@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
+import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/custom_add_sensor_dialog.dart';
@@ -23,12 +25,15 @@ class LPRViewScreen extends StatefulWidget {
 }
 
 class _LPRViewScreenState extends State<LPRViewScreen> {
-
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
   final controller = ScreenshotController();
 
   bool isDownloadTripBtnClicked = true, isUpdateLPRTimeBtnClicked = false;
+
+  List<LprDataModel> lprDataList = [
+   //320 LprDataModel(type: 'Shaft RPM', unit: 'RPM', value: '320')
+  ];
 
   @override
   void initState() {
@@ -37,6 +42,7 @@ class _LPRViewScreenState extends State<LPRViewScreen> {
 
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   }
+
   @override
   Widget build(BuildContext context) {
     return Screenshot(
@@ -77,8 +83,7 @@ class _LPRViewScreenState extends State<LPRViewScreen> {
                           builder: (context) => BottomNavigation()),
                       ModalRoute.withName(""));
                 },
-                icon:
-                Image.asset('assets/icons/performarine_appbar_icon.png'),
+                icon: Image.asset('assets/icons/performarine_appbar_icon.png'),
                 color: Theme.of(context).brightness == Brightness.dark
                     ? Colors.white
                     : Colors.black,
@@ -92,14 +97,13 @@ class _LPRViewScreenState extends State<LPRViewScreen> {
               margin: EdgeInsets.symmetric(horizontal: 17),
               child: Column(
                 children: [
-
                   SizedBox(height: displayHeight(context) * 0.03,),
 
                   Container(
                     margin: EdgeInsets.only(bottom: 15),
                     decoration: BoxDecoration(
-                      color: dropDownBackgroundColor,
-                      borderRadius: BorderRadius.circular(10)
+                        color: dropDownBackgroundColor,
+                        borderRadius: BorderRadius.circular(10)
                     ),
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 17),
@@ -128,7 +132,7 @@ class _LPRViewScreenState extends State<LPRViewScreen> {
                                     text: 'UTC',
                                     fontWeight: FontWeight.w500,
                                     textColor: Colors.grey,
-                                    textSize: displayWidth(context) * 0.035,
+                                    textSize: displayWidth(context) * 0.03,
                                     fontFamily: outfit),
                               ],
                             ),
@@ -137,68 +141,169 @@ class _LPRViewScreenState extends State<LPRViewScreen> {
                       ),
                     ),
                   ),
-
-                  Container(
-                    margin: EdgeInsets.only(bottom: 15),
-                    decoration: BoxDecoration(
-                        color: dropDownBackgroundColor,
-                        borderRadius: BorderRadius.circular(10)
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 17),
-                      child: Row(
-                        children: [
-                          commonText(
-                              context: context,
-                              text: 'Shaft RPM',
-                              fontWeight: FontWeight.w400,
-                              textColor: Colors.black87,
-                              textSize: displayWidth(context) * 0.04,
-                              fontFamily: outfit),
-
-                          Expanded(
-                            child: Column(
-                              children: [
-                                commonText(
-                                    context: context,
-                                    text: '320',
-                                    fontWeight: FontWeight.w600,
-                                    textColor: Colors.black87,
-                                    textSize: displayWidth(context) * 0.06,
-                                    fontFamily: outfit),
-                                commonText(
-                                    context: context,
-                                    text: 'RPM',
-                                    fontWeight: FontWeight.w500,
-                                    textColor: Colors.grey,
-                                    textSize: displayWidth(context) * 0.035,
-                                    fontFamily: outfit),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                  SizedBox(
+                    height: displayHeight(context) * 0.002,
                   ),
-
+                  ListView(
+                    shrinkWrap: true,
+                    children: lprDataList.map((e) {
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 15),
+                        decoration: BoxDecoration(
+                            color: dropDownBackgroundColor,
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 17),
+                          child: Row(
+                            children: [
+                              commonText(
+                                  context: context,
+                                  text: e.type,
+                                  fontWeight: FontWeight.w400,
+                                  textColor: Colors.black87,
+                                  textSize: displayWidth(context) * 0.04,
+                                  fontFamily: outfit),
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    commonText(
+                                        context: context,
+                                        text: e.value,
+                                        fontWeight: FontWeight.w600,
+                                        textColor: Colors.black87,
+                                        textSize: displayWidth(context) * 0.06,
+                                        fontFamily: outfit),
+                                    commonText(
+                                        context: context,
+                                        text: e.unit,
+                                        fontWeight: FontWeight.w500,
+                                        textColor: Colors.grey,
+                                        textSize: displayWidth(context) * 0.03,
+                                        fontFamily: outfit),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                  // Container(
+                  //   margin: EdgeInsets.only(bottom: 15),
+                  //   decoration: BoxDecoration(
+                  //       color: dropDownBackgroundColor,
+                  //       borderRadius: BorderRadius.circular(10)),
+                  //   child: Padding(
+                  //     padding:
+                  //         EdgeInsets.symmetric(horizontal: 12, vertical: 17),
+                  //     child: Row(
+                  //       children: [
+                  //         commonText(
+                  //             context: context,
+                  //             text: 'LPR Time',
+                  //             fontWeight: FontWeight.w400,
+                  //             textColor: Colors.black87,
+                  //             textSize: displayWidth(context) * 0.04,
+                  //             fontFamily: outfit),
+                  //         Expanded(
+                  //           child: Column(
+                  //             children: [
+                  //               commonText(
+                  //                   context: context,
+                  //                   text: '17:30:23',
+                  //                   fontWeight: FontWeight.w600,
+                  //                   textColor: Colors.black87,
+                  //                   textSize: displayWidth(context) * 0.06,
+                  //                   fontFamily: outfit),
+                  //               commonText(
+                  //                   context: context,
+                  //                   text: 'UTC',
+                  //                   fontWeight: FontWeight.w500,
+                  //                   textColor: Colors.grey,
+                  //                   textSize: displayWidth(context) * 0.035,
+                  //                   fontFamily: outfit),
+                  //             ],
+                  //           ),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
+                  // Container(
+                  //   margin: EdgeInsets.only(bottom: 15),
+                  //   decoration: BoxDecoration(
+                  //       color: dropDownBackgroundColor,
+                  //       borderRadius: BorderRadius.circular(10)),
+                  //   child: Padding(
+                  //     padding:
+                  //         EdgeInsets.symmetric(horizontal: 12, vertical: 17),
+                  //     child: Row(
+                  //       children: [
+                  //         commonText(
+                  //             context: context,
+                  //             text: 'Shaft RPM',
+                  //             fontWeight: FontWeight.w400,
+                  //             textColor: Colors.black87,
+                  //             textSize: displayWidth(context) * 0.04,
+                  //             fontFamily: outfit),
+                  //         Expanded(
+                  //           child: Column(
+                  //             children: [
+                  //               commonText(
+                  //                   context: context,
+                  //                   text: '320',
+                  //                   fontWeight: FontWeight.w600,
+                  //                   textColor: Colors.black87,
+                  //                   textSize: displayWidth(context) * 0.06,
+                  //                   fontFamily: outfit),
+                  //               commonText(
+                  //                   context: context,
+                  //                   text: 'RPM',
+                  //                   fontWeight: FontWeight.w500,
+                  //                   textColor: Colors.grey,
+                  //                   textSize: displayWidth(context) * 0.035,
+                  //                   fontFamily: outfit),
+                  //             ],
+                  //           ),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                   Container(
                     height: displayHeight(context) * 0.08,
                     width: displayWidth(context),
                     decoration: BoxDecoration(
                         color: dropDownBackgroundColor,
-                        borderRadius: BorderRadius.circular(18)
-                    ),
+                        borderRadius: BorderRadius.circular(18)),
                     child: DashedRectButton(
                       color: blueColor,
                       strokeWidth: 1.5,
                       gap: 3.0,
-                      onTap: (){
+                      onTap: () {
                         showDialog(
                             context: scaffoldKey.currentContext!,
                             builder: (BuildContext context) {
                               return CustomAddSensorDialog(
-                                positiveBtnOnTap: () {
-                                  Navigator.of(scaffoldKey.currentContext!).pop();
+                                positiveBtnOnTap: (LprDataModel value) {
+                                  int index = lprDataList.indexWhere(
+                                          (element) => element.type == value.type);
+                                  if (index == -1) {
+                                    lprDataList.add(value);
+                                  } else {
+                                    Utils.showSnackBar(
+                                      context,
+                                      scaffoldKey: scaffoldKey,
+                                      message: 'Sensor already added!',
+                                    );
+                                  }
+
+                                  setState(() {});
+
+                                  Navigator.of(scaffoldKey.currentContext!)
+                                      .pop();
                                   //check(scaffoldKey);
                                 },
                               );
@@ -209,8 +314,6 @@ class _LPRViewScreenState extends State<LPRViewScreen> {
                       primaryTextColor: blueColor,
                     ),
                   ),
-
-
                 ],
               ),
             ),
@@ -232,11 +335,17 @@ class _LPRViewScreenState extends State<LPRViewScreen> {
                             title: 'Download Trip Data',
                             context: context,
                             fontSize: displayWidth(context) * 0.038,
-                            textColor: isDownloadTripBtnClicked ? Colors.white : blueColor,
-                            buttonPrimaryColor:isDownloadTripBtnClicked ? blueColor : dropDownBackgroundColor,
-                            borderColor: isDownloadTripBtnClicked ? blueColor : dropDownBackgroundColor,
+                            textColor: isDownloadTripBtnClicked
+                                ? Colors.white
+                                : blueColor,
+                            buttonPrimaryColor: isDownloadTripBtnClicked
+                                ? blueColor
+                                : dropDownBackgroundColor,
+                            borderColor: isDownloadTripBtnClicked
+                                ? blueColor
+                                : dropDownBackgroundColor,
                             width: displayWidth(context) * 0.44,
-                            onTap:  (){
+                            onTap: () {
                               setState(() {
                                 isDownloadTripBtnClicked = true;
                                 isUpdateLPRTimeBtnClicked = false;
@@ -245,20 +354,24 @@ class _LPRViewScreenState extends State<LPRViewScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        LPRTripsData()),
+                                    builder: (context) => LPRTripsData()),
                               );
                             }),
-
                         CommonButtons.getActionButton(
                             title: 'Update LPR Time',
                             context: context,
                             fontSize: displayWidth(context) * 0.038,
-                            textColor: isUpdateLPRTimeBtnClicked ? Colors.white : blueColor,
-                            buttonPrimaryColor: isUpdateLPRTimeBtnClicked ? blueColor : dropDownBackgroundColor,
-                            borderColor: isUpdateLPRTimeBtnClicked ? blueColor : dropDownBackgroundColor,
+                            textColor: isUpdateLPRTimeBtnClicked
+                                ? Colors.white
+                                : blueColor,
+                            buttonPrimaryColor: isUpdateLPRTimeBtnClicked
+                                ? blueColor
+                                : dropDownBackgroundColor,
+                            borderColor: isUpdateLPRTimeBtnClicked
+                                ? blueColor
+                                : dropDownBackgroundColor,
                             width: displayWidth(context) * 0.44,
-                            onTap:  (){
+                            onTap: () {
                               setState(() {
                                 isUpdateLPRTimeBtnClicked = true;
                                 isDownloadTripBtnClicked = false;
@@ -266,18 +379,22 @@ class _LPRViewScreenState extends State<LPRViewScreen> {
                             }),
                       ],
                     ),
-
                     GestureDetector(
-                        onTap: ()async{
+                        onTap: () async {
                           final image = await controller.capture();
 
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
-                            imagePath: image.toString(),
-                            uIntList: image,)));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => FeedbackReport(
+                                    imagePath: image.toString(),
+                                    uIntList: image,
+                                  )));
                         },
-                        child: UserFeedback().getUserFeedback(context)
-                    ),
-                    SizedBox(height: 4,)
+                        child: UserFeedback().getUserFeedback(context)),
+                    SizedBox(
+                      height: 4,
+                    )
                   ],
                 ),
               ),
@@ -287,4 +404,9 @@ class _LPRViewScreenState extends State<LPRViewScreen> {
       ),
     );
   }
+}
+
+class LprDataModel {
+  String? type, unit, value;
+  LprDataModel({this.type, this.unit, this.value});
 }
