@@ -174,23 +174,26 @@ class _SingleDelegateCardState extends State<SingleDelegateCard> {
             InkWell(
               onTap: ()async {
                 //debugPrint("VESSEL ID DELEGATE SCREEN 2 - ${widget.vesselID}");
+                if(delegates!.status != 'Removed' && delegates!.status != 'Rejected')
+                  {
+                    var result = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              UpdateDelegateAccessScreen(
+                                vesselID: widget.vesselID,
+                                delegates: delegates,
 
-                var result = await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          UpdateDelegateAccessScreen(
-                            vesselID: widget.vesselID,
-                              delegates: delegates,
+                              )),
+                    );
 
-                          )),
-                );
-
-                if (result != null) {
-                  if (result) {
-                    widget.onTap!.call();
+                    if (result != null) {
+                      if (result) {
+                        widget.onTap!.call();
+                      }
+                    }
                   }
-                }
+
               },
               child: Container(
                 alignment:
