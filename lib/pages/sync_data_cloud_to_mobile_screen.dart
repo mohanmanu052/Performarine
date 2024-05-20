@@ -632,7 +632,7 @@ class _SyncDataCloudToMobileScreenState
           }
           }
 
-         if(value.delegateVessels != null && value.delegateVessels!.isNotEmpty)
+        /* if(value.delegateVessels != null && value.delegateVessels!.isNotEmpty)
            {
              /// Adding Delegate Vessel Details into Database
              for (int i = 0; i < value.delegateVessels!.length; i++) {
@@ -810,7 +810,7 @@ class _SyncDataCloudToMobileScreenState
                  await _databaseService.insertVessel(vesselData);
                }
              }
-           }
+           }*/
 
           Future.delayed(Duration(seconds: 1), () {
             setState(() {
