@@ -410,6 +410,8 @@ class _SyncDataCloudToMobileScreenState
           Utils.customPrint('LENGTH: ${value.vessels!.length}');
           CustomLogger().logWithFile(Level.info, "LENGTH: ${value.vessels!.length} -> $page");
           for (int i = 0; i < value.vessels!.length; i++) {
+            Utils.customPrint('SYNC FROM CLOUD CREATED BY ID : ${value.vessels![i].createdBy}');
+            Utils.customPrint('SYNC FROM CLOUD USER ID: ${commonProvider.loginModel!.userId}');
             if (value.vessels![i].name == 'rrrrr 12') {
               Utils.customPrint('RRRRR 12 VESSEL DATA: ${value.vessels![i].toJson()}');
               CustomLogger().logWithFile(Level.info, "RRRRR 12 VESSEL DATA: ${value.vessels![i].toJson()} -> $page");

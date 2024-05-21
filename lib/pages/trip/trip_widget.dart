@@ -974,104 +974,112 @@ class _TripWidgetState extends State<TripWidget> {
         9989, 'Uploading vessel details...', '', platformChannelSpecifics,
         payload: 'item x');
 
-    if (!vesselIsSync) {
-      CreateVessel? vesselData = await _databaseService
-          .getVesselFromVesselID((widget.tripList!.vesselId.toString()));
+    CreateVessel? vesselData = await _databaseService
+        .getVesselFromVesselID((widget.tripList!.vesselId.toString()));
 
-      Utils.customPrint('VESSEL DATA ${vesselData!.id}');
-      Utils.customPrint('VESSEL DATA ${vesselData.name}');
-      Utils.customPrint('VESSEL DATA CREATED BY ${vesselData.createdBy}');
-      Utils.customPrint('VESSEL DATA CREATED BY ${vesselData.updatedBy}');
-      CustomLogger().logWithFile(Level.info, "VESSEL DATA ${vesselData.id} -> $page");
+    if(vesselData!.createdBy == commonProvider.loginModel!.userId)
+      {
+        if (!vesselIsSync) {
+          Utils.customPrint('VESSEL DATA ${vesselData.id}');
+          Utils.customPrint('VESSEL DATA ${vesselData.name}');
+          Utils.customPrint('VESSEL DATA CREATED BY ${vesselData.createdBy}');
+          Utils.customPrint('VESSEL DATA CREATED BY ${vesselData.updatedBy}');
+          CustomLogger().logWithFile(Level.info, "VESSEL DATA ${vesselData.id} -> $page");
 
-      commonProvider.addVesselRequestModel = CreateVessel();
-      commonProvider.addVesselRequestModel!.id = vesselData.id;
-      commonProvider.addVesselRequestModel!.name = vesselData.name;
-      commonProvider.addVesselRequestModel!.model = vesselData.model;
-      commonProvider.addVesselRequestModel!.builderName =
-          vesselData.builderName;
-      commonProvider.addVesselRequestModel!.regNumber = vesselData.regNumber;
-      commonProvider.addVesselRequestModel!.mMSI = vesselData.mMSI;
-      commonProvider.addVesselRequestModel!.engineType = vesselData.engineType;
-      commonProvider.addVesselRequestModel!.fuelCapacity =
-          vesselData.fuelCapacity;
-      commonProvider.addVesselRequestModel!.weight = vesselData.weight;
-      commonProvider.addVesselRequestModel!.freeBoard = vesselData.freeBoard;
-      commonProvider.addVesselRequestModel!.lengthOverall =
-          vesselData.lengthOverall;
-      commonProvider.addVesselRequestModel!.beam = vesselData.beam;
-      commonProvider.addVesselRequestModel!.draft = vesselData.draft;
-      commonProvider.addVesselRequestModel!.vesselSize = vesselData.vesselSize;
-      commonProvider.addVesselRequestModel!.capacity = vesselData.capacity;
-      commonProvider.addVesselRequestModel!.builtYear = vesselData.builtYear;
-      commonProvider.addVesselRequestModel!.createdAt = vesselData.createdAt;
-      commonProvider.addVesselRequestModel!.vesselStatus =
-          vesselData.vesselStatus;
-      commonProvider.addVesselRequestModel!.batteryCapacity =
-          vesselData.batteryCapacity;
-      commonProvider.addVesselRequestModel!.hullType =
-          vesselData.hullType;
-      commonProvider.addVesselRequestModel!.createdBy = vesselData.createdBy;
-      commonProvider.addVesselRequestModel!.updatedBy = vesselData.updatedBy;
 
-      if (vesselData.imageURLs != null && vesselData.imageURLs!.isNotEmpty) {
-        if (vesselData.imageURLs!.startsWith("https")) {
-          commonProvider.addVesselRequestModel!.selectedImages = [];
-        } else {
-          finalSelectedFiles.add(File(vesselData.imageURLs!));
-          commonProvider.addVesselRequestModel!.selectedImages =
-              finalSelectedFiles;
-        }
+          Utils.customPrint('VESSEL DATA SELF USER ${vesselData.id}');
+          Utils.customPrint('VESSEL DATA SELF USER ${vesselData.createdBy}');
 
-        Utils.customPrint('VESSEL Data ${File(vesselData.imageURLs!)}');
-        CustomLogger().logWithFile(Level.info, "VESSEL Data ${File(vesselData.imageURLs!)} -> $page");
-      } else {
-        commonProvider.addVesselRequestModel!.selectedImages = [];
-      }
+          commonProvider.addVesselRequestModel = CreateVessel();
+          commonProvider.addVesselRequestModel!.id = vesselData.id;
+          commonProvider.addVesselRequestModel!.name = vesselData.name;
+          commonProvider.addVesselRequestModel!.model = vesselData.model;
+          commonProvider.addVesselRequestModel!.builderName =
+              vesselData.builderName;
+          commonProvider.addVesselRequestModel!.regNumber = vesselData.regNumber;
+          commonProvider.addVesselRequestModel!.mMSI = vesselData.mMSI;
+          commonProvider.addVesselRequestModel!.engineType = vesselData.engineType;
+          commonProvider.addVesselRequestModel!.fuelCapacity =
+              vesselData.fuelCapacity;
+          commonProvider.addVesselRequestModel!.weight = vesselData.weight;
+          commonProvider.addVesselRequestModel!.freeBoard = vesselData.freeBoard;
+          commonProvider.addVesselRequestModel!.lengthOverall =
+              vesselData.lengthOverall;
+          commonProvider.addVesselRequestModel!.beam = vesselData.beam;
+          commonProvider.addVesselRequestModel!.draft = vesselData.draft;
+          commonProvider.addVesselRequestModel!.vesselSize = vesselData.vesselSize;
+          commonProvider.addVesselRequestModel!.capacity = vesselData.capacity;
+          commonProvider.addVesselRequestModel!.builtYear = vesselData.builtYear;
+          commonProvider.addVesselRequestModel!.createdAt = vesselData.createdAt;
+          commonProvider.addVesselRequestModel!.vesselStatus =
+              vesselData.vesselStatus;
+          commonProvider.addVesselRequestModel!.batteryCapacity =
+              vesselData.batteryCapacity;
+          commonProvider.addVesselRequestModel!.hullType =
+              vesselData.hullType;
+          commonProvider.addVesselRequestModel!.createdBy = vesselData.createdBy;
+          commonProvider.addVesselRequestModel!.updatedBy = vesselData.updatedBy;
 
-      Utils.customPrint(
-          'VESSEL IMAGE URL ${File(commonProvider.addVesselRequestModel!.selectedImages!.toString())}');
-      CustomLogger().logWithFile(Level.info, "VESSEL IMAGE URL ${File(commonProvider.addVesselRequestModel!.selectedImages!.toString())}-> $page");
+          if (vesselData.imageURLs != null && vesselData.imageURLs!.isNotEmpty) {
+            if (vesselData.imageURLs!.startsWith("https")) {
+              commonProvider.addVesselRequestModel!.selectedImages = [];
+            } else {
+              finalSelectedFiles.add(File(vesselData.imageURLs!));
+              commonProvider.addVesselRequestModel!.selectedImages =
+                  finalSelectedFiles;
+            }
 
-      commonProvider
-          .addVessel(
-          context,
-          commonProvider.addVesselRequestModel,
-          commonProvider.loginModel!.userId!,
-          commonProvider.loginModel!.token!,
-          widget.scaffoldKey!)
-          .then((value) async {
-        if (value != null) {
-          if (value.status!) {
-
-            Utils.customPrint("Add Vessel R ${value.status}");
-            CustomLogger().logWithFile(Level.info, "Add Vessel R ${value.status}-> $page");
-
-            _databaseService.updateIsSyncStatus(
-                1, widget.tripList!.vesselId.toString());
-
-            startSensorFunctionality(widget.tripList!);
+            Utils.customPrint('VESSEL Data ${File(vesselData.imageURLs!)}');
+            CustomLogger().logWithFile(Level.info, "VESSEL Data ${File(vesselData.imageURLs!)} -> $page");
           } else {
-            commonProvider.updateTripUploadingStatus(false);
-            await cancelOnGoingProgressNotification(widget.tripList!.id!);
-            showFailedNoti(widget.tripList!.id!);
-            setState(() {
-              isTripUploaded = false;
-            });
+            commonProvider.addVesselRequestModel!.selectedImages = [];
           }
-        } else {
-          commonProvider.updateTripUploadingStatus(false);
-          await cancelOnGoingProgressNotification(widget.tripList!.id!);
-          showFailedNoti(widget.tripList!.id!);
-          setState(() {
-            isTripUploaded = false;
+
+          Utils.customPrint(
+              'VESSEL IMAGE URL ${File(commonProvider.addVesselRequestModel!.selectedImages!.toString())}');
+          CustomLogger().logWithFile(Level.info, "VESSEL IMAGE URL ${File(commonProvider.addVesselRequestModel!.selectedImages!.toString())}-> $page");
+
+          commonProvider
+              .addVessel(
+              context,
+              commonProvider.addVesselRequestModel,
+              commonProvider.loginModel!.userId!,
+              commonProvider.loginModel!.token!,
+              widget.scaffoldKey!)
+              .then((value) async {
+            if (value != null) {
+              if (value.status!) {
+
+                Utils.customPrint("Add Vessel R ${value.status}");
+                CustomLogger().logWithFile(Level.info, "Add Vessel R ${value.status}-> $page");
+
+                _databaseService.updateIsSyncStatus(
+                    1, widget.tripList!.vesselId.toString());
+
+                startSensorFunctionality(widget.tripList!);
+              } else {
+                commonProvider.updateTripUploadingStatus(false);
+                await cancelOnGoingProgressNotification(widget.tripList!.id!);
+                showFailedNoti(widget.tripList!.id!);
+                setState(() {
+                  isTripUploaded = false;
+                });
+              }
+            } else {
+              commonProvider.updateTripUploadingStatus(false);
+              await cancelOnGoingProgressNotification(widget.tripList!.id!);
+              showFailedNoti(widget.tripList!.id!);
+              setState(() {
+                isTripUploaded = false;
+              });
+            }
           });
         }
-      });
-    } else {
-      setState(() {
+      }
+    else {
+      /*setState(() {
         isTripUploaded = false;
-      });
+      });*/
       startSensorFunctionality(widget.tripList!);
     }
   }

@@ -2566,55 +2566,58 @@ class _CustomDrawerState extends State<CustomDrawer> {
         CustomLogger().logWithFile(Level.info,
             "VESSEL SUCCESS MESSAGE ${getVesselFuture[i].imageURLs}' -> $page");
 
-        if (vesselSyncOrNot == 0) {
-          if (getVesselFuture[i].imageURLs != null &&
-              getVesselFuture[i].imageURLs!.isNotEmpty) {
-            if (getVesselFuture[i].imageURLs!.startsWith("https")) {
-              getVesselFuture[i].selectedImages = [];
-            } else {
-              getVesselFuture[i].selectedImages = [
-                File(getVesselFuture[i].imageURLs!)
-              ];
-            }
+        if(getVesselFuture[i].createdBy == commonProvider.loginModel!.userId)
+          {
+            if (vesselSyncOrNot == 0) {
+              if (getVesselFuture[i].imageURLs != null &&
+                  getVesselFuture[i].imageURLs!.isNotEmpty) {
+                if (getVesselFuture[i].imageURLs!.startsWith("https")) {
+                  getVesselFuture[i].selectedImages = [];
+                } else {
+                  getVesselFuture[i].selectedImages = [
+                    File(getVesselFuture[i].imageURLs!)
+                  ];
+                }
 
-            Utils.customPrint(
-                'VESSEL Data ${File(getVesselFuture[i].imageURLs!)}');
-            CustomLogger().logWithFile(Level.info,
-                "VESSEL Data ${File(getVesselFuture[i].imageURLs!)}' -> $page");
-          } else {
-            getVesselFuture[i].selectedImages = [];
-          }
+                Utils.customPrint(
+                    'VESSEL Data ${File(getVesselFuture[i].imageURLs!)}');
+                CustomLogger().logWithFile(Level.info,
+                    "VESSEL Data ${File(getVesselFuture[i].imageURLs!)}' -> $page");
+              } else {
+                getVesselFuture[i].selectedImages = [];
+              }
 
-          await commonProvider
-              .addVessel(
+              await commonProvider
+                  .addVessel(
                   context,
                   getVesselFuture[i],
                   commonProvider.loginModel!.userId!,
                   commonProvider.loginModel!.token!,
                   scaffoldKey,
                   calledFromSignOut: true)
-              .then((value) async {
-            if (value!.status!) {
-              await _databaseService.updateIsSyncStatus(
-                  1, getVesselFuture[i].id.toString());
-            } else {
-              setState(() {
-                vesselErrorOccurred = true;
+                  .then((value) async {
+                if (value!.status!) {
+                  await _databaseService.updateIsSyncStatus(
+                      1, getVesselFuture[i].id.toString());
+                } else {
+                  setState(() {
+                    vesselErrorOccurred = true;
+                  });
+                }
+              }).catchError((error) {
+                Utils.customPrint("ADD VESSEL ERROR $error");
+                CustomLogger()
+                    .logWithFile(Level.error, "ADD VESSEL ERROR $error' -> $page");
+                setState(() {
+                  vesselErrorOccurred = true;
+                });
               });
+            } else {
+              Utils.customPrint("VESSEL DATA NOT Uploaded");
+              CustomLogger()
+                  .logWithFile(Level.error, "VESSEL DATA NOT Uploaded -> $page");
             }
-          }).catchError((error) {
-            Utils.customPrint("ADD VESSEL ERROR $error");
-            CustomLogger()
-                .logWithFile(Level.error, "ADD VESSEL ERROR $error' -> $page");
-            setState(() {
-              vesselErrorOccurred = true;
-            });
-          });
-        } else {
-          Utils.customPrint("VESSEL DATA NOT Uploaded");
-          CustomLogger()
-              .logWithFile(Level.error, "VESSEL DATA NOT Uploaded -> $page");
-        }
+          }
       }
 
       Utils.customPrint("VESSEL DATA Uploaded");
