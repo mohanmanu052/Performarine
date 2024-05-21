@@ -25,7 +25,7 @@ class _LPRTripsDataState extends State<LPRTripsData> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
   List<String> sensorsList = ['Boat1', 'Boat2', 'Boat3',];
-  String dropdownValue = 'Boat1';
+  String? dropdownValue;
 
   final DatabaseService _databaseService = DatabaseService();
   CreateVessel? vesselData;
@@ -153,11 +153,11 @@ class _LPRTripsDataState extends State<LPRTripsData> {
                           hint: commonText(
                               text: 'Select Boat',
                               context: context,
-                              textSize:displayWidth(context) * 0.045,
+                              textSize:displayWidth(context) * 0.038,
                               textColor: Theme.of(context).brightness == Brightness.dark
                                   ? Colors.white
                                   : Colors.black,
-                              fontWeight: FontWeight.w600),
+                              fontWeight: FontWeight.w400),
                           onChanged: (String? newValue) {
                             setState(() {
                               dropdownValue = newValue!;
