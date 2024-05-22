@@ -1347,8 +1347,8 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                             labelStyle: TextStyle(
                                                 color: Colors.black54,
                                                 fontSize:
-                                                displayWidth(context) *
-                                                    0.032,
+                                                    displayWidth(context) *
+                                                        0.032,
                                                 fontFamily: outfit,
                                                 fontWeight: FontWeight.w400),
                                             filled: true,
@@ -1357,7 +1357,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                               borderSide: BorderSide(
                                                   color: Colors.blue.shade50),
                                               borderRadius:
-                                              BorderRadius.circular(14),
+                                                  BorderRadius.circular(14),
                                             ),
                                             focusedBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
@@ -4880,12 +4880,12 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
       if (autoConnectIsScanningStreamSubscription != null)
         autoConnectIsScanningStreamSubscription!.cancel();
 
-      if (!FlutterBluePlus.isScanningNow) {
-        FlutterBluePlus.startScan(timeout: Duration(seconds: 4))
-            .onError((error, stackTrace) {
-          Utils.customPrint('EDEDED: $error');
-        });
-      }
+      //if (!FlutterBluePlus.isScanningNow) {
+      FlutterBluePlus.startScan(timeout: Duration(seconds: 4))
+          .onError((error, stackTrace) {
+        Utils.customPrint('EDEDED: $error');
+      });
+      //}
 
       return showDialog(
           barrierDismissible: false,
@@ -5054,14 +5054,33 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                 onTap: () {
                                   Utils.customPrint("Tapped on scan button");
 
-                                  if (mounted) {
-                                    /*setDialogState(() {
-                                   isScanningBluetooth = true;
-                                 });*/
+                                  FlutterBluePlus.isScanning.listen((event) {
+                                    if (event) {
+                                      if (mounted) {
+                                        setDialogState(() {
+                                          isScanningBluetooth = true;
+                                        });
+                                      }
+                                    }
+                                    else
+                                      {
+                                        if (mounted) {
+                                          setDialogState(() {
+                                            isScanningBluetooth = false;
+                                          });
+                                        }
+                                      }
+                                  });
+
+                                  if (!FlutterBluePlus.isScanningNow) {
+                                    FlutterBluePlus.startScan(
+                                        timeout: const Duration(seconds: 2));
                                   }
 
-                                  FlutterBluePlus.startScan(
-                                      timeout: const Duration(seconds: 2));
+                                  if (FlutterBluePlus.isScanningNow) {
+                                    debugPrint(
+                                        "ALREADY SCANNING PLEASE WAIT !!!");
+                                  }
 
                                   if (mounted) {
                                     Future.delayed(Duration(seconds: 2), () {
