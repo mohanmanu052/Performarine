@@ -1950,89 +1950,92 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
     commonProvider.init();
 
-    if (!vesselIsSync) {
-      CreateVessel? vesselData = await _databaseService
-          .getVesselFromVesselID((tripData!.vesselId.toString()));
+    CreateVessel? vesselData = await _databaseService
+        .getVesselFromVesselID((tripData!.vesselId.toString()));
 
-      Utils.customPrint('VESSEL DATA ${vesselData!.id}');
+   if(vesselData!.createdBy == commonProvider.loginModel!.userId)
+     {
+       if (!vesselIsSync) {
+         Utils.customPrint('VESSEL DATA ${vesselData!.id}');
 
-      commonProvider.addVesselRequestModel = CreateVessel();
-      commonProvider.addVesselRequestModel!.id = vesselData.id;
-      commonProvider.addVesselRequestModel!.name = vesselData.name;
-      commonProvider.addVesselRequestModel!.model = vesselData.model;
-      commonProvider.addVesselRequestModel!.builderName =
-          vesselData.builderName;
-      commonProvider.addVesselRequestModel!.regNumber = vesselData.regNumber;
-      commonProvider.addVesselRequestModel!.mMSI = vesselData.mMSI;
-      commonProvider.addVesselRequestModel!.engineType = vesselData.engineType;
-      commonProvider.addVesselRequestModel!.fuelCapacity =
-          vesselData.fuelCapacity;
-      commonProvider.addVesselRequestModel!.weight = vesselData.weight;
-      commonProvider.addVesselRequestModel!.freeBoard = vesselData.freeBoard;
-      commonProvider.addVesselRequestModel!.lengthOverall =
-          vesselData.lengthOverall;
-      commonProvider.addVesselRequestModel!.beam = vesselData.beam;
-      commonProvider.addVesselRequestModel!.draft = vesselData.draft;
-      commonProvider.addVesselRequestModel!.vesselSize = vesselData.vesselSize;
-      commonProvider.addVesselRequestModel!.capacity = vesselData.capacity;
-      commonProvider.addVesselRequestModel!.builtYear = vesselData.builtYear;
-      commonProvider.addVesselRequestModel!.createdAt = vesselData.createdAt;
-      commonProvider.addVesselRequestModel!.vesselStatus =
-          vesselData.vesselStatus;
-      commonProvider.addVesselRequestModel!.batteryCapacity =
-          vesselData.batteryCapacity;
-      commonProvider.addVesselRequestModel!.createdBy = vesselData.createdBy;
-      commonProvider.addVesselRequestModel!.updatedBy = vesselData.updatedBy;
-      /*commonProvider.addVesselRequestModel!.displacement =
+         commonProvider.addVesselRequestModel = CreateVessel();
+         commonProvider.addVesselRequestModel!.id = vesselData.id;
+         commonProvider.addVesselRequestModel!.name = vesselData.name;
+         commonProvider.addVesselRequestModel!.model = vesselData.model;
+         commonProvider.addVesselRequestModel!.builderName =
+             vesselData.builderName;
+         commonProvider.addVesselRequestModel!.regNumber = vesselData.regNumber;
+         commonProvider.addVesselRequestModel!.mMSI = vesselData.mMSI;
+         commonProvider.addVesselRequestModel!.engineType = vesselData.engineType;
+         commonProvider.addVesselRequestModel!.fuelCapacity =
+             vesselData.fuelCapacity;
+         commonProvider.addVesselRequestModel!.weight = vesselData.weight;
+         commonProvider.addVesselRequestModel!.freeBoard = vesselData.freeBoard;
+         commonProvider.addVesselRequestModel!.lengthOverall =
+             vesselData.lengthOverall;
+         commonProvider.addVesselRequestModel!.beam = vesselData.beam;
+         commonProvider.addVesselRequestModel!.draft = vesselData.draft;
+         commonProvider.addVesselRequestModel!.vesselSize = vesselData.vesselSize;
+         commonProvider.addVesselRequestModel!.capacity = vesselData.capacity;
+         commonProvider.addVesselRequestModel!.builtYear = vesselData.builtYear;
+         commonProvider.addVesselRequestModel!.createdAt = vesselData.createdAt;
+         commonProvider.addVesselRequestModel!.vesselStatus =
+             vesselData.vesselStatus;
+         commonProvider.addVesselRequestModel!.batteryCapacity =
+             vesselData.batteryCapacity;
+         commonProvider.addVesselRequestModel!.createdBy = vesselData.createdBy;
+         commonProvider.addVesselRequestModel!.updatedBy = vesselData.updatedBy;
+         /*commonProvider.addVesselRequestModel!.displacement =
           vesselData.displacement;*/
 
-      if (vesselData.imageURLs != null && vesselData.imageURLs!.isNotEmpty) {
-        finalSelectedFiles.add(File(vesselData.imageURLs!));
-        commonProvider.addVesselRequestModel!.selectedImages =
-            finalSelectedFiles;
+         if (vesselData.imageURLs != null && vesselData.imageURLs!.isNotEmpty) {
+           finalSelectedFiles.add(File(vesselData.imageURLs!));
+           commonProvider.addVesselRequestModel!.selectedImages =
+               finalSelectedFiles;
 
-        Utils.customPrint('VESSEL Data ${File(vesselData.imageURLs!)}');
-      } else {
-        commonProvider.addVesselRequestModel!.selectedImages = [];
-      }
+           Utils.customPrint('VESSEL Data ${File(vesselData.imageURLs!)}');
+         } else {
+           commonProvider.addVesselRequestModel!.selectedImages = [];
+         }
 
-      commonProvider
-          .addVessel(
-          context,
-          commonProvider.addVesselRequestModel,
-          commonProvider.loginModel!.userId!,
-          commonProvider.loginModel!.token!,
-          scaffoldKey)
-          .then((value) async {
-        if (value != null) {
-          if (value.status!) {
-            await _databaseService.updateIsSyncStatus(
-                1, tripData!.vesselId.toString());
+         commonProvider
+             .addVessel(
+             context,
+             commonProvider.addVesselRequestModel,
+             commonProvider.loginModel!.userId!,
+             commonProvider.loginModel!.token!,
+             scaffoldKey)
+             .then((value) async {
+           if (value != null) {
+             if (value.status!) {
+               await _databaseService.updateIsSyncStatus(
+                   1, tripData!.vesselId.toString());
 
-            startSensorFunctionality(tripData!);
-          } else {
-            commonProvider.updateTripUploadingStatus(false);
-            Utils.customPrint('UPLOADEDDDD: ${value.message}');
-            await cancelOnGoingProgressNotification(tripData!.id!);
-            showFailedNoti(tripData!.id!);
-            if (mounted) {
-              setState(() {
-                isTripUploaded = false;
-              });
-            }
-          }
-        } else {
-          commonProvider.updateTripUploadingStatus(false);
-          await cancelOnGoingProgressNotification(tripData!.id!);
-          showFailedNoti(tripData!.id!);
-          if (mounted) {
-            setState(() {
-              isTripUploaded = false;
-            });
-          }
-        }
-      });
-    } else {
+               startSensorFunctionality(tripData!);
+             } else {
+               commonProvider.updateTripUploadingStatus(false);
+               Utils.customPrint('UPLOADEDDDD: ${value.message}');
+               await cancelOnGoingProgressNotification(tripData!.id!);
+               showFailedNoti(tripData!.id!);
+               if (mounted) {
+                 setState(() {
+                   isTripUploaded = false;
+                 });
+               }
+             }
+           } else {
+             commonProvider.updateTripUploadingStatus(false);
+             await cancelOnGoingProgressNotification(tripData!.id!);
+             showFailedNoti(tripData!.id!);
+             if (mounted) {
+               setState(() {
+                 isTripUploaded = false;
+               });
+             }
+           }
+         });
+       }
+     }else {
       if (mounted) {
         setState(() {
           isTripUploaded = false;

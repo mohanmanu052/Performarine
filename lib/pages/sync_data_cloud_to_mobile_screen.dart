@@ -409,7 +409,10 @@ class _SyncDataCloudToMobileScreenState
 
           Utils.customPrint('LENGTH: ${value.vessels!.length}');
           CustomLogger().logWithFile(Level.info, "LENGTH: ${value.vessels!.length} -> $page");
+
           for (int i = 0; i < value.vessels!.length; i++) {
+            Utils.customPrint('SYNC FROM CLOUD CREATED BY ID : ${value.vessels![i].createdBy}');
+            Utils.customPrint('SYNC FROM CLOUD USER ID: ${commonProvider.loginModel!.userId}');
             if (value.vessels![i].name == 'rrrrr 12') {
               Utils.customPrint('RRRRR 12 VESSEL DATA: ${value.vessels![i].toJson()}');
               CustomLogger().logWithFile(Level.info, "RRRRR 12 VESSEL DATA: ${value.vessels![i].toJson()} -> $page");
@@ -603,7 +606,10 @@ class _SyncDataCloudToMobileScreenState
 
             if (vesselData != null) {
 
-              if(value.trips![i].createdBy==commonProvider.loginModel!.userId){
+              /*if(value.trips![i].createdBy == commonProvider.loginModel!.userId){
+
+            }*/
+
               Trip tripData = Trip(
                   id: value.trips![i].id,
                   vesselId: value.trips![i].vesselId,
@@ -628,189 +634,8 @@ class _SyncDataCloudToMobileScreenState
               Utils.customPrint('USER CONFIG DATA JSON ${tripData.toJson()}');
               CustomLogger().logWithFile(Level.info, "USER CONFIG DATA JSON ${tripData.toJson()} -> $page");
               await _databaseService.insertTrip(tripData);
-            }
           }
           }
-
-         if(value.delegateVessels != null && value.delegateVessels!.isNotEmpty)
-           {
-             /// Adding Delegate Vessel Details into Database
-             for (int i = 0; i < value.delegateVessels!.length; i++) {
-
-               Utils.customPrint(
-                   'DELEGATE USER CONFIG DATA CLOUD IMAGE 1212 ${value.delegateVessels![i].imageURLs!}');
-               CustomLogger().logWithFile(Level.info, "USER CONFIG DATA CLOUD IMAGE 1212 ${value.delegateVessels![i].imageURLs!} -> $page");
-               String cloudImage;
-               if (value.delegateVessels![i].imageURLs!.length > 1) {
-                 cloudImage = value.delegateVessels![i].imageURLs![0];
-               } else {
-                 cloudImage = value.delegateVessels![i].imageURLs == []
-                     ? ''
-                     : value.delegateVessels![i].imageURLs
-                     .toString()
-                     .replaceAll("[", "")
-                     .replaceAll("]", "");
-
-                 Utils.customPrint(
-                     'USER CONFIG DATA CLOUD IMAGE 1212 $cloudImage');
-                 CustomLogger().logWithFile(Level.info, "USER CONFIG DATA CLOUD IMAGE 1212 $cloudImage -> $page");
-               }
-
-               var downloadImageFromCloud;
-               var downloadedCompressImageFile;
-               if (cloudImage.isNotEmpty) {
-                 downloadImageFromCloud = await DownloadTrip()
-                     .downloadImageFromCloud(context, scaffoldKey, cloudImage);
-
-                 Utils.customPrint(
-                     'USER CONFIG DATA CLOUD IMAGE $downloadImageFromCloud');
-                 CustomLogger().logWithFile(Level.info, "USER CONFIG DATA CLOUD IMAGE $downloadImageFromCloud -> $page");
-               } else {
-                 downloadImageFromCloud = '';
-               }
-
-               File downloadedFile = File(downloadImageFromCloud);
-
-               Utils.customPrint('DOWNLOADED FILE PATH ${downloadedFile.path}');
-               Utils.customPrint(
-                   'DOWNLOADED FILE EXIST SYNC ${downloadedFile.existsSync()}');
-
-               CustomLogger().logWithFile(Level.info, "DOWNLOADED FILE PATH ${downloadedFile.path} -> $page");
-               CustomLogger().logWithFile(Level.info, "DOWNLOADED FILE EXIST SYNC ${downloadedFile.existsSync()} -> $page");
-
-               bool doesExist = await downloadedFile.exists();
-
-               /// 2MB
-               if (doesExist) {
-                 if (downloadedFile.lengthSync() >= 2000000) {
-                   String targetPath = '${ourDirectory!.path}/vesselImages';
-
-                   Directory vesselDirectory = Directory(targetPath);
-
-                   if (!vesselDirectory.existsSync()) {
-                     vesselDirectory.createSync();
-                   }
-
-                   FlutterImageCompress.validator.ignoreCheckExtName = true;
-
-                   var result = await FlutterImageCompress.compressAndGetFile(
-                     downloadedFile.absolute.path,
-                     '$targetPath/${downloadedFile.path.split('/').last}',
-                     quality: 50,
-                   );
-
-                   downloadedCompressImageFile = result!.path;
-
-                   Utils.customPrint(downloadedFile.lengthSync().toString());
-                   Utils.customPrint(result.lengthSync().toString());
-
-                   Utils.customPrint("RESULT N PATH ${result.path}");
-                   Utils.customPrint(
-                       "RESULT N PATH ${downloadedCompressImageFile}");
-
-                   CustomLogger().logWithFile(Level.info, "${downloadedFile.lengthSync().toString()} -> $page");
-                   CustomLogger().logWithFile(Level.info, "${result.lengthSync().toString()} -> $page");
-                   CustomLogger().logWithFile(Level.info, "RESULT N PATH ${result.path} -> $page");
-                   CustomLogger().logWithFile(Level.info, "RESULT N PATH ${downloadedCompressImageFile} -> $page");
-
-                   downloadedFile.deleteSync();
-                 } else {
-                   downloadedCompressImageFile = downloadedFile.path;
-                 }
-               } else {
-                 bool doesExist = await downloadedFile.exists();
-                 Utils.customPrint('DOWNLOADED FILE EXIST SYNC @@@ $doesExist');
-                 CustomLogger().logWithFile(Level.info, "DOWNLOADED FILE EXIST SYNC @@@ $doesExist -> $page");
-                 if (doesExist) {
-                   if (downloadedFile.lengthSync() >= 2000000) {
-                     String targetPath = '${ourDirectory!.path}/vesselImages';
-
-                     Directory vesselDirectory = Directory(targetPath);
-
-                     if (!vesselDirectory.existsSync()) {
-                       vesselDirectory.createSync();
-                     }
-
-                     FlutterImageCompress.validator.ignoreCheckExtName = true;
-
-                     var result = await FlutterImageCompress.compressAndGetFile(
-                       downloadedFile.absolute.path,
-                       '$targetPath/${downloadedFile.path.split('/').last}',
-                       quality: 50,
-                     );
-
-                     downloadedCompressImageFile = result!.path;
-
-                     Utils.customPrint(downloadedFile.lengthSync().toString());
-                     Utils.customPrint(result.lengthSync().toString());
-
-                     Utils.customPrint("RESULT N PATH ${result.path}");
-                     Utils.customPrint(
-                         "RESULT N PATH ${downloadedCompressImageFile}");
-
-                     CustomLogger().logWithFile(Level.info, "${downloadedFile.lengthSync().toString()} -> $page");
-                     CustomLogger().logWithFile(Level.info, "${result.lengthSync().toString()} -> $page");
-                     CustomLogger().logWithFile(Level.info, "RESULT N PATH ${result.path} -> $page");
-                     CustomLogger().logWithFile(Level.info, "RESULT N PATH ${downloadedCompressImageFile} -> $page");
-
-                     downloadedFile.deleteSync();
-                   } else {
-                     downloadedCompressImageFile = downloadedFile.path;
-                   }
-                 }
-               }
-
-               Utils.customPrint('FINAL IMAGEEEE: $downloadedCompressImageFile');
-               Utils.customPrint('DELEGATE FINAL IMAGEEEE HULL TYPE : ${value.delegateVessels![i].hullShape.toString()}');
-
-               CustomLogger().logWithFile(Level.info, "FINAL IMAGEEEE: $downloadedCompressImageFile -> $page");
-
-               CreateVessel vesselData = CreateVessel(
-                   id: value.delegateVessels![i].id,
-                   name: value.delegateVessels![i].name,
-                   builderName: value.delegateVessels![i].builderName,
-                   model: value.delegateVessels![i].model,
-                   regNumber: value.delegateVessels![i].regNumber,
-                   mMSI: value.delegateVessels![i].mMSI,
-                   engineType: value.delegateVessels![i].engineType,
-                   fuelCapacity: value.delegateVessels![i].fuelCapacity.toString(),
-                   batteryCapacity:value.delegateVessels![i].batteryCapacity.toString(),
-                   weight: value.delegateVessels![i].weight,
-                   freeBoard: value.delegateVessels![i].freeBoard!,
-                   lengthOverall: value.delegateVessels![i].lengthOverall!,
-                   beam: value.delegateVessels![i].beam!,
-                   draft: value.delegateVessels![i].depth!,
-                   vesselSize: value.delegateVessels![i].vesselSize.toString(),
-                   capacity: int.parse(value.delegateVessels![i].capacity ?? '0'),
-                   builtYear: int.parse(value.delegateVessels![i].builtYear.toString()),
-                   vesselStatus: value.delegateVessels![i].vesselStatus == 2
-                       ? 0
-                       : int.parse(value.delegateVessels![i].vesselStatus.toString()),
-                   imageURLs: downloadedCompressImageFile,
-                   createdAt: value.delegateVessels![i].createdAt.toString(),
-                   createdBy: value.delegateVessels![i].createdBy.toString(),
-                   updatedAt: value.delegateVessels![i].updatedAt.toString(),
-                   isSync: 1,
-                   updatedBy: value.delegateVessels![i].updatedBy.toString(),
-                   isCloud: 1,
-                   hullType: value.delegateVessels![i].hullShape != null ? int.parse(value.delegateVessels![i].hullShape.toString()) : 0
-
-
-               );
-
-               var vesselExist = await _databaseService.vesselsExistInCloud(value.delegateVessels![i].id!);
-
-               Utils.customPrint('USER CONFIG DATA CLOUD $vesselExist');
-               Utils.customPrint('DELEGATE JSON DATA  $vesselData');
-               CustomLogger().logWithFile(Level.info, "USER CONFIG DATA CLOUD $vesselExist -> $page");
-
-               if (vesselExist) {
-                 await _databaseService.updateVessel(vesselData);
-               } else {
-                 await _databaseService.insertVessel(vesselData);
-               }
-             }
-           }
 
           Future.delayed(Duration(seconds: 1), () {
             setState(() {

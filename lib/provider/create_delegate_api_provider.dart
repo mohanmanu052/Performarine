@@ -52,7 +52,7 @@ class CreateDelegateApiProvider with ChangeNotifier
       if (response.statusCode == HttpStatus.ok) {
         commonModel = CommonModel.fromJson(json.decode(response.body));
 
-        Utils.showSnackBar(scaffoldKey.currentContext!,
+        Utils.showSnackBar(context,
             scaffoldKey: scaffoldKey, message: commonModel!.message);
         return commonModel!;
       } else if (response.statusCode == HttpStatus.gatewayTimeout) {

@@ -844,9 +844,12 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                         });
                                       }
                                     }).catchError((e) {
-                                      setState(() {
-                                        isInviteDelegateBtnClicked = false;
-                                      });
+                                      if(mounted)
+                                        {
+                                          setState(() {
+                                            isInviteDelegateBtnClicked = false;
+                                          });
+                                        }
                                     });
                                   } else {
                                     Utils.showSnackBar(context,
