@@ -42,25 +42,21 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>This application requires bluetooth services to work</string>
+	<string>PerforMarine leverages Bluetooth technology to seamlessly connect and scan HyMarine devices, ensuring real-time tracking and monitoring of your vessels for an unmatched maritime experience.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>This application requires bluetooth services to work.</string>
-	<key>NSCalendarsUsageDescription</key>
-	<string>This application requires calender service to work</string>
+	<string>PerforMarine employs Bluetooth to effortlessly connect and scan HyMarine devices, enhancing your maritime operations.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Camera usage description</string>
+	<string>PerforMarine uses your camera to capture stunning images of your vessels, making it easy to add and update their information within the app.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Description</string>
+	<string>PerforMarine utilizes advanced location services to keep tabs on your vessel's position throughout your journey, ensuring a safe and efficient trip.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>This application requires location services to work</string>
+	<string>PerforMarine uses cutting-edge location services to track your vessel's location throughout your journey, providing peace of mind and enhanced safety.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This application requires location services to work</string>
+	<string>PerforMarine employs real-time location tracking to monitor your vessels, offering features like route optimization and continuous oversight for a smoother voyage.</string>
 	<key>NSMotionUsageDescription</key>
-	<string>This application requires Motion use to work</string>
+	<string>PerforMarine uses sophisticated motion sensors to monitor your vessels' speed and movement, delivering valuable data for comprehensive trip analysis.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This application requires Photo Library Access to work</string>
-	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>This application requires recognize speech service to work</string>
+	<string>PerforMarine grants you access to your photo library, allowing you to effortlessly store and manage stunning images of your vessels.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
     <key>NSAllowsArbitraryLoads</key>
@@ -71,7 +67,6 @@
     <string>YES</string>
 	<key>UIBackgroundModes</key>
 	<array>
-        <string>audio</string>
 		<string>fetch</string>
 		<string>location</string>
 		<string>processing</string>
