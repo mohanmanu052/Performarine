@@ -22,7 +22,7 @@ class MyDelegateInviteProvider with ChangeNotifier {
     MyDelegateInviteModel? myDelegateInviteModel;
     var headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
-      "x_access_token": '$accessToken',
+      "x-access-token": '$accessToken',
     };
 //Uri uri = Uri.parse("https://c150cdf6-9597-4e78-bc98-21578721804d.mock.pstmn.io/getDelegateData");
 
@@ -116,7 +116,7 @@ class MyDelegateInviteProvider with ChangeNotifier {
     var data;
     var headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
-      "x_access_token": '$accessToken',
+      "x-access-token": '$accessToken',
     };
     Uri uri = Uri.https(Urls.baseUrl, Urls.delegateAccessAcceptReject);
     var body = {

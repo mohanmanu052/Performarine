@@ -24,7 +24,7 @@ class FleetDetailsApiProvider with ChangeNotifier
 
     var headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
-      "x_access_token": '$accessToken',
+      "x-access-token": '$accessToken',
     };
 
     Uri uri = Uri.https(Urls.baseUrl, Urls.fleetDetails);
