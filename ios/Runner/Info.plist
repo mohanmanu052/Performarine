@@ -53,8 +53,12 @@
 	<string>PerforMarine uses cutting-edge location services to track your vessel's location throughout your trip.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>PerforMarine employs real-time location tracking to monitor your vessels while doing the trip, offering features like route optimization and continuous oversight for a smoother voyage.</string>
+    <key>NSCalendarsUsageDescription</key>
+    <string>This app requires access to your calendar to schedule and manage events.</string>
 	<key>NSMotionUsageDescription</key>
 	<string>PerforMarine uses sophisticated motion sensors to monitor your vessels while doing the trip' speed and movement, delivering valuable data for comprehensive trip analysis.</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>This app requires access to speech recognition to convert spoken words into text.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>PerforMarine grants you access to your photo library, allowing you to effortlessly store and manage stunning images of your vessels.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
