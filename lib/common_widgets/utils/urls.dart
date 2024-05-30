@@ -3,9 +3,9 @@ import 'package:performarine/pages/delegate/my_delegate_invites_screen.dart';
 class Urls {
   //Client Environment
 // static const String baseUrl = 'goeapidev.azurewebsites.net';
-  static const String baseUrl = 'performarineuat.azurewebsites.net';
+  //static const String baseUrl = 'performarineuat.azurewebsites.net';
 
- //static String baseUrl =  baseUrlVersion;
+ static String baseUrl =  baseUrlVersion;
 
 
   // Auth
