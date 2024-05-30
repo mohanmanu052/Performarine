@@ -42,9 +42,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>PerforMarine leverages Bluetooth technology to seamlessly connect and scan HyMarine devices, ensuring real-time tracking and monitoring of your  trips.</string>
+	<string>PerforMarine utilizes advanced Bluetooth technology to seamlessly connect with and scan HyMarine devices, ensuring real-time tracking and monitoring of your trips.</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>PerforMarine employs Bluetooth to effortlessly connect and scan HyMarine devices, enhancing your trip operations.</string>
+	<string>PerforMarine employs Bluetooth to effortlessly connect to and scan HyMarine devices, enhancing the efficiency of your trip operations.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>PerforMarine uses your camera to capture stunning images of your vessels, making it easy to add and update their information within the app.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
