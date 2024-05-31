@@ -27,7 +27,7 @@ class FleetDashboardApiProvider with ChangeNotifier
 
     var headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
-      "x_access_token": '$accessToken',
+      "x-access-token": '$accessToken',
     };
 
     Uri uri = Uri.https(Urls.baseUrl, Urls.fleetDashboardApi);
@@ -103,7 +103,7 @@ class FleetDashboardApiProvider with ChangeNotifier
       // Uri uri1 = Uri.https('goeapidev.azurewebsites.net/fleetmember');
       // var headers = {
       //   HttpHeaders.contentTypeHeader: 'application/json',
-      //   "x_access_token": '',
+      //   "x-access-token": '',
       // };
        response =
       await client.get(url,

@@ -23,7 +23,7 @@ class ManageDelegateApiProvider with ChangeNotifier
 
     var headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
-      "x_access_token": '$accessToken',
+      "x-access-token": '$accessToken',
     };
 
     debugPrint("MANAGE DELEGATE REQ BODY ${body}");
