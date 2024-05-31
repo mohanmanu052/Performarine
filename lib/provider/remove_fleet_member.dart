@@ -22,7 +22,7 @@ class RemoveFleetMember extends ChangeNotifier
 
     var headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
-      "x_access_token": '$accessToken',
+      "x-access-token": '$accessToken',
     };
 
     debugPrint("REMOVE FLEET MEMBER REQ BODY ${body}");
