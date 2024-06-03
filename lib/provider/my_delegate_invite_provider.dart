@@ -118,11 +118,16 @@ class MyDelegateInviteProvider with ChangeNotifier {
       HttpHeaders.contentTypeHeader: 'application/json',
       "x-access-token": '$accessToken',
     };
+
     Uri uri = Uri.https(Urls.baseUrl, Urls.delegateAccessAcceptReject);
     var body = {
       'verify': verifyToken,
       'flag': flag,
     };
+
+    debugPrint("uri ${uri.toString()}" );
+    debugPrint("Headers ${headers.toString()}" );
+    debugPrint("body ${body.toString()}" );
 
     try {
       final response =

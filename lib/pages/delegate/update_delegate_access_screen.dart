@@ -759,20 +759,23 @@ class _UpdateDelegateAccessScreenState
                                     }
                                   }
 
-                                  debugPrint("IF EXECUTED $globalStartTime");
+
                                   Map<String, dynamic>? body;
                                   if (selectedShareUpdate == "4") {
                                     body = {
                                       "delegateID": widget.delegates!.id,
-                                      "delegateAccessType": selectedShareUpdate,
+                                      "delegateAccessType": int.parse(selectedShareUpdate!),
                                       "fromDate": convertIntoUTCFormat(globalStartDate, globalStartTime),
                                       "toDate": convertIntoUTCFormat(
                                           globalEndDate, globalEndTime)
                                     };
+                                    debugPrint("IF EXECUTED ${convertIntoUTCFormat(globalStartDate, globalStartTime)}");
+                                    debugPrint("IF EXECUTED ${convertIntoUTCFormat(
+                                        globalEndDate, globalEndTime)}");
                                   } else {
                                     body = {
                                       "delegateID": widget.delegates!.id,
-                                      "delegateAccessType": selectedShareUpdate,
+                                      "delegateAccessType": int.parse(selectedShareUpdate!),
                                     };
                                   }
 

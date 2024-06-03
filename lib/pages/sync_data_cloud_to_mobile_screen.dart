@@ -628,6 +628,7 @@ class _SyncDataCloudToMobileScreenState
                   time: value.trips![i].duration,
                   distance: value.trips![i].distance.toString(),
                   speed: value.trips![i].speed.toString(),
+                  name:value.trips![i].tripName.toString() ,
                   avgSpeed: value.trips![i].avgSpeed.toString(),
                   isCloud: 1);
 

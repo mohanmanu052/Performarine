@@ -211,6 +211,7 @@ class Trips {
   String? updatedBy;
   String? updatedAt;
   String? filePath;
+  String? tripName;
   String? syncCreatedAt;
   String? syncUpdatedAt;
   String? duration;
@@ -236,6 +237,7 @@ class Trips {
       this.updatedBy,
       this.updatedAt,
       this.filePath,
+      this.tripName,
       this.syncCreatedAt,
       this.syncUpdatedAt,
       this.duration,
@@ -268,6 +270,7 @@ class Trips {
     updatedBy = json['updatedBy'];
     updatedAt = json['updatedAt'];
     filePath = json['filePath'];
+    tripName = json['tripName'];
     syncCreatedAt = json['syncCreatedAt'];
     syncUpdatedAt = json['syncUpdatedAt'];
     duration = json['duration'];
@@ -299,6 +302,7 @@ class Trips {
     data['updatedBy'] = this.updatedBy;
     data['updatedAt'] = this.updatedAt;
     data['filePath'] = this.filePath;
+    data['tripName'] = this.tripName;
     data['syncCreatedAt'] = this.syncCreatedAt;
     data['syncUpdatedAt'] = this.syncUpdatedAt;
     data['duration'] = this.duration;
