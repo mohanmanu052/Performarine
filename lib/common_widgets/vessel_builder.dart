@@ -32,29 +32,18 @@ class VesselBuilder extends StatefulWidget {
   State<VesselBuilder> createState() => _VesselBuilderState();
 }
 
-
-
 class _VesselBuilderState extends State<VesselBuilder> {
-
-
-  
-
-
-
   String page = "vessel_builder";
   final controller = ScreenshotController();
 
-
-    @override
+  @override
   void initState() {
     super.initState();
 
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -76,9 +65,12 @@ class _VesselBuilderState extends State<VesselBuilder> {
               Utils.customPrint('HAS DATA: ${snapshot.hasData}');
               Utils.customPrint('HAS DATA: ${snapshot.error}');
               Utils.customPrint('HAS DATA: ${snapshot.hasError}');
-              CustomLogger().logWithFile(Level.info, "HAS DATA: ${snapshot.hasData} -> $page");
-              CustomLogger().logWithFile(Level.error, "HAS DATA: ${snapshot.error} -> $page");
-              CustomLogger().logWithFile(Level.error, "HAS DATA: ${snapshot.hasError} -> $page");
+              CustomLogger().logWithFile(
+                  Level.info, "HAS DATA: ${snapshot.hasData} -> $page");
+              CustomLogger().logWithFile(
+                  Level.error, "HAS DATA: ${snapshot.error} -> $page");
+              CustomLogger().logWithFile(
+                  Level.error, "HAS DATA: ${snapshot.hasError} -> $page");
               if (snapshot.hasData) {
                 if (snapshot.data!.isEmpty) {
                   return Center(
@@ -97,27 +89,30 @@ class _VesselBuilderState extends State<VesselBuilder> {
                             textColor: Colors.black,
                             textSize: displayWidth(context) * 0.04,
                             textAlign: TextAlign.start),
-                        SizedBox(height: displayHeight(context)*.18,),
+                        SizedBox(
+                          height: displayHeight(context) * .18,
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             commonText(
                                 context: context,
-                                text: 'Do you want to add vessel ?  '.toString(),
+                                text:
+                                    'Do you want to add vessel ?  '.toString(),
                                 fontWeight: FontWeight.w500,
                                 textColor: Colors.black,
                                 textSize: displayWidth(context) * 0.04,
                                 textAlign: TextAlign.start),
                             InkWell(
                               onTap: () {
-                                CustomLogger().logWithFile(Level.info, "User Navigating to Add New Vessel Screen -> $page");
+                                CustomLogger().logWithFile(Level.info,
+                                    "User Navigating to Add New Vessel Screen -> $page");
                                 // Navigator.of(context).pop();
 
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          AddNewVesselPage()),
+                                      builder: (context) => AddNewVesselPage()),
                                 );
                               },
                               child: commonText(
@@ -162,9 +157,12 @@ class _VesselBuilderState extends State<VesselBuilder> {
                   );
                 } else {
                   return Container(
-                    color:backgroundColor,
+                    color: backgroundColor,
                     padding: EdgeInsets.only(
-                        left: displayWidth(context) * 0.04, right: displayWidth(context) * 0.04, top: 8, bottom: 0),
+                        left: displayWidth(context) * 0.04,
+                        right: displayWidth(context) * 0.04,
+                        top: 8,
+                        bottom: 0),
                     child: ListView.builder(
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
@@ -182,7 +180,7 @@ class _VesselBuilderState extends State<VesselBuilder> {
               return Container();
             },
           ),
-       /*   Positioned(
+          /*   Positioned(
             bottom: 0,
             right: 0,
             left: 0,

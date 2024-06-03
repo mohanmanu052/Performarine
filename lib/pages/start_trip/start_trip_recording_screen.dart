@@ -2311,12 +2311,9 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                   }
 
                                                   List<BluetoothDevice>
-                                                      connectedDeviceList =
-                                                      FlutterBluePlus
-                                                          .connectedDevices;
+                                                      connectedDeviceList = FlutterBluePlus.connectedDevices;
                                                   final FlutterSecureStorage
-                                                      storage =
-                                                      FlutterSecureStorage();
+                                                      storage = FlutterSecureStorage();
                                                   if (connectedDeviceList
                                                       .isNotEmpty) {
                                                     sharedPreferences!.setBool(

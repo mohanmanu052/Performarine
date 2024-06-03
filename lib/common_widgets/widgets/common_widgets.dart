@@ -416,6 +416,27 @@ Widget vesselSingleViewCard(BuildContext context, CreateVessel vesselData,
                             fit: BoxFit.cover,
                             height: displayHeight(context) * 0.24,
                             width: displayWidth(context),
+                            errorBuilder: (context, error, stackTrace)
+                            {
+                              return  ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Center(
+                                  child: Container(
+                                    // height: displayHeight(context) * 0.22,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      //color: Colors.white,
+                                    ),
+                                    child: Image.asset(
+                                      'assets/images/vessel_default_img.png',
+                                      width: displayWidth(context) * 0.65,
+                                      height: displayHeight(context) * 0.24,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                           Positioned(
                               bottom: 0,

@@ -795,8 +795,7 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                         "vesselID": widget.vesselID,
                                         "userEmail":
                                         userEmailController.text.trim(),
-                                        "delegateAccessType":
-                                        selectedShareUpdate,
+                                        "delegateAccessType": int.parse(selectedShareUpdate!),
                                         "fromDate": convertIntoUTCFormat(
                                             globalStartDate, globalStartTime),
                                         "toDate": convertIntoUTCFormat(
@@ -807,8 +806,7 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                         "vesselID": widget.vesselID,
                                         "userEmail":
                                         userEmailController.text.trim(),
-                                        "delegateAccessType":
-                                        selectedShareUpdate
+                                        "delegateAccessType": int.parse(selectedShareUpdate!),
                                       };
                                     }
 
