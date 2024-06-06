@@ -1043,9 +1043,10 @@ class CircularRadioTile extends StatelessWidget {
   final ValueChanged<bool>? onChanged;
   final Widget? title;
   final bool? isChecked;
+  final Color? checkConditionColor;
 
   CircularRadioTile(
-      {this.value, this.onChanged, this.title, this.isChecked = false});
+      {this.value, this.onChanged, this.title, this.checkConditionColor = checkColor, this.isChecked = false});
 
   @override
   Widget build(BuildContext context) {
@@ -1061,7 +1062,7 @@ class CircularRadioTile extends StatelessWidget {
             height: 18,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: isChecked! ? checkColor : Colors.transparent,
+              color: isChecked! ? checkConditionColor : Colors.transparent,
               border: Border.all(
                 color: isChecked! ? Colors.transparent : Colors.grey,
                 width: 2,

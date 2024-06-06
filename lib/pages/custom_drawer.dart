@@ -27,6 +27,7 @@ import 'package:performarine/pages/auth_new/change_password.dart';
 import 'package:performarine/pages/auth_new/sign_in_screen.dart';
 import 'package:performarine/pages/delegate/delegates_screen.dart';
 import 'package:performarine/pages/delegate/my_delegate_invites_screen.dart';
+import 'package:performarine/pages/delete_account/delete_account_screen.dart';
 import 'package:performarine/pages/fleet/fleet_reports.dart';
 import 'package:performarine/pages/fleet/fleet_vessel_screen.dart';
 import 'package:performarine/pages/fleet/my_fleet_screen.dart';
@@ -884,6 +885,29 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                         ),
                                       )
                                     : Container(),
+                                SizedBox(
+                                  height: displayHeight(context) * 0.02,
+                                ),
+                                Container(
+                                  width: displayWidth(context),
+                                  child: InkWell(
+                                    onTap: () async {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                DeleteAccountScreen()),
+                                      );
+                                    },
+                                    child: commonText(
+                                        context: context,
+                                        text: 'Delete Account',
+                                        fontWeight: FontWeight.w400,
+                                        textColor: Colors.black54,
+                                        textSize: textSize,
+                                        textAlign: TextAlign.start),
+                                  ),
+                                ),
                                 SizedBox(
                                   height: displayHeight(context) * 0.02,
                                 ),
@@ -1769,6 +1793,29 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   ),
                                 )
                               : Container(),
+                          SizedBox(
+                            height: displayHeight(context) * 0.02,
+                          ),
+                          Container(
+                            width: displayWidth(context),
+                            child: InkWell(
+                              onTap: () async {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          DeleteAccountScreen()),
+                                );
+                              },
+                              child: commonText(
+                                  context: context,
+                                  text: 'Delete Account',
+                                  fontWeight: FontWeight.w400,
+                                  textColor: Colors.black54,
+                                  textSize: textSize,
+                                  textAlign: TextAlign.start),
+                            ),
+                          ),
                           SizedBox(
                             height: displayHeight(context) * 0.02,
                           ),

@@ -56,6 +56,7 @@ const acceptTextGreen=Color(0xff63BD69);
 const acceptBackgrounGreen=Color(0xffE5FFE2);
 const pendingTextRed=Color(0xffE31D41);
 const pendingBacgroundRed=Color(0xffFFEBE2);
+const deleteAccountBtnColor=Color(0xffD03D3D);
 
 
 
