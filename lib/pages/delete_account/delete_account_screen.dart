@@ -30,7 +30,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
   TextEditingController emailController = TextEditingController();
   FocusNode emailFocusNode = FocusNode();
 
-  bool isChecked = false;
+  bool isChecked = true;
 
   @override
   Widget build(BuildContext context) {
@@ -92,10 +92,12 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                     context: context,
                     fontSize: displayWidth(context) * 0.042,
                     textColor: Colors.white,
-                    buttonPrimaryColor: deleteAccountBtnColor,
-                    borderColor: deleteAccountBtnColor,
+                    buttonPrimaryColor: deleteAccountBtnColor.withOpacity(emailController.text.isEmpty ? 0.5 : 1.0),
+                    borderColor: deleteAccountBtnColor.withOpacity(emailController.text.isEmpty ? 0.5 : 1.0),
                     width: displayWidth(context),
-                    onTap: () async {
+                    onTap: emailController.text.isEmpty
+                      ? null
+                        : () async {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -139,13 +141,46 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
 
                   commonText(
                       context: context,
-                      text: 'Are sure you want to delete data?',
+                      text: 'Are sure you want to delete your account?',
                       fontWeight: FontWeight.w600,
                       textColor: Colors.black,
-                      textSize: displayWidth(context) * 0.042,
+                      textSize: displayWidth(context) * 0.046,
                       textAlign: TextAlign.start),
 
-                  SizedBox(height: displayHeight(context) * 0.03,),
+                  SizedBox(height: displayHeight(context) * 0.01,),
+
+                  commonText(
+                      context: context,
+                      text: 'This operation cannot be undone',
+                      fontWeight: FontWeight.normal,
+                      textColor: Colors.black,
+                      textSize: displayWidth(context) * 0.036,
+                      textAlign: TextAlign.start),
+
+                  SizedBox(height: displayHeight(context) * 0.08,),
+
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      commonText(
+                          context: context,
+                          text: 'Confirmation code ',
+                          fontWeight: FontWeight.w600,
+                          textColor: Colors.black,
+                          textSize: displayWidth(context) * 0.046,
+                          textAlign: TextAlign.start),
+
+                      commonText(
+                          context: context,
+                          text: '698043',
+                          fontWeight: FontWeight.normal,
+                          textColor: Colors.black,
+                          textSize: displayWidth(context) * 0.046,
+                          textAlign: TextAlign.start),
+                    ],
+                  ),
+
+                  SizedBox(height: displayHeight(context) * 0.02,),
 
                   CommonTextField(
                     controller: emailController,
