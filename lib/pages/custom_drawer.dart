@@ -892,11 +892,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                   width: displayWidth(context),
                                   child: InkWell(
                                     onTap: () async {
+                                      Navigator.of(context).pop();
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                DeleteAccountScreen()),
+                                                DeleteAccountScreen(
+                                                )),
                                       );
                                     },
                                     child: commonText(

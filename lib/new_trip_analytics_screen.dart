@@ -220,7 +220,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                 },
                 child: Image.asset(
                   'assets/images/Trash.png',
-                  width: Platform.isAndroid ? displayWidth(context) * 0.065 : displayWidth(context) * 0.05,
+                  width: Platform.isAndroid ? displayWidth(context) * 0.055 : displayWidth(context) * 0.05,
                 ),
               ),
       
@@ -1076,18 +1076,33 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                         spacing: 0.1,
                                         xValueMapper: (SalesData sales, _) => sales.year,
                                         yValueMapper: (SalesData sales, _) => sales.diesel,
-                                        name: 'Diesel',
+                                        name: 'Total',
                                         legendIconType: LegendIconType.rectangle,
-                                        dataLabelSettings: DataLabelSettings(isVisible: false)),
+                                        dataLabelSettings: DataLabelSettings(
+                                            isVisible: true,
+                                            textStyle: TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.black,
+                                                fontSize: displayWidth(context) * 0.028,
+                                                fontFamily: outfit
+                                            )
+                                        )),
                                     ColumnSeries<SalesData, String>(
                                         dataSource: data,
                                         spacing: 0.1,
                                         color: routeMapBtnColor,
                                         xValueMapper: (SalesData sales, _) => sales.year,
                                         yValueMapper: (SalesData sales, _) => sales.hybrid,
-                                        name: 'Hybrid',
+                                        name: '<4 kt',
                                         legendIconType: LegendIconType.rectangle,
-                                        dataLabelSettings: DataLabelSettings(isVisible: false))
+                                        dataLabelSettings: DataLabelSettings(
+                                          isVisible: true,
+                                        textStyle: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.black,
+                                          fontSize: displayWidth(context) * 0.028,
+                                          fontFamily: outfit
+                                        )))
                                   ]),
                             ],
                           ),
@@ -1182,10 +1197,10 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                   textColor: Colors.black,
                                   textSize: displayWidth(context) * 0.044,
                                 ),
-      //Todo Add Kt From Constatnts Sameer
+
                                 commonText(
                                   context: context,
-                                  text: "KT",
+                                  text: knot,
                                   fontWeight: FontWeight.w400,
                                   textColor: Colors.black,
                                   textSize: displayWidth(context) * 0.022,
