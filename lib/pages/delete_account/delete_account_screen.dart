@@ -211,27 +211,28 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 17, vertical: 17),
-              child: Column(
+      body: Container(
+        height: displayHeight(context),
+        margin: EdgeInsets.symmetric(horizontal: 17, vertical: 17),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+
+              Column(
                 children: [
-
-                  SizedBox(height: displayHeight(context) * 0.02,),
-
-                  Image.asset('assets/images/acc_delete.png', height: displayHeight(context) * 0.18,),
-
                   SizedBox(height: displayHeight(context) * 0.05,),
+
+                  Image.asset('assets/images/acc_delete.png', height: displayHeight(context) * 0.2,),
+
+                  SizedBox(height: displayHeight(context) * 0.03,),
 
                   commonText(
                       context: context,
                       text: 'Are sure you want to delete\nyour account?',
                       fontWeight: FontWeight.w600,
                       textColor: Colors.black,
-                      textSize: displayWidth(context) * 0.044,
+                      textSize: displayWidth(context) * 0.045,
                       textAlign: TextAlign.center),
 
                   SizedBox(height: displayHeight(context) * 0.015,),
@@ -244,8 +245,12 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                       textSize: displayWidth(context) * 0.036,
                       textAlign: TextAlign.start),
 
-                  SizedBox(height: displayHeight(context) * 0.08,),
+                  SizedBox(height: displayHeight(context) * 0.14,),
+                ],
+              ),
 
+              Column(
+                children: [
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -377,9 +382,9 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                     ),
                   ),
                 ],
-              ),
-            ),
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );
