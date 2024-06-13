@@ -7,6 +7,7 @@ import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
+import 'package:performarine/common_widgets/widgets/custom_dialog.dart';
 import 'package:performarine/common_widgets/widgets/status_tag.dart';
 import 'package:performarine/models/fleet_details_model.dart';
 import 'package:performarine/models/vessel.dart';
@@ -100,11 +101,12 @@ Widget? selectImage(
                     title: const Text(
                       'Camera',
                       style:
-                          TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+                      TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
                     ),
                     onTap: () async {
+
                       bool isCameraPermissionGranted =
-                          await Permission.camera.isGranted;
+                      await Permission.camera.isGranted;
 
                       Utils.customPrint(
                           ' CAM PERMISSION $isCameraPermissionGranted');
@@ -112,16 +114,66 @@ Widget? selectImage(
                           "CAM PERMISSION $isCameraPermissionGranted  while selecting image");
 
                       if (!isCameraPermissionGranted) {
-                        await Utils.getStoragePermission(
-                            context, Permission.camera);
-                        bool isCameraPermissionGranted =
-                            await Permission.camera.isGranted;
-
-                        if (isCameraPermissionGranted) {
+                        await Permission.camera.request();
+                        bool isGranted = await Permission.camera.isGranted;
+                        if(isGranted){
                           Navigator.pop(context);
                           List<File> list = await Utils.pickCameraImages();
                           onSelectImage(list);
                         }
+                        else{
+                          bool isPermanentlyDenied = await Permission.camera.isPermanentlyDenied;
+                          if(isPermanentlyDenied){
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext ctxx) {
+                                  return CustomDialog(
+                                    text: 'Need permission',
+                                    subText: 'To access camera we need your permission. So that you can access camera to take picture.',
+                                    positiveBtn: 'Allow',
+                                    cancelBtn: 'Cancel',
+                                    positiveBtnOnTap: () async {
+                                      Navigator.pop(ctxx);
+                                      await openAppSettings();
+                                    },
+                                    userConfig: false,
+                                    isError: false,
+                                  );
+                                });
+                          }
+                          else{
+                            bool isDenied = await Permission.camera.isDenied;
+                            if(isDenied){
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext ctxx) {
+                                    return CustomDialog(
+                                      text: 'Need permission',
+                                      subText: 'To access camera we need your permission. So that you can access camera to take picture.',
+                                      positiveBtn: 'Allow',
+                                      cancelBtn: 'Cancel',
+                                      positiveBtnOnTap: () async {
+                                        Navigator.pop(ctxx);
+                                        await openAppSettings();
+                                      },
+                                      userConfig: false,
+                                      isError: false,
+                                    );
+                                  });
+                            }
+                          }
+                        }
+                        // if (isGranted)
+                        //   await Utils.getStoragePermission(
+                        //       context, Permission.camera);
+                        // bool isCameraPermissionGranted =
+                        //     await Permission.camera.isGranted;
+                        //
+                        // if (isCameraPermissionGranted) {
+                        //   Navigator.pop(context);
+                        //   List<File> list = await Utils.pickCameraImages();
+                        //   onSelectImage(list);
+                        // }
                       } else {
                         Navigator.pop(context);
                         List<File> list = await Utils.pickCameraImages();

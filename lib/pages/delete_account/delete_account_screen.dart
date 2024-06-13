@@ -168,7 +168,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                                 context,
                                 scaffoldKey);
                           } else {
-                            Navigator.push(
+                            Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
@@ -183,7 +183,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                               context,
                               scaffoldKey,);
                         } else {
-                          Navigator.push(
+                          Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
@@ -205,6 +205,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                     borderColor: Color(0xFFE9EFFA),
                     width: displayWidth(context),
                     onTap: () async {
+                      Navigator.pop(context);
                     }),
               ],
             ),
