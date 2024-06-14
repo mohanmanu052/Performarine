@@ -392,7 +392,7 @@ class CommonProvider with ChangeNotifier {
       BuildContext context,
       String userId,
       String accessToken,
-      GlobalKey<ScaffoldState> scaffoldKey) async {
+      GlobalKey<ScaffoldState> scaffoldKey,) async {
 
     getUserConfigModel = GetUserConfigModel();
 
@@ -554,9 +554,9 @@ class CommonProvider with ChangeNotifier {
   }
 
   Future<FleetListModel> getFleetListdata(
-      {BuildContext? context,String? token,GlobalKey<ScaffoldState>? scaffoldKey}
+      {BuildContext? context,String? token, GlobalKey<ScaffoldState>? scaffoldKey, bool isCalledFromSession = false}
       )async{
-    var response=await FleetListProvider().getFleetDetails(context: context,token: token,scaffoldKey: scaffoldKey);
+    var response=await FleetListProvider().getFleetDetails(context: context,token: token,scaffoldKey: scaffoldKey, isCalledFromSession: isCalledFromSession);
     return response;
   }
   Future<CommonModel> addFleetVessels( {BuildContext? context,String? token,GlobalKey<ScaffoldState>? scaffoldKey,Map<String,dynamic>? data})async{

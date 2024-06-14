@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
+import 'package:performarine/common_widgets/widgets/custom_fleet_dailog.dart';
 import 'package:performarine/models/add_vessel_model.dart';
 import 'package:performarine/models/vessel.dart';
+import 'package:performarine/pages/delete_account/session_expired_screen.dart';
 
 import '../common_widgets/widgets/log_level.dart';
 
@@ -107,6 +109,7 @@ class AddVesselApiProvider with ChangeNotifier {
 
       var decodedData = json.decode(responseValue.body);
         Utils.customPrint('Upload Trip body  was: ' + decodedData.toString());
+        Utils.customPrint('ADD VESSEL RESPONSE CODE : ' + response.statusCode.toString());
 
       if (responseValue.statusCode == HttpStatus.ok) {
         Utils.customPrint('Upload Trip Response was: ' + responseValue.body);
@@ -134,6 +137,12 @@ class AddVesselApiProvider with ChangeNotifier {
         }
 
         addVesselModel = null;
+      } else if(response.statusCode == 400)
+      {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SessionExpiredScreen()));
       } else {
         if (scaffoldKey != null) {
           if (calledFromSignOut) {

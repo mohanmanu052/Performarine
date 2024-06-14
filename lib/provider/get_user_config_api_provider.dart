@@ -8,6 +8,7 @@ import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/custom_dialog.dart';
 import 'package:performarine/models/get_user_config_model.dart';
+import 'package:performarine/pages/delete_account/session_expired_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +25,7 @@ class GetUserConfigApiProvider with ChangeNotifier {
       BuildContext context,
       String userId,
       String accessToken,
-      GlobalKey<ScaffoldState> scaffoldKey) async {
+      GlobalKey<ScaffoldState> scaffoldKey,) async {
 
     BuildContext? ctx;
 
@@ -134,7 +135,15 @@ class GetUserConfigApiProvider with ChangeNotifier {
         }
 
         getUserConfigModel = null;
-      } else {
+      }
+      else if(response.statusCode == 400)
+      {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SessionExpiredScreen()));
+      }
+      else {
         commonProvider!.updateExceptionOccurredValue(true);
 
         showErrorDialog = true;

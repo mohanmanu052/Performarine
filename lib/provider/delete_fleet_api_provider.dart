@@ -7,6 +7,7 @@ import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/log_level.dart';
 import 'package:performarine/models/common_model.dart';
+import 'package:performarine/pages/delete_account/session_expired_screen.dart';
 
 class DeleteFleetApiProvider with ChangeNotifier
 {
@@ -69,6 +70,12 @@ class DeleteFleetApiProvider with ChangeNotifier
         }
 
         commonModel = null;
+      }else if(response.statusCode == 400)
+      {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SessionExpiredScreen()));
       } else {
         if (scaffoldKey != null) {
           Utils.showSnackBar(context,

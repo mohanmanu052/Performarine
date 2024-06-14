@@ -8,6 +8,7 @@ import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/custom_dialog.dart';
+import 'package:performarine/common_widgets/widgets/custom_fleet_dailog.dart';
 import 'package:performarine/common_widgets/widgets/status_tag.dart';
 import 'package:performarine/models/fleet_details_model.dart';
 import 'package:performarine/models/vessel.dart';

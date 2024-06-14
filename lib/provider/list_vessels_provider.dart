@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:logger/logger.dart';
+import 'package:performarine/pages/delete_account/session_expired_screen.dart';
 
 import '../common_widgets/utils/urls.dart';
 import '../common_widgets/utils/utils.dart';
@@ -66,6 +67,12 @@ class TripListApiProvider extends ChangeNotifier {
         }
 
         tripListModel = null;
+      } else if(response.statusCode == 400)
+      {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SessionExpiredScreen()));
       } else {
         if (scaffoldKey != null) {
           Utils.showSnackBar(context,

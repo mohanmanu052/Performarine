@@ -15,10 +15,10 @@ class CreateVessel {
   String? batteryCapacity;
   String? weight;
   String? imageURLs;
-  double? freeBoard;
-  double? lengthOverall;
+  dynamic freeBoard;
+  dynamic lengthOverall;
   dynamic beam;
-  double? draft;
+  dynamic draft;
   dynamic vesselSize;
   int? capacity;
   dynamic builtYear;

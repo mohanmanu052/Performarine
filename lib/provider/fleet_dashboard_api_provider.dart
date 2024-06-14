@@ -9,6 +9,7 @@ import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/models/fleet_dashboard_model.dart';
+import 'package:performarine/pages/delete_account/session_expired_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
 
 import '../common_widgets/widgets/log_level.dart';
@@ -64,6 +65,12 @@ class FleetDashboardApiProvider with ChangeNotifier
         }
 
         fleetDashboardModel = null;
+      } else if(response.statusCode == 400)
+      {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SessionExpiredScreen()));
       } else {
         if (scaffoldKey != null) {
           Utils.showSnackBar(context,

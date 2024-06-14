@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:performarine/models/export_report_model.dart';
+import 'package:performarine/pages/delete_account/session_expired_screen.dart';
 
 import '../common_widgets/utils/urls.dart';
 import '../common_widgets/utils/utils.dart';
@@ -78,7 +79,14 @@ ExportDataModel?  exportData;
         }
 
         reportModel = null;
-      } else {
+      } else if(response.statusCode == 400)
+      {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SessionExpiredScreen()));
+      }
+      else {
         if (scaffoldKey != null) {
           Utils.showSnackBar(context,
               scaffoldKey: scaffoldKey, message: decodedData['message']);
@@ -198,7 +206,13 @@ String extractFileNameFromUrl(String url) {
         }
 
         reportModel = null;
-      } else {
+      } else if(response.statusCode == 400)
+      {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SessionExpiredScreen()));
+      }else {
         if (scaffoldKey != null) {
           Utils.showSnackBar(context,
               scaffoldKey: scaffoldKey, message: decodedData['message']);

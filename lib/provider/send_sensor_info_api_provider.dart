@@ -13,9 +13,11 @@ import 'package:http_parser/http_parser.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
+import 'package:performarine/common_widgets/widgets/custom_fleet_dailog.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/common_model.dart';
 import 'package:performarine/models/upload_trip_model.dart';
+import 'package:performarine/pages/delete_account/session_expired_screen.dart';
 
 import '../common_widgets/widgets/log_level.dart';
 
@@ -89,7 +91,7 @@ class SendSensorInfoApiProvider with ChangeNotifier {
         },
       ).then((response) {
        // _networkConnectivity.disposeStream();
-        Utils.customPrint('RESPONSE: ${response.statusCode}');
+        Utils.customPrint(' SEND SENSOR RESPONSE: ${response.statusCode}');
         Utils.customPrint('RESPONSE: ${jsonEncode(response.data)}');
         CustomLogger().logWithFile(Level.info, "RESPONSE: ${response.statusCode} -> $page");
         CustomLogger().logWithFile(Level.info, "RESPONSE: ${jsonEncode(response.data)} -> $page");
@@ -131,7 +133,14 @@ class SendSensorInfoApiProvider with ChangeNotifier {
           }
 
           uploadTripModel = null;
-        } else {
+        } else if(response.statusMessage == 400)
+          {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                builder: (context) => SessionExpiredScreen()));
+
+          }else {
           if (scaffoldKey != null) {
             if (!calledFromSignOut) {
               Utils.showSnackBar(context,

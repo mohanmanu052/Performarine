@@ -9,9 +9,10 @@ import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/log_level.dart';
 import 'package:performarine/models/fleet_list_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:performarine/pages/delete_account/session_expired_screen.dart';
 
 class FleetListProvider with ChangeNotifier{
-    Future<FleetListModel> getFleetDetails({String? token,BuildContext? context,GlobalKey<ScaffoldState> ?scaffoldKey})async{
+    Future<FleetListModel> getFleetDetails({String? token,BuildContext? context,GlobalKey<ScaffoldState> ?scaffoldKey, bool? isCalledFromSession})async{
    FleetListModel? fleetResponse;
     Map<String,String> headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
@@ -58,6 +59,15 @@ var decodedData=json.decode(response.body);
         }
 
         fleetResponse = null;
+      } else if(response.statusCode == 400)
+      {
+        if(!isCalledFromSession!)
+       {
+         Navigator.push(
+             context!,
+             MaterialPageRoute(
+                 builder: (context) => SessionExpiredScreen()));
+       }
       } else {
         if (scaffoldKey != null) {
           Utils.showSnackBar(context!,

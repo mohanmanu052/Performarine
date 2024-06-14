@@ -84,10 +84,10 @@ class Vessels {
   int? batteryCapacity;
   String? weight;
   List<String>? imageURLs;
-  double? freeBoard;
-  double? lengthOverall;
-  double? beam;
-  double? depth;
+  dynamic freeBoard;
+  dynamic lengthOverall;
+  dynamic beam;
+  dynamic depth;
   String? vesselSize;
   String? capacity;
   int? builtYear;

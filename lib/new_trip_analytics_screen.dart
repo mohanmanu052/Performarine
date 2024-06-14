@@ -38,33 +38,37 @@ class NewTripAnalyticsScreen extends StatefulWidget {
   final bool isAppKilled;
   Trip? tripData;
   VoidCallback? isTripDeleted;
-   NewTripAnalyticsScreen({
-     super.key, this.vesselName,
+  NewTripAnalyticsScreen({
+    super.key,
+    this.vesselName,
     this.avgInfo,
     this.tripId,
     this.vesselId,
-     this.vessel,
+    this.vessel,
     this.tripIsRunningOrNot,
     this.isAppKilled = false,
     this.calledFrom,
-     this.tripData,
-     this.isTripDeleted,
-   });
+    this.tripData,
+    this.isTripDeleted,
+  });
 
   @override
   State<NewTripAnalyticsScreen> createState() => _NewTripAnalyticsScreenState();
 }
 
 class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
-
-  GlobalKey<ScaffoldState>  scaffoldKey = GlobalKey();
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
   CreateVessel? vesselData;
   Trip? tripData;
 
-  String tripDistance = '0.00', tripDuration = '00:00:00', dateOfJourney = '', yearOfTheJourney = '', peopleOnBoard = '';
+  String tripDistance = '0.00',
+      tripDuration = '00:00:00',
+      dateOfJourney = '',
+      yearOfTheJourney = '',
+      peopleOnBoard = '';
 
-  bool cancelVisible=true;
+  bool cancelVisible = true;
   bool? internet;
 
   final List<NewChartData> chartData = [
@@ -83,7 +87,6 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
     SalesData('2023-08-19', 40, 60)
   ];
 
-
   final controller = ScreenshotController();
 
   late CommonProvider commonProvider;
@@ -98,7 +101,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
     commonProvider = context.read<CommonProvider>();
 
@@ -109,25 +112,20 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
     });
 
     Utils.customPrint('CURRENT TIME TIME ${tripDuration}');
-    
-    //Utils.customPrint('CURRENT TIME TIME ${tripData!.time}');
 
+    //Utils.customPrint('CURRENT TIME TIME ${tripData!.time}');
   }
 
-@override
+  @override
   void dispose() {
-    if(widget.calledFrom=='Report'){
-        SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.portraitUp
-
-    ]);
-
-    }else{
-
-    }
+    if (widget.calledFrom == 'Report') {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+        DeviceOrientation.portraitDown,
+        DeviceOrientation.portraitUp
+      ]);
+    } else {}
 
     // TODO: implement dispose
     super.dispose();
@@ -135,27 +133,21 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     commonProvider = context.watch<CommonProvider>();
 
     return PopScope(
       canPop: false,
       onPopInvoked: (didPop) async {
-        if(didPop) return;
-        if(widget.calledFrom=='End Trip'){
-                                                            Navigator.pushAndRemoveUntil(
-                                                                    context,
-                                                                    MaterialPageRoute(
-                                                                        builder:
-                                                                            (context) =>
-                                                                                BottomNavigation()),
-                                                                    ModalRoute
-                                                                        .withName(
-                                                                            ""));
-        }else{Navigator.pop(context);
-
+        if (didPop) return;
+        if (widget.calledFrom == 'End Trip') {
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => BottomNavigation()),
+              ModalRoute.withName(""));
+        } else {
+          Navigator.pop(context);
         }
-     return   Future.value(true);
+        return Future.value(true);
       },
       child: Screenshot(
         controller: controller,
@@ -167,20 +159,15 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
             elevation: 0,
             leading: IconButton(
               onPressed: () async {
-        if(widget.calledFrom=='End Trip'){
-                                                            Navigator.pushAndRemoveUntil(
-                                                                    context,
-                                                                    MaterialPageRoute(
-                                                                        builder:
-                                                                            (context) =>
-                                                                                BottomNavigation()),
-                                                                    ModalRoute
-                                                                        .withName(
-                                                                            ""));
-        }else{
-          Navigator.pop(context);
-
-        }
+                if (widget.calledFrom == 'End Trip') {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BottomNavigation()),
+                      ModalRoute.withName(""));
+                } else {
+                  Navigator.pop(context);
+                }
               },
               icon: const Icon(Icons.arrow_back),
               color: Theme.of(context).brightness == Brightness.dark
@@ -193,49 +180,43 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                 fontWeight: FontWeight.w600,
                 textColor: Colors.black87,
                 textSize: displayWidth(context) * 0.042,
-                fontFamily: outfit
-            ),
+                fontFamily: outfit),
             actions: [
-      
               InkWell(
-                onTap: ()async{
+                onTap: () async {
                   Utils.customPrint("Trip id is: ${tripData!.id}");
                   bool tripUploadedStatus = false;
-                  if (tripData!.isSync == 0){
+                  if (tripData!.isSync == 0) {
                     tripUploadedStatus = true;
                   }
-                  if(tripData!.tripStatus == 1){
-                    showDeleteTripDialogBox(
-                        context,
-                        tripData!.id!,
-                            (){
-                          Utils.customPrint("call back for delete trip in list");
-    
-                        },scaffoldKey,
-                        tripUploadedStatus
-                    );
-                  } else{
-    
-                  }
+                  if (tripData!.tripStatus == 1) {
+                    showDeleteTripDialogBox(context, tripData!.id!, () {
+                      Utils.customPrint("call back for delete trip in list");
+                    }, scaffoldKey, tripUploadedStatus);
+                  } else {}
                 },
                 child: Image.asset(
                   'assets/images/Trash.png',
-                  width: Platform.isAndroid ? displayWidth(context) * 0.055 : displayWidth(context) * 0.05,
+                  width: Platform.isAndroid
+                      ? displayWidth(context) * 0.055
+                      : displayWidth(context) * 0.05,
                 ),
               ),
-      
               Container(
                 margin: EdgeInsets.only(right: 8),
                 child: IconButton(
-                  onPressed: () async{
-                   await   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    
+                  onPressed: () async {
+                    await SystemChrome.setPreferredOrientations(
+                        [DeviceOrientation.portraitUp]);
+
                     Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (context) => BottomNavigation()),
+                        MaterialPageRoute(
+                            builder: (context) => BottomNavigation()),
                         ModalRoute.withName(""));
                   },
-                  icon: Image.asset('assets/icons/performarine_appbar_icon.png'),
+                  icon:
+                      Image.asset('assets/icons/performarine_appbar_icon.png'),
                   color: Theme.of(context).brightness == Brightness.dark
                       ? Colors.white
                       : Colors.black,
@@ -246,873 +227,1116 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
           body: Container(
             child: vesselData == null
                 ? Center(
-                  child: CircularProgressIndicator(
-            ),
-                )
-            : Stack(
-              children: [
-                SingleChildScrollView(
-                  child: Container(
-                    margin: EdgeInsets.only(left: 17, right: 17, bottom: displayHeight(context) * 0.1),
-                    child: Column(
-                      children: [
-                        Stack(
-                          children: [
-                            SizedBox(
-                              width: displayWidth(context),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: vesselData!.imageURLs == null ||
-                                    vesselData!.imageURLs!.isEmpty ||
-                                    vesselData!.imageURLs == 'string' ||
-                                    vesselData!.imageURLs == '[]'
-                                    ? Stack(
-                                  children: [
-                                    Container(
-                                      color: Colors.white,
-                                      child: Image.asset(
-                                        'assets/images/vessel_default_img.png',
-                                        height: displayHeight(context) * 0.24,
-                                        width: displayWidth(context),
-                                        fit: BoxFit.contain,
-                                      ),
-                                    ),
-                                    Positioned(
-                                        bottom: 0,
-                                        right: 0,
-                                        left: 0,
-                                        child: Container(
-                                          height: displayHeight(context) * 0.14,
-                                          width: displayWidth(context),
-                                          padding: const EdgeInsets.only(top: 20),
-                                          decoration: BoxDecoration(boxShadow: [
-                                            BoxShadow(
-                                                color:
-                                                Colors.black.withOpacity(0.5),
-                                                blurRadius: 50,
-                                                spreadRadius: 5,
-                                                offset: const Offset(0, 50))
-                                          ]),
-                                        ))
-                                  ],
-                                )
-                                    : Stack(
-                                      children: [
-                                        Container(
-                                  height: displayHeight(context) * 0.22,
-                                  width: displayWidth(context),
-                                  decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        image: DecorationImage(
-                                          image: FileImage(
-                                              File(vesselData!.imageURLs!)),
-                                          fit: BoxFit.cover,
-                                        ),
-                                  ),
-                                ),
-                                        Positioned(
-                                            bottom: 0,
-                                            right: 0,
-                                            left: 0,
-                                            child: Container(
-                                              height: displayHeight(context) * 0.14,
-                                              width: displayWidth(context),
-                                              padding: const EdgeInsets.only(top: 20),
-                                              decoration: BoxDecoration(boxShadow: [
-                                                BoxShadow(
-                                                    color: Colors.black.withOpacity(0.5),
-                                                    blurRadius: 50,
-                                                    spreadRadius: 5,
-                                                    offset: const Offset(0, 50))
-                                              ]),
-                                            ))
-                                      ],
-                                    ),
-                              ),
-                            ),
-      
-                            Positioned(
-                              top: 0,
-                              left: 0,
-                              right: 0,
-                              bottom: 0,
-                              child: Container(
-                                alignment: Alignment.center,
-                                width: displayWidth(context),
-                                //color: Colors.red,
-                                margin: const EdgeInsets.only(left: 8, right: 0, bottom: 8),
-                                child: Container(
-                                  padding: EdgeInsets.only(right: 10),
-                                  //width: displayWidth(context) * 0.28,
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        '${vesselData!.name}',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: displayWidth(context) * 0.05,
-                                            fontWeight: FontWeight.w700,
-                                        overflow: TextOverflow.clip),
-                                        softWrap: true,
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      SizedBox(height: displayHeight(context) * 0.015,),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          // Column(
-                                          //   crossAxisAlignment:
-                                          //   CrossAxisAlignment.start,
-                                          //   children: [
-                                          //     commonText(
-                                          //         context: context,
-                                          //         text:
-                                          //         '${vesselData!.capacity}$cubicCapacity',
-                                          //         fontWeight: FontWeight.w500,
-                                          //         textColor: Colors.white,
-                                          //         textSize:
-                                          //         displayWidth(context) * 0.038,
-                                          //         textAlign: TextAlign.start),
-                                          //     commonText(
-                                          //         context: context,
-                                          //         text: 'Capacity',
-                                          //         fontWeight: FontWeight.w400,
-                                          //         textColor: Colors.white,
-                                          //         textSize:
-                                          //         displayWidth(context) * 0.024,
-                                          //         textAlign: TextAlign.start),
-                                          //   ],
-                                          // ),
-                                          SizedBox(
-                                            width:
-                                            displayWidth(context) * 0.05,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: [
-                                              commonText(
-                                                  context: context,
-                                                  text: vesselData!.builtYear
-                                                      .toString(),
-                                                  fontWeight: FontWeight.w500,
-                                                  textColor: Colors.white,
-                                                  textSize:
-                                                  displayWidth(context) * 0.038,
-                                                  textAlign: TextAlign.start),
-                                              commonText(
-                                                  context: context,
-                                                  text: 'Built',
-                                                  fontWeight: FontWeight.w400,
-                                                  textColor: Colors.white,
-                                                  textSize:
-                                                  displayWidth(context) * 0.024,
-                                                  textAlign: TextAlign.start),
-                                            ],
-                                          ),
-                                          SizedBox(
-                                            width:
-                                            displayWidth(context) * 0.05,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            children: [
-                                              vesselData!.regNumber! == ""
-                                                  ? commonText(
-                                                  context: context,
-                                                  text: '-',
-                                                  fontWeight: FontWeight.w500,
-                                                  textColor: Colors.white,
-                                                  textSize:
-                                                  displayWidth(context) *
-                                                      0.04,
-                                                  textAlign: TextAlign.start)
-                                                  : commonText(
-                                                  context: context,
-                                                  text: vesselData!.regNumber,
-                                                  fontWeight: FontWeight.w500,
-                                                  textColor: Colors.white,
-                                                  textSize:
-                                                  displayWidth(context) *
-                                                      0.038,
-                                                  textAlign: TextAlign.start),
-                                              commonText(
-                                                  context: context,
-                                                  text: 'Registration Number',
-                                                  fontWeight: FontWeight.w400,
-                                                  textColor: Colors.white,
-                                                  textSize:
-                                                  displayWidth(context) * 0.024,
-                                                  textAlign: TextAlign.start),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                      SizedBox(height: displayHeight(context) * 0.015,),
-                                      Row(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-      
-                                          if(vesselData!.engineType!.isEmpty)
-                                            SizedBox(),
-      
-                                          if(vesselData!.engineType!.toLowerCase() ==
-                                              'combustion' && vesselData!.fuelCapacity != null)
-                                            Row(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.center,
+                    child: CircularProgressIndicator(),
+                  )
+                : Stack(
+                    children: [
+                      SingleChildScrollView(
+                        child: Container(
+                          margin: EdgeInsets.only(
+                              left: 17,
+                              right: 17,
+                              bottom: displayHeight(context) * 0.1),
+                          child: Column(
+                            children: [
+                              Stack(
+                                children: [
+                                  SizedBox(
+                                    width: displayWidth(context),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: vesselData!.imageURLs == null ||
+                                              vesselData!.imageURLs!.isEmpty ||
+                                              vesselData!.imageURLs ==
+                                                  'string' ||
+                                              vesselData!.imageURLs == '[]'
+                                          ? Stack(
                                               children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                                  children: [
-                                                    Image.asset(
-                                                      'assets/images/fuel.png',
-                                                      width: displayWidth(context) *
-                                                          0.04,
-                                                    ),
-                                                    SizedBox(
-                                                      width: displayWidth(context) *
-                                                          0.02,
-                                                    ),
-                                                    commonText(
-                                                        context: context,
-                                                        text:
-                                                        '${vesselData!.fuelCapacity!} $liters'
-                                                            .toString(),
-                                                        fontWeight: FontWeight.w400,
-                                                        textColor: Colors.white,
-                                                        textSize:
-                                                        displayWidth(context) *
-                                                            0.028,
-                                                        textAlign: TextAlign.start),
-                                                  ],
+                                                Container(
+                                                  color: Colors.white,
+                                                  child: Image.asset(
+                                                    'assets/images/vessel_default_img.png',
+                                                    height:
+                                                        displayHeight(context) *
+                                                            0.24,
+                                                    width:
+                                                        displayWidth(context),
+                                                    fit: BoxFit.contain,
+                                                  ),
                                                 ),
-                                                SizedBox(
-                                                  width:
-                                                  displayWidth(context) * 0.05,
+                                                Positioned(
+                                                    bottom: 0,
+                                                    right: 0,
+                                                    left: 0,
+                                                    child: Container(
+                                                      height: displayHeight(
+                                                              context) *
+                                                          0.14,
+                                                      width:
+                                                          displayWidth(context),
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 20),
+                                                      decoration: BoxDecoration(
+                                                          boxShadow: [
+                                                            BoxShadow(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.5),
+                                                                blurRadius: 50,
+                                                                spreadRadius: 5,
+                                                                offset:
+                                                                    const Offset(
+                                                                        0, 50))
+                                                          ]),
+                                                    ))
+                                              ],
+                                            )
+                                          : Stack(
+                                              children: [
+                                                Container(
+                                                  height:
+                                                      displayHeight(context) *
+                                                          0.22,
+                                                  width: displayWidth(context),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    image: DecorationImage(
+                                                      image: FileImage(File(
+                                                          vesselData!
+                                                              .imageURLs!)),
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
                                                 ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                                  children: [
-                                                    Image.asset(
-                                                      'assets/images/combustion_engine.png',
-                                                      width: displayWidth(context) *
-                                                          0.04,
-                                                    ),
-                                                    SizedBox(
-                                                      width: displayWidth(context) *
-                                                          0.02,
-                                                    ),
-                                                    commonText(
-                                                        context: context,
-                                                        text: vesselData!.engineType!,
-                                                        fontWeight: FontWeight.w400,
-                                                        textColor: Colors.white,
-                                                        textSize:
-                                                        displayWidth(context) *
-                                                            0.028,
-                                                        textAlign: TextAlign.start),
-                                                  ],
-                                                )
+                                                Positioned(
+                                                    bottom: 0,
+                                                    right: 0,
+                                                    left: 0,
+                                                    child: Container(
+                                                      height: displayHeight(
+                                                              context) *
+                                                          0.14,
+                                                      width:
+                                                          displayWidth(context),
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 20),
+                                                      decoration: BoxDecoration(
+                                                          boxShadow: [
+                                                            BoxShadow(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.5),
+                                                                blurRadius: 50,
+                                                                spreadRadius: 5,
+                                                                offset:
+                                                                    const Offset(
+                                                                        0, 50))
+                                                          ]),
+                                                    ))
                                               ],
                                             ),
-      
-                                          if(vesselData!.engineType!.toLowerCase() ==
-                                              'electric' && vesselData!.batteryCapacity != null)
-                                            Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                                  children: [
-                                                    Container(
-                                                        margin:
-                                                        const EdgeInsets.only(
-                                                            left: 4),
-                                                        child: Image.asset(
-                                                          'assets/images/battery.png',
-                                                          width: displayWidth(
-                                                              context) *
-                                                              0.026,
-                                                        )),
-                                                    SizedBox(
-                                                      width:
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: 0,
+                                    left: 0,
+                                    right: 0,
+                                    bottom: 0,
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      width: displayWidth(context),
+                                      //color: Colors.red,
+                                      margin: const EdgeInsets.only(
+                                          left: 8, right: 0, bottom: 8),
+                                      child: Container(
+                                        padding: EdgeInsets.only(right: 10),
+                                        //width: displayWidth(context) * 0.28,
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              '${vesselData!.name}',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize:
                                                       displayWidth(context) *
-                                                          0.02,
-                                                    ),
+                                                          0.05,
+                                                  fontWeight: FontWeight.w700,
+                                                  overflow: TextOverflow.clip),
+                                              softWrap: true,
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            SizedBox(
+                                              height: displayHeight(context) *
+                                                  0.015,
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                // Column(
+                                                //   crossAxisAlignment:
+                                                //   CrossAxisAlignment.start,
+                                                //   children: [
+                                                //     commonText(
+                                                //         context: context,
+                                                //         text:
+                                                //         '${vesselData!.capacity}$cubicCapacity',
+                                                //         fontWeight: FontWeight.w500,
+                                                //         textColor: Colors.white,
+                                                //         textSize:
+                                                //         displayWidth(context) * 0.038,
+                                                //         textAlign: TextAlign.start),
+                                                //     commonText(
+                                                //         context: context,
+                                                //         text: 'Capacity',
+                                                //         fontWeight: FontWeight.w400,
+                                                //         textColor: Colors.white,
+                                                //         textSize:
+                                                //         displayWidth(context) * 0.024,
+                                                //         textAlign: TextAlign.start),
+                                                //   ],
+                                                // ),
+                                                SizedBox(
+                                                  width: displayWidth(context) *
+                                                      0.05,
+                                                ),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
                                                     commonText(
                                                         context: context,
-                                                        text:
-                                                        ' ${vesselData!.batteryCapacity!} $kiloWattHour'
+                                                        text: vesselData!
+                                                            .builtYear
                                                             .toString(),
                                                         fontWeight:
-                                                        FontWeight.w400,
+                                                            FontWeight.w500,
                                                         textColor: Colors.white,
                                                         textSize: displayWidth(
-                                                            context) *
-                                                            0.028,
+                                                                context) *
+                                                            0.038,
                                                         textAlign:
-                                                        TextAlign.start),
+                                                            TextAlign.start),
+                                                    commonText(
+                                                        context: context,
+                                                        text: 'Built',
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        textColor: Colors.white,
+                                                        textSize: displayWidth(
+                                                                context) *
+                                                            0.024,
+                                                        textAlign:
+                                                            TextAlign.start),
                                                   ],
                                                 ),
                                                 SizedBox(
                                                   width: displayWidth(context) *
                                                       0.05,
                                                 ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.center,
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
-                                                    Image.asset(
-                                                      'assets/images/electric_engine.png',
-                                                      width:
-                                                      displayWidth(context) *
-                                                          0.04,
-                                                    ),
-                                                    SizedBox(
-                                                      width:
-                                                      displayWidth(context) *
-                                                          0.02,
-                                                    ),
-                                                    commonText(
-                                                        context: context,
-                                                        text: vesselData!
-                                                            .engineType!,
-                                                        fontWeight:
-                                                        FontWeight.w400,
-                                                        textColor: Colors.white,
-                                                        textSize: displayWidth(
-                                                            context) *
-                                                            0.028,
-                                                        textAlign:
-                                                        TextAlign.start),
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-      
-                                          if(vesselData!.engineType!.toLowerCase() ==
-                                              'hybrid')
-                                            Row(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                                  children: [
-                                                    Image.asset(
-                                                      'assets/images/fuel.png',
-                                                      width: displayWidth(context) *
-                                                          0.04,
-                                                    ),
-                                                    SizedBox(
-                                                      width: displayWidth(context) *
-                                                          0.02,
-                                                    ),
-                                                    commonText(
-                                                        context: context,
-                                                        text: vesselData!
-                                                            .fuelCapacity ==
-                                                            null
-                                                            ? '-'
-                                                            : '${vesselData!.fuelCapacity!} $liters'
-                                                            .toString(),
-                                                        fontWeight: FontWeight.w400,
-                                                        textColor: Colors.white,
-                                                        textSize:
-                                                        displayWidth(context) *
-                                                            0.028,
-                                                        textAlign: TextAlign.start),
-                                                  ],
-                                                ),
-                                                SizedBox(
-                                                  width:
-                                                  displayWidth(context) * 0.05,
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                                  children: [
-                                                    Container(
-                                                        margin: const EdgeInsets.only(
-                                                            left: 4),
-                                                        child: Image.asset(
-                                                          'assets/images/battery.png',
-                                                          width:
-                                                          displayWidth(context) *
-                                                              0.026,
-                                                        )),
-                                                    SizedBox(
-                                                      width: displayWidth(context) *
-                                                          0.02,
-                                                    ),
+                                                    vesselData!.regNumber! == ""
+                                                        ? commonText(
+                                                            context: context,
+                                                            text: '-',
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            textColor:
+                                                                Colors.white,
+                                                            textSize:
+                                                                displayWidth(
+                                                                        context) *
+                                                                    0.04,
+                                                            textAlign:
+                                                                TextAlign.start)
+                                                        : commonText(
+                                                            context: context,
+                                                            text: vesselData!
+                                                                .regNumber,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            textColor:
+                                                                Colors.white,
+                                                            textSize:
+                                                                displayWidth(
+                                                                        context) *
+                                                                    0.038,
+                                                            textAlign: TextAlign
+                                                                .start),
                                                     commonText(
                                                         context: context,
                                                         text:
-                                                        ' ${vesselData!.batteryCapacity!} $kiloWattHour'
-                                                            .toString(),
-                                                        fontWeight: FontWeight.w400,
+                                                            'Registration Number',
+                                                        fontWeight:
+                                                            FontWeight.w400,
                                                         textColor: Colors.white,
-                                                        textSize:
-                                                        displayWidth(context) *
-                                                            0.028,
-                                                        textAlign: TextAlign.start),
-                                                  ],
-                                                ),
-                                                SizedBox(
-                                                  width:
-                                                  displayWidth(context) * 0.05,
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                                  children: [
-                                                    Image.asset(
-                                                      'assets/images/hybrid_engine.png',
-                                                      width: displayWidth(context) *
-                                                          0.04,
-                                                    ),
-                                                    SizedBox(
-                                                      width: displayWidth(context) *
-                                                          0.02,
-                                                    ),
-                                                    commonText(
-                                                        context: context,
-                                                        text: vesselData!.engineType!,
-                                                        fontWeight: FontWeight.w400,
-                                                        textColor: Colors.white,
-                                                        textSize:
-                                                        displayWidth(context) *
-                                                            0.028,
-                                                        textAlign: TextAlign.start),
+                                                        textSize: displayWidth(
+                                                                context) *
+                                                            0.024,
+                                                        textAlign:
+                                                            TextAlign.start),
                                                   ],
                                                 )
                                               ],
                                             ),
-                                        ],
+                                            SizedBox(
+                                              height: displayHeight(context) *
+                                                  0.015,
+                                            ),
+                                            Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                if (vesselData!
+                                                    .engineType!.isEmpty)
+                                                  SizedBox(),
+                                                if (vesselData!.engineType!
+                                                            .toLowerCase() ==
+                                                        'combustion' &&
+                                                    vesselData!.fuelCapacity !=
+                                                        null)
+                                                  Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Image.asset(
+                                                            'assets/images/fuel.png',
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.04,
+                                                          ),
+                                                          SizedBox(
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.02,
+                                                          ),
+                                                          commonText(
+                                                              context: context,
+                                                              text: '${vesselData!.fuelCapacity!} $liters'
+                                                                  .toString(),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              textColor:
+                                                                  Colors.white,
+                                                              textSize:
+                                                                  displayWidth(
+                                                                          context) *
+                                                                      0.028,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start),
+                                                        ],
+                                                      ),
+                                                      SizedBox(
+                                                        width: displayWidth(
+                                                                context) *
+                                                            0.05,
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Image.asset(
+                                                            'assets/images/combustion_engine.png',
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.04,
+                                                          ),
+                                                          SizedBox(
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.02,
+                                                          ),
+                                                          commonText(
+                                                              context: context,
+                                                              text: vesselData!
+                                                                  .engineType!,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              textColor:
+                                                                  Colors.white,
+                                                              textSize:
+                                                                  displayWidth(
+                                                                          context) *
+                                                                      0.028,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start),
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
+                                                if (vesselData!.engineType!
+                                                            .toLowerCase() ==
+                                                        'electric' &&
+                                                    vesselData!
+                                                            .batteryCapacity !=
+                                                        null)
+                                                  Row(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Container(
+                                                              margin:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      left: 4),
+                                                              child:
+                                                                  Image.asset(
+                                                                'assets/images/battery.png',
+                                                                width: displayWidth(
+                                                                        context) *
+                                                                    0.026,
+                                                              )),
+                                                          SizedBox(
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.02,
+                                                          ),
+                                                          commonText(
+                                                              context: context,
+                                                              text: ' ${vesselData!.batteryCapacity!} $kiloWattHour'
+                                                                  .toString(),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              textColor:
+                                                                  Colors.white,
+                                                              textSize:
+                                                                  displayWidth(
+                                                                          context) *
+                                                                      0.028,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start),
+                                                        ],
+                                                      ),
+                                                      SizedBox(
+                                                        width: displayWidth(
+                                                                context) *
+                                                            0.05,
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Image.asset(
+                                                            'assets/images/electric_engine.png',
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.04,
+                                                          ),
+                                                          SizedBox(
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.02,
+                                                          ),
+                                                          commonText(
+                                                              context: context,
+                                                              text: vesselData!
+                                                                  .engineType!,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              textColor:
+                                                                  Colors.white,
+                                                              textSize:
+                                                                  displayWidth(
+                                                                          context) *
+                                                                      0.028,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start),
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
+                                                if (vesselData!.engineType!
+                                                        .toLowerCase() ==
+                                                    'hybrid')
+                                                  Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Image.asset(
+                                                            'assets/images/fuel.png',
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.04,
+                                                          ),
+                                                          SizedBox(
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.02,
+                                                          ),
+                                                          commonText(
+                                                              context: context,
+                                                              text: vesselData!.fuelCapacity ==
+                                                                      null
+                                                                  ? '-'
+                                                                  : '${vesselData!.fuelCapacity!} $liters'
+                                                                      .toString(),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              textColor:
+                                                                  Colors.white,
+                                                              textSize:
+                                                                  displayWidth(
+                                                                          context) *
+                                                                      0.028,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start),
+                                                        ],
+                                                      ),
+                                                      SizedBox(
+                                                        width: displayWidth(
+                                                                context) *
+                                                            0.05,
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Container(
+                                                              margin:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      left: 4),
+                                                              child:
+                                                                  Image.asset(
+                                                                'assets/images/battery.png',
+                                                                width: displayWidth(
+                                                                        context) *
+                                                                    0.026,
+                                                              )),
+                                                          SizedBox(
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.02,
+                                                          ),
+                                                          commonText(
+                                                              context: context,
+                                                              text: ' ${vesselData!.batteryCapacity!} $kiloWattHour'
+                                                                  .toString(),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              textColor:
+                                                                  Colors.white,
+                                                              textSize:
+                                                                  displayWidth(
+                                                                          context) *
+                                                                      0.028,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start),
+                                                        ],
+                                                      ),
+                                                      SizedBox(
+                                                        width: displayWidth(
+                                                                context) *
+                                                            0.05,
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Image.asset(
+                                                            'assets/images/hybrid_engine.png',
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.04,
+                                                          ),
+                                                          SizedBox(
+                                                            width: displayWidth(
+                                                                    context) *
+                                                                0.02,
+                                                          ),
+                                                          commonText(
+                                                              context: context,
+                                                              text: vesselData!
+                                                                  .engineType!,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              textColor:
+                                                                  Colors.white,
+                                                              textSize:
+                                                                  displayWidth(
+                                                                          context) *
+                                                                      0.028,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start),
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ],
+                                    ),
                                   ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: displayHeight(context) * 0.03,
+                              ),
+                              Column(
+                                children: [
+                                  Container(
+                                    width: displayWidth(context),
+                                    child: Row(
+                                      //mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            children: [
+                                              commonText(
+                                                context: context,
+                                                text: 'Date',
+                                                fontWeight: FontWeight.w400,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.024,
+                                              ),
+                                              SizedBox(
+                                                height: displayHeight(context) *
+                                                    0.005,
+                                              ),
+                                              commonText(
+                                                context: context,
+                                                text: dateOfJourney,
+                                                fontWeight: FontWeight.w700,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.048,
+                                              ),
+                                              SizedBox(
+                                                height: displayHeight(context) *
+                                                    0.005,
+                                              ),
+                                              commonText(
+                                                context: context,
+                                                text: 'YYYY-MM-DD',
+                                                fontWeight: FontWeight.w400,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.022,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            children: [
+                                              commonText(
+                                                context: context,
+                                                text: 'Total Time',
+                                                fontWeight: FontWeight.w400,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.024,
+                                              ),
+                                              SizedBox(
+                                                height: displayHeight(context) *
+                                                    0.005,
+                                              ),
+                                              commonText(
+                                                context: context,
+                                                text: '${tripData!.time} ',
+                                                fontWeight: FontWeight.w700,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.048,
+                                              ),
+                                              SizedBox(
+                                                height: displayHeight(context) *
+                                                    0.005,
+                                              ),
+                                              commonText(
+                                                context: context,
+                                                text: 'hh:mm:ss',
+                                                fontWeight: FontWeight.w400,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.022,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            children: [
+                                              commonText(
+                                                context: context,
+                                                text: 'Trip Cost',
+                                                fontWeight: FontWeight.w400,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.024,
+                                              ),
+                                              SizedBox(
+                                                height: displayHeight(context) *
+                                                    0.005,
+                                              ),
+                                              commonText(
+                                                context: context,
+                                                text: '37 \$',
+                                                fontWeight: FontWeight.w700,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.048,
+                                              ),
+                                              SizedBox(
+                                                height: displayHeight(context) *
+                                                    0.005,
+                                              ),
+                                              commonText(
+                                                context: context,
+                                                text: cad,
+                                                fontWeight: FontWeight.w400,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.022,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: displayHeight(context) * 0.02,
+                                  ),
+                                  Container(
+                                    width: displayWidth(context),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            children: [
+                                              commonText(
+                                                context: context,
+                                                text: 'Total Fuel Used',
+                                                fontWeight: FontWeight.w400,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.024,
+                                              ),
+                                              SizedBox(
+                                                height: displayHeight(context) *
+                                                    0.005,
+                                              ),
+                                              commonText(
+                                                context: context,
+                                                text: '18.25',
+                                                fontWeight: FontWeight.w700,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.048,
+                                              ),
+                                              SizedBox(
+                                                height: displayHeight(context) *
+                                                    0.005,
+                                              ),
+                                              commonText(
+                                                context: context,
+                                                text: '$liters',
+                                                fontWeight: FontWeight.w400,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.022,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            children: [
+                                              commonText(
+                                                context: context,
+                                                text: 'Distance',
+                                                fontWeight: FontWeight.w400,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.024,
+                                              ),
+                                              SizedBox(
+                                                height: displayHeight(context) *
+                                                    0.005,
+                                              ),
+                                              commonText(
+                                                context: context,
+                                                text: '${tripData!.distance} ',
+                                                fontWeight: FontWeight.w700,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.048,
+                                              ),
+                                              SizedBox(
+                                                height: displayHeight(context) *
+                                                    0.005,
+                                              ),
+                                              commonText(
+                                                context: context,
+                                                text: nauticalMiles,
+                                                fontWeight: FontWeight.w400,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.022,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            children: [
+                                              commonText(
+                                                context: context,
+                                                text: 'Avg Speed',
+                                                fontWeight: FontWeight.w400,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.024,
+                                              ),
+                                              SizedBox(
+                                                height: displayHeight(context) *
+                                                    0.005,
+                                              ),
+                                              commonText(
+                                                context: context,
+                                                text: '${tripData!.avgSpeed}',
+                                                fontWeight: FontWeight.w700,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.048,
+                                              ),
+                                              SizedBox(
+                                                height: displayHeight(context) *
+                                                    0.005,
+                                              ),
+                                              commonText(
+                                                context: context,
+                                                text: speedKnot,
+                                                fontWeight: FontWeight.w400,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.022,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: displayHeight(context) * 0.02,
+                                  ),
+                                  Container(
+                                    width: displayWidth(context),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            children: [
+                                              commonText(
+                                                context: context,
+                                                text: 'People On Board',
+                                                fontWeight: FontWeight.w400,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.024,
+                                              ),
+                                              SizedBox(
+                                                height: displayHeight(context) *
+                                                    0.005,
+                                              ),
+                                              commonText(
+                                                context: context,
+                                                text: peopleOnBoard,
+                                                fontWeight: FontWeight.w700,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.048,
+                                              ),
+                                              SizedBox(
+                                                height: displayHeight(context) *
+                                                    0.005,
+                                              ),
+                                              commonText(
+                                                context: context,
+                                                text: 'People',
+                                                fontWeight: FontWeight.w400,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.022,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            children: [
+                                              commonText(
+                                                context: context,
+                                                text: 'Total CO2 Emissions',
+                                                fontWeight: FontWeight.w400,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.024,
+                                              ),
+                                              SizedBox(
+                                                height: displayHeight(context) *
+                                                    0.005,
+                                              ),
+                                              commonText(
+                                                context: context,
+                                                text: '6.23',
+                                                fontWeight: FontWeight.w700,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.048,
+                                              ),
+                                              SizedBox(
+                                                height: displayHeight(context) *
+                                                    0.005,
+                                              ),
+                                              commonText(
+                                                context: context,
+                                                text: kg,
+                                                fontWeight: FontWeight.w400,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.022,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            children: [
+                                              commonText(
+                                                context: context,
+                                                text: 'Savings if hybrid',
+                                                fontWeight: FontWeight.w400,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.024,
+                                              ),
+                                              SizedBox(
+                                                height: displayHeight(context) *
+                                                    0.005,
+                                              ),
+                                              commonText(
+                                                context: context,
+                                                text: '27\$',
+                                                fontWeight: FontWeight.w700,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.048,
+                                              ),
+                                              SizedBox(
+                                                height: displayHeight(context) *
+                                                    0.005,
+                                              ),
+                                              commonText(
+                                                context: context,
+                                                text: cad,
+                                                fontWeight: FontWeight.w400,
+                                                textColor: Colors.black,
+                                                textSize:
+                                                    displayWidth(context) *
+                                                        0.022,
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                              SizedBox(
+                                height: displayHeight(context) * 0.01,
+                              ),
+                              Container(
+                                height: displayHeight(context) * 0.3,
+                                child: Stack(
+                                  children: [
+                                    Positioned(
+                                        top: 22,
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 26.0),
+                                          child: commonText(
+                                            context: context,
+                                            text: 'Past 5 Trips',
+                                            fontWeight: FontWeight.w500,
+                                            textColor: Colors.black,
+                                            textSize:
+                                                displayWidth(context) * 0.03,
+                                          ),
+                                        )),
+                                    SfCartesianChart(
+                                        plotAreaBorderWidth: 0,
+                                        primaryXAxis: CategoryAxis(
+                                            majorGridLines:
+                                                MajorGridLines(width: 0)),
+                                        primaryYAxis: NumericAxis(
+                                            isVisible: false,
+                                            majorGridLines:
+                                                MajorGridLines(width: 0)),
+                                        enableSideBySideSeriesPlacement: true,
+                                        legend: Legend(
+                                            shouldAlwaysShowScrollbar: false,
+                                            overflowMode:
+                                                LegendItemOverflowMode.none,
+                                            offset: Offset(80, -30),
+                                            isVisible: true,
+                                            position: LegendPosition.top,
+                                            alignment: ChartAlignment.far),
+                                        tooltipBehavior:
+                                            TooltipBehavior(enable: true),
+                                        series: <ChartSeries<SalesData,
+                                            String>>[
+                                          ColumnSeries<SalesData, String>(
+                                              dataSource: data,
+                                              color: blueColor,
+                                              spacing: 0.1,
+                                              xValueMapper:
+                                                  (SalesData sales, _) =>
+                                                      sales.year,
+                                              yValueMapper:
+                                                  (SalesData sales, _) =>
+                                                      sales.diesel,
+                                              name: 'Total',
+                                              legendIconType:
+                                                  LegendIconType.rectangle,
+                                              dataLabelSettings:
+                                                  DataLabelSettings(
+                                                      isVisible: true,
+                                                      textStyle: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: Colors.black,
+                                                          fontSize:
+                                                              displayWidth(
+                                                                      context) *
+                                                                  0.028,
+                                                          fontFamily: outfit))),
+                                          ColumnSeries<SalesData, String>(
+                                              dataSource: data,
+                                              spacing: 0.1,
+                                              color: routeMapBtnColor,
+                                              xValueMapper:
+                                                  (SalesData sales, _) =>
+                                                      sales.year,
+                                              yValueMapper:
+                                                  (SalesData sales, _) =>
+                                                      sales.hybrid,
+                                              name: '<4 kt',
+                                              legendIconType:
+                                                  LegendIconType.rectangle,
+                                              dataLabelSettings:
+                                                  DataLabelSettings(
+                                                      isVisible: true,
+                                                      textStyle: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color: Colors.black,
+                                                          fontSize:
+                                                              displayWidth(
+                                                                      context) *
+                                                                  0.028,
+                                                          fontFamily: outfit)))
+                                        ]),
+                                  ],
                                 ),
                               ),
-                            ),
-      
-                          ],
-                        ),
-                        SizedBox(height: displayHeight(context) * 0.03,),
-      
-                        Column(
-                         children: [
-                           Container(
-                             width: displayWidth(context),
-                             child: Row(
-                               //mainAxisAlignment: MainAxisAlignment.spaceAround,
-                               children: [
-                                 Expanded(
-                                   child: Column(
-                                     children: [
-                                       commonText(
-                                         context: context,
-                                         text: 'Date',
-                                         fontWeight: FontWeight.w400,
-                                         textColor: Colors.black,
-                                         textSize: displayWidth(context) * 0.024,
-                                       ),
-    
-                                       SizedBox(height: displayHeight(context) * 0.005,),
-      
-                                       commonText(
-                                         context: context,
-                                         text: dateOfJourney,
-                                         fontWeight: FontWeight.w700,
-                                         textColor: Colors.black,
-                                         textSize: displayWidth(context) * 0.048,
-                                       ),
-                                       SizedBox(height: displayHeight(context) * 0.005,),
-      
-                                       commonText(
-                                         context: context,
-                                         text: 'YYYY-MM-DD',
-                                         fontWeight: FontWeight.w400,
-                                         textColor: Colors.black,
-                                         textSize: displayWidth(context) * 0.022,
-                                       ),
-                                     ],
-                                   ),
-                                 ),
-                                 Expanded(
-                                   child: Column(
-                                     children: [
-                                       commonText(
-                                         context: context,
-                                         text: 'Total Time',
-                                         fontWeight: FontWeight.w400,
-                                         textColor: Colors.black,
-                                         textSize: displayWidth(context) * 0.024,
-                                       ),
-    
-                                       SizedBox(height: displayHeight(context) * 0.005,),
-      
-                                       commonText(
-                                         context: context,
-                                         text: '${tripData!.time} ',
-                                         fontWeight: FontWeight.w700,
-                                         textColor: Colors.black,
-                                         textSize: displayWidth(context) * 0.048,
-                                       ),
-    
-                                       SizedBox(height: displayHeight(context) * 0.005,),
-      
-                                       commonText(
-                                         context: context,
-                                         text: 'hh:mm:ss',
-                                         fontWeight: FontWeight.w400,
-                                         textColor: Colors.black,
-                                         textSize: displayWidth(context) * 0.022,
-                                       ),
-                                     ],
-                                   ),
-                                 ),
-                                 Expanded(
-                                   child: Column(
-                                     children: [
-                                       commonText(
-                                         context: context,
-                                         text: 'Trip Cost',
-                                         fontWeight: FontWeight.w400,
-                                         textColor: Colors.black,
-                                         textSize: displayWidth(context) * 0.024,
-                                       ),
-                                       SizedBox(height: displayHeight(context) * 0.005,),
-    
-                                       commonText(
-                                         context: context,
-                                         text: '37 \$',
-                                         fontWeight: FontWeight.w700,
-                                         textColor: Colors.black,
-                                         textSize: displayWidth(context) * 0.048,
-                                       ),
-    
-                                       SizedBox(height: displayHeight(context) * 0.005,),
-                                       commonText(
-                                         context: context,
-                                         text: cad,
-                                         fontWeight: FontWeight.w400,
-                                         textColor: Colors.black,
-                                         textSize: displayWidth(context) * 0.022,
-                                       ),
-                                     ],
-                                   ),
-                                 ),
-                               ],
-                             ),
-                           ),
-                           SizedBox(height: displayHeight(context) * 0.02,),
-                           Container(
-                             width: displayWidth(context),
-                             child: Row(
-                               mainAxisAlignment: MainAxisAlignment.spaceAround,
-                               children: [
-                                 Expanded(
-                                   child: Column(
-                                     children: [
-                                       commonText(
-                                         context: context,
-                                         text: 'Total Fuel Used',
-                                         fontWeight: FontWeight.w400,
-                                         textColor: Colors.black,
-                                         textSize: displayWidth(context) * 0.024,
-                                       ),
-    
-                                       SizedBox(height: displayHeight(context) * 0.005,),
-    
-                                       commonText(
-                                         context: context,
-                                         text: '18.25',
-                                         fontWeight: FontWeight.w700,
-                                         textColor: Colors.black,
-                                         textSize: displayWidth(context) * 0.048,
-                                       ),
-    
-                                       SizedBox(height: displayHeight(context) * 0.005,),
-    
-                                       commonText(
-                                         context: context,
-                                         text: '$liters',
-                                         fontWeight: FontWeight.w400,
-                                         textColor: Colors.black,
-                                         textSize: displayWidth(context) * 0.022,
-                                       ),
-                                     ],
-                                   ),
-                                 ),
-                                 Expanded(
-                                   child: Column(
-                                     children: [
-                                       commonText(
-                                         context: context,
-                                         text: 'Distance',
-                                         fontWeight: FontWeight.w400,
-                                         textColor: Colors.black,
-                                         textSize: displayWidth(context) * 0.024,
-                                       ),
-    
-                                       SizedBox(height: displayHeight(context) * 0.005,),
-    
-                                       commonText(
-                                         context: context,
-                                         text: '${tripData!.distance} ',
-                                         fontWeight: FontWeight.w700,
-                                         textColor: Colors.black,
-                                         textSize: displayWidth(context) * 0.048,
-                                       ),
-    
-                                       SizedBox(height: displayHeight(context) * 0.005,),
-      
-                                       commonText(
-                                         context: context,
-                                         text: nauticalMiles,
-                                         fontWeight: FontWeight.w400,
-                                         textColor: Colors.black,
-                                         textSize: displayWidth(context) * 0.022,
-                                       ),
-                                     ],
-                                   ),
-                                 ),
-                                 Expanded(
-                                   child: Column(
-                                     children: [
-                                       commonText(
-                                         context: context,
-                                         text: 'Avg Speed',
-                                         fontWeight: FontWeight.w400,
-                                         textColor: Colors.black,
-                                         textSize: displayWidth(context) * 0.024,
-                                       ),
-    
-                                       SizedBox(height: displayHeight(context) * 0.005,),
-    
-                                       commonText(
-                                         context: context,
-                                         text: '${tripData!.avgSpeed}',
-                                         fontWeight: FontWeight.w700,
-                                         textColor: Colors.black,
-                                         textSize: displayWidth(context) * 0.048,
-                                       ),
-    
-                                       SizedBox(height: displayHeight(context) * 0.005,),
-    
-                                       commonText(
-                                         context: context,
-                                         text: speedKnot,
-                                         fontWeight: FontWeight.w400,
-                                         textColor: Colors.black,
-                                         textSize: displayWidth(context) * 0.022,
-                                       ),
-                                     ],
-                                   ),
-                                 ),
-                               ],
-                             ),
-                           ),
-    
-                           SizedBox(height: displayHeight(context) * 0.02,),
-                           Container(
-                             width: displayWidth(context),
-                             child: Row(
-                               mainAxisAlignment: MainAxisAlignment.spaceAround,
-                               children: [
-                                 Expanded(
-                                   child: Column(
-                                     children: [
-                                       commonText(
-                                         context: context,
-                                         text: 'People On Board',
-                                         fontWeight: FontWeight.w400,
-                                         textColor: Colors.black,
-                                         textSize: displayWidth(context) * 0.024,
-                                       ),
-    
-                                       SizedBox(height: displayHeight(context) * 0.005,),
-    
-                                       commonText(
-                                         context: context,
-                                         text: peopleOnBoard,
-                                         fontWeight: FontWeight.w700,
-                                         textColor: Colors.black,
-                                         textSize: displayWidth(context) * 0.048,
-                                       ),
-    
-                                       SizedBox(height: displayHeight(context) * 0.005,),
-    
-                                       commonText(
-                                         context: context,
-                                         text: 'People',
-                                         fontWeight: FontWeight.w400,
-                                         textColor: Colors.black,
-                                         textSize: displayWidth(context) * 0.022,
-                                       ),
-                                     ],
-                                   ),
-                                 ),
-                                 Expanded(
-                                   child: Column(
-                                     children: [
-                                       commonText(
-                                         context: context,
-                                         text: 'Total CO2 Emissions',
-                                         fontWeight: FontWeight.w400,
-                                         textColor: Colors.black,
-                                         textSize: displayWidth(context) * 0.024,
-                                       ),
-    
-                                       SizedBox(height: displayHeight(context) * 0.005,),
-    
-                                       commonText(
-                                         context: context,
-                                         text: '6.23',
-                                         fontWeight: FontWeight.w700,
-                                         textColor: Colors.black,
-                                         textSize: displayWidth(context) * 0.048,
-                                       ),
-    
-                                       SizedBox(height: displayHeight(context) * 0.005,),
-    
-                                       commonText(
-                                         context: context,
-                                         text: kg,
-                                         fontWeight: FontWeight.w400,
-                                         textColor: Colors.black,
-                                         textSize: displayWidth(context) * 0.022,
-                                       ),
-                                     ],
-                                   ),
-                                 ),
-                                 Expanded(
-                                   child: Column(
-                                     children: [
-                                       commonText(
-                                         context: context,
-                                         text: 'Savings if hybrid',
-                                         fontWeight: FontWeight.w400,
-                                         textColor: Colors.black,
-                                         textSize: displayWidth(context) * 0.024,
-                                       ),
-    
-                                       SizedBox(height: displayHeight(context) * 0.005,),
-    
-                                       commonText(
-                                         context: context,
-                                         text: '27\$',
-                                         fontWeight: FontWeight.w700,
-                                         textColor: Colors.black,
-                                         textSize: displayWidth(context) * 0.048,
-                                       ),
-    
-                                       SizedBox(height: displayHeight(context) * 0.005,),
-    
-                                       commonText(
-                                         context: context,
-                                         text: cad,
-                                         fontWeight: FontWeight.w400,
-                                         textColor: Colors.black,
-                                         textSize: displayWidth(context) * 0.022,
-                                       ),
-                                     ],
-                                   ),
-                                 )
-                               ],
-                             ),
-                           )
-                         ],
-                       ),
-      
-                        SizedBox(height: displayHeight(context) * 0.01,),
-                        Container(
-                          height: displayHeight(context) * 0.3,
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                  top: 22,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 26.0),
-                                    child: commonText(
-                                      context: context,
-                                      text: 'Past 5 Trips',
-                                      fontWeight: FontWeight.w500,
-                                      textColor: Colors.black,
-                                      textSize: displayWidth(context) * 0.03,
-                                    ),
-                                  )),
-                              SfCartesianChart(
-                                  plotAreaBorderWidth: 0,
-                                  primaryXAxis:
-                                  CategoryAxis(majorGridLines: MajorGridLines(width: 0)),
-                                  primaryYAxis: NumericAxis(
-                                      isVisible: false, majorGridLines: MajorGridLines(width: 0)),
-                                  enableSideBySideSeriesPlacement: true,
-                                  legend: Legend(
-                                    shouldAlwaysShowScrollbar: false,
-                                   overflowMode: LegendItemOverflowMode.none,
-                                    offset: Offset(80, -30),
-                                      isVisible: true,
-                                      position: LegendPosition.top,
-                                      alignment: ChartAlignment.far),
-                                  tooltipBehavior: TooltipBehavior(enable: true),
-                                  series: <ChartSeries<SalesData, String>>[
-                                    ColumnSeries<SalesData, String>(
-                                        dataSource: data,
-                                        color: blueColor,
-                                        spacing: 0.1,
-                                        xValueMapper: (SalesData sales, _) => sales.year,
-                                        yValueMapper: (SalesData sales, _) => sales.diesel,
-                                        name: 'Total',
-                                        legendIconType: LegendIconType.rectangle,
-                                        dataLabelSettings: DataLabelSettings(
-                                            isVisible: true,
-                                            textStyle: TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.black,
-                                                fontSize: displayWidth(context) * 0.028,
-                                                fontFamily: outfit
-                                            )
-                                        )),
-                                    ColumnSeries<SalesData, String>(
-                                        dataSource: data,
-                                        spacing: 0.1,
-                                        color: routeMapBtnColor,
-                                        xValueMapper: (SalesData sales, _) => sales.year,
-                                        yValueMapper: (SalesData sales, _) => sales.hybrid,
-                                        name: '<4 kt',
-                                        legendIconType: LegendIconType.rectangle,
-                                        dataLabelSettings: DataLabelSettings(
-                                          isVisible: true,
-                                        textStyle: TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.black,
-                                          fontSize: displayWidth(context) * 0.028,
-                                          fontFamily: outfit
-                                        )))
-                                  ]),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: displayHeight(context) * 0.01,),
-      
-                        /*InkWell(
+                              SizedBox(
+                                height: displayHeight(context) * 0.01,
+                              ),
+
+                              /*InkWell(
                           onTap: (){
-                            *//*Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                                Trips()));*//*
+                            */ /*Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                                Trips()));*/ /*
                           },
                           child: commonText(
                             context: context,
@@ -1123,121 +1347,116 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                           ),
                         ),
                         SizedBox(height: displayHeight(context) * 0.04,),*/
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Column(
-                              children: [
-                                commonText(
-                                  context: context,
-                                  text: 'Wave Height',
-                                  fontWeight: FontWeight.w400,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.024,
-                                ),
-      
-                                commonText(
-                                  context: context,
-                                  text: '2.34',
-                                  fontWeight: FontWeight.w700,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.044,
-                                ),
-      
-                                commonText(
-                                  context: context,
-                                  text: meters,
-                                  fontWeight: FontWeight.w400,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.022,
-                                ),
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                commonText(
-                                  context: context,
-                                  text: 'Wave Period',
-                                  fontWeight: FontWeight.w400,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.024,
-                                ),
-      
-                                commonText(
-                                  context: context,
-                                  text: '3:56',
-                                  fontWeight: FontWeight.w700,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.044,
-                                ),
-      
-                                commonText(
-                                  context: context,
-                                  text: minutes,
-                                  fontWeight: FontWeight.w400,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.022,
-                                ),
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                commonText(
-                                  context: context,
-                                  text: 'Wind Speed',
-                                  fontWeight: FontWeight.w400,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.024,
-                                ),
-      
-                                commonText(
-                                  context: context,
-                                  text: '23.06',
-                                  fontWeight: FontWeight.w700,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.044,
-                                ),
-
-                                commonText(
-                                  context: context,
-                                  text: knot,
-                                  fontWeight: FontWeight.w400,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.022,
-                                ),
-                              ],
-                            ),
-                            Column(
-                              children: [
-                                commonText(
-                                  context: context,
-                                  text: 'Wind Direction',
-                                  fontWeight: FontWeight.w400,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.024,
-                                ),
-      
-                                commonText(
-                                  context: context,
-                                  text: '330o',
-                                  fontWeight: FontWeight.w700,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.044,
-                                ),
-      
-                                commonText(
-                                  context: context,
-                                  text: cardinal,
-                                  fontWeight: FontWeight.w400,
-                                  textColor: Colors.black,
-                                  textSize: displayWidth(context) * 0.022,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: displayHeight(context) * 0.03,),
-                        /*SfCartesianChart(
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Column(
+                                    children: [
+                                      commonText(
+                                        context: context,
+                                        text: 'Wave Height',
+                                        fontWeight: FontWeight.w400,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(context) * 0.024,
+                                      ),
+                                      commonText(
+                                        context: context,
+                                        text: '2.34',
+                                        fontWeight: FontWeight.w700,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(context) * 0.044,
+                                      ),
+                                      commonText(
+                                        context: context,
+                                        text: meters,
+                                        fontWeight: FontWeight.w400,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(context) * 0.022,
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      commonText(
+                                        context: context,
+                                        text: 'Wave Period',
+                                        fontWeight: FontWeight.w400,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(context) * 0.024,
+                                      ),
+                                      commonText(
+                                        context: context,
+                                        text: '3:56',
+                                        fontWeight: FontWeight.w700,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(context) * 0.044,
+                                      ),
+                                      commonText(
+                                        context: context,
+                                        text: minutes,
+                                        fontWeight: FontWeight.w400,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(context) * 0.022,
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      commonText(
+                                        context: context,
+                                        text: 'Wind Speed',
+                                        fontWeight: FontWeight.w400,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(context) * 0.024,
+                                      ),
+                                      commonText(
+                                        context: context,
+                                        text: '23.06',
+                                        fontWeight: FontWeight.w700,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(context) * 0.044,
+                                      ),
+                                      commonText(
+                                        context: context,
+                                        text: knot,
+                                        fontWeight: FontWeight.w400,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(context) * 0.022,
+                                      ),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      commonText(
+                                        context: context,
+                                        text: 'Wind Direction',
+                                        fontWeight: FontWeight.w400,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(context) * 0.024,
+                                      ),
+                                      commonText(
+                                        context: context,
+                                        text: '330o',
+                                        fontWeight: FontWeight.w700,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(context) * 0.044,
+                                      ),
+                                      commonText(
+                                        context: context,
+                                        text: cardinal,
+                                        fontWeight: FontWeight.w400,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(context) * 0.022,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: displayHeight(context) * 0.03,
+                              ),
+                              /*SfCartesianChart(
                             series: <ChartSeries>[
                               SplineSeries<NewChartData, int>(
                                   dataSource: chartData,
@@ -1249,130 +1468,168 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                               )
                             ]
                         )*/
-                      ],
-                    ),
-                  ),
-                ),
-      
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  left: 0,
-                  child: Container(
-                    color: backgroundColor,
-                    child: Column(
-                      children: [
-    
-                        commonProvider.downloadTripData
-                            ? CircularProgressIndicator(color: blueColor,)
-                            : Container(
-                          margin: EdgeInsets.only(top: 10, left: 17, right: 17),
-                          width: displayWidth(context),
-                          height: displayHeight(context) * 0.055,
-                          decoration: BoxDecoration(
-                            color: blueColor,
-                            borderRadius: BorderRadius.circular(8)
-                          ),
-                          child: Center(
-                            child: ElevatedButton(
-                                onPressed: ()async{
-                                  debugPrint("DOWNLOAD TRIP ID ${widget.tripId!}");
-                                  debugPrint("DOWNLOAD TRIP ID ${tripData!.isCloud}");
-    
-                                  if(tripData!.isCloud != 0)
-                                  {
-                                    bool check = await Utils().check(scaffoldKey);
-                                    Utils.customPrint("NETWORK $check");
-                                    if(check)
-                                    {
-                                      commonProvider.downloadTripProgressBar(true);
-    
-                                      DownloadTrip().downloadTripFromCloud(context,scaffoldKey, tripData!.filePath!, commonProvider);
-    
-                                    }
-    
-                                  }
-                                  else
-                                  {
-                                    DownloadTrip().downloadTrip(
-                                        context,
-                                        scaffoldKey,
-                                        widget.tripId!);
-                                  }
-      
-                                },
-                                style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all(blueColor),
-                                    fixedSize: MaterialStateProperty.all(
-                                        Size(displayWidth(context), displayHeight(context) * 0.065)),
-                                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      side: BorderSide(color: blueColor),
-                                    ))),
-                                child: Center(
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset('assets/icons/download.png', height: displayHeight(context) * 0.03,),
-                                      SizedBox(width: 10,),
-                                      commonText(
-                                        context: context,
-                                        text: 'Download Trip Data ',
-                                        fontWeight: FontWeight.w600,
-                                        textColor: Colors.white,
-                                        textSize: displayWidth(context) * 0.036,
-                                      ),
-                                    ],
-                                  ),
-      
-                                ))
+                            ],
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(bottom: 8
-                          ),
-                          child: GestureDetector(
-                              onTap: ()async{
-                                final image = await controller.capture();
-                                Utils.customPrint("Image is: ${image.toString()}");
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackReport(
-                                  imagePath: image.toString(),
-                                  uIntList: image,)));
-                              },
-                              child: UserFeedback().getUserFeedback(context)
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        left: 0,
+                        child: Container(
+                          color: backgroundColor,
+                          child: Column(
+                            children: [
+                              commonProvider.downloadTripData
+                                  ? CircularProgressIndicator(
+                                      color: blueColor,
+                                    )
+                                  : Container(
+                                      margin: EdgeInsets.only(
+                                          top: 10, left: 17, right: 17),
+                                      width: displayWidth(context),
+                                      height: displayHeight(context) * 0.055,
+                                      decoration: BoxDecoration(
+                                          color: blueColor,
+                                          borderRadius:
+                                              BorderRadius.circular(8)),
+                                      child: Center(
+                                          child: ElevatedButton(
+                                              onPressed: () async {
+                                                debugPrint(
+                                                    "DOWNLOAD TRIP ID ${widget.tripId!}");
+                                                debugPrint(
+                                                    "DOWNLOAD TRIP ID ${tripData!.isCloud}");
+
+                                                if (tripData!.isCloud != 0) {
+                                                  bool check = await Utils()
+                                                      .check(scaffoldKey);
+                                                  Utils.customPrint(
+                                                      "NETWORK $check");
+                                                  if (check) {
+                                                    commonProvider
+                                                        .downloadTripProgressBar(
+                                                            true);
+
+                                                    DownloadTrip()
+                                                        .downloadTripFromCloud(
+                                                            context,
+                                                            scaffoldKey,
+                                                            tripData!.filePath!,
+                                                            commonProvider);
+                                                  }
+                                                } else {
+                                                  DownloadTrip().downloadTrip(
+                                                      context,
+                                                      scaffoldKey,
+                                                      widget.tripId!);
+                                                }
+                                              },
+                                              style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all(
+                                                          blueColor),
+                                                  fixedSize:
+                                                      MaterialStateProperty.all(
+                                                          Size(
+                                                              displayWidth(
+                                                                  context),
+                                                              displayHeight(
+                                                                      context) *
+                                                                  0.065)),
+                                                  shape:
+                                                      MaterialStateProperty.all(
+                                                          RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    side: BorderSide(
+                                                        color: blueColor),
+                                                  ))),
+                                              child: Center(
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Image.asset(
+                                                      'assets/icons/download.png',
+                                                      height: displayHeight(
+                                                              context) *
+                                                          0.03,
+                                                    ),
+                                                    SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    commonText(
+                                                      context: context,
+                                                      text:
+                                                          'Download Trip Data ',
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      textColor: Colors.white,
+                                                      textSize: displayWidth(
+                                                              context) *
+                                                          0.036,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ))),
+                                    ),
+                              Padding(
+                                padding: EdgeInsets.only(bottom: 8),
+                                child: GestureDetector(
+                                    onTap: () async {
+                                      final image = await controller.capture();
+                                      Utils.customPrint(
+                                          "Image is: ${image.toString()}");
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  FeedbackReport(
+                                                    imagePath: image.toString(),
+                                                    uIntList: image,
+                                                  )));
+                                    },
+                                    child: UserFeedback()
+                                        .getUserFeedback(context)),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
+                      )
+                    ],
                   ),
-                )
-              ],
-            ),
           ),
         ),
       ),
     );
   }
 
-  showDeleteTripDialogBox(BuildContext context,String tripId,Function() onDeleteCallBack, GlobalKey<ScaffoldState> scaffoldKey,bool tripUploadStatus) {
+  showDeleteTripDialogBox(
+      BuildContext context,
+      String tripId,
+      Function() onDeleteCallBack,
+      GlobalKey<ScaffoldState> scaffoldKey,
+      bool tripUploadStatus) {
     return showDialog(
         barrierDismissible: false,
         context: context,
         builder: (BuildContext dialogContext) {
           return PopScope(
             canPop: false,
-            onPopInvoked: (didPop)async
-            {
-              if(didPop) return;
-               isBtnClick ? false : true;
+            onPopInvoked: (didPop) async {
+              if (didPop) return;
+              isBtnClick ? false : true;
             },
             child: Dialog(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
               child: StatefulBuilder(
-                builder: (ctx,  stateSetter) {
+                builder: (ctx, stateSetter) {
                   return Container(
                     height: displayHeight(ctx) * 0.46,
                     width: MediaQuery.of(ctx).size.width,
@@ -1388,7 +1645,6 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                               SizedBox(
                                 height: displayHeight(ctx) * 0.02,
                               ),
-
                               ClipRRect(
                                   borderRadius: BorderRadius.circular(10),
                                   child: Container(
@@ -1400,27 +1656,28 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                       fit: BoxFit.contain,
                                     ),
                                   )),
-
                               SizedBox(
                                 height: displayHeight(ctx) * 0.02,
                               ),
-
                               SizedBox(
-                                height: displayHeight(context)/8.5,
+                                height: displayHeight(context) / 8.5,
                                 child: Padding(
-                                  padding: const EdgeInsets.only(left: 10.0, right: 10),
+                                  padding: const EdgeInsets.only(
+                                      left: 10.0, right: 10),
                                   child: Column(
                                     children: [
                                       Center(
                                         child: Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 4),
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 4),
                                           child: commonText(
                                               context: context,
                                               text:
-                                              'Do you want to delete the Trip? ',
+                                                  'Do you want to delete the Trip? ',
                                               fontWeight: FontWeight.w500,
                                               textColor: Colors.black,
-                                              textSize: displayWidth(ctx) * 0.045,
+                                              textSize:
+                                                  displayWidth(ctx) * 0.045,
                                               textAlign: TextAlign.center),
                                         ),
                                       ),
@@ -1428,11 +1685,11 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                         height: displayHeight(ctx) * 0.008,
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 4),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 4),
                                         child: commonText(
                                             context: context,
-                                            text:
-                                            deleteTripSubText,
+                                            text: deleteTripSubText,
                                             fontWeight: FontWeight.w500,
                                             textColor: Colors.grey,
                                             textSize: displayWidth(ctx) * 0.036,
@@ -1444,115 +1701,120 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                               ),
                               Container(
                                 margin: EdgeInsets.only(
-                                    top: 8.0,left: displayWidth(ctx) * 0.035,right: displayWidth(ctx) * 0.035
-                                ),
+                                    top: 8.0,
+                                    left: displayWidth(ctx) * 0.035,
+                                    right: displayWidth(ctx) * 0.035),
                                 child: SizedBox(
-                                  height: displayHeight(context)/8.3,
+                                  height: displayHeight(context) / 8.3,
                                   child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                
-                                      isBtnClick ? Center(
-                                        child: Container(
-                                          width: displayWidth(ctx) * 0.32,
-                                          child: Center(child: CircularProgressIndicator(
-                                            color: blueColor,
-                                          )),
-                                        ),
-                                      ) :  CommonButtons.getAcceptButton(
-                                          'Confirm & Delete', context, deleteTripBtnColor,
-                                              () async {
+                                      isBtnClick
+                                          ? Center(
+                                              child: Container(
+                                                width: displayWidth(ctx) * 0.32,
+                                                child: Center(
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                  color: blueColor,
+                                                )),
+                                              ),
+                                            )
+                                          : CommonButtons.getAcceptButton(
+                                              'Confirm & Delete',
+                                              context,
+                                              deleteTripBtnColor, () async {
+                                              stateSetter(() {
+                                                cancelVisible = false;
+                                                isBtnClick = true;
+                                              });
+                                              internalStateSetter = stateSetter;
+                                              internet = await Utils()
+                                                  .check(scaffoldKey);
+                                              stateSetter(() {
+                                                internet;
+                                              });
+
+                                              if (internet ?? false) {
                                                 stateSetter(() {
-                                                  cancelVisible=false;
                                                   isBtnClick = true;
                                                 });
-                                            internalStateSetter = stateSetter;
-                                             internet =
-                                            await Utils().check(scaffoldKey);
-                                                stateSetter(() {
-                                                  internet;
-                                                });
-
-                                
-                                            if(internet??false){
-                                              stateSetter(() {
-                                                isBtnClick = true;
-                                              });
-                                              Utils.customPrint("Ok button action : $isBtnClick");
-                                              bool deletedtrip = false;
-                                              deletedtrip =  await deleteTripFunctionality(
-                                                  tripId,
-                                                      (){
-                                                    setState(() {
-                                                      // widget.isTripDeleted!.call();
-                                                      Navigator.pop(dialogContext);
+                                                Utils.customPrint(
+                                                    "Ok button action : $isBtnClick");
+                                                bool deletedtrip = false;
+                                                deletedtrip =
+                                                    await deleteTripFunctionality(
+                                                        tripId, () {
+                                                  setState(() {
+                                                    // widget.isTripDeleted!.call();
+                                                    Navigator.pop(
+                                                        dialogContext);
                                                     //  Navigator.pop(context);
-                                                      Navigator.pushAndRemoveUntil(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (context) => BottomNavigation()),
-                                                          ModalRoute.withName(""));
-                                                    });
-                                                  }
-                                              );
-                                            } else if(tripUploadStatus){
-                                              stateSetter(() {
-                                                isBtnClick = true;
-                                              });
-                                              DatabaseService().deleteTripFromDB(tripId).then((value)
-                                              {
-                                                deleteFilePath('${ourDirectory!.path}/${tripId}.zip');
-                                                deleteFolder('${ourDirectory!.path}/${tripId}');
-                                               // commonProvider.getTripsCount();
-                                               // widget.isTripDeleted!.call();
-                                                onDeleteCallBack.call();
-                                
+                                                    Navigator.pushAndRemoveUntil(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                BottomNavigation()),
+                                                        ModalRoute.withName(
+                                                            ""));
+                                                  });
+                                                });
+                                              } else if (tripUploadStatus) {
+                                                stateSetter(() {
+                                                  isBtnClick = true;
+                                                });
+                                                DatabaseService()
+                                                    .deleteTripFromDB(tripId)
+                                                    .then((value) {
+                                                  deleteFilePath(
+                                                      '${ourDirectory!.path}/${tripId}.zip');
+                                                  deleteFolder(
+                                                      '${ourDirectory!.path}/${tripId}');
+                                                  // commonProvider.getTripsCount();
+                                                  // widget.isTripDeleted!.call();
+                                                  onDeleteCallBack.call();
+
+                                                  stateSetter(() {
+                                                    isBtnClick = false;
+                                                  });
+                                                  Navigator.pop(dialogContext);
+                                                  Navigator.pop(dialogContext);
+                                                  Navigator.pushAndRemoveUntil(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              BottomNavigation()),
+                                                      ModalRoute.withName(""));
+                                                });
+                                              } else {
                                                 stateSetter(() {
                                                   isBtnClick = false;
                                                 });
-                                                Navigator.pop(dialogContext);
-                                                Navigator.pop(dialogContext);
-                                                Navigator.pushAndRemoveUntil(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) => BottomNavigation()),
-                                                    ModalRoute.withName(""));
-                                              });
-                                            } else{
-                                              stateSetter(() {
-                                                isBtnClick = false;
-                                              });
-                                            }
-                                          },
-                                          displayWidth(ctx) ,
-                                          displayHeight(ctx) * 0.07,
-                                          deleteTripBtnColor,
-                                          Colors.white,
-                                          displayHeight(ctx) * 0.02,
-                                          deleteTripBtnColor,
-                                          '',
-                                          fontWeight: FontWeight.w600),
-                                
+                                              }
+                                            },
+                                              displayWidth(ctx),
+                                              displayHeight(ctx) * 0.07,
+                                              deleteTripBtnColor,
+                                              Colors.white,
+                                              displayHeight(ctx) * 0.02,
+                                              deleteTripBtnColor,
+                                              '',
+                                              fontWeight: FontWeight.w600),
                                       CommonButtons.getAcceptButton(
-                                          'Cancel',
-                                          context,
-                                          Colors.transparent,
-                                
-                                          (){
-                                
-                                            if(!cancelVisible&&internet==true){
-                                            }else{
-                                            Navigator.pop(dialogContext);
-                                
-                                            }
-                                      
-                                            
-                                          },
-                                          displayWidth(ctx) ,
+                                          'Cancel', context, Colors.transparent,
+                                          () {
+                                        if (!cancelVisible &&
+                                            internet == true) {
+                                        } else {
+                                          Navigator.pop(dialogContext);
+                                        }
+                                      },
+                                          displayWidth(ctx),
                                           displayHeight(ctx) * 0.05,
                                           primaryColor,
                                           Theme.of(ctx).brightness ==
-                                              Brightness.dark
+                                                  Brightness.dark
                                               ? Colors.white
                                               : Colors.grey,
                                           displayHeight(ctx) * 0.02,
@@ -1568,8 +1830,6 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                               ),
                             ],
                           ),
-
-
                           Positioned(
                             right: 10,
                             top: 2,
@@ -1577,15 +1837,17 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                               height: 30,
                               width: 30,
                               decoration: BoxDecoration(
-                                shape: BoxShape.circle,),
+                                shape: BoxShape.circle,
+                              ),
                               child: Center(
-                                child: isBtnClick ?
-                                SizedBox()
-                                : IconButton(
-                                    onPressed: () {
-                                      Navigator.pop(dialogContext);
-                                    },
-                                    icon: Icon(Icons.close_rounded, color: buttonBGColor)),
+                                child: isBtnClick
+                                    ? SizedBox()
+                                    : IconButton(
+                                        onPressed: () {
+                                          Navigator.pop(dialogContext);
+                                        },
+                                        icon: Icon(Icons.close_rounded,
+                                            color: buttonBGColor)),
                               ),
                             ),
                           )
@@ -1598,13 +1860,13 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
             ),
           );
         }).then((value) {
-         if(value == null) {
-           setState(() {
-             isBtnClick = false;
-           });
-          // widget.isTripDeleted!.call();
-           return;
-         }
+      if (value == null) {
+        setState(() {
+          isBtnClick = false;
+        });
+        // widget.isTripDeleted!.call();
+        return;
+      }
     });
   }
 
@@ -1614,7 +1876,8 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
       await file.delete();
 
       Utils.customPrint('Trip deleted successfully');
-      CustomLogger().logWithFile(Level.info, "Trip deleted successfully -> $page");
+      CustomLogger()
+          .logWithFile(Level.info, "Trip deleted successfully -> $page");
     } catch (e) {
       CustomLogger().logWithFile(Level.error, "Failed to delete trip -> $page");
       Utils.customPrint('Failed to delete trip: $e');
@@ -1636,17 +1899,16 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
     }
   }
 
-  bool deleteTripFunctionality(String tripId,VoidCallback onDeleteCallBack)
-  {
-    try{
-      commonProvider.deleteTrip(context, commonProvider.loginModel!.token!, tripId, scaffoldKey).then((value) {
-        if(value != null)
-        {
-          if(value.status!)
-          {
+  bool deleteTripFunctionality(String tripId, VoidCallback onDeleteCallBack) {
+    try {
+      commonProvider
+          .deleteTrip(
+              context, commonProvider.loginModel!.token!, tripId, scaffoldKey)
+          .then((value) {
+        if (value != null) {
+          if (value.status!) {
             isDeletedSuccessfully = value.status!;
-            DatabaseService().deleteTripFromDB(tripId).then((value)
-            {
+            DatabaseService().deleteTripFromDB(tripId).then((value) {
               deleteFilePath('${ourDirectory!.path}/${tripId}.zip');
               deleteFolder('${ourDirectory!.path}/${tripId}');
               setState(() {
@@ -1660,21 +1922,18 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
               isDeleteTripBtnClicked = false;
             });
           }
-
-        } else{
+        } else {
           setState(() {
             isBtnClick = false;
           });
         }
-      }).catchError((e){
+      }).catchError((e) {
         internalStateSetter!(() {
-
           isBtnClick = false;
         });
       });
-    } catch(e){
+    } catch (e) {
       internalStateSetter!(() {
-
         isBtnClick = false;
       });
     }
@@ -1682,44 +1941,43 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
   }
 
   getData() async {
-
     if (widget.calledFrom == 'Report') {
       final DatabaseService _databaseService = DatabaseService();
       final tripDetails = await _databaseService.getTrip(widget.tripId!);
 
       List<CreateVessel> vesselDetails =
-      await _databaseService.getVesselNameByID(widget.vesselId!);
+          await _databaseService.getVesselNameByID(widget.vesselId!);
 
       setState(() {
         tripData = tripDetails;
         vesselData = vesselDetails[0];
       });
       tripIsSyncOrNot = tripData!.isSync;
-      dateOfJourney = DateFormat('yyyy-MM-dd').format(DateTime.parse(tripData!.createdAt!));
+      dateOfJourney =
+          DateFormat('yyyy-MM-dd').format(DateTime.parse(tripData!.createdAt!));
     } else {
       final DatabaseService _databaseService = DatabaseService();
       final tripDetails = await _databaseService.getTrip(widget.tripId!);
 
       List<CreateVessel> vesselDetails =
-      await _databaseService.getVesselNameByID(widget.vesselId!);
+          await _databaseService.getVesselNameByID(widget.vesselId!);
 
       setState(() {
         tripData = tripDetails;
         vesselData = vesselDetails[0];
       });
       tripIsSyncOrNot = tripData!.isSync;
-      dateOfJourney = DateFormat('yyyy-MM-dd').format(DateTime.parse(tripData!.createdAt!));
+      dateOfJourney =
+          DateFormat('yyyy-MM-dd').format(DateTime.parse(tripData!.createdAt!));
     }
     peopleOnBoard = tripData!.numberOfPassengers.toString();
 
     Utils.customPrint("DATE DATE ${dateOfJourney}");
     Utils.customPrint("DATE DATE ${tripData!.isSync}");
   }
-
 }
 
-class AnalyticsData
-{
+class AnalyticsData {
   String? title, type, value;
   AnalyticsData({this.title, this.type, this.value});
 }
@@ -1735,4 +1993,3 @@ class SalesData {
   final String year;
   final double diesel, hybrid;
 }
-
