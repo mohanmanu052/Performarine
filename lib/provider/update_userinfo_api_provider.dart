@@ -69,7 +69,7 @@ class UpdateUserInfoApiProvider with ChangeNotifier
         }
 
         commonModel = null;
-      } else if(response.statusCode == 400)
+      } else if(decodedData['statusCode'] == 401)
       {
         Navigator.push(
             context,

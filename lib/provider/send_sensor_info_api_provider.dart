@@ -133,7 +133,7 @@ class SendSensorInfoApiProvider with ChangeNotifier {
           }
 
           uploadTripModel = null;
-        } else if(response.statusMessage == 400)
+        } else if(decodedData['statusCode'] == 401)
           {
             Navigator.push(
                 context,

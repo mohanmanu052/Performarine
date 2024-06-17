@@ -62,7 +62,7 @@ var decodedData=json.decode(response.body);
         }
 
         responseModel = null;
-      } else if(response.statusCode == 400)
+      } else if(decodedData['statusCode'] == 401)
       {
         Navigator.push(
             context!,

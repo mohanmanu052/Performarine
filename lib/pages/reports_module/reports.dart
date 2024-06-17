@@ -33,7 +33,7 @@ import '../../provider/common_provider.dart';
 
 class ReportsModule extends StatefulWidget {
   ReportsModule(
-      {super.key, this.onScreenShotCaptureCallback, this.isTypeFleet});
+      {super.key, this.onScreenShotCaptureCallback, this.isTypeFleet = false});
 
   VoidCallback? onScreenShotCaptureCallback;
   bool? isTypeFleet;
@@ -395,8 +395,18 @@ class _ReportsModuleState extends State<ReportsModule>
             if (value.vessels!.length == 0) {
               isVesselsFound = true;
             }
-            vesselData = List<DropdownItem>.from(value.vessels!.map(
-                (vessel) => DropdownItem(id: vessel.id, name: vessel.name)));
+
+            if(widget.isTypeFleet!)
+              {
+                vesselData = List<DropdownItem>.from(value.vessels!.map(
+                        (vessel) => DropdownItem(id: vessel.id, name: vessel.name)));
+              }
+            else
+              {
+                vesselData = List<DropdownItem>.from(value.vessels!.where((element) => commonProvider.loginModel!.userId == element.createdBy).toList().map(
+                        (vessel) => DropdownItem(id: vessel.id, name: vessel.name)));
+              }
+
 
             Utils.customPrint("vesselData: ${vesselData.length}");
             CustomLogger().logWithFile(
@@ -1108,6 +1118,8 @@ class _ReportsModuleState extends State<ReportsModule>
     if (widget.isTypeFleet ?? false) {
       getFleetDetails();
     }
+
+    debugPrint("IS TYPE FLEET ${widget.isTypeFleet}");
     super.initState();
   }
 

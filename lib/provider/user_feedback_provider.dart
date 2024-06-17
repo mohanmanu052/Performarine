@@ -90,7 +90,7 @@ class UserFeedbackProvider with ChangeNotifier {
         kReleaseMode ? null : Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         kReleaseMode ? null : Utils.customPrint('EXE RESP: $response');
       }
-      else if(response.statusCode == 400)
+      else if(decodedData['statusCode'] == 401)
       {
         Navigator.push(
             context,
