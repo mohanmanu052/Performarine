@@ -45,9 +45,9 @@ import 'package:performarine/provider/common_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest.dart' as tz;
-import 'package:uni_links/uni_links.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:workmanager/workmanager.dart';
+import 'package:app_links/app_links.dart';
 
 import 'analytics/get_or_create_folder.dart';
 import 'common_widgets/controller/location_controller.dart';
@@ -389,11 +389,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   bool isLoading = false, isComingFromUnilink = false;
   StreamSubscription? _sub;
 
+      late AppLinks?  _appLinks;
   Future<void> initDeepLinkListener() async {
+    _appLinks=AppLinks();
 
     try {
       print('coming to init deeplink-------');
-      _sub = uriLinkStream.listen((Uri? uri) async{
+      _sub = _appLinks?.uriLinkStream.listen((Uri? uri) async{
 
        setState(() {
          isComingFromUnilink = true;

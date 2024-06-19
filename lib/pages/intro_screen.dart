@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:app_links/app_links.dart';
 import 'package:background_locator_2/background_locator.dart';
 import 'package:background_locator_2/settings/android_settings.dart';
 import 'package:background_locator_2/settings/ios_settings.dart';
@@ -25,7 +26,6 @@ import 'package:performarine/pages/new_intro_screen.dart';
 import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
 import 'package:performarine/pages/sync_data_cloud_to_mobile_screen.dart';
 import 'package:performarine/pages/trip_analytics.dart';
-import 'package:uni_links/uni_links.dart';
 
 import '../common_widgets/utils/constants.dart';
 import '../common_widgets/widgets/log_level.dart';
@@ -42,6 +42,7 @@ class _IntroScreenState extends State<IntroScreen> {
   bool? isBtnVisible = false, isTripRunningCurrently = false;
   StreamSubscription? _sub;
   String page = "Intro_screen";
+        late AppLinks?  _appLinks;
 
   @override
   void initState() {
@@ -390,9 +391,10 @@ class _IntroScreenState extends State<IntroScreen> {
   }
 
   Future<void> initUniLinks() async {
+    _appLinks=AppLinks();
     Uri? initialLink;
     try {
-      initialLink = await getInitialUri();
+      initialLink = await _appLinks?.getLatestLink();
 
     Utils.customPrint('UNI LINK: $initialLink');
       CustomLogger().logWithFile(Level.info, "UNI LINK: $initialLink -> $page");
@@ -444,7 +446,7 @@ class _IntroScreenState extends State<IntroScreen> {
     }
 
     try {
-      _sub = uriLinkStream.listen((Uri? uri) async{
+      _sub = _appLinks?.uriLinkStream.listen((Uri? uri) async{
 
         Utils.customPrint("URI: ${uri}");
         CustomLogger().logWithFile(Level.info, "URI: $uri-> $page");

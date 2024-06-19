@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app_links/app_links.dart';
 import 'package:background_locator_2/background_locator.dart';
 import 'package:background_locator_2/settings/android_settings.dart';
 import 'package:background_locator_2/settings/ios_settings.dart';
@@ -22,7 +23,6 @@ import 'package:performarine/pages/auth_new/sign_in_screen.dart';
 import 'bottom_navigation.dart';
 import 'start_trip/trip_recording_screen.dart';
 import 'sync_data_cloud_to_mobile_screen.dart';
-import 'package:uni_links/uni_links.dart';
 import '../common_widgets/utils/utils.dart';
 import '../analytics/location_callback_handler.dart';
 
@@ -39,6 +39,8 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
       locationAccuracy = false;
   StreamSubscription? _sub;
   String page = "Intro_screen";
+        late AppLinks?  _appLinks;
+
 
   @override
   void initState() {
@@ -368,6 +370,8 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
   }
 
   Future<void> initUniLinks() async {
+        _appLinks = AppLinks();
+
     Uri? initialLink;
     try {
       // bool? isInitialUriHandled =
@@ -375,7 +379,7 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
       //
       // if (!isInitialUriHandled) {
         sharedPreferences!.setBool('is_initial_uri_handled', true);
-        initialLink = await getInitialUri();
+        initialLink = await _appLinks?.getInitialLink();
 
         Utils.customPrint('UNI LINK: $initialLink');
         CustomLogger()
@@ -416,12 +420,12 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
                     arguments: arguments);
               }
             } else {
-              Future.delayed(Duration(seconds: 2), () {
+            //  Future.delayed(Duration(seconds: 2), () {
                 isComingFromUnilinkMain = true;
                 Get.offAll(ResetPassword(
                     token: initialLink!.queryParameters['verify'].toString(),
                     isCalledFrom: "Main"));
-              });
+            //  });
             }
           }
           else if (initialLink.path=='/fleetmember') {
@@ -546,7 +550,7 @@ if(isSameUser){
     }
 
     try {
-      _sub = uriLinkStream.listen((Uri? uri) async {
+      _sub = _appLinks?.uriLinkStream.listen((Uri? uri) async {
         Utils.customPrint("URI: ${uri}");
         CustomLogger().logWithFile(Level.info, "URI: $uri-> $page");
         if (uri != null) {
@@ -578,7 +582,8 @@ if(isSameUser){
                     arguments: arguments);
               }
             } else {
-
+              Get.to(ResetPassword(token: uri.queryParameters['verify'].toString(),isCalledFrom: "Main",));
+              CustomLogger().logWithFile(Level.info, "User navigating to reset password screen -> $page ");
             }
           }
           else if (uri.path=='/fleetmember') {
