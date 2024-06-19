@@ -71,6 +71,7 @@ dependencies:
   bluetooth_enable_fork: ^0.1.6
   table_calendar: ^3.0.0
   jwt_decoder: ^2.0.1
+  app_links: ^6.1.1
   background_locator_2:
     path: ./performarine_location_tracker
   syncfusion_flutter_charts: 
@@ -80,7 +81,6 @@ dependencies:
   flutter_easyloading: ^3.0.5
   #airplane_mode_checker: ^2.0.0
   #location_permissions: ^3.0.0+1
-  uni_links: ^0.5.1
   firebase_crashlytics: ^3.3.3
   wakelock: ^0.6.2
   screenshot: ^3.0.0
