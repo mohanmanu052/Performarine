@@ -60,6 +60,8 @@ static const removeDelegate='/api/removeDelegate';
 static const manageDelegate='/api/managedelegate';
 static const removeFleetMember='/api/removeFleetMember';
 
+static const deleteAccount='/api/deleteaccount';
+
 
 static String baseUrlVersion = '';
 

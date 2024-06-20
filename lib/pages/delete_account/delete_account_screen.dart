@@ -43,7 +43,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
   TextEditingController confirmationCodeController = TextEditingController();
   FocusNode confirmationCodeFocusNode = FocusNode();
 
-  bool isChecked = false, isValidCode = false, isAccountDeleting = false, isUploadStarted = false, isSync = false;
+  bool isChecked = false, isValidCode = false, isAccountDeleting = false, isUploadStarted = false, isSync = false, isDeleteAccountBtnCalled = false;
 
   String? verificationCode;
 
@@ -62,11 +62,12 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
 
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
+    commonProvider = context.read<CommonProvider>();
+
     verificationCode = generateVerificationCode();
 
     confirmationCodeController.addListener(_validateCode);
 
-    commonProvider = context.read<CommonProvider>();
     deviceDetails = DeviceInfoPlugin();
   }
 
@@ -134,7 +135,9 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                 vertical: 10),
             child: Column(
               children: [
-                CommonButtons.getActionButton(
+                isDeleteAccountBtnCalled
+                ? CircularProgressIndicator()
+                : CommonButtons.getActionButton(
                     title: 'Confirm & Delete',
                     context: context,
                     fontSize: displayWidth(context) * 0.042,
@@ -145,6 +148,10 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                     onTap: confirmationCodeController.text.isEmpty || !isValidCode || !isChecked
                       ? null
                         : () async {
+
+                    setState(() {
+                      isDeleteAccountBtnCalled = true;
+                    });
 
                       bool? isTripStarted =
                       sharedPreferences!.getBool('trip_started');
@@ -168,13 +175,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                                 context,
                                 scaffoldKey);
                           } else {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      SuccessfullyDeletedAccountScreen(
-                                      )),
-                            );
+                            deleteAccountMethod();
                           }
                         }
                       } else {
@@ -183,13 +184,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                               context,
                               scaffoldKey,);
                         } else {
-                          Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                SuccessfullyDeletedAccountScreen(
-                                )),
-                      );
+                          deleteAccountMethod();
                         }
                       }
                     }),
@@ -688,13 +683,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                                         Colors.transparent, () async {
                                       Navigator.of(context).pop();
                                       // TODO Delete account functionality
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                SuccessfullyDeletedAccountScreen(
-                                                )),
-                                      );
+                                      deleteAccountMethod();
                                     },
                                         displayWidth(context) / 1.6,
                                         displayHeight(context) * 0.055,
@@ -746,6 +735,44 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
           );
         });
   }
+
+  deleteAccountMethod()
+  {
+    commonProvider.deleteAccount(context, commonProvider.loginModel!.token!, scaffoldKey).then((value){
+      if(value != null)
+        {
+          if(value.status!)
+            {
+              setState(() {
+                isDeleteAccountBtnCalled = false;
+              });
+
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        SuccessfullyDeletedAccountScreen(
+                        )),
+              );
+            }
+          else
+            {
+              setState(() {
+                isDeleteAccountBtnCalled = false;
+              });
+            }
+        }
+      else
+        {
+          setState(() {
+            isDeleteAccountBtnCalled = false;
+          });
+        }
+    }).catchError((e){setState(() {
+      isDeleteAccountBtnCalled = false;
+    });});
+  }
+
 
   syncAndDelete(bool isChangePassword, BuildContext context,
       StateSetter setDialogState) async {
@@ -923,13 +950,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
 
     if (!vesselErrorOccurred && !tripErrorOccurred) {
      // TODO Delete Account Functionality
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                SuccessfullyDeletedAccountScreen(
-                )),
-      );
+      deleteAccountMethod();
       Utils.customPrint("ERROR WHILE SYNC AND SIGN OUT IF SIGN OUTT");
     } else {
       Utils.showSnackBar(context,

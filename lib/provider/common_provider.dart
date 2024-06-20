@@ -29,6 +29,7 @@ import 'package:performarine/provider/change_password_provider.dart';
 import 'package:performarine/provider/create_delegate_api_provider.dart';
 import 'package:performarine/provider/create_newfleet_provider.dart';
 import 'package:performarine/provider/delegate_provider.dart';
+import 'package:performarine/provider/delete_account_api_provider.dart';
 import 'package:performarine/provider/delete_fleet_api_provider.dart';
 import 'package:performarine/provider/delete_trip_api_provider.dart';
 import 'package:performarine/provider/edit_fleet_api_provider.dart';
@@ -98,6 +99,7 @@ class CommonProvider with ChangeNotifier {
   CommonModel? manageDelegateModel;
   CommonModel? removeFleetMemberModel;
   CommonModel? myDelegateInviteModel;
+  CommonModel? deleteAccountModel;
   FleetDetailsModel? fleetDetailsModel;
   VesselDelegateModel? vesselDelegateModel;
   CommonModel? removeDelegateModel;
@@ -736,5 +738,17 @@ class CommonProvider with ChangeNotifier {
 
     return removeFleetMemberModel!;
   }
+
+  Future<CommonModel> deleteAccount(
+      BuildContext context,
+      String token,
+      GlobalKey<ScaffoldState> scaffoldKey) async {
+    deleteAccountModel = CommonModel();
+    deleteAccountModel = await DeleteAccountApiProvider().deleteAccount(context, token, scaffoldKey);
+    notifyListeners();
+
+    return deleteAccountModel!;
+  }
+
 
 }
