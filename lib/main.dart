@@ -877,7 +877,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     String vinValidation = data.getString('version');
     String hullTypes = data.getString('HullType');
     String lprConfigaration=data.getString('LprConfigaration');
-bool isRemoteIdDevicesShown=data.getBool('isRemoteIdDevicesShown');
+bool isRemoteIdDevicesShown=data.getBool('enableUnNamedBLEDevices');
     Utils.customPrint('VINNNNNNNNNNNNNNN ${hullTypes}');
 
     final FlutterSecureStorage storage = FlutterSecureStorage();
@@ -886,7 +886,7 @@ bool isRemoteIdDevicesShown=data.getBool('isRemoteIdDevicesShown');
     await storage.write(key: 'hullTypes', value: hullTypes);
     await storage.write(key:'lprConfig' ,value: lprConfigaration);
     //Converting to String because SecureStorage Not Support Boolean Values
-    await storage.write(key: 'isRemoteIdDevicesShown',value: isRemoteIdDevicesShown.toString());
+    await storage.write(key: 'enableUnNamedBLEDevices',value: isRemoteIdDevicesShown.toString());
 
     readData();
 
