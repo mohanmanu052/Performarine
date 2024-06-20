@@ -3136,7 +3136,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     try {
       await _databaseService.insertTrip(Trip(
         id: getTripId,
-        name: tripNameController.text,
+        name: tripNameController.text.trim(),
         vesselId: vesselId,
         vesselName: selectedVesselName,
         currentLoad: 'Empty',
