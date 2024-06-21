@@ -132,14 +132,14 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
     if (widget.isEdit!) {
       //debugPrint("IMAGE 1212 ${widget.addVesselData!.imageURLs!}");
       if (widget.addVesselData != null) {
-        freeBoardController.text = widget.addVesselData!.freeBoard!.toString();
-        lengthOverallController.text = widget.addVesselData!.lengthOverall!.toString();
-        moldedBeamController.text = widget.addVesselData!.beam!.toString();
-        moldedDepthController.text = widget.addVesselData!.draft!.toString();
+        freeBoardController.text = widget.addVesselData!.freeBoard!.toString().trim();
+        lengthOverallController.text = widget.addVesselData!.lengthOverall!.toString().trim();
+        moldedBeamController.text = widget.addVesselData!.beam!.toString().trim();
+        moldedDepthController.text = widget.addVesselData!.draft!.toString().trim();
         //displacementController.text = widget.addVesselData!.displacement.toString();
-        sizeController.text = widget.addVesselData!.vesselSize!.toString();
+        sizeController.text = widget.addVesselData!.vesselSize!.toString().trim();
         //  capacityController.text = widget.addVesselData!.capacity!.toString();s
-        builtYearController.text = widget.addVesselData!.builtYear!.toString();
+        builtYearController.text = widget.addVesselData!.builtYear!.toString().trim();
         if(widget.addVesselData!.hullType != null)
           {
             selectedHullType = widget.addVesselData!.hullType.toString();
