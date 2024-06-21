@@ -606,23 +606,23 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                             commonProvider.addVesselRequestModel = CreateVessel();
 
                             commonProvider.addVesselRequestModel!.name =
-                                nameController.text;
+                                nameController.text.trim();
                             commonProvider.addVesselRequestModel!.model =
-                                modelController.text;
+                                modelController.text.trim();
                             commonProvider.addVesselRequestModel!.builderName =
-                                builderNameController.text;
+                                builderNameController.text.trim();
                             commonProvider.addVesselRequestModel!.regNumber =
-                                registrationNumberController.text;
+                                registrationNumberController.text.trim();
                             commonProvider.addVesselRequestModel!.mMSI =
-                                mmsiController.text;
+                                mmsiController.text.trim();
                             commonProvider.addVesselRequestModel!.engineType =
-                                selectedEngineType;
+                                selectedEngineType!;
                             commonProvider.addVesselRequestModel!.fuelCapacity =
                             fuelCapacityController.text.isEmpty
                                 ? '0'
-                                : fuelCapacityController.text;
+                                : fuelCapacityController.text.trim();
                             commonProvider.addVesselRequestModel!.weight =
-                                weightController.text;
+                                weightController.text.trim();
                             commonProvider.selectedImageFiles = finalSelectedFiles.isEmpty
                                 ? []
                                 : finalSelectedFiles;
@@ -633,7 +633,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                             commonProvider.addVesselRequestModel!.batteryCapacity =
                             batteryCapacityController.text.isEmpty
                                 ? '0'
-                                : batteryCapacityController.text;
+                                : batteryCapacityController.text.trim();
                             commonProvider.addVesselRequestModel!.imageURLs =
                             widget.addVesselData == null
                                 ? ''
