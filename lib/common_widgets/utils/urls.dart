@@ -62,6 +62,8 @@ static const removeFleetMember='/api/removeFleetMember';
 
 static const deleteAccount='/api/deleteaccount';
 
+static const speedReports='api/speedreports';
+
 
 static String baseUrlVersion = '';
 

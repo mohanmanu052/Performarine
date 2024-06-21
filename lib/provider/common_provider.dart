@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart';
+import 'package:intl/intl.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/lpr_device_handler.dart';
 import 'package:performarine/main.dart';
@@ -20,10 +21,12 @@ import 'package:performarine/models/login_model.dart';
 import 'package:performarine/models/my_delegate_invite_model.dart';
 import 'package:performarine/models/registration_model.dart';
 import 'package:performarine/models/send_sensor_model.dart';
+import 'package:performarine/models/speed_reports_model.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/upload_trip_model.dart';
 import 'package:performarine/models/vessel.dart';
 import 'package:performarine/models/vessel_delegate_model.dart';
+import 'package:performarine/new_trip_analytics_screen.dart';
 import 'package:performarine/provider/add_vessel_api_provider.dart';
 import 'package:performarine/provider/change_password_provider.dart';
 import 'package:performarine/provider/create_delegate_api_provider.dart';
@@ -50,6 +53,7 @@ import 'package:performarine/provider/remove_fleet_member.dart';
 import 'package:performarine/provider/report_module_provider.dart';
 import 'package:performarine/provider/reset_password_provider.dart';
 import 'package:performarine/provider/send_sensor_info_api_provider.dart';
+import 'package:performarine/provider/speed_reports_api_provider.dart';
 import 'package:performarine/provider/update_userinfo_api_provider.dart';
 import 'package:performarine/provider/user_feedback_provider.dart';
 import 'package:performarine/provider/vessel_delegate_api_provider.dart';
@@ -103,6 +107,7 @@ class CommonProvider with ChangeNotifier {
   FleetDetailsModel? fleetDetailsModel;
   VesselDelegateModel? vesselDelegateModel;
   CommonModel? removeDelegateModel;
+  SpeedReportsModel? speedReportsModel;
 
   //Custom Time Picker Constants
   var hour = 01;
@@ -748,6 +753,30 @@ class CommonProvider with ChangeNotifier {
     notifyListeners();
 
     return deleteAccountModel!;
+  }
+
+  List<SalesData> data = [
+
+  ];
+
+  Future<SpeedReportsModel> speedReport(
+      BuildContext context,
+      String token,
+      String vesselID,
+      GlobalKey<ScaffoldState> scaffoldKey) async {
+    speedReportsModel = SpeedReportsModel();
+    speedReportsModel = await SpeedReportsApiProvider().speedReports(context, token, vesselID, scaffoldKey);
+
+    if((speedReportsModel?.data ?? []).isNotEmpty)
+      {
+        data.clear();
+        speedReportsModel!.data!.forEach((value){
+          data.add(SalesData(DateTime.parse(value.createdAt!), value.totalDuration!, value.speedDuration!.toDouble()),);
+        });
+      }
+    notifyListeners();
+
+    return speedReportsModel!;
   }
 
 

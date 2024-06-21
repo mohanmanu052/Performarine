@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/analytics/download_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
+import 'package:performarine/models/speed_reports_model.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
 import 'package:performarine/pages/feedback_report.dart';
 import 'package:performarine/provider/common_provider.dart';
@@ -38,6 +39,7 @@ class NewTripAnalyticsScreen extends StatefulWidget {
   final bool isAppKilled;
   Trip? tripData;
   VoidCallback? isTripDeleted;
+
   NewTripAnalyticsScreen({
     super.key,
     this.vesselName,
@@ -79,13 +81,13 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
     NewChartData(2014, 40)
   ];
 
-  List<SalesData> data = [
-    SalesData('2023-08-15', 35, 25),
-    SalesData('2023-08-16', 28, 38),
-    SalesData('2023-08-17', 34, 24),
-    SalesData('2023-08-18', 32, 52),
-    SalesData('2023-08-19', 40, 60)
-  ];
+  // List<SalesData> data = [
+  //   SalesData('2023-08-15', '35', 25),
+  //   SalesData('2023-08-15', '28', 38),
+  //   SalesData('2023-08-17', '34', 24),
+  //   SalesData('2023-08-18', '32', 52),
+  //   SalesData('2023-08-19', '40', 60)
+  // ];
 
   final controller = ScreenshotController();
 
@@ -97,6 +99,8 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
 
   int? tripIsSyncOrNot;
 
+  Future<SpeedReportsModel>? speedReportData;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -106,6 +110,9 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
     commonProvider = context.read<CommonProvider>();
 
     sharedPreferences!.remove('sp_key_called_from_noti');
+
+    speedReportData = commonProvider.speedReport(context,
+        commonProvider.loginModel!.token!, widget.vesselId!, scaffoldKey);
 
     setState(() {
       getData();
@@ -1235,99 +1242,156 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                               SizedBox(
                                 height: displayHeight(context) * 0.01,
                               ),
-                              Container(
-                                height: displayHeight(context) * 0.3,
-                                child: Stack(
-                                  children: [
-                                    Positioned(
-                                        top: 22,
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 26.0),
-                                          child: commonText(
+                              FutureBuilder<SpeedReportsModel>(
+                                future: speedReportData,
+                                builder: (context, snapShot) {
+                                  if (snapShot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return SizedBox(
+                                        height: displayHeight(context) / 3,
+                                        child: Center(
+                                            child:
+                                                const CircularProgressIndicator(
+                                                    color: blueColor)));
+                                  } else if (snapShot.data == null) {
+                                    return Container(
+                                      height: displayHeight(context) / 1.4,
+                                      child: Center(
+                                        child: commonText(
                                             context: context,
-                                            text: 'Past 5 Trips',
+                                            text: 'No data found',
                                             fontWeight: FontWeight.w500,
                                             textColor: Colors.black,
                                             textSize:
-                                                displayWidth(context) * 0.03,
-                                          ),
-                                        )),
-                                    SfCartesianChart(
-                                        plotAreaBorderWidth: 0,
-                                        primaryXAxis: CategoryAxis(
-                                            majorGridLines:
-                                                MajorGridLines(width: 0)),
-                                        primaryYAxis: NumericAxis(
-                                            isVisible: false,
-                                            majorGridLines:
-                                                MajorGridLines(width: 0)),
-                                        enableSideBySideSeriesPlacement: true,
-                                        legend: Legend(
-                                            shouldAlwaysShowScrollbar: false,
-                                            overflowMode:
-                                                LegendItemOverflowMode.none,
-                                            offset: Offset(80, -30),
-                                            isVisible: true,
-                                            position: LegendPosition.top,
-                                            alignment: ChartAlignment.far),
-                                        tooltipBehavior:
-                                            TooltipBehavior(enable: true),
-                                        series: <ChartSeries<SalesData,
-                                            String>>[
-                                          ColumnSeries<SalesData, String>(
-                                              dataSource: data,
-                                              color: blueColor,
-                                              spacing: 0.1,
-                                              xValueMapper:
-                                                  (SalesData sales, _) =>
-                                                      sales.year,
-                                              yValueMapper:
-                                                  (SalesData sales, _) =>
-                                                      sales.diesel,
-                                              name: 'Total',
-                                              legendIconType:
-                                                  LegendIconType.rectangle,
-                                              dataLabelSettings:
-                                                  DataLabelSettings(
-                                                      isVisible: true,
-                                                      textStyle: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          color: Colors.black,
-                                                          fontSize:
-                                                              displayWidth(
-                                                                      context) *
-                                                                  0.028,
-                                                          fontFamily: outfit))),
-                                          ColumnSeries<SalesData, String>(
-                                              dataSource: data,
-                                              spacing: 0.1,
-                                              color: routeMapBtnColor,
-                                              xValueMapper:
-                                                  (SalesData sales, _) =>
-                                                      sales.year,
-                                              yValueMapper:
-                                                  (SalesData sales, _) =>
-                                                      sales.hybrid,
-                                              name: '<4 kt',
-                                              legendIconType:
-                                                  LegendIconType.rectangle,
-                                              dataLabelSettings:
-                                                  DataLabelSettings(
-                                                      isVisible: true,
-                                                      textStyle: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          color: Colors.black,
-                                                          fontSize:
-                                                              displayWidth(
-                                                                      context) *
-                                                                  0.028,
-                                                          fontFamily: outfit)))
-                                        ]),
-                                  ],
-                                ),
+                                                displayWidth(context) * 0.05,
+                                            textAlign: TextAlign.start),
+                                      ),
+                                    );
+                                  } else {
+                                    return Container(
+                                      height: displayHeight(context) * 0.3,
+                                      child: Stack(
+                                        children: [
+                                          Positioned(
+                                              top: 22,
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 26.0),
+                                                child: commonText(
+                                                  context: context,
+                                                  text: 'Past 5 Trips',
+                                                  fontWeight: FontWeight.w500,
+                                                  textColor: Colors.black,
+                                                  textSize:
+                                                      displayWidth(context) *
+                                                          0.03,
+                                                ),
+                                              )),
+                                          SfCartesianChart(
+                                              plotAreaBorderWidth: 0,
+                                              // primaryXAxis: CategoryAxis(
+                                              //     majorGridLines:
+                                              //     MajorGridLines(width: 0)),
+                                              primaryXAxis: DateTimeAxis(
+                                                dateFormat:
+                                                    DateFormat('yyyy-MM-dd'),
+                                                intervalType:
+                                                    DateTimeIntervalType
+                                                        .minutes,
+                                              ),
+                                              primaryYAxis: NumericAxis(
+                                                  isVisible: false,
+                                                  majorGridLines:
+                                                      MajorGridLines(width: 0)),
+                                              enableSideBySideSeriesPlacement:
+                                                  true,
+                                              legend: Legend(
+                                                  shouldAlwaysShowScrollbar:
+                                                      false,
+                                                  overflowMode:
+                                                      LegendItemOverflowMode
+                                                          .none,
+                                                  offset: Offset(80, -30),
+                                                  isVisible: true,
+                                                  position: LegendPosition.top,
+                                                  alignment:
+                                                      ChartAlignment.far),
+                                              tooltipBehavior:
+                                                  TooltipBehavior(enable: true),
+                                              series: <ChartSeries<SalesData,
+                                                  DateTime>>[
+                                                ColumnSeries<SalesData,
+                                                        DateTime>(
+                                                    dataSource: commonProvider
+                                                        .data,
+                                                    color: blueColor,
+                                                    spacing: 0.1,
+                                                    xValueMapper: (SalesData
+                                                                sales,
+                                                            _) =>
+                                                        sales.year,
+                                                    yValueMapper: (SalesData
+                                                                sales,
+                                                            _) =>
+                                                        /*sales.totalDuration!*/
+                                                        _parseDuration(sales
+                                                            .totalDuration),
+                                                    name: 'Total',
+                                                    legendIconType: LegendIconType
+                                                        .rectangle,
+                                                    dataLabelSettings: DataLabelSettings(
+                                                        isVisible: true,
+                                                        textStyle: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color: Colors.black,
+                                                            fontSize:
+                                                                displayWidth(
+                                                                        context) *
+                                                                    0.028,
+                                                            fontFamily:
+                                                                outfit))),
+                                                ColumnSeries<SalesData,
+                                                        DateTime>(
+                                                    dataSource: commonProvider
+                                                        .data,
+                                                    spacing: 0.1,
+                                                    color: routeMapBtnColor,
+                                                    xValueMapper: (SalesData
+                                                                sales,
+                                                            _) =>
+                                                        sales.year,
+                                                    yValueMapper: (SalesData
+                                                                sales,
+                                                            _) =>
+                                                        /*sales.speedDuration*/
+                                                        sales.speedDuration,
+                                                    name: '<4 kt',
+                                                    legendIconType:
+                                                        LegendIconType
+                                                            .rectangle,
+                                                    dataLabelSettings:
+                                                        DataLabelSettings(
+                                                            isVisible: true,
+                                                            textStyle: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color:
+                                                                    Colors
+                                                                        .black,
+                                                                fontSize:
+                                                                    displayWidth(
+                                                                            context) *
+                                                                        0.028,
+                                                                fontFamily:
+                                                                    outfit)))
+                                              ]),
+                                        ],
+                                      ),
+                                    );
+                                  }
+                                },
                               ),
                               SizedBox(
                                 height: displayHeight(context) * 0.01,
@@ -1606,6 +1670,16 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
         ),
       ),
     );
+  }
+
+  double _parseDuration(String duration) {
+    final parts = duration.split(':');
+    final hours = int.parse(parts[0]);
+    final minutes = int.parse(parts[1]);
+    final seconds = int.parse(parts[2]);
+    return hours * 3600 +
+        minutes * 60 +
+        seconds.toDouble(); // Convert duration to seconds
   }
 
   showDeleteTripDialogBox(
@@ -1979,17 +2053,21 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
 
 class AnalyticsData {
   String? title, type, value;
+
   AnalyticsData({this.title, this.type, this.value});
 }
 
 class NewChartData {
   NewChartData(this.x, this.y);
+
   final int x;
   final double? y;
 }
 
 class SalesData {
-  SalesData(this.year, this.diesel, this.hybrid);
-  final String year;
-  final double diesel, hybrid;
+  SalesData(this.year, this.totalDuration, this.speedDuration);
+
+  final DateTime year;
+  final String totalDuration;
+  final double speedDuration;
 }
