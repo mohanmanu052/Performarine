@@ -1100,7 +1100,7 @@ LoginModel loginData=await getEmail();
     await _databaseService.insertTrip(Trip(
         id: getTripId,
         vesselId: widget.vesselId,
-        vesselName: vesselName,
+        vesselName: vesselName!.trim(),
         currentLoad: 'Empty',
         numberOfPassengers: 0,
         filePath: file.path,
