@@ -580,30 +580,30 @@ if (dotCount > 1) {
                                     .addVesselRequestModel!.imageURLs = '';
                               }
                               commonProvider.addVesselRequestModel!.freeBoard =
-                              freeBoardController.text.length >= 6 ? num.parse(double.parse(freeBoardController.text).toStringAsFixed(4)).toDouble()
-                                  : double.parse(freeBoardController.text);
+                              freeBoardController.text.trim().length >= 6 ? num.parse(double.parse(freeBoardController.text.trim()).toStringAsFixed(4)).toDouble()
+                                  : double.parse(freeBoardController.text.trim());
                               commonProvider
-                                  .addVesselRequestModel!.lengthOverall = lengthOverallController.text.length >=6
-                                  ? num.parse(double.parse(lengthOverallController.text).toStringAsFixed(4)).toDouble()
-                                  : double.parse(lengthOverallController.text);
-                              commonProvider.addVesselRequestModel!.beam = moldedBeamController.text.length >= 6
-                                  ? num.parse(double.parse(moldedBeamController.text).toStringAsFixed(4)).toDouble()
-                                  : double.parse(moldedBeamController.text);
-                              commonProvider.addVesselRequestModel!.draft = moldedDepthController.text.length >= 6
-                                  ? num.parse(double.parse(moldedDepthController.text).toStringAsFixed(4)).toDouble()
-                                  : double.parse(moldedDepthController.text);
+                                  .addVesselRequestModel!.lengthOverall = lengthOverallController.text.trim().length >=6
+                                  ? num.parse(double.parse(lengthOverallController.text.trim()).toStringAsFixed(4)).toDouble()
+                                  : double.parse(lengthOverallController.text.trim());
+                              commonProvider.addVesselRequestModel!.beam = moldedBeamController.text.trim().length >= 6
+                                  ? num.parse(double.parse(moldedBeamController.text.trim()).toStringAsFixed(4)).toDouble()
+                                  : double.parse(moldedBeamController.text.trim());
+                              commonProvider.addVesselRequestModel!.draft = moldedDepthController.text.trim().length >= 6
+                                  ? num.parse(double.parse(moldedDepthController.text.trim()).toStringAsFixed(4)).toDouble()
+                                  : double.parse(moldedDepthController.text.trim());
                               /*commonProvider.addVesselRequestModel!.displacement = displacementController.text.length >= 7
                                   ? num.parse(double.parse(displacementController.text).toStringAsFixed(5)).toDouble()
                                   : double.parse(displacementController.text);*/
                               commonProvider.addVesselRequestModel!.vesselSize =
-                                  sizeController.text;
+                                  sizeController.text.trim();
                               commonProvider.addVesselRequestModel!.capacity = 0;
                               //  int.parse(capacityController.text);
                               commonProvider.addVesselRequestModel!.builtYear =
-                                  builtYearController.text;
+                                  builtYearController.text.trim();
                               commonProvider.addVesselRequestModel!.id =
                               widget.isEdit!
-                                  ? widget.addVesselData!.id
+                                  ? widget.addVesselData!.id!
                                   : ObjectId().toString();
                               commonProvider.addVesselRequestModel!.selectedImages =
                               finalSelectedFiles.isEmpty
