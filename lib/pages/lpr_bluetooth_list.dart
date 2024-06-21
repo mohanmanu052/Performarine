@@ -34,7 +34,7 @@ bool isRemoteIdDevicesShown=true;
 getIsRemoteIdShown()async{
       FlutterSecureStorage storage = FlutterSecureStorage();
     try{
-    var data = await storage.read(key: 'isRemoteIdDevicesShown') ;
+    var data = await storage.read(key: 'enableUnNamedBLEDevices') ;
     isRemoteIdDevicesShown=bool.parse(data??'true');
   
     setState(() {

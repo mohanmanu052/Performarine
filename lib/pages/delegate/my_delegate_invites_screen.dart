@@ -449,7 +449,7 @@ class _MyDelegateInvitesScreenState extends State<MyDelegateInvitesScreen> {
               Trip tripData = Trip(
                   id: value.trips![i].id,
                   vesselId: value.trips![i].vesselId,
-                  vesselName: vesselData.name,
+                  vesselName: vesselData.name!.trim(),
                   currentLoad: value.trips![i].load,
                   numberOfPassengers: value.trips![i].numberOfPassengers ?? 0,
                   filePath: value.trips![i].cloudFilePath,

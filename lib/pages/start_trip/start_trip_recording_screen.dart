@@ -3138,7 +3138,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
         id: getTripId,
         name: tripNameController.text.trim(),
         vesselId: vesselId,
-        vesselName: selectedVesselName,
+        vesselName: selectedVesselName!.trim(),
         currentLoad: 'Empty',
         numberOfPassengers: numberOfPassengers,
         filePath: file,
@@ -3218,7 +3218,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
     await sharedPreferences!.setBool('trip_started', true);
     await sharedPreferences!.setStringList('trip_data',
-        [getTripId, vesselId!, selectedVesselName!, selectedVesselWeight]);
+        [getTripId, vesselId!, selectedVesselName!.trim(), selectedVesselWeight]);
 
     // LPRDeviceHandler().listenToDeviceConnectionState();
 
