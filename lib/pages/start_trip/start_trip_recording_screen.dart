@@ -4950,6 +4950,17 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                   width: displayWidth(context),
                                   height: displayHeight(context) * 0.28,
                                   child: LPRBluetoothList(
+                                    onConnetedCallBack: (device) {
+
+if(mounted){
+  Future.delayed(Duration(seconds: 1),(){
+    setState(() {
+      
+    });
+  });
+}
+
+                                    },
                                     dialogContext: dialogContext,
                                     setDialogSet: setDialogState,
                                     connectedDeviceId: connectedDeviceId,
@@ -4999,6 +5010,17 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                     connectedDeviceId: connectedDeviceId,
                                     connectedBluetoothDevice:
                                         connectedBluetoothDevice,
+                                        onConnetedCallBack: (connectedDevice) {
+if(mounted){
+  Future.delayed(Duration(seconds: 1),(){
+    setState(() {
+      
+    });
+  });
+}
+
+                                          
+                                        },
                                     onSelected: (value) {
                                       if (mounted) {
                                         setState(() {
@@ -5014,6 +5036,10 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                           setState(() {});
                                         }
                                       });
+
+
+
+                                      
                                     },
                                     onBluetoothConnection: (value) {
                                       if (mounted) {

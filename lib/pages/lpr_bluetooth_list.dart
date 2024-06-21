@@ -9,6 +9,7 @@ class LPRBluetoothList extends StatefulWidget {
   final Function(bool)? onBluetoothConnection;
   final StateSetter? setDialogSet;
   final String? connectedDeviceId;
+  Function(String)? onConnetedCallBack;
   final Function(BluetoothDevice)? selectedBluetoothDevice;
   String? comingFrom;
   final BluetoothDevice? connectedBluetoothDevice;
@@ -20,6 +21,7 @@ class LPRBluetoothList extends StatefulWidget {
         this.connectedDeviceId,
         this.connectedBluetoothDevice,
         this.comingFrom,
+        this.onConnetedCallBack,
         this.selectedBluetoothDevice,
         this.setDialogSet})
       : super(key: key);
@@ -67,7 +69,30 @@ getIsRemoteIdShown()async{
              return isRemoteIdDevicesShown?
                SingleLPRDevice(
               device: d.device,
+              onDeviceConnectedCallback: widget.onConnetedCallBack,
               onSelected: widget.onSelected,
+              onBluetoothConnection: widget.onBluetoothConnection,
+              dialogContext: widget.dialogContext,
+              setSetter: widget.setDialogSet,
+              comingFrom: widget.comingFrom,
+              selectedBluettothDevice: widget.selectedBluetoothDevice,
+              connectedDeviceId: widget.connectedDeviceId,
+              connectedBluetoothDevice: widget.connectedBluetoothDevice??d.device,
+              onSingleDeviceTapped: (bool value) {
+                widget.setDialogSet!(() {
+
+                  isConnectToDevice = value;
+                });
+                setState(() {
+                  
+                });
+              },
+                  
+    ):d.device.platformName.isNotEmpty?SingleLPRDevice(
+              device: d.device,
+              onSelected: widget.onSelected,
+                            onDeviceConnectedCallback: widget.onConnetedCallBack,
+
               onBluetoothConnection: widget.onBluetoothConnection,
               dialogContext: widget.dialogContext,
               setSetter: widget.setDialogSet,
@@ -79,21 +104,8 @@ getIsRemoteIdShown()async{
                 widget.setDialogSet!(() {
                   isConnectToDevice = value;
                 });
-              },
+                setState(() {
                   
-    ):d.device.platformName.isNotEmpty?SingleLPRDevice(
-              device: d.device,
-              onSelected: widget.onSelected,
-              onBluetoothConnection: widget.onBluetoothConnection,
-              dialogContext: widget.dialogContext,
-              setSetter: widget.setDialogSet,
-              comingFrom: widget.comingFrom,
-              selectedBluettothDevice: widget.selectedBluetoothDevice,
-              connectedDeviceId: widget.connectedDeviceId,
-              connectedBluetoothDevice: widget.connectedBluetoothDevice??d.device,
-              onSingleDeviceTapped: (bool value) {
-                widget.setDialogSet!(() {
-                  isConnectToDevice = value;
                 });
               },
                   
