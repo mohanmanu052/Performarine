@@ -132,14 +132,14 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
     if (widget.isEdit!) {
       //debugPrint("IMAGE 1212 ${widget.addVesselData!.imageURLs!}");
       if (widget.addVesselData != null) {
-        freeBoardController.text = widget.addVesselData!.freeBoard!.toString();
-        lengthOverallController.text = widget.addVesselData!.lengthOverall!.toString();
-        moldedBeamController.text = widget.addVesselData!.beam!.toString();
-        moldedDepthController.text = widget.addVesselData!.draft!.toString();
+        freeBoardController.text = widget.addVesselData!.freeBoard!.toString().trim();
+        lengthOverallController.text = widget.addVesselData!.lengthOverall!.toString().trim();
+        moldedBeamController.text = widget.addVesselData!.beam!.toString().trim();
+        moldedDepthController.text = widget.addVesselData!.draft!.toString().trim();
         //displacementController.text = widget.addVesselData!.displacement.toString();
-        sizeController.text = widget.addVesselData!.vesselSize!.toString();
+        sizeController.text = widget.addVesselData!.vesselSize!.toString().trim();
         //  capacityController.text = widget.addVesselData!.capacity!.toString();s
-        builtYearController.text = widget.addVesselData!.builtYear!.toString();
+        builtYearController.text = widget.addVesselData!.builtYear!.toString().trim();
         if(widget.addVesselData!.hullType != null)
           {
             selectedHullType = widget.addVesselData!.hullType.toString();
@@ -580,30 +580,30 @@ if (dotCount > 1) {
                                     .addVesselRequestModel!.imageURLs = '';
                               }
                               commonProvider.addVesselRequestModel!.freeBoard =
-                              freeBoardController.text.length >= 6 ? num.parse(double.parse(freeBoardController.text).toStringAsFixed(4)).toDouble()
-                                  : double.parse(freeBoardController.text);
+                              freeBoardController.text.trim().length >= 6 ? num.parse(double.parse(freeBoardController.text.trim()).toStringAsFixed(4)).toDouble()
+                                  : double.parse(freeBoardController.text.trim());
                               commonProvider
-                                  .addVesselRequestModel!.lengthOverall = lengthOverallController.text.length >=6
-                                  ? num.parse(double.parse(lengthOverallController.text).toStringAsFixed(4)).toDouble()
-                                  : double.parse(lengthOverallController.text);
-                              commonProvider.addVesselRequestModel!.beam = moldedBeamController.text.length >= 6
-                                  ? num.parse(double.parse(moldedBeamController.text).toStringAsFixed(4)).toDouble()
-                                  : double.parse(moldedBeamController.text);
-                              commonProvider.addVesselRequestModel!.draft = moldedDepthController.text.length >= 6
-                                  ? num.parse(double.parse(moldedDepthController.text).toStringAsFixed(4)).toDouble()
-                                  : double.parse(moldedDepthController.text);
+                                  .addVesselRequestModel!.lengthOverall = lengthOverallController.text.trim().length >=6
+                                  ? num.parse(double.parse(lengthOverallController.text.trim()).toStringAsFixed(4)).toDouble()
+                                  : double.parse(lengthOverallController.text.trim());
+                              commonProvider.addVesselRequestModel!.beam = moldedBeamController.text.trim().length >= 6
+                                  ? num.parse(double.parse(moldedBeamController.text.trim()).toStringAsFixed(4)).toDouble()
+                                  : double.parse(moldedBeamController.text.trim());
+                              commonProvider.addVesselRequestModel!.draft = moldedDepthController.text.trim().length >= 6
+                                  ? num.parse(double.parse(moldedDepthController.text.trim()).toStringAsFixed(4)).toDouble()
+                                  : double.parse(moldedDepthController.text.trim());
                               /*commonProvider.addVesselRequestModel!.displacement = displacementController.text.length >= 7
                                   ? num.parse(double.parse(displacementController.text).toStringAsFixed(5)).toDouble()
                                   : double.parse(displacementController.text);*/
                               commonProvider.addVesselRequestModel!.vesselSize =
-                                  sizeController.text;
+                                  sizeController.text.trim();
                               commonProvider.addVesselRequestModel!.capacity = 0;
                               //  int.parse(capacityController.text);
                               commonProvider.addVesselRequestModel!.builtYear =
-                                  builtYearController.text;
+                                  builtYearController.text.trim();
                               commonProvider.addVesselRequestModel!.id =
                               widget.isEdit!
-                                  ? widget.addVesselData!.id
+                                  ? widget.addVesselData!.id!
                                   : ObjectId().toString();
                               commonProvider.addVesselRequestModel!.selectedImages =
                               finalSelectedFiles.isEmpty

@@ -287,6 +287,10 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                     onTap: () {},
                     onChanged: (value) {
                       debugPrint("Length ${value.length}");
+                      if(value.length == 6)
+                        {
+                          FocusScope.of(context).unfocus();
+                        }
                     },
                     validator: (value) {
                       if (value!.isEmpty) {

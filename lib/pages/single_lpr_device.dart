@@ -27,7 +27,7 @@ class SingleLPRDevice extends StatefulWidget {
   String? connectedDeviceId;
   BluetoothDevice? connectedBluetoothDevice;
   String? comingFrom;
-
+Function(String)? onDeviceConnectedCallback;
 
   SingleLPRDevice(
       {Key? key,
@@ -37,6 +37,7 @@ class SingleLPRDevice extends StatefulWidget {
       this.onBluetoothConnection,
       this.setSetter,
       this.connectedDeviceId,
+      this.onDeviceConnectedCallback,
       this.connectedBluetoothDevice,
       this.comingFrom,
       this.selectedBluettothDevice,
@@ -88,7 +89,9 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
               //  await storage.write(key: 'lprDeviceId', value: widget.device!.remoteId.str);
               debugPrint("SINGLE SELECTED BLE ID ${widget.device!.remoteId.str}");
               widget.device!.connect().then((value) {
-
+                if(widget.onDeviceConnectedCallback!=null){
+                widget.onDeviceConnectedCallback!(widget.device!.platformName);
+                }
                 if(widget.comingFrom=='lpr_test'){
                                 widget.selectedBluettothDevice!(widget.device!);
 
@@ -144,6 +147,10 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
           //  await storage.write(key: 'lprDeviceId', value: widget.device!.remoteId.str);
           debugPrint("SINGLE SELECTED BLE ID ${widget.device!.remoteId.str}");
           widget.device!.connect().then((value) {
+                          if(widget.onDeviceConnectedCallback!=null){
+                widget.onDeviceConnectedCallback!(widget.device!.platformName);
+              }
+
             if(widget.comingFrom=='lpr_test'){
               widget.selectedBluettothDevice!(widget.device!);
 // LPRCallbackHandler().listenToDeviceConnectionState(
@@ -154,8 +161,9 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
 // },
 
 // );
-            }else{
-            LPRDeviceHandler().setLPRDevice(widget.device!);
+            }
+            else{
+            LPRDeviceHandler().setLPRDevice(widget.device!,);
 
             }
           }).catchError((onError) {
