@@ -2,6 +2,7 @@ class SpeedReportsModel {
   SpeedReportsModel({
       this.data, 
       this.status, 
+      this.message, 
       this.statusCode,});
 
   SpeedReportsModel.fromJson(dynamic json) {
@@ -12,16 +13,20 @@ class SpeedReportsModel {
       });
     }
     status = json['status'];
+    message = json['message'];
     statusCode = json['statusCode'];
   }
   List<Data>? data;
   bool? status;
+  String? message;
   num? statusCode;
 SpeedReportsModel copyWith({  List<Data>? data,
   bool? status,
+  String? message,
   num? statusCode,
 }) => SpeedReportsModel(  data: data ?? this.data,
   status: status ?? this.status,
+  message: message ?? this.message,
   statusCode: statusCode ?? this.statusCode,
 );
   Map<String, dynamic> toJson() {
@@ -30,6 +35,7 @@ SpeedReportsModel copyWith({  List<Data>? data,
       map['data'] = data?.map((v) => v.toJson()).toList();
     }
     map['status'] = status;
+    map['message'] = message;
     map['statusCode'] = statusCode;
     return map;
   }

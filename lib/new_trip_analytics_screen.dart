@@ -1289,16 +1289,17 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                               )),
                                           SfCartesianChart(
                                               plotAreaBorderWidth: 0,
-                                              // primaryXAxis: CategoryAxis(
-                                              //     majorGridLines:
-                                              //     MajorGridLines(width: 0)),
-                                              primaryXAxis: DateTimeAxis(
+                                              primaryXAxis: DateTimeCategoryAxis(
+                                                  majorGridLines:
+                                                  MajorGridLines(width: 0),
+                                              dateFormat: DateFormat('yyyy-MM-dd')),
+                                              /*primaryXAxis: DateTimeAxis(
                                                 dateFormat:
                                                     DateFormat('yyyy-MM-dd'),
                                                 intervalType:
                                                     DateTimeIntervalType
                                                         .minutes,
-                                              ),
+                                              ),*/
                                               primaryYAxis: NumericAxis(
                                                   isVisible: false,
                                                   majorGridLines:

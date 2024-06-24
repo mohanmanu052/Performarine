@@ -47,7 +47,7 @@ class SpeedReportsApiProvider with ChangeNotifier
         speedReportsModel = SpeedReportsModel.fromJson(json.decode(response.body));
 
         Utils.showSnackBar(context,
-            scaffoldKey: scaffoldKey, message: 'speedReportsModel!.message');
+            scaffoldKey: scaffoldKey, message: speedReportsModel!.message);
         return speedReportsModel!;
       } else if (response.statusCode == HttpStatus.gatewayTimeout) {
         Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
