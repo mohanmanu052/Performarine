@@ -149,9 +149,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                       ? null
                         : () async {
 
-                    setState(() {
-                      isDeleteAccountBtnCalled = true;
-                    });
+                      FocusScope.of(context).requestFocus(FocusNode());
 
                       bool? isTripStarted =
                       sharedPreferences!.getBool('trip_started');
@@ -175,6 +173,9 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                                 context,
                                 scaffoldKey);
                           } else {
+                            setState(() {
+                              isDeleteAccountBtnCalled = true;
+                            });
                             deleteAccountMethod();
                           }
                         }
@@ -184,6 +185,9 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                               context,
                               scaffoldKey,);
                         } else {
+                          setState(() {
+                            isDeleteAccountBtnCalled = true;
+                            });
                           deleteAccountMethod();
                         }
                       }
@@ -650,6 +654,9 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                                         'Sync & Delete',
                                         context,
                                         blueColor, () async {
+
+                                      FocusScope.of(context).requestFocus(FocusNode());
+
                                       bool internet = await Utils()
                                           .check(scaffoldKey);
 
@@ -686,7 +693,12 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
                                         context,
                                         Colors.transparent, () async {
                                       Navigator.of(context).pop();
-                                      // TODO Delete account functionality
+
+                                      FocusScope.of(context).requestFocus(FocusNode());
+
+                                      setState(() {
+                                        isDeleteAccountBtnCalled = true;
+                                      });
                                       deleteAccountMethod();
                                     },
                                         displayWidth(context) / 1.6,
@@ -742,6 +754,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
 
   deleteAccountMethod()
   {
+
     commonProvider.deleteAccount(context, commonProvider.loginModel!.token!, scaffoldKey).then((value){
       if(value != null)
         {
@@ -953,7 +966,9 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
     // Navigator.of(context).pop();
 
     if (!vesselErrorOccurred && !tripErrorOccurred) {
-     // TODO Delete Account Functionality
+      setState(() {
+        isDeleteAccountBtnCalled = true;
+      });
       deleteAccountMethod();
       Utils.customPrint("ERROR WHILE SYNC AND SIGN OUT IF SIGN OUTT");
     } else {

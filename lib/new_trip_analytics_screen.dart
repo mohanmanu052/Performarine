@@ -1244,6 +1244,172 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                               ),
                               FutureBuilder<SpeedReportsModel>(
                                 future: speedReportData,
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return Padding(
+                                      padding: EdgeInsets.only(
+                                          top: displayHeight(context) * 0.05,
+                                          bottom: displayHeight(context) * 0.05
+                                      ),
+                                      child: Center(
+                                        child: CircularProgressIndicator(
+                                          valueColor:
+                                          AlwaysStoppedAnimation<Color>(circularProgressColor),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  Utils.customPrint('HAS DATA: ${snapshot.hasData}');
+                                  Utils.customPrint('HAS DATA: ${snapshot.error}');
+                                  Utils.customPrint('HAS DATA: ${snapshot.hasError}');
+                                 if (snapshot.hasData) {
+                                   if (snapshot.data!.data == null || snapshot.data!.data!.isEmpty) {
+                                      return Padding(
+                                        padding: EdgeInsets.only(
+                                            top: displayHeight(context) * 0.05,
+                                          bottom: displayHeight(context) * 0.05
+                                        ),
+                                        child: Center(
+                                          child: commonText(
+                                              context: context,
+                                              text: 'No trips data available\nPlease upload your data to view the graph.',
+                                              fontWeight: FontWeight.w500,
+                                              textColor: Colors.black,
+                                              textSize: displayWidth(context) * 0.04,
+                                              textAlign: TextAlign.center),
+                                        ),
+                                      );
+                                    } else {
+                                      return Container(
+                                        height: displayHeight(context) * 0.3,
+                                        child: Stack(
+                                          children: [
+                                            Positioned(
+                                                top: 22,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.only(
+                                                      left: 26.0),
+                                                  child: commonText(
+                                                    context: context,
+                                                    text: 'Past 5 Trips',
+                                                    fontWeight: FontWeight.w500,
+                                                    textColor: Colors.black,
+                                                    textSize:
+                                                    displayWidth(context) *
+                                                        0.03,
+                                                  ),
+                                                )),
+                                            SfCartesianChart(
+                                                plotAreaBorderWidth: 0,
+                                                primaryXAxis: DateTimeCategoryAxis(
+                                                    majorGridLines:
+                                                    MajorGridLines(width: 0),
+                                                    dateFormat: DateFormat('yyyy-MM-dd')),
+                                                /*primaryXAxis: DateTimeAxis(
+                                                dateFormat:
+                                                    DateFormat('yyyy-MM-dd'),
+                                                intervalType:
+                                                    DateTimeIntervalType
+                                                        .minutes,
+                                              ),*/
+                                                primaryYAxis: NumericAxis(
+                                                    isVisible: false,
+                                                    majorGridLines:
+                                                    MajorGridLines(width: 0)),
+                                                enableSideBySideSeriesPlacement:
+                                                true,
+                                                legend: Legend(
+                                                    shouldAlwaysShowScrollbar:
+                                                    false,
+                                                    overflowMode:
+                                                    LegendItemOverflowMode
+                                                        .none,
+                                                    offset: Offset(80, -30),
+                                                    isVisible: true,
+                                                    position: LegendPosition.top,
+                                                    alignment:
+                                                    ChartAlignment.far),
+                                                tooltipBehavior:
+                                                TooltipBehavior(enable: true),
+                                                series: <ChartSeries<SalesData,
+                                                    DateTime>>[
+                                                  ColumnSeries<SalesData,
+                                                      DateTime>(
+                                                      dataSource: commonProvider
+                                                          .data,
+                                                      color: blueColor,
+                                                      spacing: 0.1,
+                                                      xValueMapper: (SalesData
+                                                      sales,
+                                                          _) =>
+                                                      sales.year,
+                                                      yValueMapper: (SalesData
+                                                      sales,
+                                                          _) =>
+                                                      /*sales.totalDuration!*/
+                                                      _parseDuration(sales
+                                                          .totalDuration),
+                                                      name: 'Total',
+                                                      legendIconType: LegendIconType
+                                                          .rectangle,
+                                                      dataLabelSettings: DataLabelSettings(
+                                                          isVisible: true,
+                                                          textStyle: TextStyle(
+                                                              fontWeight:
+                                                              FontWeight.w500,
+                                                              color: Colors.black,
+                                                              fontSize:
+                                                              displayWidth(
+                                                                  context) *
+                                                                  0.028,
+                                                              fontFamily:
+                                                              outfit))),
+                                                  ColumnSeries<SalesData,
+                                                      DateTime>(
+                                                      dataSource: commonProvider
+                                                          .data,
+                                                      spacing: 0.1,
+                                                      color: routeMapBtnColor,
+                                                      xValueMapper: (SalesData
+                                                      sales,
+                                                          _) =>
+                                                      sales.year,
+                                                      yValueMapper: (SalesData
+                                                      sales,
+                                                          _) =>
+                                                      /*sales.speedDuration*/
+                                                      sales.speedDuration,
+                                                      name: '<4 kt',
+                                                      legendIconType:
+                                                      LegendIconType
+                                                          .rectangle,
+                                                      dataLabelSettings:
+                                                      DataLabelSettings(
+                                                          isVisible: true,
+                                                          textStyle: TextStyle(
+                                                              fontWeight:
+                                                              FontWeight
+                                                                  .w500,
+                                                              color:
+                                                              Colors
+                                                                  .black,
+                                                              fontSize:
+                                                              displayWidth(
+                                                                  context) *
+                                                                  0.028,
+                                                              fontFamily:
+                                                              outfit)))
+                                                ]),
+                                          ],
+                                        ),
+                                      );
+                                    }
+                                  }
+                                  return Container();
+                                },
+                              ),
+                             /* FutureBuilder<SpeedReportsModel>(
+                                future: speedReportData,
                                 builder: (context, snapShot) {
                                   if (snapShot.connectionState ==
                                       ConnectionState.waiting) {
@@ -1253,7 +1419,8 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                             child:
                                                 const CircularProgressIndicator(
                                                     color: blueColor)));
-                                  } else if (snapShot.data == null) {
+                                 // } else if (snapShot.data == null) {
+                                  } else if (snapShot.data == null || ) {
                                     return Container(
                                       height: displayHeight(context) / 1.4,
                                       child: Center(
@@ -1293,13 +1460,13 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                   majorGridLines:
                                                   MajorGridLines(width: 0),
                                               dateFormat: DateFormat('yyyy-MM-dd')),
-                                              /*primaryXAxis: DateTimeAxis(
+                                              *//*primaryXAxis: DateTimeAxis(
                                                 dateFormat:
                                                     DateFormat('yyyy-MM-dd'),
                                                 intervalType:
                                                     DateTimeIntervalType
                                                         .minutes,
-                                              ),*/
+                                              ),*//*
                                               primaryYAxis: NumericAxis(
                                                   isVisible: false,
                                                   majorGridLines:
@@ -1334,7 +1501,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                     yValueMapper: (SalesData
                                                                 sales,
                                                             _) =>
-                                                        /*sales.totalDuration!*/
+                                                        *//*sales.totalDuration!*//*
                                                         _parseDuration(sales
                                                             .totalDuration),
                                                     name: 'Total',
@@ -1365,7 +1532,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                     yValueMapper: (SalesData
                                                                 sales,
                                                             _) =>
-                                                        /*sales.speedDuration*/
+                                                        *//*sales.speedDuration*//*
                                                         sales.speedDuration,
                                                     name: '<4 kt',
                                                     legendIconType:
@@ -1393,7 +1560,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                     );
                                   }
                                 },
-                              ),
+                              ),*/
                               SizedBox(
                                 height: displayHeight(context) * 0.01,
                               ),

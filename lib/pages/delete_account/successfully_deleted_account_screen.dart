@@ -61,7 +61,7 @@ class _SuccessfullyDeletedAccountScreenState extends State<SuccessfullyDeletedAc
                     fontWeight: FontWeight.w600,
                     textColor: Colors.black,
                     textSize: displayWidth(context) * 0.05,
-                    textAlign: TextAlign.start),
+                    textAlign: TextAlign.center),
               ],
             ),
           ),
