@@ -1239,7 +1239,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                 ],
                               ),
                               SizedBox(
-                                height: displayHeight(context) * 0.01,
+                                height: displayHeight(context) * 0.015,
                               ),
                               FutureBuilder<SpeedReportsModel>(
                                 future: speedReportData,
@@ -1280,11 +1280,12 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                       );
                                     } else {
                                       return Container(
-                                        height: displayHeight(context) * 0.3,
+                                        height: displayHeight(context) * 0.4,
                                         child: Stack(
                                           children: [
                                             Positioned(
-                                                top: 22,
+                                                top: 1,
+                                                left: 0,
                                                 child: Padding(
                                                   padding: const EdgeInsets.only(
                                                       left: 26.0),
@@ -1304,14 +1305,8 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                     majorGridLines:
                                                     MajorGridLines(width: 0),
                                                     dateFormat: DateFormat('yyyy-MM-dd')),
-                                                /*primaryXAxis: DateTimeAxis(
-                                                dateFormat:
-                                                    DateFormat('yyyy-MM-dd'),
-                                                intervalType:
-                                                    DateTimeIntervalType
-                                                        .minutes,
-                                              ),*/
                                                 primaryYAxis: NumericAxis(
+                                                  //maximum: displayHeight(context)* 0.04,
                                                     isVisible: false,
                                                     majorGridLines:
                                                     MajorGridLines(width: 0)),
@@ -1327,13 +1322,17 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                     isVisible: true,
                                                     position: LegendPosition.top,
                                                     alignment:
-                                                    ChartAlignment.far),
+                                                    ChartAlignment.center),
                                                 tooltipBehavior:
                                                 TooltipBehavior(enable: true),
                                                 series: <ChartSeries<SalesData,
                                                     DateTime>>[
                                                   ColumnSeries<SalesData,
                                                       DateTime>(
+                                                      dataLabelMapper: (datum, index)
+                                                      {
+                                                        return _parseDuration(datum.totalDuration).toString();
+                                                      },
                                                       dataSource: commonProvider
                                                           .data,
                                                       color: blueColor,
@@ -1346,8 +1345,11 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                       sales,
                                                           _) =>
                                                       /*sales.totalDuration!*/
-                                                      _parseDuration(sales
-                                                          .totalDuration),
+                                                      commonProvider.data.map((e) =>_parseDuration(e.totalDuration)).toList().reduce(
+                                                          (a, b) => a > b ? a : b
+                                                      ),
+                                                      /*_parseDuration(sales
+                                                          .totalDuration),*/
                                                       name: 'Total',
                                                       legendIconType: LegendIconType
                                                           .rectangle,
