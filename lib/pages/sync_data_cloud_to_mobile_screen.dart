@@ -410,7 +410,23 @@ class _SyncDataCloudToMobileScreenState
           Utils.customPrint('LENGTH: ${value.vessels!.length}');
           CustomLogger().logWithFile(Level.info, "LENGTH: ${value.vessels!.length} -> $page");
 
+          List<String> vesselLocalID = await _databaseService.getLocalIds();
+          List<String> deleteVesselID = [];
+
+
           for (int i = 0; i < value.vessels!.length; i++) {
+
+            if(vesselLocalID.contains(value.vessels![i].id))
+            {
+              //deleteVesselID.add(value.vessels![i].id!);
+              vesselLocalID.remove(value.vessels![i].id);
+             // debugPrint("VESSEL CONTAIN IDSSS $deleteVesselID");
+              debugPrint("VESSEL CONTAIN IDSSS DELETED  $vesselLocalID");
+            }
+
+            debugPrint("VESSEL CONTAIN IDSSS DELETED 1  $vesselLocalID");
+
+
             Utils.customPrint('SYNC FROM CLOUD CREATED BY ID : ${value.vessels![i].createdBy}');
             Utils.customPrint('SYNC FROM CLOUD USER ID: ${commonProvider.loginModel!.userId}');
             if (value.vessels![i].name == 'rrrrr 12') {
@@ -606,10 +622,6 @@ class _SyncDataCloudToMobileScreenState
 
             if (vesselData != null) {
 
-              /*if(value.trips![i].createdBy == commonProvider.loginModel!.userId){
-
-            }*/
-
               Trip tripData = Trip(
                   id: value.trips![i].id,
                   vesselId: value.trips![i].vesselId,
@@ -637,6 +649,16 @@ class _SyncDataCloudToMobileScreenState
               await _databaseService.insertTrip(tripData);
           }
           }
+
+          debugPrint("REMAINING VESSELS ID 1 ${vesselLocalID}");
+
+          if(vesselLocalID.isNotEmpty)
+            {
+              for (int i = 0; i < vesselLocalID.length; i++) {
+                _databaseService.deleteTripBasedOnVesselId(vesselLocalID[i]);
+                _databaseService.deleteVesselFromLocalDB(vesselLocalID[i]);
+              }
+            }
 
           Future.delayed(Duration(seconds: 1), () {
             setState(() {

@@ -549,4 +549,27 @@ Future<bool> checkIfTripExist(String tripId) async {
     CustomLogger().logWithFile(Level.info, "EXIST $exists -> $page");
     return exists == 1;
   }
+
+  // To Fetch Local Vessels ID
+  Future<List<String>> getLocalIds() async {
+    final db = await _databaseService.database;
+    final List<Map<String, dynamic>> maps = await db.query('vessels', columns: ['id']);
+    return List.generate(maps.length, (i) {
+      return maps[i]['id'];
+    });
+  }
+
+  /// It will change vessel to retired vessel
+  Future<void> deleteVesselFromLocalDB(String id) async {
+    final db = await _databaseService.database;
+
+    // Remove the Trip from the database.
+    await db.delete(
+      'vessels',
+      // Use a `where` clause to delete a specific trip.
+      where: 'id = ?',
+      // Pass the Trip's id as a whereArg to prevent SQL injection.
+      whereArgs: [id],
+    );
+  }
 }

@@ -732,7 +732,7 @@ class _InviteDelegateState extends State<InviteDelegate> {
                     alignment: Alignment.bottomCenter,
                     child: Container(
                       alignment: Alignment.bottomCenter,
-                      height: displayHeight(context) / 7.9,
+                      height: displayHeight(context) / 7.5,
                       padding: EdgeInsets.all(8),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
