@@ -15,7 +15,6 @@ import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-//import 'sync_chart/lib/charts.dart';
 
 import 'common_widgets/utils/common_size_helper.dart';
 import 'common_widgets/utils/constants.dart';
@@ -1379,7 +1378,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                           _) =>
                                                       /*sales.speedDuration*/
                                                       sales.speedDuration,
-                                                      name: '<4 kt',
+                                                      name: '<5 kt',
                                                       legendIconType:
                                                       LegendIconType
                                                           .rectangle,
@@ -1534,7 +1533,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                             _) =>
                                                         *//*sales.speedDuration*//*
                                                         sales.speedDuration,
-                                                    name: '<4 kt',
+                                                    name: '<5 kt',
                                                     legendIconType:
                                                         LegendIconType
                                                             .rectangle,
