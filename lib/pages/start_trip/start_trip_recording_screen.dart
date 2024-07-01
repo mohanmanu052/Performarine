@@ -79,6 +79,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
   List<VesselDropdownItem> vesselData = [];
+  GlobalKey<dynamic> _builderKey = GlobalKey();
 
   VesselDropdownItem? selectedValue;
 
@@ -4862,7 +4863,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     }
   }
 
-  showBluetoothListDialog(BuildContext context, String? connectedDeviceId,
+  showBluetoothListDialog(BuildContext context1, String? connectedDeviceId,
       BluetoothDevice? connectedBluetoothDevice) {
     // setState(() {
     //   progress = 0.9;
@@ -4886,13 +4887,16 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
       return showDialog(
           barrierDismissible: false,
-          context: context,
+          context: context1,
           builder: (BuildContext dialogContext) {
             return Dialog(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: StatefulBuilder(builder: (context, setDialogState) {
+                child: StatefulBuilder(
+                  key: _builderKey,
+                  builder: (context, setDialogState) {
+                  
                   return Container(
                     width: displayWidth(context),
                     height: displayHeight(context) * 0.6,
@@ -4950,10 +4954,18 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                   width: displayWidth(context),
                                   height: displayHeight(context) * 0.28,
                                   child: LPRBluetoothList(
+                                                                            onErrCallback: (err){
+                                          if(scaffoldKey!=null){
+                                            Utils.showSnackBar(context1,scaffoldKey: scaffoldKey,message: 'Some error occured please try again later');
+                                          }
+
+                                        },
+
+                                    scafoldKey: scaffoldKey,
                                     onConnetedCallBack: (device) {
 
 if(mounted){
-  Future.delayed(Duration(seconds: 1),(){
+  Future.delayed(Duration(milliseconds: 500),(){
     setState(() {
       
     });
@@ -5005,14 +5017,23 @@ if(mounted){
                                   width: displayWidth(context),
                                   height: displayHeight(context) * 0.28,
                                   child: LPRBluetoothList(
+                                                                        scafoldKey: scaffoldKey,
+
                                     dialogContext: dialogContext,
                                     setDialogSet: setDialogState,
                                     connectedDeviceId: connectedDeviceId,
                                     connectedBluetoothDevice:
                                         connectedBluetoothDevice,
+                                        onErrCallback: (err){
+                                          if(scaffoldKey!=null){
+                                            Utils.showSnackBar(context1,scaffoldKey: scaffoldKey,message: 'Some error occured please try again later');
+                                          }
+
+                                        },
                                         onConnetedCallBack: (connectedDevice) {
+
 if(mounted){
-  Future.delayed(Duration(seconds: 1),(){
+  Future.delayed(Duration(milliseconds: 500),(){
     setState(() {
       
     });
@@ -5079,7 +5100,7 @@ if(mounted){
 
                                   FlutterBluePlus.isScanning.listen((event) {
                                     if (event) {
-                                      if (mounted) {
+                                      if (mounted&&_builderKey.currentState!=null) {
                                         setDialogState(() {
                                           isScanningBluetooth = true;
                                         });
@@ -5087,7 +5108,7 @@ if(mounted){
                                     }
                                     else
                                       {
-                                        if (mounted) {
+                                        if (mounted&&_builderKey.currentState!=null) {
                                           setDialogState(() {
                                             isScanningBluetooth = false;
                                           });

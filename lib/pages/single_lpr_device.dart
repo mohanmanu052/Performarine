@@ -28,7 +28,8 @@ class SingleLPRDevice extends StatefulWidget {
   BluetoothDevice? connectedBluetoothDevice;
   String? comingFrom;
 Function(String)? onDeviceConnectedCallback;
-
+GlobalKey<ScaffoldState>? scafoldKey;
+final Function(dynamic)? onerrorCallback;
   SingleLPRDevice(
       {Key? key,
       this.device,
@@ -40,6 +41,8 @@ Function(String)? onDeviceConnectedCallback;
       this.onDeviceConnectedCallback,
       this.connectedBluetoothDevice,
       this.comingFrom,
+      this.scafoldKey,
+      this.onerrorCallback,
       this.selectedBluettothDevice,
       this.onSingleDeviceTapped})
       : super(key: key);
@@ -108,6 +111,11 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
 
                 }
               }).catchError((onError) {
+                widget.onerrorCallback!(onError);
+            //                 if(widget.scafoldKey!=null){
+            //   Utils.showSnackBar(context,scaffoldKey: widget.scafoldKey,message: 'Some error occured while connecting please try again later');
+            // }
+
                 Utils.customPrint('CONNECT ERROR: $onError');
                 EasyLoading.dismiss();
               });
@@ -167,6 +175,12 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
 
             }
           }).catchError((onError) {
+                widget.onerrorCallback!(onError);
+
+            // if(widget.scafoldKey!=null){
+            //   Utils.showSnackBar(context,scaffoldKey: widget.scafoldKey,message: 'Some error occured while connecting please try again later');
+            // }
+
             Utils.customPrint('CONNECT ERROR: $onError');
             EasyLoading.dismiss();
           });
