@@ -334,11 +334,19 @@ if(mounted) {
                                                     textSize: 11,
                                                     fontWeight: FontWeight.w400,
                                                     textColor: Colors.grey),
-                                                commonText(
-                                                    text: item.fleetCreatedBy,
-                                                    textSize: 11,
-                                                    fontWeight: FontWeight.w500,
-                                                    textColor: buttonBGColor),
+                                                Container(
+                                                  margin: EdgeInsets.only(left: 4),
+                                                  width: displayWidth(context) * 0.38,
+                                                  child: Text(
+                                                      item.fleetCreatedBy!,
+                                                      style: TextStyle(
+                                                        fontSize: 11,
+                                                          fontWeight: FontWeight.w500,
+                                                        fontFamily: outfit,color: buttonBGColor
+                                                      ),
+                                                      overflow: TextOverflow.ellipsis,
+                                                      softWrap: true,),
+                                                ),
                                               ],
                                             )),
                                           ],
@@ -433,12 +441,20 @@ if(mounted) {
                                                     fontWeight: FontWeight.w400,
                                                     textSize: 16,
                                                     textColor: buttonBGColor),
-                                                commonText(
-                                                    text:
-                                                        'Created By: ${item.fleetCreatedBy}',
-                                                    fontWeight: FontWeight.w200,
-                                                    textSize: 12,
-                                                    textColor: Colors.black),
+
+                                                Container(
+                                                  margin: EdgeInsets.only(left: 4),
+                                                  width: displayWidth(context) * 0.38,
+                                                  child: Text(
+                                                    'Created By:  ${item.fleetCreatedBy!}',
+                                                    style: TextStyle(
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.w200,
+                                                        fontFamily: outfit,color: buttonBGColor
+                                                    ),
+                                                    overflow: TextOverflow.ellipsis,
+                                                    softWrap: true,),
+                                                ),
                                               ],
                                             ),
                                           ),

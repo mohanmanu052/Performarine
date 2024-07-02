@@ -77,14 +77,18 @@ class _SingleMyDelegateInviteCardState
                         textSize: displayWidth(context) * 0.042,
                         textAlign: TextAlign.start,
                       ),
-                      commonText(
-                          context: context,
-                          text:
-                              'Send By ${myDelegateInvite!.invitedBy ?? '-'}',
-                          fontWeight: FontWeight.w400,
-                          textColor: Colors.grey,
-                          textSize: displayWidth(context) * 0.032,
-                          textAlign: TextAlign.start),
+                      Container(
+                        width: displayWidth(context) * 0.5,
+                        child: Text(
+                                'Send By ${myDelegateInvite!.invitedBy ?? '-'}',
+                            style: TextStyle(fontFamily: outfit,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.w400,
+                            fontSize:  displayWidth(context) * 0.032),
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: true,
+                            textAlign: TextAlign.start),
+                      ),
                       commonText(
                           context: context,
                           text: 'Permissions: ',

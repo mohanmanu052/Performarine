@@ -68,8 +68,10 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
       dateOfJourney = '',
       yearOfTheJourney = '',
       peopleOnBoard = '';
+
       //This Value Make Help Every Bar Stick With 24 Hrs Based On This Calculations Will Be Performed 
       //int total24HrsDuration=1440;
+
 
   bool cancelVisible = true;
   bool? internet;
@@ -125,19 +127,16 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
     //Utils.customPrint('CURRENT TIME TIME ${tripData!.time}');
   }
 
-getSpeedReport()async{
-if(commonProvider.loginModel?.token!=null){
-    speedReportData = commonProvider.speedReport(context,
-        commonProvider.loginModel!.token!, widget.vesselId!, scaffoldKey);
- 
-}else{
-  await commonProvider.getToken();
+  getSpeedReport() async {
+    if (commonProvider.loginModel?.token != null) {
       speedReportData = commonProvider.speedReport(context,
-        commonProvider.loginModel!.token!, widget.vesselId!, scaffoldKey);
- 
-}
- 
-}
+          commonProvider.loginModel!.token!, widget.vesselId!, scaffoldKey);
+    } else {
+      await commonProvider.getToken();
+      speedReportData = commonProvider.speedReport(context,
+          commonProvider.loginModel!.token!, widget.vesselId!, scaffoldKey);
+    }
+  }
 
   @override
   void dispose() {
@@ -1261,37 +1260,45 @@ if(commonProvider.loginModel?.token!=null){
                               FutureBuilder<SpeedReportsModel>(
                                 future: speedReportData,
                                 builder: (context, snapshot) {
-                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
                                     return Padding(
                                       padding: EdgeInsets.only(
                                           top: displayHeight(context) * 0.05,
-                                          bottom: displayHeight(context) * 0.05
-                                      ),
+                                          bottom:
+                                              displayHeight(context) * 0.05),
                                       child: Center(
                                         child: CircularProgressIndicator(
                                           valueColor:
-                                          AlwaysStoppedAnimation<Color>(circularProgressColor),
+                                              AlwaysStoppedAnimation<Color>(
+                                                  circularProgressColor),
                                         ),
                                       ),
                                     );
                                   }
-                                  Utils.customPrint('HAS DATA: ${snapshot.hasData}');
-                                  Utils.customPrint('HAS DATA: ${snapshot.error}');
-                                  Utils.customPrint('HAS DATA: ${snapshot.hasError}');
-                                 if (snapshot.hasData) {
-                                   if (snapshot.data!.data == null || snapshot.data!.data!.isEmpty) {
+                                  Utils.customPrint(
+                                      'HAS DATA: ${snapshot.hasData}');
+                                  Utils.customPrint(
+                                      'HAS DATA: ${snapshot.error}');
+                                  Utils.customPrint(
+                                      'HAS DATA: ${snapshot.hasError}');
+                                  if (snapshot.hasData) {
+                                    if (snapshot.data!.data == null ||
+                                        snapshot.data!.data!.isEmpty) {
                                       return Padding(
                                         padding: EdgeInsets.only(
                                             top: displayHeight(context) * 0.05,
-                                          bottom: displayHeight(context) * 0.05
-                                        ),
+                                            bottom:
+                                                displayHeight(context) * 0.05),
                                         child: Center(
                                           child: commonText(
                                               context: context,
-                                              text: 'No trips data available\nPlease upload your data to view the graph.',
+                                              text:
+                                                  'No trips data available\nPlease upload your data to view the graph.',
                                               fontWeight: FontWeight.w500,
                                               textColor: Colors.black,
-                                              textSize: displayWidth(context) * 0.04,
+                                              textSize:
+                                                  displayWidth(context) * 0.04,
                                               textAlign: TextAlign.center),
                                         ),
                                       );
@@ -1312,8 +1319,8 @@ if(commonProvider.loginModel?.token!=null){
                                                     fontWeight: FontWeight.w500,
                                                     textColor: Colors.black,
                                                     textSize:
-                                                    displayWidth(context) *
-                                                        0.03,
+                                                        displayWidth(context) *
+                                                            0.03,
                                                   ),
                                                 )
                                                 ),
@@ -1389,7 +1396,6 @@ primaryYAxis: NumericAxis(
                                                 ],
                                               ),
                                             
-
                                           ],
                                         ),
                                       );
@@ -1398,7 +1404,7 @@ primaryYAxis: NumericAxis(
                                   return Container();
                                 },
                               ),
-                             /* FutureBuilder<SpeedReportsModel>(
+                              /* FutureBuilder<SpeedReportsModel>(
                                 future: speedReportData,
                                 builder: (context, snapShot) {
                                   if (snapShot.connectionState ==
@@ -1450,13 +1456,13 @@ primaryYAxis: NumericAxis(
                                                   majorGridLines:
                                                   MajorGridLines(width: 0),
                                               dateFormat: DateFormat('yyyy-MM-dd')),
-                                              *//*primaryXAxis: DateTimeAxis(
+                                              */ /*primaryXAxis: DateTimeAxis(
                                                 dateFormat:
                                                     DateFormat('yyyy-MM-dd'),
                                                 intervalType:
                                                     DateTimeIntervalType
                                                         .minutes,
-                                              ),*//*
+                                              ),*/ /*
                                               primaryYAxis: NumericAxis(
                                                   isVisible: false,
                                                   majorGridLines:
@@ -1491,7 +1497,7 @@ primaryYAxis: NumericAxis(
                                                     yValueMapper: (SalesData
                                                                 sales,
                                                             _) =>
-                                                        *//*sales.totalDuration!*//*
+                                                        */ /*sales.totalDuration!*/ /*
                                                         _parseDuration(sales
                                                             .totalDuration),
                                                     name: 'Total',
@@ -1522,7 +1528,7 @@ primaryYAxis: NumericAxis(
                                                     yValueMapper: (SalesData
                                                                 sales,
                                                             _) =>
-                                                        *//*sales.speedDuration*//*
+                                                        */ /*sales.speedDuration*/ /*
                                                         sales.speedDuration,
                                                     name: '<5 kt',
                                                     legendIconType:
