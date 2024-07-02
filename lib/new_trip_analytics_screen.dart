@@ -1319,9 +1319,9 @@ if(commonProvider.loginModel?.token!=null){
                                               onTooltipRender: (tooltipArgs) {
 
 if(tooltipArgs.header!.contains('Total')){
-                                                tooltipArgs.text=commonProvider.data[tooltipArgs.viewportPointIndex!.toInt()].totalDuration.toString();
+                                                tooltipArgs.text='${commonProvider.data[tooltipArgs.viewportPointIndex!.toInt()].totalDuration.toStringAsFixed(2).toString()} min';
 }else{
-                                                 tooltipArgs.text=commonProvider.data[tooltipArgs.viewportPointIndex!.toInt()].speedDuration.toString();
+                                                 tooltipArgs.text='${commonProvider.data[tooltipArgs.viewportPointIndex!.toInt()].speedDuration.toStringAsFixed(2).toString()} min';
  
 }
                                               //double value=  _parseDuration(commonProvider.data[tooltipArgs.viewportPointIndex!.toInt()].totalDuration);
