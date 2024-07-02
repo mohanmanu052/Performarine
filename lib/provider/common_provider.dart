@@ -796,60 +796,43 @@ class CommonProvider with ChangeNotifier {
   Future<SpeedReportsModel> speedReport(BuildContext context, String token,
       String vesselID, GlobalKey<ScaffoldState> scaffoldKey) async {
     speedReportsModel = SpeedReportsModel();
-    speedReportsModel = await SpeedReportsApiProvider()
-        .speedReports(context, token, vesselID, scaffoldKey);
+    speedReportsModel = await SpeedReportsApiProvider().speedReports(context, token, vesselID, scaffoldKey);
 
-    if ((speedReportsModel?.data ?? []).isNotEmpty) {
-      data.clear();
-      data1.clear();
+    if((speedReportsModel?.data ?? []).isNotEmpty)
+      {
+        data.clear();
+        data1.clear();
 
-      speedReportsModel!.data!.forEach((value) {
-        if (value.speedDuration != 0) {
-          var val1 = total24HrsDuration / value.totalDuration!;
-          var val2 = total24HrsDuration / value.speedDuration!;
-          print('the value 1 is-------------------' + val1.toString());
-          print('the value 2 is-------------------' + val2.toString());
-          var total = total24HrsDuration - val1 + val2;
-          print('the total is----------------------' + total.toString());
+        speedReportsModel!.data!.forEach((value){
 
-          var percentageDiff = calculatePercentageDifference(
-              value.totalDuration!, value.speedDuration!.toDouble());
-          double percentageDifference =
-              ((value.totalDuration! - value.speedDuration!) /
-                      value.totalDuration!) *
-                  100;
+if(value.speedDuration!=0){
+  double percentageDifference = ((value.totalDuration! - value.speedDuration!) / value.totalDuration!) * 100;
 
-          // Calculate the value to subtract from the basic value
-          double valueToSubtract =
-              (total24HrsDuration * percentageDifference) / 100;
+  // Calculate the value to subtract from the basic value
+  double valueToSubtract = (total24HrsDuration * percentageDifference) / 100;
 
-          // Calculate the final value
-          double finalValue = total24HrsDuration - valueToSubtract;
+  // Calculate the final value
+  double finalValue = total24HrsDuration - valueToSubtract;
 
-          // Print the results
-          print('Basic Value: $total24HrsDuration');
-          // print('Total Duration: $totalDuration');
-          // print('Speed Duration: $speedDuration');
-          print(
-              'Percentage Difference: ${percentageDifference.toStringAsFixed(2)}%');
-          print('Value to Subtract: $valueToSubtract');
-          print('Final Value: $finalValue');
-          data1.add(
-            SalesData(DateTime.parse(value.createdAt!), value.totalDuration!,
-                finalValue < 0 ? 0 : finalValue),
-          );
-        } else {
-          data1.add(
-            SalesData(DateTime.parse(value.createdAt!), value.totalDuration!,
-                value.speedDuration! < 0 ? 0 : value.speedDuration!.toDouble()),
-          );
-        }
-        data.add(
-          SalesData(DateTime.parse(value.createdAt!), value.totalDuration!,
-              value.speedDuration! < 0 ? 0 : value.speedDuration!.toDouble()),
-        );
-      });
-    }
+  // Print the results
+  print('Basic Value: $total24HrsDuration');
+  // print('Total Duration: $totalDuration');
+  // print('Speed Duration: $speedDuration');
+  print('Percentage Difference: ${percentageDifference.toStringAsFixed(2)}%');
+  print('Value to Subtract: $valueToSubtract');
+  print('Final Value: $finalValue');
+              data1.add(SalesData(DateTime.parse(value.createdAt!), value.totalDuration!,finalValue < 0 ? 0 :finalValue),);
+
+}else{
+              data1.add(SalesData(DateTime.parse(value.createdAt!), value.totalDuration!, value.speedDuration! < 0 ? 0 :value.speedDuration!.toDouble()),);
+
+}
+          data.add(SalesData(DateTime.parse(value.createdAt!), value.totalDuration!, value.speedDuration! < 0 ? 0 :value.speedDuration!.toDouble()),);
+        });
+
+
+      }
+
     notifyListeners();
 
     return speedReportsModel!;
