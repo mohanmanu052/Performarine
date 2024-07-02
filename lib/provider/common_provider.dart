@@ -783,15 +783,6 @@ class CommonProvider with ChangeNotifier {
         speedReportsModel!.data!.forEach((value){
 
 if(value.speedDuration!=0){
-  var val1=total24HrsDuration/value.totalDuration!;
-  var val2=total24HrsDuration/value.speedDuration!;
-  print('the value 1 is-------------------'+val1.toString());
-  print('the value 2 is-------------------'+val2.toString());
-  var total=total24HrsDuration-val1+val2;
-  print('the total is----------------------'+total.toString());
-
-
-var percentageDiff=calculatePercentageDifference(value.totalDuration!, value.speedDuration!.toDouble());
   double percentageDifference = ((value.totalDuration! - value.speedDuration!) / value.totalDuration!) * 100;
 
   // Calculate the value to subtract from the basic value
