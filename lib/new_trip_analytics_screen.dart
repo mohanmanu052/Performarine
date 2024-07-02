@@ -1255,7 +1255,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                 ],
                               ),
                               SizedBox(
-                                height: displayHeight(context) * 0.01,
+                                height: displayHeight(context) * 0.015,
                               ),
                               FutureBuilder<SpeedReportsModel>(
                                 future: speedReportData,
@@ -1304,11 +1304,12 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                       );
                                     } else {
                                       return Container(
-                                        height: displayHeight(context) * 0.3,
+                                        height: displayHeight(context) * 0.4,
                                         child: Stack(
                                           children: [
                                             Positioned(
-                                                top: 22,
+                                                top: 1,
+                                                left: 0,
                                                 child: Padding(
                                                   padding: const EdgeInsets.only(
                                                       left: 26.0),
@@ -1395,7 +1396,7 @@ primaryYAxis: NumericAxis(
                                                   ),
                                                 ],
                                               ),
-                                            
+                                         
                                           ],
                                         ),
                                       );
