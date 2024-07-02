@@ -47,6 +47,7 @@ class _SingleDelegateCardState extends State<SingleDelegateCard> {
             horizontal: 12, vertical: 4),
         margin: EdgeInsets.symmetric(horizontal: 10),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
                 children: [
@@ -161,14 +162,20 @@ class _SingleDelegateCardState extends State<SingleDelegateCard> {
             ]),
             SizedBox(height: displayHeight(context) * 0.006,),
             Container(
+              width: displayWidth(context) * 0.5,
               alignment: Alignment.centerLeft,
-              child: commonText(
-                  text:
-                  delegates!.delegateUserEmail,
-                  fontWeight:
-                  FontWeight.w400,
-                  textSize: displayWidth(context) * 0.032,
-                  textColor: Colors.grey),
+              child: Text(
+                  delegates!.delegateUserEmail!,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                      fontSize: displayWidth(context) * 0.032,
+                      color: Colors.grey,
+                    fontFamily: outfit,
+                  ),
+                  textAlign: TextAlign.start,
+                  overflow: TextOverflow.ellipsis,
+                softWrap: true,
+                  ),
             ),
             SizedBox(height: displayHeight(context) * 0.005,),
             InkWell(

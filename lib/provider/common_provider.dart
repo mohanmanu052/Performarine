@@ -78,10 +78,14 @@ class CommonProvider with ChangeNotifier {
   CommonModel? commonModel;
   UploadTripModel? uploadTripModel;
   int tripsCount = 0;
+  int total24HrsDuration = 1440;
+
   bool tripStatus = false,
       isTripUploading = false,
       exceptionOccurred = false,
-      internetError = false, downloadTripData = false, onTripEndClicked = false;
+      internetError = false,
+      downloadTripData = false,
+      onTripEndClicked = false;
   Future<List<Trip>>? getTripsByIdFuture;
   GetUserConfigModel? getUserConfigModel;
   ReportModel? reportModel;
@@ -119,18 +123,17 @@ class CommonProvider with ChangeNotifier {
   VoidCallback? resetCustomTimePicker;
   VoidCallback? resetEndCustomTimePicker;
 
-  callReset(){
+  callReset() {
     resetCustomTimePicker?.call();
     notifyListeners();
   }
 
-  callEndReset(){
+  callEndReset() {
     resetEndCustomTimePicker?.call();
     notifyListeners();
   }
 
-
-  init()async {
+  init() async {
     final storage = new FlutterSecureStorage();
     String? loginData = await storage.read(key: 'loginData');
     //String? loginData = sharedPreferences!.getString('loginData');
@@ -141,8 +144,7 @@ class CommonProvider with ChangeNotifier {
     }
   }
 
-
-  Future<void>getToken()async{
+  Future<void> getToken() async {
     final storage = new FlutterSecureStorage();
     String? loginData = await storage.read(key: 'loginData');
     //String? loginData = sharedPreferences!.getString('loginData');
@@ -154,92 +156,91 @@ class CommonProvider with ChangeNotifier {
   }
 
   /// to check if bluetooth is enabled or not
-  Future<dynamic> checkIfBluetoothIsEnabled(GlobalKey<ScaffoldState> scaffoldKey, VoidCallback showBluetoothDialog) async{
-
-    BluetoothAdapterState adapterState = await FlutterBluePlus.adapterState.first;
+  Future<dynamic> checkIfBluetoothIsEnabled(
+      GlobalKey<ScaffoldState> scaffoldKey,
+      VoidCallback showBluetoothDialog) async {
+    BluetoothAdapterState adapterState =
+        await FlutterBluePlus.adapterState.first;
     bool isBLEEnabled = adapterState == BluetoothAdapterState.on;
     // bool isBLEEnabled = await flutterBluePlus!.isOn;
     Utils.customPrint('isBLEEnabled: $isBLEEnabled');
 
-    if(isBLEEnabled){
+    if (isBLEEnabled) {
       bool isGranted = await Permission.bluetooth.isGranted;
       Utils.customPrint('isGranted: $isGranted');
-      if(!isGranted){
+      if (!isGranted) {
         await Permission.bluetooth.request();
         bool isPermGranted = await Permission.bluetooth.isGranted;
 
-        if(isPermGranted){
-
+        if (isPermGranted) {
           // FlutterBluePlus _flutterBlue = FlutterBluePlus();
-          BluetoothAdapterState adapterState = await FlutterBluePlus.adapterState.first;
+          BluetoothAdapterState adapterState =
+              await FlutterBluePlus.adapterState.first;
           final isOn = adapterState == BluetoothAdapterState.on;
-          if(isOn) isBluetoothEnabled =  true;
+          if (isOn) isBluetoothEnabled = true;
 
           await Future.delayed(const Duration(seconds: 1));
-          BluetoothAdapterState tempAdapterState = await FlutterBluePlus.adapterState.first;
+          BluetoothAdapterState tempAdapterState =
+              await FlutterBluePlus.adapterState.first;
           isBluetoothEnabled = adapterState == BluetoothAdapterState.on;
           // isBluetoothEnabled = await FlutterBluePlus.isOn;
           notifyListeners();
           return isBluetoothEnabled;
-        }
-        else{
+        } else {
           Utils.showSnackBar(scaffoldKey.currentContext!,
               scaffoldKey: scaffoldKey,
               message:
-              'Bluetooth permission is needed. Please enable bluetooth permission from app\'s settings.');
+                  'Bluetooth permission is needed. Please enable bluetooth permission from app\'s settings.');
 
-          Future.delayed(Duration(seconds: 3),
-                  () async {
-                await openAppSettings();
-              });
+          Future.delayed(Duration(seconds: 3), () async {
+            await openAppSettings();
+          });
           return null;
         }
-      }
-      else{
-
+      } else {
         // FlutterBluePlus _flutterBlue = FlutterBluePlus();
-        BluetoothAdapterState adapterState = await FlutterBluePlus.adapterState.first;
+        BluetoothAdapterState adapterState =
+            await FlutterBluePlus.adapterState.first;
         final isOn = adapterState == BluetoothAdapterState.on;
         // final isOn = await _flutterBlue.isOn;
-        if(isOn) isBluetoothEnabled =  true;
+        if (isOn) isBluetoothEnabled = true;
 
         await Future.delayed(const Duration(seconds: 1));
-        BluetoothAdapterState tempAdapterState = await FlutterBluePlus.adapterState.first;
+        BluetoothAdapterState tempAdapterState =
+            await FlutterBluePlus.adapterState.first;
         isBluetoothEnabled = tempAdapterState == BluetoothAdapterState.on;
         // isBluetoothEnabled = await FlutterBluePlus.instance.isOn;
         notifyListeners();
         return isBluetoothEnabled;
       }
-    }
-    else{
+    } else {
       bool isGranted = await Permission.bluetooth.isGranted;
       Utils.customPrint('isGranted: $isGranted');
-      if(!isGranted){
-        if(await Permission.bluetooth.isPermanentlyDenied){
+      if (!isGranted) {
+        if (await Permission.bluetooth.isPermanentlyDenied) {
           Utils.showSnackBar(scaffoldKey.currentContext!,
               scaffoldKey: scaffoldKey,
               message:
-              'Bluetooth permission is needed. Please enable bluetooth permission from app\'s settings.');
+                  'Bluetooth permission is needed. Please enable bluetooth permission from app\'s settings.');
 
-          Future.delayed(Duration(seconds: 3),
-                  () async {
-                await openAppSettings();
-              });
+          Future.delayed(Duration(seconds: 3), () async {
+            await openAppSettings();
+          });
           return null;
-        }
-        else{
+        } else {
           await Permission.bluetooth.request();
         }
-      }
-      else{
+      } else {
         // FlutterBluePlus _flutterBlue = FlutterBluePlus();
-        BluetoothAdapterState adapterState = await FlutterBluePlus.adapterState.first;
+        BluetoothAdapterState adapterState =
+            await FlutterBluePlus.adapterState.first;
         final isOn = adapterState == BluetoothAdapterState.on;
         // final isOn = await _flutterBlue.isOn;
-        if(isOn) isBluetoothEnabled =  true;
+        if (isOn) isBluetoothEnabled = true;
 
         await Future.delayed(const Duration(seconds: 1));
-        BluetoothAdapterState tempAdapterState = await FlutterBluePlus.adapterState.first;
+        BluetoothAdapterState tempAdapterState =
+            await FlutterBluePlus.adapterState.first;
         isBluetoothEnabled = tempAdapterState == BluetoothAdapterState.on;
         // isBluetoothEnabled = await FlutterBluePlus.instance.isOn;
         notifyListeners();
@@ -256,8 +257,7 @@ class CommonProvider with ChangeNotifier {
       bool isLoginWithGoogle,
       bool isLoginWithApple,
       String socialLoginId,
-      GlobalKey<ScaffoldState> scaffoldKey
-      ) async {
+      GlobalKey<ScaffoldState> scaffoldKey) async {
     loginModel = LoginModel();
 
     loginModel = await LoginApiProvider().login(context, email, password,
@@ -284,8 +284,7 @@ class CommonProvider with ChangeNotifier {
       String profileImage,
       GlobalKey<ScaffoldState> scaffoldKey,
       String? firstName,
-      String? lastName
-      ) async {
+      String? lastName) async {
     registrationModel = RegistrationModel();
 
     registrationModel = await RegistrationApiProvider().registerUser(
@@ -303,7 +302,8 @@ class CommonProvider with ChangeNotifier {
         socialLoginId,
         profileImage,
         scaffoldKey,
-        firstName, lastName);
+        firstName,
+        lastName);
     notifyListeners();
 
     return registrationModel!;
@@ -396,11 +396,11 @@ class CommonProvider with ChangeNotifier {
 
   /// Get User data
   Future<GetUserConfigModel?> getUserConfigData(
-      BuildContext context,
-      String userId,
-      String accessToken,
-      GlobalKey<ScaffoldState> scaffoldKey,) async {
-
+    BuildContext context,
+    String userId,
+    String accessToken,
+    GlobalKey<ScaffoldState> scaffoldKey,
+  ) async {
     getUserConfigModel = GetUserConfigModel();
 
     getUserConfigModel = await GetUserConfigApiProvider()
@@ -433,18 +433,24 @@ class CommonProvider with ChangeNotifier {
     return reportModel;
   }
 
-  Future<ExportDataModel> exportReportData(Map<String,dynamic>body,String token,BuildContext context,GlobalKey<ScaffoldState> scaffoldKey ) async{
-    var data= await ReportModuleProvider().exportReportData(body, token, context, scaffoldKey);
+  Future<ExportDataModel> exportReportData(
+      Map<String, dynamic> body,
+      String token,
+      BuildContext context,
+      GlobalKey<ScaffoldState> scaffoldKey) async {
+    var data = await ReportModuleProvider()
+        .exportReportData(body, token, context, scaffoldKey);
     notifyListeners();
     return data;
   }
+
   /// All Trip list
   Future<TripList> tripListData(
-      String vesselID,
-      BuildContext context,
-      String accessToken,
-      GlobalKey<ScaffoldState> scaffoldKey,
-      ) async {
+    String vesselID,
+    BuildContext context,
+    String accessToken,
+    GlobalKey<ScaffoldState> scaffoldKey,
+  ) async {
     tripListModel = TripList();
     tripListModel = await TripListApiProvider()
         .tripListData(vesselID, context, accessToken, scaffoldKey);
@@ -454,29 +460,30 @@ class CommonProvider with ChangeNotifier {
 
   ///Reset password
   Future<ForgotPasswordModel> forgotPassword(
-      BuildContext context,
-      String email,
-      GlobalKey<ScaffoldState> scaffoldKey,
-      ) async {
+    BuildContext context,
+    String email,
+    GlobalKey<ScaffoldState> scaffoldKey,
+  ) async {
     forgotPasswordModel = ForgotPasswordModel();
 
-    forgotPasswordModel = await ForgotPasswordProvider().forgotPassword(context, email,scaffoldKey);
+    forgotPasswordModel = await ForgotPasswordProvider()
+        .forgotPassword(context, email, scaffoldKey);
     notifyListeners();
 
     return forgotPasswordModel!;
   }
 
-
   ///Reset password
   Future<ResetPasswordModel> resetPassword(
-      BuildContext context,
-      String token,
-      String password,
-      GlobalKey<ScaffoldState> scaffoldKey,
-      ) async {
+    BuildContext context,
+    String token,
+    String password,
+    GlobalKey<ScaffoldState> scaffoldKey,
+  ) async {
     resetPasswordModel = ResetPasswordModel();
 
-    resetPasswordModel = await ResetPasswordProvider().resetPassword(context,token, password, scaffoldKey);
+    resetPasswordModel = await ResetPasswordProvider()
+        .resetPassword(context, token, password, scaffoldKey);
     notifyListeners();
 
     return resetPasswordModel!;
@@ -491,7 +498,8 @@ class CommonProvider with ChangeNotifier {
       GlobalKey<ScaffoldState> scaffoldKey) async {
     changePasswordModel = ChangePasswordModel();
 
-    changePasswordModel = await ChangePasswordProvider().changePassword(context,token,currentPassword, newPassword,scaffoldKey);
+    changePasswordModel = await ChangePasswordProvider().changePassword(
+        context, token, currentPassword, newPassword, scaffoldKey);
     notifyListeners();
 
     return changePasswordModel!;
@@ -506,19 +514,24 @@ class CommonProvider with ChangeNotifier {
       List<File?> fileList,
       GlobalKey<ScaffoldState> scaffoldKey) async {
     userFeedbackModel = UserFeedbackModel();
-    userFeedbackModel = await UserFeedbackProvider().sendUserFeedbackDio(context,token, subject, description, deviceInfo, fileList, scaffoldKey);
+    userFeedbackModel = await UserFeedbackProvider().sendUserFeedbackDio(
+        context,
+        token,
+        subject,
+        description,
+        deviceInfo,
+        fileList,
+        scaffoldKey);
     notifyListeners();
 
     return userFeedbackModel!;
   }
 
-  Future<DeleteTripModel> deleteTrip(
-      BuildContext context,
-      String token,
-      String tripId,
-      GlobalKey<ScaffoldState> scaffoldKey) async {
+  Future<DeleteTripModel> deleteTrip(BuildContext context, String token,
+      String tripId, GlobalKey<ScaffoldState> scaffoldKey) async {
     deleteTripModel = DeleteTripModel();
-    deleteTripModel = await DeleteTripApiProvider().deleteTrip(context, token, tripId, scaffoldKey);
+    deleteTripModel = await DeleteTripApiProvider()
+        .deleteTrip(context, token, tripId, scaffoldKey);
     notifyListeners();
 
     return deleteTripModel!;
@@ -530,8 +543,7 @@ class CommonProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  updateStateOfOnTripEndClick(bool value)
-  {
+  updateStateOfOnTripEndClick(bool value) {
     onTripEndClicked = value;
     notifyListeners();
   }
@@ -544,54 +556,73 @@ class CommonProvider with ChangeNotifier {
       String userId,
       GlobalKey<ScaffoldState> scaffoldKey) async {
     userInfoCommonModel = CommonModel();
-    userInfoCommonModel = await UpdateUserInfoApiProvider().updateUserInfo(context, token, firstName, lastName, userId, scaffoldKey);
+    userInfoCommonModel = await UpdateUserInfoApiProvider().updateUserInfo(
+        context, token, firstName, lastName, userId, scaffoldKey);
     notifyListeners();
 
     return userInfoCommonModel!;
   }
 
-  Future<CreateFleetResponse> createNewFleet(String token, BuildContext context,GlobalKey<ScaffoldState> scaffoldKey, Map<String,dynamic>? data, )async{
-    var response =CreateNewFleetProvider().createFleet(token, scaffoldKey,context,  data!);
+  Future<CreateFleetResponse> createNewFleet(
+    String token,
+    BuildContext context,
+    GlobalKey<ScaffoldState> scaffoldKey,
+    Map<String, dynamic>? data,
+  ) async {
+    var response = CreateNewFleetProvider()
+        .createFleet(token, scaffoldKey, context, data!);
     return response;
   }
 
-  Future<CreateFleetResponse> sendFleetInvite(String token, BuildContext context,GlobalKey<ScaffoldState> scaffoldKey, Map<String,dynamic>? data)async{
-    var response =SendInviteProvider ().sendFleetInvite(token: token,context: context,scaffoldKey: scaffoldKey,data: data);
+  Future<CreateFleetResponse> sendFleetInvite(
+      String token,
+      BuildContext context,
+      GlobalKey<ScaffoldState> scaffoldKey,
+      Map<String, dynamic>? data) async {
+    var response = SendInviteProvider().sendFleetInvite(
+        token: token, context: context, scaffoldKey: scaffoldKey, data: data);
     return response;
   }
 
   Future<FleetListModel> getFleetListdata(
-      {BuildContext? context,String? token, GlobalKey<ScaffoldState>? scaffoldKey, bool isCalledFromSession = false}
-      )async{
-    var response=await FleetListProvider().getFleetDetails(context: context,token: token,scaffoldKey: scaffoldKey, isCalledFromSession: isCalledFromSession);
+      {BuildContext? context,
+      String? token,
+      GlobalKey<ScaffoldState>? scaffoldKey,
+      bool isCalledFromSession = false}) async {
+    var response = await FleetListProvider().getFleetDetails(
+        context: context,
+        token: token,
+        scaffoldKey: scaffoldKey,
+        isCalledFromSession: isCalledFromSession);
     return response;
   }
-  Future<CommonModel> addFleetVessels( {BuildContext? context,String? token,GlobalKey<ScaffoldState>? scaffoldKey,Map<String,dynamic>? data})async{
-    var res=await FleetAssignVesselsProvider().addVesselAndGrantAccess(context: context,token: token,scaffoldKey: scaffoldKey,data: data);
+
+  Future<CommonModel> addFleetVessels(
+      {BuildContext? context,
+      String? token,
+      GlobalKey<ScaffoldState>? scaffoldKey,
+      Map<String, dynamic>? data}) async {
+    var res = await FleetAssignVesselsProvider().addVesselAndGrantAccess(
+        context: context, token: token, scaffoldKey: scaffoldKey, data: data);
     return res;
   }
-  Future<FleetDashboardModel> fleetDashboardDetails(
-      BuildContext context,
-      String token,
-      GlobalKey<ScaffoldState> scaffoldKey) async {
 
+  Future<FleetDashboardModel> fleetDashboardDetails(BuildContext context,
+      String token, GlobalKey<ScaffoldState> scaffoldKey) async {
     isMyFleetNotEmpty = false;
     //notifyListeners();
     fleetDashboardModel = FleetDashboardModel();
-    fleetDashboardModel = await FleetDashboardApiProvider().fleetDashboardData(context, token, scaffoldKey);
+    fleetDashboardModel = await FleetDashboardApiProvider()
+        .fleetDashboardData(context, token, scaffoldKey);
 
-    if(fleetDashboardModel!.myFleets!.isNotEmpty)
-    {
+    if (fleetDashboardModel!.myFleets!.isNotEmpty) {
       debugPrint("IS LIST EMPTY ${fleetDashboardModel!.myFleets!.isNotEmpty}");
       isMyFleetNotEmpty = true;
       notifyListeners();
-    }
-    else
-    {
+    } else {
       isMyFleetNotEmpty = false;
       notifyListeners();
     }
-
 
     return fleetDashboardModel!;
   }
@@ -603,7 +634,9 @@ class CommonProvider with ChangeNotifier {
       String invitationFlag,
       GlobalKey<ScaffoldState> scaffoldKey) async {
     commonModel = CommonModel();
-    commonModel = await FleetMemberInvitationApiProvider().fleetMemberInvitation(context, token, invitationToken, invitationFlag, scaffoldKey);
+    commonModel = await FleetMemberInvitationApiProvider()
+        .fleetMemberInvitation(
+            context, token, invitationToken, invitationFlag, scaffoldKey);
     notifyListeners();
 
     return commonModel!;
@@ -615,31 +648,28 @@ class CommonProvider with ChangeNotifier {
       String fleetId,
       GlobalKey<ScaffoldState> scaffoldKey) async {
     fleetDetailsModel = FleetDetailsModel();
-    fleetDetailsModel = await FleetDetailsApiProvider().getFleetDetails(context, token, fleetId, scaffoldKey);
+    fleetDetailsModel = await FleetDetailsApiProvider()
+        .getFleetDetails(context, token, fleetId, scaffoldKey);
     notifyListeners();
 
     return fleetDetailsModel!;
   }
 
-  Future<CommonModel> deleteFleet(
-      BuildContext context,
-      String token,
-      String fleetId,
-      GlobalKey<ScaffoldState> scaffoldKey) async {
+  Future<CommonModel> deleteFleet(BuildContext context, String token,
+      String fleetId, GlobalKey<ScaffoldState> scaffoldKey) async {
     deleteFleetModel = CommonModel();
-    deleteFleetModel = await DeleteFleetApiProvider().deleteFleet(context, token, fleetId, scaffoldKey);
+    deleteFleetModel = await DeleteFleetApiProvider()
+        .deleteFleet(context, token, fleetId, scaffoldKey);
     notifyListeners();
 
     return deleteFleetModel!;
   }
 
-  Future<CommonModel> leaveFleet(
-      BuildContext context,
-      String token,
-      String fleetId,
-      GlobalKey<ScaffoldState> scaffoldKey) async {
+  Future<CommonModel> leaveFleet(BuildContext context, String token,
+      String fleetId, GlobalKey<ScaffoldState> scaffoldKey) async {
     deleteFleetModel = CommonModel();
-    deleteFleetModel = await LeaveFleetApiProvider().leaveFleet(context, token, fleetId, scaffoldKey);
+    deleteFleetModel = await LeaveFleetApiProvider()
+        .leaveFleet(context, token, fleetId, scaffoldKey);
     notifyListeners();
 
     return deleteFleetModel!;
@@ -652,132 +682,167 @@ class CommonProvider with ChangeNotifier {
       String fleetName,
       GlobalKey<ScaffoldState> scaffoldKey) async {
     editFleetDetailsModel = CommonModel();
-    editFleetDetailsModel = await EditFleetApiProvider().editFleetDetails(context, token, fleetId, fleetName, scaffoldKey);
+    editFleetDetailsModel = await EditFleetApiProvider()
+        .editFleetDetails(context, token, fleetId, fleetName, scaffoldKey);
     notifyListeners();
 
     return editFleetDetailsModel!;
   }
 
-
-  Future<Response> acceptFleetInvitation(Uri url)async{
-    var res=await FleetDashboardApiProvider().acceptfleetInvite(url);
+  Future<Response> acceptFleetInvitation(Uri url) async {
+    var res = await FleetDashboardApiProvider().acceptfleetInvite(url);
     return res;
   }
 
-
-  Future<CommonModel> createDelegate(
-      BuildContext context,
-      String token,
-      Map<String,dynamic> body,
-      GlobalKey<ScaffoldState> scaffoldKey) async {
+  Future<CommonModel> createDelegate(BuildContext context, String token,
+      Map<String, dynamic> body, GlobalKey<ScaffoldState> scaffoldKey) async {
     createDelegateModel = CommonModel();
-    createDelegateModel = await CreateDelegateApiProvider().createDelegate(context, token, body, scaffoldKey);
+    createDelegateModel = await CreateDelegateApiProvider()
+        .createDelegate(context, token, body, scaffoldKey);
     notifyListeners();
 
     return createDelegateModel!;
   }
 
-
-  Future<MyDelegateInviteModel> getDelegateInvites(BuildContext context,String accessToken,GlobalKey<ScaffoldState> scaffoldKey)async{
-    var res=await MyDelegateInviteProvider().getDelegateInvites(context, accessToken, scaffoldKey);
-    List<MyDelegateInvite> tempList = res.myDelegateInvities!.where((element) => element.status == 0 || element.status == 3).toList();
+  Future<MyDelegateInviteModel> getDelegateInvites(BuildContext context,
+      String accessToken, GlobalKey<ScaffoldState> scaffoldKey) async {
+    var res = await MyDelegateInviteProvider()
+        .getDelegateInvites(context, accessToken, scaffoldKey);
+    List<MyDelegateInvite> tempList = res.myDelegateInvities!
+        .where((element) => element.status == 0 || element.status == 3)
+        .toList();
     res.myDelegateInvities!.clear();
     res.myDelegateInvities!.addAll(tempList);
     return res;
-
   }
 
   Future<CommonModel> delegateAcceptReject(
-      BuildContext context,String accessToken,GlobalKey<ScaffoldState> scaffoldKey,String flag,String verifyToken) async {
+      BuildContext context,
+      String accessToken,
+      GlobalKey<ScaffoldState> scaffoldKey,
+      String flag,
+      String verifyToken) async {
     myDelegateInviteModel = CommonModel();
-    myDelegateInviteModel = await MyDelegateInviteProvider().delegateAcceptReject(context, accessToken, scaffoldKey, flag, verifyToken);
+    myDelegateInviteModel = await MyDelegateInviteProvider()
+        .delegateAcceptReject(
+            context, accessToken, scaffoldKey, flag, verifyToken);
     notifyListeners();
 
     return myDelegateInviteModel!;
   }
 
-  Future<Response> acceptDelegateInvite(Uri uri)async{
-    var res=DelegateProvider().acceptDelegateInvitation(uri);
+  Future<Response> acceptDelegateInvite(Uri uri) async {
+    var res = DelegateProvider().acceptDelegateInvitation(uri);
     return res;
-
   }
 
   Future<VesselDelegateModel> vesselDelegateData(
-      BuildContext context, String accessToken, String vesselId, GlobalKey<ScaffoldState> scaffoldKey) async {
+      BuildContext context,
+      String accessToken,
+      String vesselId,
+      GlobalKey<ScaffoldState> scaffoldKey) async {
     vesselDelegateModel = VesselDelegateModel();
-    vesselDelegateModel = await VesselDelegateApiProvider().vesselDelegateData(context, accessToken, vesselId, scaffoldKey);
+    vesselDelegateModel = await VesselDelegateApiProvider()
+        .vesselDelegateData(context, accessToken, vesselId, scaffoldKey);
     notifyListeners();
 
     return vesselDelegateModel!;
   }
 
-  Future<CommonModel> removeDelegate(
-      BuildContext context, String accessToken, String vesselId, delegateID, GlobalKey<ScaffoldState> scaffoldKey) async {
+  Future<CommonModel> removeDelegate(BuildContext context, String accessToken,
+      String vesselId, delegateID, GlobalKey<ScaffoldState> scaffoldKey) async {
     removeDelegateModel = CommonModel();
-    removeDelegateModel = await RemoveDelegateApiProvider().removeDelegate(context, accessToken, vesselId, delegateID, scaffoldKey);
+    removeDelegateModel = await RemoveDelegateApiProvider().removeDelegate(
+        context, accessToken, vesselId, delegateID, scaffoldKey);
     notifyListeners();
 
     return removeDelegateModel!;
   }
 
-  Future<CommonModel> manageDelegate(
-      BuildContext context,
-      String token,
-      Map<String,dynamic> body,
-      GlobalKey<ScaffoldState> scaffoldKey) async {
+  Future<CommonModel> manageDelegate(BuildContext context, String token,
+      Map<String, dynamic> body, GlobalKey<ScaffoldState> scaffoldKey) async {
     manageDelegateModel = CommonModel();
-    manageDelegateModel = await ManageDelegateApiProvider().manageDelegate(context, token, body, scaffoldKey);
+    manageDelegateModel = await ManageDelegateApiProvider()
+        .manageDelegate(context, token, body, scaffoldKey);
     notifyListeners();
 
     return manageDelegateModel!;
   }
 
-  Future<CommonModel> removeFleetMember(
-      BuildContext context,
-      String token,
-      Map<String,dynamic> body,
-      GlobalKey<ScaffoldState> scaffoldKey) async {
+  Future<CommonModel> removeFleetMember(BuildContext context, String token,
+      Map<String, dynamic> body, GlobalKey<ScaffoldState> scaffoldKey) async {
     removeFleetMemberModel = CommonModel();
-    removeFleetMemberModel = await RemoveFleetMember().removeFleetMember(context, token, body, scaffoldKey);
+    removeFleetMemberModel = await RemoveFleetMember()
+        .removeFleetMember(context, token, body, scaffoldKey);
     notifyListeners();
 
     return removeFleetMemberModel!;
   }
 
-  Future<CommonModel> deleteAccount(
-      BuildContext context,
-      String token,
+  Future<CommonModel> deleteAccount(BuildContext context, String token,
       GlobalKey<ScaffoldState> scaffoldKey) async {
     deleteAccountModel = CommonModel();
-    deleteAccountModel = await DeleteAccountApiProvider().deleteAccount(context, token, scaffoldKey);
+    deleteAccountModel = await DeleteAccountApiProvider()
+        .deleteAccount(context, token, scaffoldKey);
     notifyListeners();
 
     return deleteAccountModel!;
   }
 
-  List<SalesData> data = [
+  List<SalesData> data = [];
 
-  ];
+  List<SalesData> data1 = [];
 
-  Future<SpeedReportsModel> speedReport(
-      BuildContext context,
-      String token,
-      String vesselID,
-      GlobalKey<ScaffoldState> scaffoldKey) async {
+  Future<SpeedReportsModel> speedReport(BuildContext context, String token,
+      String vesselID, GlobalKey<ScaffoldState> scaffoldKey) async {
     speedReportsModel = SpeedReportsModel();
     speedReportsModel = await SpeedReportsApiProvider().speedReports(context, token, vesselID, scaffoldKey);
 
     if((speedReportsModel?.data ?? []).isNotEmpty)
       {
         data.clear();
+        data1.clear();
+
         speedReportsModel!.data!.forEach((value){
-          data.add(SalesData(DateTime.parse(value.createdAt!), value.totalDuration!, value.speedDuration!.toDouble()),);
+
+if(value.speedDuration!=0){
+  double percentageDifference = ((value.totalDuration! - value.speedDuration!) / value.totalDuration!) * 100;
+
+  // Calculate the value to subtract from the basic value
+  double valueToSubtract = (total24HrsDuration * percentageDifference) / 100;
+
+  // Calculate the final value
+  double finalValue = total24HrsDuration - valueToSubtract;
+
+  // Print the results
+  print('Basic Value: $total24HrsDuration');
+  // print('Total Duration: $totalDuration');
+  // print('Speed Duration: $speedDuration');
+  print('Percentage Difference: ${percentageDifference.toStringAsFixed(2)}%');
+  print('Value to Subtract: $valueToSubtract');
+  print('Final Value: $finalValue');
+              data1.add(SalesData(DateTime.parse(value.createdAt!), value.totalDuration!,finalValue < 0 ? 0 :finalValue),);
+
+}else{
+              data1.add(SalesData(DateTime.parse(value.createdAt!), value.totalDuration!, value.speedDuration! < 0 ? 0 :value.speedDuration!.toDouble()),);
+
+}
+          data.add(SalesData(DateTime.parse(value.createdAt!), value.totalDuration!, value.speedDuration! < 0 ? 0 :value.speedDuration!.toDouble()),);
         });
+
+
       }
+
     notifyListeners();
 
     return speedReportsModel!;
   }
 
+  double calculatePercentageDifference(double value1, double value2) {
+    double absoluteDifference = (value1 - value2).abs();
+    double average = (value1 + value2) / 2;
+    double percentageDifference = (absoluteDifference / average) * 100;
 
+    return percentageDifference;
+  }
 }

@@ -69,6 +69,10 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
       yearOfTheJourney = '',
       peopleOnBoard = '';
 
+      //This Value Make Help Every Bar Stick With 24 Hrs Based On This Calculations Will Be Performed 
+      //int total24HrsDuration=1440;
+
+
   bool cancelVisible = true;
   bool? internet;
 
@@ -109,9 +113,10 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
     commonProvider = context.read<CommonProvider>();
 
     sharedPreferences!.remove('sp_key_called_from_noti');
+    getSpeedReport();
 
-    speedReportData = commonProvider.speedReport(context,
-        commonProvider.loginModel!.token!, widget.vesselId!, scaffoldKey);
+    // speedReportData = commonProvider.speedReport(context,
+    //     commonProvider.loginModel!.token!, widget.vesselId!, scaffoldKey);
 
     setState(() {
       getData();
@@ -120,6 +125,17 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
     Utils.customPrint('CURRENT TIME TIME ${tripDuration}');
 
     //Utils.customPrint('CURRENT TIME TIME ${tripData!.time}');
+  }
+
+  getSpeedReport() async {
+    if (commonProvider.loginModel?.token != null) {
+      speedReportData = commonProvider.speedReport(context,
+          commonProvider.loginModel!.token!, widget.vesselId!, scaffoldKey);
+    } else {
+      await commonProvider.getToken();
+      speedReportData = commonProvider.speedReport(context,
+          commonProvider.loginModel!.token!, widget.vesselId!, scaffoldKey);
+    }
   }
 
   @override
@@ -1244,37 +1260,45 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                               FutureBuilder<SpeedReportsModel>(
                                 future: speedReportData,
                                 builder: (context, snapshot) {
-                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
                                     return Padding(
                                       padding: EdgeInsets.only(
                                           top: displayHeight(context) * 0.05,
-                                          bottom: displayHeight(context) * 0.05
-                                      ),
+                                          bottom:
+                                              displayHeight(context) * 0.05),
                                       child: Center(
                                         child: CircularProgressIndicator(
                                           valueColor:
-                                          AlwaysStoppedAnimation<Color>(circularProgressColor),
+                                              AlwaysStoppedAnimation<Color>(
+                                                  circularProgressColor),
                                         ),
                                       ),
                                     );
                                   }
-                                  Utils.customPrint('HAS DATA: ${snapshot.hasData}');
-                                  Utils.customPrint('HAS DATA: ${snapshot.error}');
-                                  Utils.customPrint('HAS DATA: ${snapshot.hasError}');
-                                 if (snapshot.hasData) {
-                                   if (snapshot.data!.data == null || snapshot.data!.data!.isEmpty) {
+                                  Utils.customPrint(
+                                      'HAS DATA: ${snapshot.hasData}');
+                                  Utils.customPrint(
+                                      'HAS DATA: ${snapshot.error}');
+                                  Utils.customPrint(
+                                      'HAS DATA: ${snapshot.hasError}');
+                                  if (snapshot.hasData) {
+                                    if (snapshot.data!.data == null ||
+                                        snapshot.data!.data!.isEmpty) {
                                       return Padding(
                                         padding: EdgeInsets.only(
                                             top: displayHeight(context) * 0.05,
-                                          bottom: displayHeight(context) * 0.05
-                                        ),
+                                            bottom:
+                                                displayHeight(context) * 0.05),
                                         child: Center(
                                           child: commonText(
                                               context: context,
-                                              text: 'No trips data available\nPlease upload your data to view the graph.',
+                                              text:
+                                                  'No trips data available\nPlease upload your data to view the graph.',
                                               fontWeight: FontWeight.w500,
                                               textColor: Colors.black,
-                                              textSize: displayWidth(context) * 0.04,
+                                              textSize:
+                                                  displayWidth(context) * 0.04,
                                               textAlign: TextAlign.center),
                                         ),
                                       );
@@ -1289,118 +1313,90 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                 child: Padding(
                                                   padding: const EdgeInsets.only(
                                                       left: 26.0),
-                                                  child: commonText(
+                                                  child:
+                                                   commonText(
                                                     context: context,
                                                     text: 'Past 5 Trips',
                                                     fontWeight: FontWeight.w500,
                                                     textColor: Colors.black,
                                                     textSize:
-                                                    displayWidth(context) *
-                                                        0.03,
+                                                        displayWidth(context) *
+                                                            0.03,
                                                   ),
-                                                )),
-                                            SfCartesianChart(
+                                                )
+                                                ),
+                                             SfCartesianChart(
+                                                
+                                                onTooltipRender: (tooltipArgs) {
+                                                  if (tooltipArgs.header!.contains('Total')) {
+                                                    tooltipArgs.text = '${commonProvider.data[tooltipArgs.viewportPointIndex!.toInt()].totalDuration.toStringAsFixed(2).toString()} min';
+                                                  } else {
+                                                    tooltipArgs.text = '${commonProvider.data[tooltipArgs.viewportPointIndex!.toInt()].speedDuration.toStringAsFixed(2).toString()} min';
+                                                  }
+                                                },
                                                 plotAreaBorderWidth: 0,
                                                 primaryXAxis: DateTimeCategoryAxis(
-                                                    majorGridLines:
-                                                    MajorGridLines(width: 0),
-                                                    dateFormat: DateFormat('yyyy-MM-dd')),
-                                                primaryYAxis: NumericAxis(
-                                                  //maximum: displayHeight(context)* 0.04,
-                                                    isVisible: false,
-                                                    majorGridLines:
-                                                    MajorGridLines(width: 0)),
-                                                enableSideBySideSeriesPlacement:
-                                                true,
+                                                  majorGridLines: MajorGridLines(width: 0),
+                                                  dateFormat: DateFormat('yyyy-MM-dd'),
+                                                ),
+primaryYAxis: NumericAxis(
+    isVisible: false,
+    majorGridLines: MajorGridLines(width: 0),
+    minimum: 0,
+    maximum: 1440, // Set a fixed range for the Y-axis
+  ),
+                                                enableSideBySideSeriesPlacement: true,
                                                 legend: Legend(
-                                                    shouldAlwaysShowScrollbar:
-                                                    false,
-                                                    overflowMode:
-                                                    LegendItemOverflowMode
-                                                        .none,
-                                                    offset: Offset(80, -30),
-                                                    isVisible: true,
-                                                    position: LegendPosition.top,
-                                                    alignment:
-                                                    ChartAlignment.center),
-                                                tooltipBehavior:
-                                                TooltipBehavior(enable: true),
-                                                series: <ChartSeries<SalesData,
-                                                    DateTime>>[
-                                                  ColumnSeries<SalesData,
-                                                      DateTime>(
-                                                      dataLabelMapper: (datum, index)
-                                                      {
-                                                        return _parseDuration(datum.totalDuration).toString();
-                                                      },
-                                                      dataSource: commonProvider
-                                                          .data,
-                                                      color: blueColor,
-                                                      spacing: 0.1,
-                                                      xValueMapper: (SalesData
-                                                      sales,
-                                                          _) =>
-                                                      sales.year,
-                                                      yValueMapper: (SalesData
-                                                      sales,
-                                                          _) =>
-                                                      /*sales.totalDuration!*/
-                                                      commonProvider.data.map((e) =>_parseDuration(e.totalDuration)).toList().reduce(
-                                                          (a, b) => a > b ? a : b
+                                                  shouldAlwaysShowScrollbar: false,
+                                                  overflowMode: LegendItemOverflowMode.none,
+                                                //  offset: Offset(80, -30),
+                                                  isVisible: true,
+                                                  position: LegendPosition.top,
+                                                  alignment: ChartAlignment.far,
+                                                ),
+                                                tooltipBehavior: TooltipBehavior(enable: true),
+                                                series: <ChartSeries<SalesData, DateTime>>[
+                                                  ColumnSeries<SalesData, DateTime>(
+                                                    dataSource: commonProvider.data1,
+                                                    color: blueColor,
+                                                    spacing: 0.1,
+                                                    xValueMapper: (SalesData sales, _) => sales.year,
+                                                    yValueMapper: (SalesData sales, _) => commonProvider.total24HrsDuration,
+                                                    name: 'Total',
+                                                    legendIconType: LegendIconType.rectangle,
+                                                    dataLabelSettings: DataLabelSettings(
+                                                      isVisible: false,
+                                                      textStyle: TextStyle(
+                                                        fontWeight: FontWeight.w500,
+                                                        color: Colors.black,
+                                                        fontSize: displayWidth(context) * 0.028,
+                                                        fontFamily: outfit,
                                                       ),
-                                                      /*_parseDuration(sales
-                                                          .totalDuration),*/
-                                                      name: 'Total',
-                                                      legendIconType: LegendIconType
-                                                          .rectangle,
-                                                      dataLabelSettings: DataLabelSettings(
-                                                          isVisible: true,
-                                                          textStyle: TextStyle(
-                                                              fontWeight:
-                                                              FontWeight.w500,
-                                                              color: Colors.black,
-                                                              fontSize:
-                                                              displayWidth(
-                                                                  context) *
-                                                                  0.028,
-                                                              fontFamily:
-                                                              outfit))),
-                                                  ColumnSeries<SalesData,
-                                                      DateTime>(
-                                                      dataSource: commonProvider
-                                                          .data,
-                                                      spacing: 0.1,
-                                                      color: routeMapBtnColor,
-                                                      xValueMapper: (SalesData
-                                                      sales,
-                                                          _) =>
-                                                      sales.year,
-                                                      yValueMapper: (SalesData
-                                                      sales,
-                                                          _) =>
-                                                      /*sales.speedDuration*/
-                                                      sales.speedDuration,
-                                                      name: '<5 kt',
-                                                      legendIconType:
-                                                      LegendIconType
-                                                          .rectangle,
-                                                      dataLabelSettings:
-                                                      DataLabelSettings(
-                                                          isVisible: true,
-                                                          textStyle: TextStyle(
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .w500,
-                                                              color:
-                                                              Colors
-                                                                  .black,
-                                                              fontSize:
-                                                              displayWidth(
-                                                                  context) *
-                                                                  0.028,
-                                                              fontFamily:
-                                                              outfit)))
-                                                ]),
+                                                    ),
+                                                  ),
+                                                  ColumnSeries<SalesData, DateTime>(
+                                                    dataSource: commonProvider.data1,
+                                                    spacing: 0.1,
+                                                    color: routeMapBtnColor,
+                                                    xValueMapper: (SalesData sales, _) => sales.year,
+                                                    yValueMapper: (SalesData sales, _) {
+                                                      return sales.speedDuration;
+                                                    },
+                                                    name: '<5 kt',
+                                                    legendIconType: LegendIconType.rectangle,
+                                                    dataLabelSettings: DataLabelSettings(
+                                                      isVisible: false,
+                                                      textStyle: TextStyle(
+                                                        fontWeight: FontWeight.w500,
+                                                        color: Colors.black,
+                                                        fontSize: displayWidth(context) * 0.028,
+                                                        fontFamily: outfit,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                         
                                           ],
                                         ),
                                       );
@@ -1409,7 +1405,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                   return Container();
                                 },
                               ),
-                             /* FutureBuilder<SpeedReportsModel>(
+                              /* FutureBuilder<SpeedReportsModel>(
                                 future: speedReportData,
                                 builder: (context, snapShot) {
                                   if (snapShot.connectionState ==
@@ -1461,13 +1457,13 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                   majorGridLines:
                                                   MajorGridLines(width: 0),
                                               dateFormat: DateFormat('yyyy-MM-dd')),
-                                              *//*primaryXAxis: DateTimeAxis(
+                                              */ /*primaryXAxis: DateTimeAxis(
                                                 dateFormat:
                                                     DateFormat('yyyy-MM-dd'),
                                                 intervalType:
                                                     DateTimeIntervalType
                                                         .minutes,
-                                              ),*//*
+                                              ),*/ /*
                                               primaryYAxis: NumericAxis(
                                                   isVisible: false,
                                                   majorGridLines:
@@ -1502,7 +1498,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                     yValueMapper: (SalesData
                                                                 sales,
                                                             _) =>
-                                                        *//*sales.totalDuration!*//*
+                                                        */ /*sales.totalDuration!*/ /*
                                                         _parseDuration(sales
                                                             .totalDuration),
                                                     name: 'Total',
@@ -1533,7 +1529,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                     yValueMapper: (SalesData
                                                                 sales,
                                                             _) =>
-                                                        *//*sales.speedDuration*//*
+                                                        */ /*sales.speedDuration*/ /*
                                                         sales.speedDuration,
                                                     name: '<5 kt',
                                                     legendIconType:
@@ -2237,6 +2233,6 @@ class SalesData {
   SalesData(this.year, this.totalDuration, this.speedDuration);
 
   final DateTime year;
-  final String totalDuration;
+  final double totalDuration;
   final double speedDuration;
 }
