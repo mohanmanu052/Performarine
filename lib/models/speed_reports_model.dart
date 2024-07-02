@@ -57,11 +57,11 @@ class Data {
   }
   String? tripId;
   String? createdAt;
-  String? totalDuration;
+  double? totalDuration;
   num? speedDuration;
 Data copyWith({  String? tripId,
   String? createdAt,
-  String? totalDuration,
+  double? totalDuration,
   num? speedDuration,
 }) => Data(  tripId: tripId ?? this.tripId,
   createdAt: createdAt ?? this.createdAt,

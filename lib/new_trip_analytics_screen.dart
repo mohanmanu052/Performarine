@@ -68,6 +68,8 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
       dateOfJourney = '',
       yearOfTheJourney = '',
       peopleOnBoard = '';
+      //This Value Make Help Every Bar Stick With 24 Hrs Based On This Calculations Will Be Performed 
+      int total24HrsDuration=1440;
 
   bool cancelVisible = true;
   bool? internet;
@@ -109,9 +111,10 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
     commonProvider = context.read<CommonProvider>();
 
     sharedPreferences!.remove('sp_key_called_from_noti');
+    getSpeedReport();
 
-    speedReportData = commonProvider.speedReport(context,
-        commonProvider.loginModel!.token!, widget.vesselId!, scaffoldKey);
+    // speedReportData = commonProvider.speedReport(context,
+    //     commonProvider.loginModel!.token!, widget.vesselId!, scaffoldKey);
 
     setState(() {
       getData();
@@ -121,6 +124,20 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
 
     //Utils.customPrint('CURRENT TIME TIME ${tripData!.time}');
   }
+
+getSpeedReport()async{
+if(commonProvider.loginModel?.token!=null){
+    speedReportData = commonProvider.speedReport(context,
+        commonProvider.loginModel!.token!, widget.vesselId!, scaffoldKey);
+ 
+}else{
+  await commonProvider.getToken();
+      speedReportData = commonProvider.speedReport(context,
+        commonProvider.loginModel!.token!, widget.vesselId!, scaffoldKey);
+ 
+}
+ 
+}
 
   @override
   void dispose() {
@@ -1299,7 +1316,20 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                   ),
                                                 )),
                                             SfCartesianChart(
+                                              onTooltipRender: (tooltipArgs) {
+
+if(tooltipArgs.header!.contains('Total')){
+                                                tooltipArgs.text=commonProvider.data[tooltipArgs.viewportPointIndex!.toInt()].totalDuration.toString();
+}else{
+                                                 tooltipArgs.text=commonProvider.data[tooltipArgs.viewportPointIndex!.toInt()].speedDuration.toString();
+ 
+}
+                                              //double value=  _parseDuration(commonProvider.data[tooltipArgs.viewportPointIndex!.toInt()].totalDuration);
+                                                //print('the duration parsing is --'+value.toString());
+                                              },
                                                 plotAreaBorderWidth: 0,
+                                                
+                                                
                                                 primaryXAxis: DateTimeCategoryAxis(
                                                     majorGridLines:
                                                     MajorGridLines(width: 0),
@@ -1334,8 +1364,10 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                     DateTime>>[
                                                   ColumnSeries<SalesData,
                                                       DateTime>(
+                                                        
+                                                        
                                                       dataSource: commonProvider
-                                                          .data,
+                                                          .data1,
                                                       color: blueColor,
                                                       spacing: 0.1,
                                                       xValueMapper: (SalesData
@@ -1346,13 +1378,12 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                       sales,
                                                           _) =>
                                                       /*sales.totalDuration!*/
-                                                      _parseDuration(sales
-                                                          .totalDuration),
+                                                      total24HrsDuration,
                                                       name: 'Total',
                                                       legendIconType: LegendIconType
                                                           .rectangle,
                                                       dataLabelSettings: DataLabelSettings(
-                                                          isVisible: true,
+                                                          isVisible: false,
                                                           textStyle: TextStyle(
                                                               fontWeight:
                                                               FontWeight.w500,
@@ -1366,7 +1397,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                   ColumnSeries<SalesData,
                                                       DateTime>(
                                                       dataSource: commonProvider
-                                                          .data,
+                                                          .data1,
                                                       spacing: 0.1,
                                                       color: routeMapBtnColor,
                                                       xValueMapper: (SalesData
@@ -1375,16 +1406,28 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                       sales.year,
                                                       yValueMapper: (SalesData
                                                       sales,
-                                                          _) =>
+                                                          _) =>sales.speedDuration,
+                                                          //{
+//   double totalduration1=  sales.totalDuration;                                                        
+// String totalDuration=totalduration1.toStringAsFixed(1);
+// double parseTotal=double.parse(totalDuration);
+//   double avgSpeedDuration=  sales.speedDuration;                                                        
+
+// String avgSpeed=avgSpeedDuration.toStringAsFixed(1);
+// double parseAvgSpeed=double.parse(avgSpeed);
+// if(parseAvgSpeed==0){
+//   return 0;
+// }else{
+// return total24HrsDuration-parseTotal+parseAvgSpeed;
+                                                                                                           //     }                                                      },
                                                       /*sales.speedDuration*/
-                                                      sales.speedDuration,
                                                       name: '<5 kt',
                                                       legendIconType:
                                                       LegendIconType
                                                           .rectangle,
                                                       dataLabelSettings:
                                                       DataLabelSettings(
-                                                          isVisible: true,
+                                                          isVisible: false,
                                                           textStyle: TextStyle(
                                                               fontWeight:
                                                               FontWeight
@@ -2235,6 +2278,6 @@ class SalesData {
   SalesData(this.year, this.totalDuration, this.speedDuration);
 
   final DateTime year;
-  final String totalDuration;
+  final double totalDuration;
   final double speedDuration;
 }

@@ -78,6 +78,8 @@ class CommonProvider with ChangeNotifier {
   CommonModel? commonModel;
   UploadTripModel? uploadTripModel;
   int tripsCount = 0;
+        int total24HrsDuration=1440;
+
   bool tripStatus = false,
       isTripUploading = false,
       exceptionOccurred = false,
@@ -759,6 +761,12 @@ class CommonProvider with ChangeNotifier {
 
   ];
 
+
+  
+  List<SalesData> data1 = [
+
+  ];
+
   Future<SpeedReportsModel> speedReport(
       BuildContext context,
       String token,
@@ -770,14 +778,59 @@ class CommonProvider with ChangeNotifier {
     if((speedReportsModel?.data ?? []).isNotEmpty)
       {
         data.clear();
+        data1.clear();
+
         speedReportsModel!.data!.forEach((value){
+
+if(value.speedDuration!=0){
+  var val1=total24HrsDuration/value.totalDuration!;
+  var val2=total24HrsDuration/value.speedDuration!;
+  print('the value 1 is-------------------'+val1.toString());
+  print('the value 2 is-------------------'+val2.toString());
+  var total=total24HrsDuration-val1+val2;
+  print('the total is----------------------'+total.toString());
+
+
+var percentageDiff=calculatePercentageDifference(value.totalDuration!, value.speedDuration!.toDouble());
+  double percentageDifference = ((value.totalDuration! - value.speedDuration!) / value.totalDuration!) * 100;
+
+  // Calculate the value to subtract from the basic value
+  double valueToSubtract = (total24HrsDuration * percentageDifference) / 100;
+
+  // Calculate the final value
+  double finalValue = total24HrsDuration - valueToSubtract;
+
+  // Print the results
+  print('Basic Value: $total24HrsDuration');
+  // print('Total Duration: $totalDuration');
+  // print('Speed Duration: $speedDuration');
+  print('Percentage Difference: ${percentageDifference.toStringAsFixed(2)}%');
+  print('Value to Subtract: $valueToSubtract');
+  print('Final Value: $finalValue');
+              data1.add(SalesData(DateTime.parse(value.createdAt!), value.totalDuration!,finalValue),);
+
+}else{
+              data1.add(SalesData(DateTime.parse(value.createdAt!), value.totalDuration!, value.speedDuration!.toDouble()),);
+
+}
           data.add(SalesData(DateTime.parse(value.createdAt!), value.totalDuration!, value.speedDuration!.toDouble()),);
         });
+
+
       }
     notifyListeners();
 
     return speedReportsModel!;
   }
+
+  double calculatePercentageDifference(double value1, double value2) {
+  double absoluteDifference = (value1 - value2).abs();
+  double average = (value1 + value2) / 2;
+  double percentageDifference = (absoluteDifference / average) * 100;
+
+  return percentageDifference;
+}
+
 
 
 }
