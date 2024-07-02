@@ -77,13 +77,20 @@ class _FleetsImInSingleCardState extends State<FleetsImInSingleCard> {
                         textColor: Colors.grey,
                         textSize: displayWidth(context) * 0.028,
                         textAlign: TextAlign.start),
-                    commonText(
-                        context: context,
-                        text: widget.fleetsIamIn!.fleetCreatedBy!.trim().isEmpty ? '-' : widget.fleetsIamIn!.fleetCreatedBy,
-                        fontWeight: FontWeight.w500,
-                        textColor: Colors.black,
-                        textSize: displayWidth(context) * 0.028,
-                        textAlign: TextAlign.start),
+                    Container(
+                      width: displayWidth(context) * 0.28,
+                      child: Text(
+                        widget.fleetsIamIn!.fleetCreatedBy!.trim().isEmpty ? '-' : widget.fleetsIamIn!.fleetCreatedBy!,
+                        style: TextStyle(
+                          color: Colors.black,
+                            fontFamily: outfit,
+                            fontWeight: FontWeight.w500,
+                            fontSize: displayWidth(context) * 0.028),
+                        textAlign: TextAlign.start,
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: true,
+                      ),
+                    ),
                     SizedBox(width: displayWidth(context) * 0.03,),
                   ],
                 ),

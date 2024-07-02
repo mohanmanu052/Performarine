@@ -68,8 +68,8 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
       dateOfJourney = '',
       yearOfTheJourney = '',
       peopleOnBoard = '';
-      //This Value Make Help Every Bar Stick With 24 Hrs Based On This Calculations Will Be Performed 
-      int total24HrsDuration=1440;
+  //This Value Make Help Every Bar Stick With 24 Hrs Based On This Calculations Will Be Performed
+  int total24HrsDuration = 1440;
 
   bool cancelVisible = true;
   bool? internet;
@@ -125,19 +125,16 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
     //Utils.customPrint('CURRENT TIME TIME ${tripData!.time}');
   }
 
-getSpeedReport()async{
-if(commonProvider.loginModel?.token!=null){
-    speedReportData = commonProvider.speedReport(context,
-        commonProvider.loginModel!.token!, widget.vesselId!, scaffoldKey);
- 
-}else{
-  await commonProvider.getToken();
+  getSpeedReport() async {
+    if (commonProvider.loginModel?.token != null) {
       speedReportData = commonProvider.speedReport(context,
-        commonProvider.loginModel!.token!, widget.vesselId!, scaffoldKey);
- 
-}
- 
-}
+          commonProvider.loginModel!.token!, widget.vesselId!, scaffoldKey);
+    } else {
+      await commonProvider.getToken();
+      speedReportData = commonProvider.speedReport(context,
+          commonProvider.loginModel!.token!, widget.vesselId!, scaffoldKey);
+    }
+  }
 
   @override
   void dispose() {
@@ -1261,37 +1258,45 @@ if(commonProvider.loginModel?.token!=null){
                               FutureBuilder<SpeedReportsModel>(
                                 future: speedReportData,
                                 builder: (context, snapshot) {
-                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
                                     return Padding(
                                       padding: EdgeInsets.only(
                                           top: displayHeight(context) * 0.05,
-                                          bottom: displayHeight(context) * 0.05
-                                      ),
+                                          bottom:
+                                              displayHeight(context) * 0.05),
                                       child: Center(
                                         child: CircularProgressIndicator(
                                           valueColor:
-                                          AlwaysStoppedAnimation<Color>(circularProgressColor),
+                                              AlwaysStoppedAnimation<Color>(
+                                                  circularProgressColor),
                                         ),
                                       ),
                                     );
                                   }
-                                  Utils.customPrint('HAS DATA: ${snapshot.hasData}');
-                                  Utils.customPrint('HAS DATA: ${snapshot.error}');
-                                  Utils.customPrint('HAS DATA: ${snapshot.hasError}');
-                                 if (snapshot.hasData) {
-                                   if (snapshot.data!.data == null || snapshot.data!.data!.isEmpty) {
+                                  Utils.customPrint(
+                                      'HAS DATA: ${snapshot.hasData}');
+                                  Utils.customPrint(
+                                      'HAS DATA: ${snapshot.error}');
+                                  Utils.customPrint(
+                                      'HAS DATA: ${snapshot.hasError}');
+                                  if (snapshot.hasData) {
+                                    if (snapshot.data!.data == null ||
+                                        snapshot.data!.data!.isEmpty) {
                                       return Padding(
                                         padding: EdgeInsets.only(
                                             top: displayHeight(context) * 0.05,
-                                          bottom: displayHeight(context) * 0.05
-                                        ),
+                                            bottom:
+                                                displayHeight(context) * 0.05),
                                         child: Center(
                                           child: commonText(
                                               context: context,
-                                              text: 'No trips data available\nPlease upload your data to view the graph.',
+                                              text:
+                                                  'No trips data available\nPlease upload your data to view the graph.',
                                               fontWeight: FontWeight.w500,
                                               textColor: Colors.black,
-                                              textSize: displayWidth(context) * 0.04,
+                                              textSize:
+                                                  displayWidth(context) * 0.04,
                                               textAlign: TextAlign.center),
                                         ),
                                       );
@@ -1303,37 +1308,50 @@ if(commonProvider.loginModel?.token!=null){
                                             Positioned(
                                                 top: 22,
                                                 child: Padding(
-                                                  padding: const EdgeInsets.only(
-                                                      left: 26.0),
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 26.0),
                                                   child: commonText(
                                                     context: context,
                                                     text: 'Past 5 Trips',
                                                     fontWeight: FontWeight.w500,
                                                     textColor: Colors.black,
                                                     textSize:
-                                                    displayWidth(context) *
-                                                        0.03,
+                                                        displayWidth(context) *
+                                                            0.03,
                                                   ),
                                                 )),
                                             SfCartesianChart(
-                                              onTooltipRender: (tooltipArgs) {
-
-if(tooltipArgs.header!.contains('Total')){
-                                                tooltipArgs.text=commonProvider.data[tooltipArgs.viewportPointIndex!.toInt()].totalDuration.toString();
-}else{
-                                                 tooltipArgs.text=commonProvider.data[tooltipArgs.viewportPointIndex!.toInt()].speedDuration.toString();
- 
-}
-                                              //double value=  _parseDuration(commonProvider.data[tooltipArgs.viewportPointIndex!.toInt()].totalDuration);
-                                                //print('the duration parsing is --'+value.toString());
-                                              },
+                                                onTooltipRender: (tooltipArgs) {
+                                                  if (tooltipArgs.header!
+                                                      .contains('Total')) {
+                                                    tooltipArgs.text =
+                                                        commonProvider
+                                                            .data[tooltipArgs
+                                                                .viewportPointIndex!
+                                                                .toInt()]
+                                                            .totalDuration
+                                                            .toString();
+                                                  } else {
+                                                    tooltipArgs.text =
+                                                        commonProvider
+                                                            .data[tooltipArgs
+                                                                .viewportPointIndex!
+                                                                .toInt()]
+                                                            .speedDuration
+                                                            .toString();
+                                                  }
+                                                  //double value=  _parseDuration(commonProvider.data[tooltipArgs.viewportPointIndex!.toInt()].totalDuration);
+                                                  //print('the duration parsing is --'+value.toString());
+                                                },
                                                 plotAreaBorderWidth: 0,
-                                                
-                                                
-                                                primaryXAxis: DateTimeCategoryAxis(
-                                                    majorGridLines:
-                                                    MajorGridLines(width: 0),
-                                                    dateFormat: DateFormat('yyyy-MM-dd')),
+                                                primaryXAxis:
+                                                    DateTimeCategoryAxis(
+                                                        majorGridLines:
+                                                            MajorGridLines(
+                                                                width: 0),
+                                                        dateFormat: DateFormat(
+                                                            'yyyy-MM-dd')),
                                                 /*primaryXAxis: DateTimeAxis(
                                                 dateFormat:
                                                     DateFormat('yyyy-MM-dd'),
@@ -1344,74 +1362,78 @@ if(tooltipArgs.header!.contains('Total')){
                                                 primaryYAxis: NumericAxis(
                                                     isVisible: false,
                                                     majorGridLines:
-                                                    MajorGridLines(width: 0)),
+                                                        MajorGridLines(
+                                                            width: 0)),
                                                 enableSideBySideSeriesPlacement:
-                                                true,
+                                                    true,
                                                 legend: Legend(
                                                     shouldAlwaysShowScrollbar:
-                                                    false,
+                                                        false,
                                                     overflowMode:
-                                                    LegendItemOverflowMode
-                                                        .none,
+                                                        LegendItemOverflowMode
+                                                            .none,
                                                     offset: Offset(80, -30),
                                                     isVisible: true,
-                                                    position: LegendPosition.top,
+                                                    position:
+                                                        LegendPosition.top,
                                                     alignment:
-                                                    ChartAlignment.far),
+                                                        ChartAlignment.far),
                                                 tooltipBehavior:
-                                                TooltipBehavior(enable: true),
+                                                    TooltipBehavior(
+                                                        enable: true),
                                                 series: <ChartSeries<SalesData,
                                                     DateTime>>[
                                                   ColumnSeries<SalesData,
-                                                      DateTime>(
-                                                        
-                                                        
+                                                          DateTime>(
                                                       dataSource: commonProvider
                                                           .data1,
                                                       color: blueColor,
                                                       spacing: 0.1,
-                                                      xValueMapper: (SalesData
-                                                      sales,
-                                                          _) =>
-                                                      sales.year,
-                                                      yValueMapper: (SalesData
-                                                      sales,
-                                                          _) =>
-                                                      /*sales.totalDuration!*/
-                                                      total24HrsDuration,
+                                                      xValueMapper:
+                                                          (SalesData sales, _) =>
+                                                              sales.year,
+                                                      yValueMapper:
+                                                          (SalesData sales,
+                                                                  _) =>
+                                                              /*sales.totalDuration!*/
+                                                              total24HrsDuration,
                                                       name: 'Total',
-                                                      legendIconType: LegendIconType
-                                                          .rectangle,
-                                                      dataLabelSettings: DataLabelSettings(
-                                                          isVisible: false,
-                                                          textStyle: TextStyle(
-                                                              fontWeight:
-                                                              FontWeight.w500,
-                                                              color: Colors.black,
-                                                              fontSize:
-                                                              displayWidth(
-                                                                  context) *
-                                                                  0.028,
-                                                              fontFamily:
-                                                              outfit))),
+                                                      legendIconType:
+                                                          LegendIconType
+                                                              .rectangle,
+                                                      dataLabelSettings:
+                                                          DataLabelSettings(
+                                                              isVisible: false,
+                                                              textStyle: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize:
+                                                                      displayWidth(
+                                                                              context) *
+                                                                          0.028,
+                                                                  fontFamily:
+                                                                      outfit))),
                                                   ColumnSeries<SalesData,
-                                                      DateTime>(
-                                                      dataSource: commonProvider
-                                                          .data1,
+                                                          DateTime>(
+                                                      dataSource: commonProvider.data1,
                                                       spacing: 0.1,
                                                       color: routeMapBtnColor,
                                                       xValueMapper: (SalesData
-                                                      sales,
-                                                          _) =>
-                                                      sales.year,
+                                                                  sales,
+                                                              _) =>
+                                                          sales.year,
                                                       yValueMapper: (SalesData
-                                                      sales,
-                                                          _) =>sales.speedDuration,
-                                                          //{
-//   double totalduration1=  sales.totalDuration;                                                        
+                                                                  sales,
+                                                              _) =>
+                                                          sales.speedDuration,
+                                                      //{
+//   double totalduration1=  sales.totalDuration;
 // String totalDuration=totalduration1.toStringAsFixed(1);
 // double parseTotal=double.parse(totalDuration);
-//   double avgSpeedDuration=  sales.speedDuration;                                                        
+//   double avgSpeedDuration=  sales.speedDuration;
 
 // String avgSpeed=avgSpeedDuration.toStringAsFixed(1);
 // double parseAvgSpeed=double.parse(avgSpeed);
@@ -1419,28 +1441,27 @@ if(tooltipArgs.header!.contains('Total')){
 //   return 0;
 // }else{
 // return total24HrsDuration-parseTotal+parseAvgSpeed;
-                                                                                                           //     }                                                      },
+                                                      //     }                                                      },
                                                       /*sales.speedDuration*/
                                                       name: '<5 kt',
                                                       legendIconType:
-                                                      LegendIconType
-                                                          .rectangle,
+                                                          LegendIconType
+                                                              .rectangle,
                                                       dataLabelSettings:
-                                                      DataLabelSettings(
-                                                          isVisible: false,
-                                                          textStyle: TextStyle(
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .w500,
-                                                              color:
-                                                              Colors
-                                                                  .black,
-                                                              fontSize:
-                                                              displayWidth(
-                                                                  context) *
-                                                                  0.028,
-                                                              fontFamily:
-                                                              outfit)))
+                                                          DataLabelSettings(
+                                                              isVisible: false,
+                                                              textStyle: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize:
+                                                                      displayWidth(
+                                                                              context) *
+                                                                          0.028,
+                                                                  fontFamily:
+                                                                      outfit)))
                                                 ]),
                                           ],
                                         ),
@@ -1450,7 +1471,7 @@ if(tooltipArgs.header!.contains('Total')){
                                   return Container();
                                 },
                               ),
-                             /* FutureBuilder<SpeedReportsModel>(
+                              /* FutureBuilder<SpeedReportsModel>(
                                 future: speedReportData,
                                 builder: (context, snapShot) {
                                   if (snapShot.connectionState ==
@@ -1502,13 +1523,13 @@ if(tooltipArgs.header!.contains('Total')){
                                                   majorGridLines:
                                                   MajorGridLines(width: 0),
                                               dateFormat: DateFormat('yyyy-MM-dd')),
-                                              *//*primaryXAxis: DateTimeAxis(
+                                              */ /*primaryXAxis: DateTimeAxis(
                                                 dateFormat:
                                                     DateFormat('yyyy-MM-dd'),
                                                 intervalType:
                                                     DateTimeIntervalType
                                                         .minutes,
-                                              ),*//*
+                                              ),*/ /*
                                               primaryYAxis: NumericAxis(
                                                   isVisible: false,
                                                   majorGridLines:
@@ -1543,7 +1564,7 @@ if(tooltipArgs.header!.contains('Total')){
                                                     yValueMapper: (SalesData
                                                                 sales,
                                                             _) =>
-                                                        *//*sales.totalDuration!*//*
+                                                        */ /*sales.totalDuration!*/ /*
                                                         _parseDuration(sales
                                                             .totalDuration),
                                                     name: 'Total',
@@ -1574,7 +1595,7 @@ if(tooltipArgs.header!.contains('Total')){
                                                     yValueMapper: (SalesData
                                                                 sales,
                                                             _) =>
-                                                        *//*sales.speedDuration*//*
+                                                        */ /*sales.speedDuration*/ /*
                                                         sales.speedDuration,
                                                     name: '<5 kt',
                                                     legendIconType:
