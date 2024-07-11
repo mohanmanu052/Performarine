@@ -800,12 +800,12 @@ class CommonProvider with ChangeNotifier {
 
     if((speedReportsModel?.data ?? []).isNotEmpty)
       {
-        data.clear();
-        data1.clear();
+       data.clear();
+        //data1.clear();
 
         speedReportsModel!.data!.forEach((value){
 
-if(value.speedDuration!=0){
+/*if(value.speedDuration!=0){
   double percentageDifference = ((value.totalDuration! - value.speedDuration!) / value.totalDuration!) * 100;
 
   // Calculate the value to subtract from the basic value
@@ -826,7 +826,7 @@ if(value.speedDuration!=0){
 }else{
               data1.add(SalesData(DateTime.parse(value.createdAt!), value.totalDuration!, value.speedDuration! < 0 ? 0 :value.speedDuration!.toDouble()),);
 
-}
+}*/
           data.add(SalesData(DateTime.parse(value.createdAt!), value.totalDuration!, value.speedDuration! < 0 ? 0 :value.speedDuration!.toDouble()),);
         });
 
