@@ -43,18 +43,35 @@ class BarChartPainter1 extends CustomPainter {
       final x = i * (2 * barWidth + spacing + groupSpacing);
 
       // Calculate heights for red and green bars
-      final double barHeight2 =
-          fixedBlueBarHeight * (data[i].speedDuration / data[i].totalDuration);
-      double difference = (data[i].totalDuration - data[i].speedDuration);
-      difference = difference.isNegative
-          ? double.parse((data[i].totalDuration - data[i].speedDuration)
-              .toString()
-              .substring(0, 5))
-          : double.parse((data[i].totalDuration - data[i].speedDuration)
-              .toString()
-              .substring(0, 4));
-      final double barHeightDiff =
-          fixedBlueBarHeight * (difference / data[i].totalDuration);
+      final double barHeight2 = fixedBlueBarHeight *
+          double.parse((data[i].speedDuration / data[i].totalDuration)
+              .toStringAsFixed(3));
+      double difference =
+      (double.parse(data[i].totalDuration.toStringAsFixed(2)) -
+          double.parse(data[i].speedDuration.toStringAsFixed(2)));
+
+      debugPrint("FINAL DIFF ${data[i].totalDuration}");
+      debugPrint("FINAL DIFF ${data[i].speedDuration}");
+      debugPrint("FINAL DIFF ${difference}");
+      // difference = difference.isNegative
+      //     ? double.parse((data[i].totalDuration - data[i].speedDuration)
+      //                 .toString()
+      //                 .length <
+      //             5
+      //         ? (data[i].totalDuration - data[i].speedDuration).toString()
+      //         : (data[i].totalDuration - data[i].speedDuration)
+      //             .toString()
+      //             .substring(0, 5))
+      //     : double.parse((data[i].totalDuration - data[i].speedDuration)
+      //                 .toString()
+      //                 .length <
+      //             4
+      //         ? (data[i].totalDuration - data[i].speedDuration).toString()
+      //         : (data[i].totalDuration - data[i].speedDuration)
+      //             .toString()
+      //             .substring(0, 4));
+      final double barHeightDiff = fixedBlueBarHeight *
+          (difference / double.parse(data[i].totalDuration.toStringAsFixed(2)));
 
       // Adjust blue bar height if value2 is 0.0
       final double adjustedBlueBarHeight = data[i].speedDuration == 0.0
@@ -76,7 +93,10 @@ class BarChartPainter1 extends CustomPainter {
       canvas.drawRect(
         Rect.fromLTWH(
             x + barWidth + spacing,
-            size.height - barHeight2 * animationValue - 40 - (difference == 0.0 ? 4 : 0),
+            size.height -
+                barHeight2 * animationValue -
+                40 -
+                (difference == 0.0 ? 4 : 0),
             barWidth,
             ((barHeight2 * animationValue) + (difference == 0.0 ? 4 : 0))),
         paint,
@@ -119,7 +139,7 @@ class BarChartPainter1 extends CustomPainter {
               ? ''
               : difference.toStringAsFixed(2),
           style:
-              TextStyle(color: Colors.black, fontSize: 10, fontFamily: outfit),
+          TextStyle(color: Colors.black, fontSize: 10, fontFamily: outfit),
         );
         final textPainterDiff = TextPainter(
           text: valueTextDiff,
@@ -203,13 +223,13 @@ class BarChartPainter1 extends CustomPainter {
       String tooltipText = '';
       if (selectedBarType == 'blue') {
         tooltipText =
-            'Total: ${selectedData!.totalDuration.toStringAsFixed(2)}';
+        'Total: ${selectedData!.totalDuration.toStringAsFixed(2)}';
       } else if (selectedBarType == 'red') {
         tooltipText =
-            '< 5KT: ${selectedData!.speedDuration.toStringAsFixed(2)}';
+        '< 5KT: ${selectedData!.speedDuration.toStringAsFixed(2)}';
       } else if (selectedBarType == 'green') {
         final double difference =
-            (selectedData!.totalDuration - selectedData!.speedDuration).abs();
+        (selectedData!.totalDuration - selectedData!.speedDuration).abs();
         tooltipText = 'Fuel Saved: ${difference.toStringAsFixed(2)}';
       }
       final textPainter = TextPainter(
