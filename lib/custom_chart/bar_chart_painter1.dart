@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart' as fm;
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
+import 'package:performarine/custom_chart/bar_chart_enums.dart';
 import 'package:performarine/new_trip_analytics_screen.dart';
 
 class BarChartPainter1 extends CustomPainter {
@@ -9,13 +11,20 @@ class BarChartPainter1 extends CustomPainter {
   final double animationValue;
   final Offset? tooltipPosition;
   final SalesData? selectedData;
-  final String? selectedBarType;
-
+  final BarChartBarType? selectedBarType;
+  Size? cachedSize;
+  Canvas? displayCanvas;
+  Function(BarChartBarType tappdeBarType,Offset position, SalesData selectedBarData)? OnBarTap;
+  Paint? displayPaint;
+Function(Offset offestValues,String tooltipText)? toolTipCallBack;
   BarChartPainter1(this.data, this.animationValue, this.tooltipPosition,
-      this.selectedData, this.selectedBarType);
+      this.selectedData, this.selectedBarType,this.OnBarTap);
 
   @override
   void paint(Canvas canvas, Size size) {
+    cachedSize=size;
+    displayCanvas=canvas;
+    
     final paint = Paint()..style = PaintingStyle.fill;
 
     Paint barPaint = Paint()..style = PaintingStyle.fill;
@@ -50,26 +59,6 @@ class BarChartPainter1 extends CustomPainter {
       (double.parse(data[i].totalDuration.toStringAsFixed(2)) -
           double.parse(data[i].speedDuration.toStringAsFixed(2)));
 
-      debugPrint("FINAL DIFF ${data[i].totalDuration}");
-      debugPrint("FINAL DIFF ${data[i].speedDuration}");
-      debugPrint("FINAL DIFF ${difference}");
-      // difference = difference.isNegative
-      //     ? double.parse((data[i].totalDuration - data[i].speedDuration)
-      //                 .toString()
-      //                 .length <
-      //             5
-      //         ? (data[i].totalDuration - data[i].speedDuration).toString()
-      //         : (data[i].totalDuration - data[i].speedDuration)
-      //             .toString()
-      //             .substring(0, 5))
-      //     : double.parse((data[i].totalDuration - data[i].speedDuration)
-      //                 .toString()
-      //                 .length <
-      //             4
-      //         ? (data[i].totalDuration - data[i].speedDuration).toString()
-      //         : (data[i].totalDuration - data[i].speedDuration)
-      //             .toString()
-      //             .substring(0, 4));
       final double barHeightDiff = fixedBlueBarHeight *
           (difference / double.parse(data[i].totalDuration.toStringAsFixed(2)));
 
@@ -125,13 +114,6 @@ class BarChartPainter1 extends CustomPainter {
           );
         }
 
-        // if((barHeightDiff * animationValue) >= 1){
-        //   canvas.drawRect(
-        //     Rect.fromLTWH(x + barWidth + spacing, yPositionDiff, barWidth,
-        //         barHeightDiff * animationValue),
-        //     paint,
-        //   );
-        // }
 
         // Draw labels on top of the green difference bar
         final valueTextDiff = TextSpan(
@@ -218,16 +200,16 @@ class BarChartPainter1 extends CustomPainter {
             size.height - 35),
       );
     }
-
     if (tooltipPosition != null && selectedData != null) {
+      
       String tooltipText = '';
-      if (selectedBarType == 'blue') {
+      if (selectedBarType == BarChartBarType.TOTAL_DURATION) {
         tooltipText =
         'Total: ${selectedData!.totalDuration.toStringAsFixed(2)}';
-      } else if (selectedBarType == 'red') {
+      } else if (selectedBarType == BarChartBarType.BELOW_5KT) {
         tooltipText =
         '< 5KT: ${selectedData!.speedDuration.toStringAsFixed(2)}';
-      } else if (selectedBarType == 'green') {
+      } else if (selectedBarType == BarChartBarType.FUELSAVED) {
         final double difference =
         (selectedData!.totalDuration - selectedData!.speedDuration).abs();
         tooltipText = 'Fuel Saved: ${difference.toStringAsFixed(2)}';
@@ -265,4 +247,112 @@ class BarChartPainter1 extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return true;
   }
-}
+
+  @override
+  bool? hitTest(Offset position) {
+    if(cachedSize==null){
+      return true;
+    }else{
+      var size=cachedSize;
+          final paint = Paint()..style = PaintingStyle.fill;
+
+
+    final double barWidth = 32;
+    final double spacing = 4.5;
+    final double groupSpacing = 30;
+    //final double chartHeight = size.height - 20; // leave some padding at the top and bottom
+    final double chartHeight =
+        size!.height - 60; // leave some padding at the top and bottom
+    //final double fixedBlueBarHeight = chartHeight * 0.7; // Set a fixed height for blue bars
+    final double fixedBlueBarHeight =
+        chartHeight * 0.85; // Set a fixed height for blue bars
+    double gapBetweenBars = 4;
+
+    // Draw x-axis
+    //canvas.drawLine(Offset(0, xAxisY), Offset(size.width, xAxisY), axisPaint);
+Rect? totalDurationRect;
+Rect? fuelSavedRect;
+Rect? below5KtRect;
+    for (int i = 0; i < data.length; i++) {
+      final x = i * (2 * barWidth + spacing + groupSpacing);
+
+      // Calculate heights for red and green bars
+      final double barHeight2 = fixedBlueBarHeight *
+          double.parse((data[i].speedDuration / data[i].totalDuration)
+              .toStringAsFixed(3));
+      double difference =
+      (double.parse(data[i].totalDuration.toStringAsFixed(2)) -
+          double.parse(data[i].speedDuration.toStringAsFixed(2)));
+
+      final double barHeightDiff = fixedBlueBarHeight *
+          (difference / double.parse(data[i].totalDuration.toStringAsFixed(2)));
+
+      // Adjust blue bar height if value2 is 0.0
+      final double adjustedBlueBarHeight = data[i].speedDuration == 0.0
+          ? fixedBlueBarHeight + gapBetweenBars
+          : fixedBlueBarHeight + gapBetweenBars;
+      // Draw first bar (blue) with adjusted height
+      paint.color = blueColor;
+     totalDurationRect=    Rect.fromLTWH(
+            x,
+            size.height - adjustedBlueBarHeight * animationValue - 40,
+            barWidth,
+            adjustedBlueBarHeight * animationValue);
+      // Draw the red bar
+      paint.color = Color(0xFF67C6C7);
+     // canvas.drawRect(
+      below5KtRect=   Rect.fromLTWH(
+            x + barWidth + spacing,
+            size.height -
+                barHeight2 * animationValue -
+                40 -
+                (difference == 0.0 ? 4 : 0),
+            barWidth,
+            ((barHeight2 * animationValue) + (difference == 0.0 ? 4 : 0)));
+       // paint,
+     // );
+
+
+      if (data[i].speedDuration != 0.0) {
+        final double yPositionDiff = size.height -
+            barHeight2 * animationValue -
+            barHeightDiff * animationValue -
+            gapBetweenBars -
+            40;
+
+        paint.color = Colors.yellow;
+        if (!difference.isNegative) {
+         // canvas.drawRect(
+         fuelSavedRect=   Rect.fromLTWH(x + barWidth + spacing, yPositionDiff, barWidth,
+                barHeightDiff * animationValue);
+           // paint,
+           //);
+        }}
+
+
+            if(totalDurationRect.contains(position)){
+       var positiontemp=       Offset(position.dx+30,position.dy);
+              OnBarTap!(BarChartBarType.TOTAL_DURATION,positiontemp,data[i]);
+    return super.hitTest(position);
+
+      }else if(below5KtRect.contains(position)){
+              OnBarTap!(BarChartBarType.BELOW_5KT,position,data[i]);
+
+    return super.hitTest(position);
+
+      }else if(fuelSavedRect!.contains(position)){
+
+              OnBarTap!(BarChartBarType.FUELSAVED,position,data[i]);
+
+
+    return super.hitTest(position);
+
+      }
+
+    }
+
+    return super.hitTest(position);
+  }
+    }
+    
+    }
