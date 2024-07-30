@@ -177,6 +177,10 @@ class LPRDeviceHandler {
 //This Function Will Return The Connected BlueTooth Name On Map Screen
           callBackconnectedDeviceName!(connectedDevice!.platformName);
           callBackLprUartTxStatus!('Not Connected');
+    String lprFileName = 'lpr_$fileIndex.csv';
+        String lprFilePath = await GetFile().getlprFile(tripId, lprFileName);
+      //  File file = File(filePath);
+        File lprFile = File(lprFilePath);
 
           try {
             //This Will Check LprService element UUID Matches With LPRTransparentServiceUUID
@@ -184,7 +188,6 @@ class LPRDeviceHandler {
               if (element.uuid == _lprTransparentServiceUUID) {
                 lprService = element;
                 callBackLprTanspernetserviecIdStatus!('Connected');
-
                 lprService!.characteristics.forEach((dataCharacteristic) {
                   if (dataCharacteristic.uuid == _lprUartTX) {
                     callBackLprUartTxStatus!('Connected');
@@ -196,18 +199,19 @@ class LPRDeviceHandler {
 
                         debugPrint("LPR DATA WRITING CODE $dataLine ");
 //Saving The Data Into The File
-                        DownloadTrip().saveLPRData(dataLine);
+                        DownloadTrip().saveLPRData(dataLine,lprFile);
                         //Call Back Returning the data we can use this globally
                         callBackLprStreamingData!(dataLine);
                       } else {
 //DownloadTrip().saveLPRData('test LPR',lprFile!,lprFileSink!);
 
+//Testing Purpose only While Testing UnComment This
 // List<String> lines = fileContent.split('\n');
 
 // for (String line in lines) {
 //   //Utils.customPrint('Lpr file local data: $line');
-//   DownloadTrip().saveLPRData(line);
-//     callBackLprStreamingData!(line);
+//   DownloadTrip().saveLPRData(line,lprFile);
+//     //callBackLprStreamingData!(line);
 
 // }
                       }
