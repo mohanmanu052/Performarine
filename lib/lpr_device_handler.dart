@@ -185,11 +185,11 @@ class LPRDeviceHandler {
           try {
             //This Will Check LprService element UUID Matches With LPRTransparentServiceUUID
             services.forEach((element) {
-              if (element.uuid == _lprTransparentServiceUUID) {
+            //  if (element.uuid == _lprTransparentServiceUUID) {
                 lprService = element;
                 callBackLprTanspernetserviecIdStatus!('Connected');
                 lprService!.characteristics.forEach((dataCharacteristic) {
-                  if (dataCharacteristic.uuid == _lprUartTX) {
+                //  if (dataCharacteristic.uuid == _lprUartTX) {
                     callBackLprUartTxStatus!('Connected');
                     dataCharacteristic.setNotifyValue(true);
                     //Start listening to the incoming data
@@ -206,19 +206,19 @@ class LPRDeviceHandler {
 //DownloadTrip().saveLPRData('test LPR',lprFile!,lprFileSink!);
 
 //Testing Purpose only While Testing UnComment This
-// List<String> lines = fileContent.split('\n');
+List<String> lines = fileContent.split('\n');
 
-// for (String line in lines) {
-//   //Utils.customPrint('Lpr file local data: $line');
-//   DownloadTrip().saveLPRData(line,lprFile);
-//     //callBackLprStreamingData!(line);
+for (String line in lines) {
+  //Utils.customPrint('Lpr file local data: $line');
+  DownloadTrip().saveLPRData(line,lprFile);
+    //callBackLprStreamingData!(line);
 
-// }
+}
                       }
                     });
-                  }
+               //  }
                 });
-              }
+             // }
             });
             // lprService = services.singleWhere((element) =>
             // element.uuid ==

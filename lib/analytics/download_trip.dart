@@ -552,10 +552,10 @@ class DownloadTrip {
        finalString = formatData(data, tripId);
 
           /// Writing into a csv file
-          /// Production Use
-          lprFile.writeAsStringSync('$finalString', mode: FileMode.append);
+          //Todo : Production Use For LPR 
+          //lprFile.writeAsStringSync('$finalString', mode: FileMode.append);
 //UnComment This While we are working with dummy data on testing purpose
-          //lprFile.writeAsStringSync('$finalString\n', mode: FileMode.append);
+          lprFile.writeAsStringSync('$finalString\n', mode: FileMode.append);
 
           Utils.customPrint('LPR Data $data');
                     Utils.customPrint('LPR Path Wsa '+lprFile.path);
