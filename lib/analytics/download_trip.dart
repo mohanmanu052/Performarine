@@ -509,7 +509,7 @@ class DownloadTrip {
 //       }
 
 
-  Future<void> saveLPRData(String data,)async{
+  Future<void> saveLPRData(String data,File lprFile)async{
         String tripId = '';
 
         int fileIndex = 0;
@@ -522,10 +522,6 @@ class DownloadTrip {
 
 
 
-    String lprFileName = 'lpr_$fileIndex.csv';
-        String lprFilePath = await GetFile().getlprFile(tripId, lprFileName);
-      //  File file = File(filePath);
-        File lprFile = File(lprFilePath);
        // int fileSize = await GetFile().checkFileSize(file);
         int lprFileSize = await GetFile().checkLPRFileSize(lprFile);
 
@@ -538,7 +534,11 @@ class DownloadTrip {
           CustomLogger().logWithFile(Level.info, "STOPPED WRITING -> $page");
           CustomLogger().logWithFile(Level.info, "CREATING NEW FILE -> $page");
           fileIndex = fileIndex + 1;
-          lprFileName = 'lpr_$fileIndex.csv';
+    String lprFileName = 'lpr_$fileIndex.csv';
+        String lprFilePath = await GetFile().getlprFile(tripId, lprFileName);
+      //  File file = File(filePath);
+         lprFile = File(lprFilePath);
+
 
           /// STOP WRITING & CREATE NEW FILE
         } else {
@@ -547,10 +547,15 @@ class DownloadTrip {
           String finalString = '';
 
           /// Creating csv file Strings by combining all the values
-          finalString = data;
+          
+        //  finalString = data;
+       finalString = formatData(data, tripId);
 
           /// Writing into a csv file
-          lprFile.writeAsString('$finalString', mode: FileMode.append);
+          /// Production Use
+          lprFile.writeAsStringSync('$finalString', mode: FileMode.append);
+//UnComment This While we are working with dummy data on testing purpose
+          //lprFile.writeAsStringSync('$finalString\n', mode: FileMode.append);
 
           Utils.customPrint('LPR Data $data');
                     Utils.customPrint('LPR Path Wsa '+lprFile.path);
@@ -570,4 +575,21 @@ class DownloadTrip {
 
 // }
   
+
+    String formatData(String data, String tripId) {
+
+  List<String> parts = data.split(',');
+
+  // The first part is '$GPRMC'
+  String identifier = parts[0];
+
+  // The rest of the parts form the list
+  List<String> dataList = parts.sublist(1);
+  final replacedList = dataList.map((e) => e.trim()).join(', ');
+
+    var todayDate = DateTime.now().toUtc();
+  return '$identifier,"[$replacedList]","$todayDate",$tripId';
+
+  }
+
 }
