@@ -216,9 +216,9 @@ class LPRDeviceHandler {
 // }
                       }
                     });
-                  }
+                 }
                 });
-              }
+             }
             });
             // lprService = services.singleWhere((element) =>
             // element.uuid ==
