@@ -579,6 +579,7 @@ class DownloadTrip {
     String formatData(String data, String tripId) {
 
   List<String> parts = data.split(',');
+String epchoTime = parts.last;
 
   // The first part is '$GPRMC'
   String identifier = parts[0];
@@ -587,8 +588,12 @@ class DownloadTrip {
   List<String> dataList = parts.sublist(1);
   final replacedList = dataList.map((e) => e.trim()).join(', ');
 
-    var todayDate = DateTime.now().toUtc();
-  return '$identifier,"[$replacedList]","$todayDate",$tripId';
+    DateTime dateTimeUtc = DateTime.fromMillisecondsSinceEpoch(int.parse(epchoTime) * 1000, isUtc: true);
+
+// Format DateTime to a UTC string (optional)
+String formattedDate = dateTimeUtc.toUtc().toIso8601String();
+
+  return '$identifier,"[$replacedList]","$formattedDate",$tripId';
 
   }
 
