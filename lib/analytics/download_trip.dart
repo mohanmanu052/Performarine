@@ -549,13 +549,13 @@ class DownloadTrip {
           /// Creating csv file Strings by combining all the values
           
         //  finalString = data;
-       finalString = formatData(data, tripId);
+       finalString = await formatData(data, tripId);
 
           /// Writing into a csv file
           //Todo : Production Use For LPR 
           //lprFile.writeAsStringSync('$finalString', mode: FileMode.append);
 //UnComment This While we are working with dummy data on testing purpose
-          lprFile.writeAsStringSync('$finalString\n', mode: FileMode.append);
+          lprFile.writeAsStringSync('$finalString', mode: FileMode.append);
 
           Utils.customPrint('LPR Data $data');
                     Utils.customPrint('LPR Path Wsa '+lprFile.path);
@@ -587,13 +587,19 @@ String epchoTime = parts.last;
   // The rest of the parts form the list
   List<String> dataList = parts.sublist(1);
   final replacedList = dataList.map((e) => e.trim()).join(', ');
+  DateTime? dateTimeUtc=DateTime.now();
+try{
+     dateTimeUtc = DateTime.fromMillisecondsSinceEpoch(int.parse(epchoTime) * 1000, isUtc: true);
 
-    DateTime dateTimeUtc = DateTime.fromMillisecondsSinceEpoch(int.parse(epchoTime) * 1000, isUtc: true);
+}catch(err){
+
+}
+    //DateTime dateTimeUtc = DateTime.fromMillisecondsSinceEpoch(int.parse(epchoTime) * 1000, isUtc: true);
 
 // Format DateTime to a UTC string (optional)
-String formattedDate = dateTimeUtc.toUtc().toIso8601String();
+String formattedDate = dateTimeUtc!.toUtc().toIso8601String();
 
-  return '$identifier,"[$replacedList]","$formattedDate",$tripId';
+  return '"$identifier","[$replacedList]","$formattedDate","$tripId"\n';
 
   }
 

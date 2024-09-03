@@ -9,6 +9,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:performarine/analytics/download_trip.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
@@ -195,7 +196,11 @@ class LPRDeviceHandler {
                     //Start listening to the incoming data
                     dataCharacteristic.value.listen((event) async {
                       if (!event.isEmpty) {
-                        String dataLine = utf8.decode(event);
+
+                        String dataLine = utf8.decode(event);                       
+                         saveToFileInDownloads('$dataLine\n',tripId,0);
+
+
 
                         debugPrint("LPR DATA WRITING CODE $dataLine ");
 //Saving The Data Into The File
@@ -205,8 +210,16 @@ class LPRDeviceHandler {
                       } else {
 //DownloadTrip().saveLPRData('test LPR',lprFile!,lprFileSink!);
 
-//Testing Purpose only While Testing UnComment This
-// List<String> lines = fileContent.split('\n');
+
+//   final lines = LineSplitter().convert(fileContent);
+//  var stream= Stream<String>.fromIterable(lines);
+//  stream.listen((data){
+// saveToFileInDownloads(data,tripId,0);
+//   Utils.customPrint('Lpr file local data: $data');
+
+//   DownloadTrip().saveLPRData(data,lprFile);
+
+ //});
 
 // for (String line in lines) {
 //   //Utils.customPrint('Lpr file local data: $line');
@@ -952,4 +965,50 @@ class LPRDeviceHandler {
           Utils.customPrint('TRIPPPPPP ENDEDDD:');
         });
   }
+
+//Testing Purpose Write LPR  Raw Data Into Downloads Folder File For Testing Purpose Method  Should Not Go Into Production 
+  IOSink? _fileSink;
+
+Future<void> saveToFileInDownloads(
+    String data, String tripId, int fileIndex) async {
+  try {
+    if (_fileSink == null) {
+        Directory downloadsDirectory;
+
+        if (Platform.isAndroid) {
+          downloadsDirectory = Directory("storage/emulated/0/Download/");
+        } else {
+          downloadsDirectory = await getApplicationDocumentsDirectory();
+        }
+
+      if (!downloadsDirectory.existsSync()) {
+        downloadsDirectory.createSync(recursive: true);
+      }
+
+      String fileName = "lpr_$tripId$fileIndex.txt";
+      File file = File("${downloadsDirectory.path}/$fileName");
+
+      // Open the file for writing (append mode)
+      _fileSink = file.openWrite(mode: FileMode.append);
+      debugPrint("File opened: ${file.path}");
+    }
+
+    // Write the data to the file
+    _fileSink!.writeln(data);
+
+    debugPrint("Data saved: $data");
+  } catch (e) {
+    debugPrint("Failed to write to file: $e");
+  }
+}
+
+Future<void> closeFile() async {
+  if (_fileSink != null) {
+    await _fileSink!.flush();
+    await _fileSink!.close();
+    _fileSink = null;
+    debugPrint("File closed.");
+  }
+}
+
 }

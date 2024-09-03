@@ -43,6 +43,7 @@ import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
 import 'package:performarine/pages/start_trip/utils/start_trip_lpr_permission.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
+import 'package:performarine/services/location_method_channel_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
@@ -545,7 +546,11 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                     fontSize: 16.0);
 
                 Future.delayed(Duration(seconds: 1), () async {
+                 // _requestBackgroundLocationPermission(context);
+
+                 
                   AppSettings.openAppSettings(type: AppSettingsType.location);
+                 
                   checkGPS(context);
                 });
               } else {
@@ -591,8 +596,10 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                         fontSize: 16.0);
 
                     Future.delayed(Duration(seconds: 1), () async {
-                      AppSettings.openAppSettings(
-                          type: AppSettingsType.location);
+                                    //    _requestBackgroundLocationPermission(context);
+
+                      // AppSettings.openAppSettings(
+                      //     type: AppSettingsType.location);
                       checkGPS(context);
                     });
                   } else {
@@ -2925,7 +2932,12 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                           buttonText: 'Ok',
                           buttonOnTap: () async {
                             Get.back();
+                            if(Platform.isAndroid){
+                              _requestBackgroundLocationPermission(context);
+                            }else{
                             openAppSettings();
+
+                            }
                           });
                     }).then((value) {
                   isLocationDialogBoxOpen = false;
@@ -5479,9 +5491,13 @@ if(mounted){
                   var permission = await Permission.locationAlways.request();
                   if (permission.isGranted) {
                   } else {
+                //  _requestBackgroundLocationPermission(context);
+
                     await openAppSettings();
                   }
                 } else {
+          //  _requestBackgroundLocationPermission(context);
+
                   await openAppSettings();
                 }
                 Get.back();
@@ -5490,6 +5506,18 @@ if(mounted){
       isLocationDialogBoxOpen = false;
     });
   }
+
+    Future<void> _requestBackgroundLocationPermission(BuildContext context) async {
+    final result = await LocationMethodChannelPermission.requestLocationPermission();
+    if (result == "success") {
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Text('Please click "Always allow" permission in the app settings.'),
+      //   ),
+      // );
+    }
+  }
+
 }
 
 class VesselDropdownItem {
