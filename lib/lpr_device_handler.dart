@@ -198,7 +198,7 @@ class LPRDeviceHandler {
                       if (!event.isEmpty) {
 
                         String dataLine = utf8.decode(event);                       
-                         saveToFileInDownloads('$dataLine\n',tripId,0);
+                        // saveToFileInDownloads('$dataLine\n',tripId,0);
 
 
 
