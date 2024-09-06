@@ -1816,6 +1816,8 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
     queryParameters = {
       "id": tripData.id,
       "load": tripData.currentLoad,
+      "trip_name":tripData.name,
+
       "sensorInfo": sensorInfo['sensorInfo'],
       "deviceInfo": {
         "deviceId": Platform.isAndroid ? androidDeviceInfo!.id : '',

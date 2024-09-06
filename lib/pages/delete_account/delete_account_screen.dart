@@ -890,6 +890,8 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
           queryParameters = {
             "id": getTrip[i].id,
             "load": getTrip[i].currentLoad,
+             "trip_name":getTrip[i].name,
+
             "sensorInfo": sensorInfo['sensorInfo'],
             "deviceInfo": {
               "deviceId": Platform.isAndroid ? androidDeviceInfo!.id : '',

@@ -18,6 +18,7 @@ import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/common_widgets/widgets/edit_trip_dailog.dart';
 import 'package:performarine/common_widgets/widgets/status_tag.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
@@ -262,26 +263,62 @@ class _TripWidgetState extends State<TripWidget> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          commonText(
-                              context: context,
-                              text: 'Trip ID - #${widget.tripList?.id ?? ''}',
-                              fontWeight: FontWeight.w500,
-                              textColor: Colors.black,
-                              textSize: displayWidth(context) * 0.02,
-                              textAlign: TextAlign.start),
-                          widget.tripList?.tripStatus == 0
-                              ? Padding(
-                            padding: EdgeInsets.only(right: paddingValue),
+                          Container(
+                            margin: EdgeInsets.only(top: 10),
                             child: commonText(
-                              context: context,
-                              text:
-                              '${DateFormat('yyyy-MM-dd HH:mm').format(DateTime.parse(widget.tripList!.createdAt!))}',
-                              fontWeight: FontWeight.w500,
-                              textColor: Colors.black,
-                              textSize: displayWidth(context) * 0.016,
-                            ),
-                          )
-                              : Padding(
+                                context: context,
+                                text: 'Trip ID - #${widget.tripList?.id ?? ''}',
+                                fontWeight: FontWeight.w500,
+                                textColor: Colors.black,
+                                textSize: displayWidth(context) * 0.02,
+                                textAlign: TextAlign.start),
+                          ),
+                         
+                        //  Icon(Icons.edit,
+                        //  size: 20,
+                        //  ),
+                                                   InkWell(
+                                                    onTap: (){
+                                                      EditTripDailog().showEditTripDialog(
+                                                        context: context,
+                                                        title: 'Update Trip Name',
+                                                        positiveButtonText: 'Update',
+                                                        negtiveButtuonColor: userFeedbackBtnColor
+                                                        
+                                                      );
+                                                    },
+                            child:Container(
+                              alignment: Alignment.topCenter,
+                             // height: 30,,
+
+                              //width: 30,
+                              child: Image.asset('assets/icons/edit_icon.png',
+                              width: 30,
+                              height: 25,
+                              scale: 0.1,
+                              ),
+                            )
+                          ),
+
+                          widget.tripList?.tripStatus == 0
+                              ? Container(
+                                margin: EdgeInsets.only(top: 10),
+                                child: Padding(
+                                                            padding: EdgeInsets.only(right: paddingValue),
+                                                            child: commonText(
+                                context: context,
+                                text:
+                                '${DateFormat('yyyy-MM-dd HH:mm').format(DateTime.parse(widget.tripList!.createdAt!))}',
+                                fontWeight: FontWeight.w500,
+                                textColor: Colors.black,
+                                textSize: displayWidth(context) * 0.016,
+                                                            ),
+                                                          ),
+                              )
+                              : 
+                              Container(
+                                margin: EdgeInsets.only(top: 10),
+                             child: Padding(
                             padding: EdgeInsets.only(right: paddingValue),
                             child: commonText(
                               context: context,
@@ -291,7 +328,8 @@ class _TripWidgetState extends State<TripWidget> {
                               textColor: Colors.black,
                               textSize: displayWidth(context) * 0.016,
                             ),
-                          ),
+                          )),
+                          
                         ],
                       ),
                       const SizedBox(
@@ -670,6 +708,7 @@ class _TripWidgetState extends State<TripWidget> {
     queryParameters = {
       "id": tripData.id,
       "load": tripData.currentLoad,
+             "trip_name":tripData.name,
       "sensorInfo": sensorInfo['sensorInfo'],
       //"sensorInfo": {"make": "qualicom", "name": "gps"},
       "deviceInfo": {

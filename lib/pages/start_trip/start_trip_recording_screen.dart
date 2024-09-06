@@ -1347,16 +1347,21 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                         height: displayHeight(context) * 0.012,
                                       ),
                                       Container(
-                                        height: displayHeight(context) * 0.06,
+                                        height: displayHeight(context) * 0.07,
                                         child: TextFormField(
                                           controller: tripNameController,
+                                          maxLength: 50,
+
                                           decoration: InputDecoration(
                                             labelText: 'Enter Trip Name',
+                                            counter: null,
+                                            counterText: '',
                                             labelStyle: TextStyle(
                                                 color: Colors.black54,
                                                 fontSize:
                                                     displayWidth(context) *
                                                         0.032,
+                                                        
                                                 fontFamily: outfit,
                                                 fontWeight: FontWeight.w400),
                                             filled: true,
