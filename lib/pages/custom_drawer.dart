@@ -2694,7 +2694,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
           queryParameters = {
             "id": getTrip[i].id,
             "load": getTrip[i].currentLoad,
-            "trip_name":getTrip[i].name,
+            "tripName":getTrip[i].name,
             "sensorInfo": sensorInfo['sensorInfo'],
             "deviceInfo": {
               "deviceId": Platform.isAndroid ? androidDeviceInfo!.id : '',

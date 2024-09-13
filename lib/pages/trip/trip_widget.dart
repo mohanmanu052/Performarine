@@ -71,7 +71,8 @@ class _TripWidgetState extends State<TripWidget> {
       isTripEndedOrNot = false,
       tripIsRunning = false,
       tripIsUploading = false,
-      isDeleteTripBtnClicked = false, isTripNameIsUpdating = false;
+      isDeleteTripBtnClicked = false,
+      isTripNameIsUpdating = false;
   late DeviceInfoPlugin deviceDetails;
 
   int progress = 0;
@@ -97,7 +98,8 @@ class _TripWidgetState extends State<TripWidget> {
     commonProvider = context.read<CommonProvider>();
     deviceDetails = DeviceInfoPlugin();
 
-    CustomLogger().logWithFile(Level.info, "###### DATA ###### ${widget.tripList!.vesselId} -> $page");
+    CustomLogger().logWithFile(
+        Level.info, "###### DATA ###### ${widget.tripList!.vesselId} -> $page");
 
     tripIsRunningOrNot();
 
@@ -263,62 +265,88 @@ class _TripWidgetState extends State<TripWidget> {
                             margin: EdgeInsets.only(top: 10),
                             child: widget.tripList!.name!.isEmpty
                                 ? commonText(
-                                context: context,
-                                text: 'Trip ID - #${widget.tripList?.id ?? ''}',
-                                fontWeight: FontWeight.w500,
-                                textColor: Colors.black,
-                                textSize: displayWidth(context) * 0.018,
-                                textAlign: TextAlign.start)
-                            :commonText(
-                                context: context,
-                                text: '${widget.tripList?.name ?? ''}',
-                                fontWeight: FontWeight.w500,
-                                textColor: Colors.black,
-                                textSize: displayWidth(context) * 0.022,
-                                textAlign: TextAlign.start),
-                          ),
-
-                          //  Icon(Icons.edit,
-                          //  size: 20,
-                          //  ),
-                          InkWell(
-                              onTap: () {
-                                EditTripDailog().showEditTripDialog(
                                     context: context,
-                                    title: 'Update Trip Name',
-                                    positiveButtonText: 'Update',
-                                    negtiveButtuonColor: userFeedbackBtnColor,
-                                    onPositiveButtonTap: (String? value)
-                                    {
-                                      setState(() {
-                                        isTripNameIsUpdating = true;
-                                      });
-                                      Navigator.of(context).pop();
-                                      Future.delayed(Duration(seconds: 2), (){
-                                        _databaseService.updateTripName(widget.tripList!.id!, value!);
-                                        setState(() {
-                                          isTripNameIsUpdating = false;
-                                        });
-                                        widget.tripUploadedSuccessfully!.call();
-                                      });
-                                    }
-                                );
-                              },
-                              child: isTripNameIsUpdating
-                            ? CircularProgressIndicator()
-                              : Container(
-                                alignment: Alignment.topCenter,
-                                // height: 30,,
+                                    text:
+                                        'Trip ID - #${widget.tripList?.id ?? ''}',
+                                    fontWeight: FontWeight.w500,
+                                    textColor: Colors.black,
+                                    textSize: displayWidth(context) * 0.018,
+                                    textAlign: TextAlign.start)
+                                : Expanded(
+                                    child: Row(
+                                      children: [
+                                        SizedBox(
+                                          width: displayWidth(context) * 0.34,
+                                          child: Text(
+                                            '${widget.tripList?.name ?? ''}',
+                                            style: TextStyle(
+                                              fontSize:
+                                                  displayWidth(context) * 0.022,
+                                              color: Colors.black,
+                                              fontFamily: outfit,
+                                            ),
+                                            textAlign: TextAlign.start,
+                                            softWrap: true,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        InkWell(
+                                            onTap: () {
+                                              EditTripDailog()
+                                                  .showEditTripDialog(
+                                                      context: context,
+                                                      title: 'Update Trip Name',
+                                                      positiveButtonText:
+                                                          'Update',
+                                                      negtiveButtuonColor:
+                                                          userFeedbackBtnColor,
+                                                      onPositiveButtonTap:
+                                                          (String? value) {
+                                                        setState(() {
+                                                          isTripNameIsUpdating =
+                                                              true;
+                                                        });
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                        Future.delayed(
+                                                            Duration(
+                                                                seconds: 2),
+                                                            () {
+                                                          _databaseService
+                                                              .updateTripName(
+                                                                  widget
+                                                                      .tripList!
+                                                                      .id!,
+                                                                  value!);
+                                                          setState(() {
+                                                            isTripNameIsUpdating =
+                                                                false;
+                                                          });
+                                                          widget
+                                                              .tripUploadedSuccessfully!
+                                                              .call();
+                                                        });
+                                                      });
+                                            },
+                                            child: isTripNameIsUpdating
+                                                ? CircularProgressIndicator()
+                                                : Container(
+                                                    alignment:
+                                                        Alignment.topCenter,
+                                                    // height: 30,,
 
-                                //width: 30,
-                                child: Image.asset(
-                                  'assets/icons/edit_icon.png',
-                                  width: 23,
-                                  height: 18,
-                                  scale: 0.1,
-                                ),
-                              )),
-
+                                                    //width: 30,
+                                                    child: Image.asset(
+                                                      'assets/icons/edit_icon.png',
+                                                      width: 23,
+                                                      height: 18,
+                                                      scale: 0.1,
+                                                    ),
+                                                  )),
+                                      ],
+                                    ),
+                                  ),
+                          ),
                           widget.tripList?.tripStatus == 0
                               ? Container(
                                   margin: EdgeInsets.only(top: 10),
@@ -570,7 +598,9 @@ class _TripWidgetState extends State<TripWidget> {
                                                                 .logWithFile(
                                                                     Level.info,
                                                                     "Mobile -> $page");
-                                                            showDialogBox();
+                                                            showDialogBox(widget
+                                                                .scaffoldKey!
+                                                                .currentContext!);
                                                           } else if (connectivityResult ==
                                                               ConnectivityResult
                                                                   .wifi) {
@@ -784,7 +814,7 @@ class _TripWidgetState extends State<TripWidget> {
     queryParameters = {
       "id": tripData.id,
       "load": tripData.currentLoad,
-      "trip_name": tripData.name,
+      "tripName": tripData.name,
       "sensorInfo": sensorInfo['sensorInfo'],
       //"sensorInfo": {"make": "qualicom", "name": "gps"},
       "deviceInfo": {
@@ -818,7 +848,7 @@ class _TripWidgetState extends State<TripWidget> {
       "avgSpeed": double.parse(tripAvgSpeed),
     };
 
-    Utils.customPrint('CREATE TRIP: $queryParameters');
+    Utils.customPrint('CREATE TRIP 1212: $queryParameters');
     Utils.customPrint(
         'CREATE TRIP FILE PATH: ${'/data/user/0/com.performarine.app/app_flutter/${tripData.id}.zip'}');
     CustomLogger().logWithFile(Level.info,
@@ -940,10 +970,10 @@ class _TripWidgetState extends State<TripWidget> {
   }
 
   /// If user using own internet then shown dialog box
-  showDialogBox() {
+  showDialogBox(BuildContext newContext) {
     return showDialog(
         barrierDismissible: false,
-        context: context,
+        context: newContext,
         builder: (BuildContext dialogContext) {
           return Dialog(
             shape: RoundedRectangleBorder(

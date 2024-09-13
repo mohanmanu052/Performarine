@@ -38,12 +38,12 @@ class SendSensorInfoApiProvider with ChangeNotifier {
       GlobalKey<ScaffoldState> scaffoldKey,
       {bool calledFromSignOut = false}) async {
     d.Dio dio = d.Dio();
-    Utils.customPrint('ZIPPPP: ${zipFile!.path}');
-    Utils.customPrint('ZIPPPP: ${zipFile.existsSync()}');
+    log('ZIPPPP: ${jsonEncode(tripData)}');
+    //Utils.customPrint('ZIPPPP: ${zipFile.existsSync()}');
     var formData = d.FormData.fromMap({
       "tripData": jsonEncode(tripData),
       'sensorZipFiles': await d.MultipartFile.fromFile(
-        zipFile.path,
+        zipFile!.path,
         filename: zipFile.path.split('/').last,
         contentType: new MediaType("application", "zip"),
       ),
