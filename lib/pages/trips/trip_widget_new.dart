@@ -177,12 +177,20 @@ class _TripWidgetNewState extends State<TripWidgetNew> {
                           Container(
                             height: 30,
                             //width: displayWidth(context) * 0.3,
-                            child: commonText(
+                            child: widget.tripList!.name!.isEmpty
+                            ? commonText(
                                 context: context,
                                 text: 'Trip ID - #${widget.tripList?.id ?? ''}',
                                 fontWeight: FontWeight.w500,
                                 textColor: Colors.black,
                                 textSize: displayWidth(context) * 0.02,
+                                textAlign: TextAlign.start)
+                            : commonText(
+                                context: context,
+                                text: '${widget.tripList?.name ?? ''}',
+                                fontWeight: FontWeight.w500,
+                                textColor: Colors.black,
+                                textSize: displayWidth(context) * 0.022,
                                 textAlign: TextAlign.start),
                           ),
                           widget.tripList?.tripStatus == 0

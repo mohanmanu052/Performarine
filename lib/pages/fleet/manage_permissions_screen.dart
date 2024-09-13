@@ -560,7 +560,7 @@ if(mounted) {
                                   height: displayHeight(context) / 1.7,
                                   child: ListView.builder(
                                       shrinkWrap: true,
-                                      itemCount: vesselsData!.length,
+                                      itemCount: vesselsData.length,
                                       itemBuilder: (context, index) {
                                         // manageVesselList.length,
                                         //(index) =>

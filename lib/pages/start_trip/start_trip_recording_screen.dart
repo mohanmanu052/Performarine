@@ -3097,8 +3097,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
         if (await Permission.bluetooth.isPermanentlyDenied) {
           Utils.showSnackBar(scaffoldKey.currentContext!,
               scaffoldKey: scaffoldKey,
-              message:
-                  'Bluetooth permission is needed. Please enable bluetooth permission from app\'s settings.');
+              message: 'Bluetooth permission is needed. Please enable bluetooth permission from app\'s settings.');
 
           Future.delayed(Duration(seconds: 3), () async {
             openedSettingsPageForPermission = true;
@@ -3149,12 +3148,13 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
     await fetchDeviceData();
 
-    debugPrint("NUMBER OF PASS 4 $numberOfPassengers");
+    debugPrint("TRIP NAME IS EMPTY ? ${tripNameController.text.trim().isEmpty}");
+
 
     try {
       await _databaseService.insertTrip(Trip(
         id: getTripId,
-        name: tripNameController.text.trim(),
+        name: tripNameController.text.trim().isEmpty ? '' : tripNameController.text.trim(),
         vesselId: vesselId,
         vesselName: selectedVesselName!.trim(),
         currentLoad: 'Empty',

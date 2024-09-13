@@ -622,6 +622,8 @@ class _SyncDataCloudToMobileScreenState
 
             if (vesselData != null) {
 
+              debugPrint("TRIP NAME WHILE ${value.trips![i].tripName == null}");
+
               Trip tripData = Trip(
                   id: value.trips![i].id,
                   vesselId: value.trips![i].vesselId,
@@ -640,9 +642,9 @@ class _SyncDataCloudToMobileScreenState
                   time: value.trips![i].duration,
                   distance: value.trips![i].distance.toString(),
                   speed: value.trips![i].speed.toString(),
-                  name:value.trips![i].tripName.toString() ,
+                  name: value.trips![i].tripName == null ? '' : value.trips![i].tripName.toString() ,
                   avgSpeed: value.trips![i].avgSpeed.toString(),
-                  isCloud: 1);
+                  isCloud: 1,);
 
               Utils.customPrint('USER CONFIG DATA JSON ${tripData.toJson()}');
               CustomLogger().logWithFile(Level.info, "USER CONFIG DATA JSON ${tripData.toJson()} -> $page");
