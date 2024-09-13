@@ -261,122 +261,123 @@ class _TripWidgetState extends State<TripWidget> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            margin: EdgeInsets.only(top: 10),
-                            child: widget.tripList!.name!.isEmpty
-                                ? commonText(
-                                    context: context,
-                                    text:
-                                        'Trip ID - #${widget.tripList?.id ?? ''}',
-                                    fontWeight: FontWeight.w500,
-                                    textColor: Colors.black,
-                                    textSize: displayWidth(context) * 0.018,
-                                    textAlign: TextAlign.start)
-                                : Expanded(
-                                    child: Row(
-                                      children: [
-                                        SizedBox(
-                                          width: displayWidth(context) * 0.34,
-                                          child: Text(
-                                            '${widget.tripList?.name ?? ''}',
-                                            style: TextStyle(
-                                              fontSize:
-                                                  displayWidth(context) * 0.022,
-                                              color: Colors.black,
-                                              fontFamily: outfit,
-                                            ),
-                                            textAlign: TextAlign.start,
-                                            softWrap: true,
-                                            overflow: TextOverflow.ellipsis,
+                          Expanded(
+                            child: Container(
+                              margin: EdgeInsets.only(top: 10),
+                              child: widget.tripList!.name!.isEmpty
+                                  ? commonText(
+                                      context: context,
+                                      text:
+                                          'Trip ID - #${widget.tripList?.id ?? ''}',
+                                      fontWeight: FontWeight.w500,
+                                      textColor: Colors.black,
+                                      textSize: displayWidth(context) * 0.018,
+                                      textAlign: TextAlign.start)
+                                  : Row(
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          '${widget.tripList?.name ?? ''}',
+                                          style: TextStyle(
+                                            fontSize:
+                                                displayWidth(context) * 0.022,
+                                            color: Colors.black,
+                                            fontFamily: outfit,
                                           ),
+                                          textAlign: TextAlign.start,
+                                          softWrap: true,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
-                                        InkWell(
-                                            onTap: () {
-                                              EditTripDailog()
-                                                  .showEditTripDialog(
-                                                      context: context,
-                                                      title: 'Update Trip Name',
-                                                      positiveButtonText:
-                                                          'Update',
-                                                      negtiveButtuonColor:
-                                                          userFeedbackBtnColor,
-                                                      onPositiveButtonTap:
-                                                          (String? value) {
+                                      ),
+                                      InkWell(
+                                          onTap: () {
+                                            EditTripDailog()
+                                                .showEditTripDialog(
+                                                    context: context,
+                                                    title: 'Update Trip Name',
+                                                    positiveButtonText:
+                                                        'Update',
+                                                    negtiveButtuonColor:
+                                                        userFeedbackBtnColor,
+                                                    onPositiveButtonTap:
+                                                        (String? value) {
+                                                      setState(() {
+                                                        isTripNameIsUpdating =
+                                                            true;
+                                                      });
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      Future.delayed(
+                                                          Duration(
+                                                              seconds: 2),
+                                                          () {
+                                                        _databaseService
+                                                            .updateTripName(
+                                                                widget
+                                                                    .tripList!
+                                                                    .id!,
+                                                                value!);
                                                         setState(() {
                                                           isTripNameIsUpdating =
-                                                              true;
+                                                              false;
                                                         });
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                        Future.delayed(
-                                                            Duration(
-                                                                seconds: 2),
-                                                            () {
-                                                          _databaseService
-                                                              .updateTripName(
-                                                                  widget
-                                                                      .tripList!
-                                                                      .id!,
-                                                                  value!);
-                                                          setState(() {
-                                                            isTripNameIsUpdating =
-                                                                false;
-                                                          });
-                                                          widget
-                                                              .tripUploadedSuccessfully!
-                                                              .call();
-                                                        });
+                                                        widget
+                                                            .tripUploadedSuccessfully!
+                                                            .call();
                                                       });
-                                            },
-                                            child: isTripNameIsUpdating
-                                                ? CircularProgressIndicator()
-                                                : Container(
-                                                    alignment:
-                                                        Alignment.topCenter,
-                                                    // height: 30,,
+                                                    });
+                                          },
+                                          child: isTripNameIsUpdating
+                                              ? CircularProgressIndicator()
+                                              : Container(
+                                                  alignment:
+                                                      Alignment.topCenter,
+                                                  // height: 30,,
 
-                                                    //width: 30,
-                                                    child: Image.asset(
-                                                      'assets/icons/edit_icon.png',
-                                                      width: 23,
-                                                      height: 18,
-                                                      scale: 0.1,
-                                                    ),
-                                                  )),
-                                      ],
-                                    ),
+                                                  //width: 30,
+                                                  child: Image.asset(
+                                                    'assets/icons/edit_icon.png',
+                                                    width: 23,
+                                                    height: 18,
+                                                    scale: 0.1,
+                                                  ),
+                                                )),
+                                    ],
                                   ),
+                            ),
                           ),
-                          widget.tripList?.tripStatus == 0
-                              ? Container(
-                                  margin: EdgeInsets.only(top: 10),
-                                  child: Padding(
-                                    padding:
-                                        EdgeInsets.only(right: paddingValue),
-                                    child: commonText(
-                                      context: context,
-                                      text:
-                                          '${DateFormat('yyyy-MM-dd HH:mm').format(DateTime.parse(widget.tripList!.createdAt!))}',
-                                      fontWeight: FontWeight.w500,
-                                      textColor: Colors.black,
-                                      textSize: displayWidth(context) * 0.016,
+                          Expanded(
+                            child: widget.tripList?.tripStatus == 0
+                                ? Container(
+                                    margin: EdgeInsets.only(top: 10),
+                                    child: Padding(
+                                      padding:
+                                          EdgeInsets.only(right: paddingValue),
+                                      child: commonText(
+                                        context: context,
+                                        text:
+                                            '${DateFormat('yyyy-MM-dd HH:mm').format(DateTime.parse(widget.tripList!.createdAt!))}',
+                                        fontWeight: FontWeight.w500,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(context) * 0.016,
+                                      ),
                                     ),
-                                  ),
-                                )
-                              : Container(
-                                  margin: EdgeInsets.only(top: 10),
-                                  child: Padding(
-                                    padding:
-                                        EdgeInsets.only(right: paddingValue),
-                                    child: commonText(
-                                      context: context,
-                                      text:
-                                          '${DateFormat('yyyy-MM-dd HH:mm').format(DateTime.parse(widget.tripList!.createdAt!))}  ${widget.tripList?.updatedAt != null ? ' -  ${DateFormat('yyyy-MM-dd HH:mm').format(DateTime.parse(widget.tripList!.updatedAt!))}' : ''}',
-                                      fontWeight: FontWeight.w500,
-                                      textColor: Colors.black,
-                                      textSize: displayWidth(context) * 0.016,
-                                    ),
-                                  )),
+                                  )
+                                : Container(
+                                    margin: EdgeInsets.only(top: 10),
+                                    child: Padding(
+                                      padding:
+                                          EdgeInsets.only(right: paddingValue),
+                                      child: commonText(
+                                        context: context,
+                                        text:
+                                            '${DateFormat('yyyy-MM-dd HH:mm').format(DateTime.parse(widget.tripList!.createdAt!))}  ${widget.tripList?.updatedAt != null ? ' -  ${DateFormat('yyyy-MM-dd HH:mm').format(DateTime.parse(widget.tripList!.updatedAt!))}' : ''}',
+                                        fontWeight: FontWeight.w500,
+                                        textColor: Colors.black,
+                                        textSize: displayWidth(context) * 0.016,
+                                      ),
+                                    )),
+                          ),
                         ],
                       ),
                       const SizedBox(
