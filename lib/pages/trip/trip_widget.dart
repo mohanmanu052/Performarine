@@ -289,59 +289,61 @@ class _TripWidgetState extends State<TripWidget> {
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
-                                      InkWell(
-                                          onTap: () {
-                                            EditTripDailog()
-                                                .showEditTripDialog(
-                                                    context: context,
-                                                    title: 'Update Trip Name',
-                                                    positiveButtonText:
-                                                        'Update',
-                                                    negtiveButtuonColor:
-                                                        userFeedbackBtnColor,
-                                                    onPositiveButtonTap:
-                                                        (String? value) {
-                                                      setState(() {
-                                                        isTripNameIsUpdating =
-                                                            true;
-                                                      });
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                      Future.delayed(
-                                                          Duration(
-                                                              seconds: 2),
-                                                          () {
-                                                        _databaseService
-                                                            .updateTripName(
-                                                                widget
-                                                                    .tripList!
-                                                                    .id!,
-                                                                value!);
-                                                        setState(() {
-                                                          isTripNameIsUpdating =
-                                                              false;
-                                                        });
-                                                        widget
-                                                            .tripUploadedSuccessfully!
-                                                            .call();
-                                                      });
-                                                    });
-                                          },
-                                          child: isTripNameIsUpdating
-                                              ? CircularProgressIndicator()
-                                              : Container(
-                                                  alignment:
-                                                      Alignment.topCenter,
-                                                  // height: 30,,
+                                      // InkWell(
+                                      //     onTap: () {
+                                      //       EditTripDailog()
+                                      //           .showEditTripDialog(
+                                      //               context: context,
+                                      //               title: 'Update Trip Name',
+                                      //               positiveButtonText:
+                                      //                   'Update',
+                                      //               negtiveButtuonColor:
+                                      //                   userFeedbackBtnColor,
+                                      //               onPositiveButtonTap:
+                                      //                   (String? value) {
+                                      //                 setState(() {
+                                      //                   isTripNameIsUpdating =
+                                      //                       true;
+                                      //                 });
+                                      //                 Navigator.of(context)
+                                      //                     .pop();
+                                      //                 Future.delayed(
+                                      //                     Duration(
+                                      //                         seconds: 2),
+                                      //                     () {
+                                      //                   _databaseService
+                                      //                       .updateTripName(
+                                      //                           widget
+                                      //                               .tripList!
+                                      //                               .id!,
+                                      //                           value!);
+                                      //                   setState(() {
+                                      //                     isTripNameIsUpdating =
+                                      //                         false;
+                                      //                   });
+                                      //                   widget
+                                      //                       .tripUploadedSuccessfully!
+                                      //                       .call();
+                                      //                 });
+                                      //               });
+                                      //     },
+                                      //     // child: isTripNameIsUpdating
+                                      //     //     ? CircularProgressIndicator()
+                                      //     //     : Container(
+                                      //     //         alignment:
+                                      //     //             Alignment.topCenter,
+                                      //     //         // height: 30,,
 
-                                                  //width: 30,
-                                                  child: Image.asset(
-                                                    'assets/icons/edit_icon.png',
-                                                    width: 23,
-                                                    height: 18,
-                                                    scale: 0.1,
-                                                  ),
-                                                )),
+                                      //     //         //width: 30,
+                                      //     //         child: Image.asset(
+                                      //     //           'assets/icons/edit_icon.png',
+                                      //     //           width: 23,
+                                      //     //           height: 18,
+                                      //     //           scale: 0.1,
+                                      //     //         ),
+                                      //            //)
+                                                 
+                                      //            ),
                                     ],
                                   ),
                             ),
