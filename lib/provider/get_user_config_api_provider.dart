@@ -53,6 +53,7 @@ class GetUserConfigApiProvider with ChangeNotifier {
 
       final response = await http.post(uri,
           body: jsonEncode(queryParameters), headers: headers);
+      log('get config res : ' + response.body);
 
       Utils.customPrint('REGISTER REQ : ' + response.body);
       CustomLogger().logWithFile(Level.info, "REGISTER REs : ' + ' ${response.body}-> $page");

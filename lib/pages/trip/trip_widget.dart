@@ -708,7 +708,7 @@ class _TripWidgetState extends State<TripWidget> {
     queryParameters = {
       "id": tripData.id,
       "load": tripData.currentLoad,
-             "trip_name":tripData.name,
+             "tripName":tripData.name,
       "sensorInfo": sensorInfo['sensorInfo'],
       //"sensorInfo": {"make": "qualicom", "name": "gps"},
       "deviceInfo": {
