@@ -54,6 +54,7 @@ import 'package:performarine/provider/report_module_provider.dart';
 import 'package:performarine/provider/reset_password_provider.dart';
 import 'package:performarine/provider/send_sensor_info_api_provider.dart';
 import 'package:performarine/provider/speed_reports_api_provider.dart';
+import 'package:performarine/provider/trip_name_update_provider.dart';
 import 'package:performarine/provider/update_userinfo_api_provider.dart';
 import 'package:performarine/provider/user_feedback_provider.dart';
 import 'package:performarine/provider/vessel_delegate_api_provider.dart';
@@ -845,4 +846,14 @@ if(value.speedDuration!=0){
 
     return percentageDifference;
   }
+
+    Future<CommonModel> updateTripName(BuildContext context, String token,
+      String tripId,String tripName, GlobalKey<ScaffoldState> scaffoldKey) async {
+    //speedReportsModel = SpeedReportsModel();
+    CommonModel  responsData  = await TripNameUpdateProvider().updateTripName(context, token, tripId,tripName, scaffoldKey);
+return Future.value(responsData);
+
+  }
+
+
 }

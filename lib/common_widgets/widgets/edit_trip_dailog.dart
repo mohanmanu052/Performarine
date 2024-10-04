@@ -13,10 +13,12 @@ class EditTripDailog {
       Color? negtiveButtuonColor,
       Function(String?)? onPositiveButtonTap,
       VoidCallback? onNegativeButtonTap,
-      BuildContext? context}) async {
+      BuildContext? context,
+      String? initalvalue,
+      }) async {
     TextEditingController nameController = TextEditingController();
     FocusNode nameFocusNode = FocusNode();
-
+nameController.text=initalvalue??'';
     showDialog(
         context: context!,
         builder: (_) => Dialog(
