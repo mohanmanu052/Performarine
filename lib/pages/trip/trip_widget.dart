@@ -289,61 +289,84 @@ class _TripWidgetState extends State<TripWidget> {
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
-                                      // InkWell(
-                                      //     onTap: () {
-                                      //       EditTripDailog()
-                                      //           .showEditTripDialog(
-                                      //               context: context,
-                                      //               title: 'Update Trip Name',
-                                      //               positiveButtonText:
-                                      //                   'Update',
-                                      //               negtiveButtuonColor:
-                                      //                   userFeedbackBtnColor,
-                                      //               onPositiveButtonTap:
-                                      //                   (String? value) {
-                                      //                 setState(() {
-                                      //                   isTripNameIsUpdating =
-                                      //                       true;
-                                      //                 });
-                                      //                 Navigator.of(context)
-                                      //                     .pop();
-                                      //                 Future.delayed(
-                                      //                     Duration(
-                                      //                         seconds: 2),
-                                      //                     () {
-                                      //                   _databaseService
-                                      //                       .updateTripName(
-                                      //                           widget
-                                      //                               .tripList!
-                                      //                               .id!,
-                                      //                           value!);
-                                      //                   setState(() {
-                                      //                     isTripNameIsUpdating =
-                                      //                         false;
-                                      //                   });
-                                      //                   widget
-                                      //                       .tripUploadedSuccessfully!
-                                      //                       .call();
-                                      //                 });
-                                      //               });
-                                      //     },
-                                      //     // child: isTripNameIsUpdating
-                                      //     //     ? CircularProgressIndicator()
-                                      //     //     : Container(
-                                      //     //         alignment:
-                                      //     //             Alignment.topCenter,
-                                      //     //         // height: 30,,
+                                      InkWell(
+                                          onTap: () {
+                                            EditTripDailog()
+                                                .showEditTripDialog(
+                                                    context: context,
+                                                    title: 'Update Trip Name',
+                                                    positiveButtonText:
+                                                        'Update',
+                                                    negtiveButtuonColor:
+                                                        userFeedbackBtnColor,
+                                                        initalvalue: widget.tripList?.name??'',
+                                                    onPositiveButtonTap:
+                                                        (String? value)async {
+                                                      setState(() {
+                                                        isTripNameIsUpdating =
+                                                            true;
+                                                      });
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      Future.delayed(
+                                                          Duration(
+                                                              seconds: 2),
+                                                          () async {
 
-                                      //     //         //width: 30,
-                                      //     //         child: Image.asset(
-                                      //     //           'assets/icons/edit_icon.png',
-                                      //     //           width: 23,
-                                      //     //           height: 18,
-                                      //     //           scale: 0.1,
-                                      //     //         ),
-                                      //            //)
+                                                       var data=   await      commonProvider.updateTripName(context,commonProvider.loginModel!.token!,widget
+                                                                    .tripList!
+                                                                    .id!,value!,widget.scaffoldKey!);
+                                                                    if(data.statusCode==200){
+                                                                                                                              _databaseService
+                                                            .updateTripName(
+                                                                widget
+                                                                    .tripList!
+                                                                    .id!,
+                                                                value);
+
+                                                                    }
+
+                                                                    if(data!=null&&data.message!=null){
+          Utils.showSnackBar(context,
+              scaffoldKey: widget.scaffoldKey, message: data.message);
+
+                                                                    }
+                                                        widget
+                                                            .tripUploadedSuccessfully!
+                                                            .call();
+
+
+                                                        setState(() {
+                                                          isTripNameIsUpdating =
+                                                              false;
+                                                        });
+                                                      });
+                                                    });
+                                          },
+                                          child: isTripNameIsUpdating
+                                              ? Container(
+                                                padding: EdgeInsets.symmetric(horizontal: 8),
+                                               // height: 20,
+                                                //width: 20,
+                                                child: CircularProgressIndicator())
+                                              : Container(
+                                                  alignment:
+                                                      Alignment.topCenter,
+                                                  // height: 30,,
+
+                                                  //width: 30,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.symmetric(horizontal: 4,vertical: 2),
+                                                    child: Image.asset(
+                                                      'assets/icons/edit_icon.png',
+                                                      width: 23,
+                                                      height: 18,
+                                                      scale: 0.1,
+                                                    ),
+                                                  ),
+                                                 )
                                                  
-                                      //            ),
+                                                 ),
                                     ],
                                   ),
                             ),
