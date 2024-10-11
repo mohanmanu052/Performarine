@@ -688,7 +688,6 @@ setState(() {
                                     'fleetVessels':
                                         multipleSelected.toSet().toList()
                                   };
-print('the multiple selected was----'+multipleSelected.toSet().toString());
                                   var res =
                                       await commonProvider?.addFleetVessels(
                                           scaffoldKey: scaffoldKey,
