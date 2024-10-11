@@ -49,8 +49,8 @@ var decodedData=json.decode(response.body);
 
         responseModel = CommonModel.fromJson(json.decode(response.body));
 
-        Utils.showSnackBar(context!,
-            scaffoldKey: scaffoldKey, message: decodedData['message']);
+        // Utils.showSnackBar(context!,
+        //     scaffoldKey: scaffoldKey, message: decodedData['message']);
 
 
          return responseModel;
