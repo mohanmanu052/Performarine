@@ -7,6 +7,7 @@ import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/log_level.dart';
+import 'package:performarine/models/assign_vessel_model.dart';
 import 'package:performarine/models/fleet_dashboard_model.dart';
 import 'package:performarine/models/fleet_list_model.dart';
 import 'package:performarine/models/vessel.dart';
@@ -51,19 +52,38 @@ class _ManagePermissionsScreenState extends State<ManagePermissionsScreen> {
 //List<String> fleetData=['Fleet1','Fleet2','Fleet3','Fleet4'];
   //FleetDashboardModel? fleetdata;
   List<CreateVessel> vesselsData = [];
-  List<bool>? checkListItems = [];
+  bool isvesselDataLoading=false;
+ // List<bool>? checkListItems = [];
   @override
   void initState() {
     commonProvider = context.read<CommonProvider>();
   //  addFleetInvitation();
     getToken();
-    getVesselData();
+    //getVesselData();
+    getAssignedVesselData();
     // TODO: implement initState
     super.initState();
   }
 
-  void getVesselData() async {
-                            var vesselsSyncDetails =await _databaseService.vesselsSyncDetails();
+void getAssignedVesselData()async{
+  isvesselDataLoading=true;
+  setState(() {
+    
+  });
+  var vesselData=await commonProvider?.getAssignedVessel(
+    context: context,token: commonProvider!.loginModel!.token,
+    scaffoldKey: scaffoldKey,
+    data: {'fleetId':widget.selectedFleetvalue?.fleetId}
+  );
+
+ getVesselData(vesselData?.data);
+
+}
+
+  void getVesselData(List<VesselData>? selectedVessel) async {
+    vesselsData.clear();
+    multipleSelected.clear();
+           var vesselsSyncDetails =await _databaseService.vesselsSyncDetails();
 if(vesselsSyncDetails){
       getVesselFuture = await _databaseService.syncAndSignOutVesselList().catchError((onError) {
     });
@@ -119,7 +139,6 @@ if(vesselsSyncDetails){
         }
 
 
-
 }
       List<CreateVessel>? data = await _databaseService.vessels();
 
@@ -133,7 +152,7 @@ if(vesselsSyncDetails){
               }
           }
 
-    checkListItems = List.generate(vesselsData.length, (index) => false);
+  //  checkListItems = List.generate(vesselsData.length, (index) => false);
 
     setState(() {});
 
@@ -143,6 +162,14 @@ if(vesselsSyncDetails){
 
   for(int i = 0; i <data.length; i++)
   {
+    if(selectedVessel!=null&&selectedVessel.isNotEmpty){
+      for(var vesseldata1 in selectedVessel){
+        if(vesseldata1.id==data[i].id){
+          data[i].isSelected=true;
+          multipleSelected.add(vesseldata1.id);
+        }
+      }
+    }
     if(data[i].createdBy == commonProvider!.loginModel!.userId)
     {
       setState(() {
@@ -150,11 +177,15 @@ if(vesselsSyncDetails){
       });
     }
   }
-    checkListItems = List.generate(vesselsData.length, (index) => false);
+   // checkListItems = List.generate(vesselsData.length, (index) => false);
 if(mounted) {
   setState(() {});
 }
 }
+isvesselDataLoading=false;
+setState(() {
+  
+});
 
   }
   void addFleetInvitation()async{
@@ -203,8 +234,8 @@ if(mounted) {
         
         );
         
-      if(fleetdata!.fleetsIamIn!=null&&fleetdata!.fleetsIamIn!.isNotEmpty){
-        widget.fleetItemList=fleetdata!.fleetsIamIn;
+      if(fleetdata!.fleetsIamIn!=null&&fleetdata.fleetsIamIn!.isNotEmpty){
+        widget.fleetItemList=fleetdata.fleetsIamIn;
         if(widget.fleetId!=null){
           for(FleetsIamIn fleet in widget.fleetItemList!){
             if(fleet.fleetId==widget.fleetId){
@@ -213,7 +244,7 @@ if(mounted) {
 
           }
         }else{
-          widget.selectedFleetvalue=fleetdata!.fleetsIamIn!.first;
+          widget.selectedFleetvalue=fleetdata.fleetsIamIn!.first;
 
         }
       }
@@ -464,6 +495,8 @@ if(mounted) {
                                       setState(() {
                                       widget.  selectedFleetvalue = newValue;
                                       });
+                                                                            getAssignedVesselData();
+
                                     },
                                   ),
                                 )
@@ -523,99 +556,100 @@ if(mounted) {
                                   isSelectAllEnabled = !isSelectAllEnabled;
                                   if (isSelectAllEnabled) {
                                     for (int i = 0;
-                                        i < vesselsData!.length;
+                                        i < vesselsData.length;
                                         i++) {
-                                      checkListItems![i] = true;
-                                      multipleSelected.add(vesselsData![i].id);
+                                    vesselsData  [i].isSelected = true;
+                                      multipleSelected.add(vesselsData[i].id);
                                     }
                                   } else {
                                     for (int i = 0;
-                                        i < vesselsData!.length;
+                                        i < vesselsData.length;
                                         i++) {
-                                      checkListItems![i] = false;
+                                      vesselsData  [i].isSelected = false;
 
                                       multipleSelected.clear();
                                     }
                                   }
+                                //  multipleSelected.clear();
+                                 // checkListItems!.clear();
 
-                                  // multipleSelected.clear();
-                                  // checkListItems!.clear();
-
-                                  // for (var element in checkListItems) {
-                                  //   if (element["value"] == false) {
-                                  //     element["value"] = true;
+                                  // for (var element in vesselsData) {
+                                  //   if (element.isSelected == false) {
+                                  //     element.isSelected = true;
                                   //     multipleSelected.add(element);
                                   //   } else {
-                                  //     element["value"] = false;
+                                  //     element.isSelected = false;
                                   //     multipleSelected.remove(element);
                                   //   }
                                   // }
-                                  setState(() {});
+                                   setState(() {});
                                 },
                                 checkboxType: CheckboxType.Parent,
                                 activeColor: blueColor,
                               ),
-                              if (vesselsData != null)
-                                Container(
-                                  height: displayHeight(context) / 1.7,
-                                  child: ListView.builder(
-                                      shrinkWrap: true,
-                                      itemCount: vesselsData.length,
-                                      itemBuilder: (context, index) {
-                                        // manageVesselList.length,
-                                        //(index) =>
-
-                                        return Container(
-                                          margin:
-                                              EdgeInsets.symmetric(vertical: 4),
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            color: reportTripsListColor,
-                                          ),
-                                          child: CheckboxListTile(
-                                            activeColor: blueColor,
-                                            controlAffinity:
-                                                ListTileControlAffinity.leading,
-                                            contentPadding:
-                                                EdgeInsets.symmetric(
-                                                    horizontal: 4),
-                                            dense: true,
-                                            title: checkBoxCard(
-                                                vesselsData![index]),
-                                            value:
-                                                checkListItems?[index] ?? false,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                checkListItems![index] = value!;
-                                                if (multipleSelected.contains(
-                                                    vesselsData![index].id)) {
-                                                  multipleSelected.remove(
-                                                      vesselsData![index].id);
-
-                                                     if(multipleSelected.length==vesselsData!.length){
-                                                      isSelectAllEnabled=true;
-
-                                                     }else{
-                                                      isSelectAllEnabled=false;
-                                                     } 
-                                                } else {
-                                                  multipleSelected.add(
-                                                      vesselsData![index].id);
-
-                                                                                                           if(multipleSelected.length==vesselsData!.length){
-                                                      isSelectAllEnabled=true;
-
-                                                     }else{
-                                                      isSelectAllEnabled=false;
-                                                     } 
-
-                                                }
-                                              });
-                                            },
-                                          ),
-                                        );
-                                      }),
+                              //if (vesselsData != null&&!isvesselDataLoading)
+                                SizedBox(
+                                  child:vesselsData != null&&!isvesselDataLoading? Container(
+                                    height: displayHeight(context) / 1.7,
+                                    child: ListView.builder(
+                                        shrinkWrap: true,
+                                        itemCount: vesselsData.length,
+                                        itemBuilder: (context, index) {
+                                          // manageVesselList.length,
+                                          //(index) =>
+                                  
+                                          return Container(
+                                            margin:
+                                                EdgeInsets.symmetric(vertical: 4),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              color: reportTripsListColor,
+                                            ),
+                                            child: CheckboxListTile(
+                                              activeColor: blueColor,
+                                              controlAffinity:
+                                                  ListTileControlAffinity.leading,
+                                              contentPadding:
+                                                  EdgeInsets.symmetric(
+                                                      horizontal: 4),
+                                              dense: true,
+                                              title: checkBoxCard(
+                                                  vesselsData[index]),
+                                              value:
+                                                  vesselsData[index].isSelected ?? false,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  vesselsData[index].isSelected = value!;
+                                                  if (multipleSelected.contains(
+                                                      vesselsData[index].id)) {
+                                                    multipleSelected.remove(
+                                                        vesselsData[index].id);
+                                  
+                                                       if(multipleSelected.length==vesselsData.length){
+                                                        isSelectAllEnabled=true;
+                                  
+                                                       }else{
+                                                        isSelectAllEnabled=false;
+                                                       } 
+                                                  } else {
+                                                    multipleSelected.add(
+                                                        vesselsData[index].id);
+                                  
+                                                                                                             if(multipleSelected.length==vesselsData.length){
+                                                        isSelectAllEnabled=true;
+                                  
+                                                       }else{
+                                                        isSelectAllEnabled=false;
+                                                       } 
+                                  
+                                                  }
+                                                });
+                                              },
+                                            ),
+                                          );
+                                        }),
+                                  ):CircularProgressIndicator(),
                                 )
                             ],
                           ),
@@ -654,7 +688,6 @@ if(mounted) {
                                     'fleetVessels':
                                         multipleSelected.toSet().toList()
                                   };
-
                                   var res =
                                       await commonProvider?.addFleetVessels(
                                           scaffoldKey: scaffoldKey,
@@ -680,7 +713,7 @@ if(mounted) {
 
                                                   
                                                   );
-                                    }
+                                   }
                                   } else {
                                     isLoading = false;
                                   }

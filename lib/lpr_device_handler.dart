@@ -332,9 +332,10 @@ class LPRDeviceHandler {
                           children: [
                             Center(
                               child: CommonButtons.getAcceptButton(
-                                  'End Trip', Get.context!, endTripBtnColor,
+                                  'Continue Without LPR', Get.context!, blueColor,
                                   () {
-                                endTrip();
+                                    Navigator.pop(context);
+                               // endTrip();
                               },
                                   orientation == Orientation.portrait
                                       ? displayWidth(Get.context!) / 1.5
@@ -347,7 +348,7 @@ class LPRDeviceHandler {
                                   orientation == Orientation.portrait
                                       ? displayWidth(Get.context!) * 0.036
                                       : displayWidth(Get.context!) * 0.023,
-                                  endTripBtnColor,
+                                  blueColor,
                                   '',
                                   fontWeight: FontWeight.w500
 

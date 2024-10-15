@@ -9,6 +9,7 @@ import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/lpr_device_handler.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/add_vessel_model.dart';
+import 'package:performarine/models/assign_vessel_model.dart';
 import 'package:performarine/models/common_model.dart';
 import 'package:performarine/models/create_fleet_response.dart';
 import 'package:performarine/models/delete_trip_model.dart';
@@ -604,6 +605,18 @@ class CommonProvider with ChangeNotifier {
       GlobalKey<ScaffoldState>? scaffoldKey,
       Map<String, dynamic>? data}) async {
     var res = await FleetAssignVesselsProvider().addVesselAndGrantAccess(
+        context: context, token: token, scaffoldKey: scaffoldKey, data: data);
+    return res;
+
+  }
+
+
+  Future<AssignVesselModel> getAssignedVessel(
+      {BuildContext? context,
+      String? token,
+      GlobalKey<ScaffoldState>? scaffoldKey,
+      Map<String, dynamic>? data}) async {
+    var res = await FleetAssignVesselsProvider().getAssignedVesselData(
         context: context, token: token, scaffoldKey: scaffoldKey, data: data);
     return res;
   }
