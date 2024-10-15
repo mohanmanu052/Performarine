@@ -94,6 +94,7 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
               widget.device!.connect().then((value) {
                 if(widget.onDeviceConnectedCallback!=null){
                 widget.onDeviceConnectedCallback!(widget.device!.platformName);
+                print('device got connected 1------------------');
                 }
                 if(widget.comingFrom=='lpr_test'){
                                 widget.selectedBluettothDevice!(widget.device!);
@@ -108,6 +109,18 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
 
                 }else{
                 LPRDeviceHandler().setLPRDevice(widget.device!);
+                            LPRDeviceHandler().listenToDeviceConnectionState(isListeningStartTripState: true,
+                            
+                            callBackconnectedDeviceName: (bluetoothDeviceName) {
+                              if(widget.onDeviceConnectedCallback!=null){
+                              widget.onDeviceConnectedCallback!(bluetoothDeviceName);
+                              }
+                              // setState(() {
+                                
+                              // });
+                            },
+                            );
+
 
                 }
               }).catchError((onError) {
@@ -155,6 +168,7 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
           //  await storage.write(key: 'lprDeviceId', value: widget.device!.remoteId.str);
           debugPrint("SINGLE SELECTED BLE ID ${widget.device!.remoteId.str}");
           widget.device!.connect().then((value) {
+            print('the device got connected------------');
                           if(widget.onDeviceConnectedCallback!=null){
                 widget.onDeviceConnectedCallback!(widget.device!.platformName);
               }
@@ -172,6 +186,16 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
             }
             else{
             LPRDeviceHandler().setLPRDevice(widget.device!,);
+            LPRDeviceHandler().listenToDeviceConnectionState(
+              isListeningStartTripState: true,
+              callBackconnectedDeviceName: (name ){
+                                              if(widget.onDeviceConnectedCallback!=null){
+                              widget.onDeviceConnectedCallback!(name);
+                              }
+
+              }
+
+            );
 
             }
           }).catchError((onError) {
@@ -201,7 +225,9 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
               });
             }
             EasyLoading.dismiss();
+            if(widget.dialogContext!=null){
             Navigator.pop(widget.dialogContext!);
+            }
           });
         }
 

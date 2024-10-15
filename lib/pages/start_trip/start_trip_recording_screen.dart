@@ -117,7 +117,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
   String? selectedVesselName, vesselId, sliderCount = '10+';
 
   Timer? notiTimer;
-
+Function? setStateCallBackTrip;
   IosDeviceInfo? iosDeviceInfo;
   AndroidDeviceInfo? androidDeviceInfo;
 
@@ -142,7 +142,6 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
   void initState() {
     // TODO: implement initState
     super.initState();
-
     // Future.delayed(Duration(seconds: 1)).then((value) {
     //
     //   if(tripState.currentState!=null){
@@ -810,6 +809,12 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                       setState(() {});
                     }
                   });
+                  LPRDeviceHandler().setDeviceConnectCallBack(() {
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  });
+                  
                   setState(() {});
                 }).catchError((onError) {
                   Utils.customPrint('ERROR BLE: $onError');
@@ -848,6 +853,12 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                         setState(() {});
                       }
                     });
+                                                          LPRDeviceHandler().setDeviceConnectCallBack(() {
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  });
+
                     setState(() {});
                   });
                   bluetoothName = r.device.platformName.isEmpty
@@ -893,6 +904,12 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                       setState(() {});
                     }
                   });
+                                                        LPRDeviceHandler().setDeviceConnectCallBack(() {
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  });
+
                   setState(() {});
                 });
                 bluetoothName = r.device.platformName.isEmpty
@@ -1044,6 +1061,12 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
           setState(() {});
         }
       });
+                                            LPRDeviceHandler().setDeviceConnectCallBack(() {
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  });
+
     }
   }
 
@@ -1124,7 +1147,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
     return PopScope(
       canPop: false,
-      // key: tripState,
+       //key: tripState,
       onPopInvoked: (didPop) async {
         if (didPop) return;
         if (commonProvider.bottomNavIndex == 1) {
@@ -1138,16 +1161,27 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
         bool? isTripStarted =
             sharedPreferences!.getBool('trip_started') ?? false;
+            LPRDeviceHandler().isSilentDiscoonect=true;
+            setState(() {
+              
+            });
         if (!isTripStarted ?? false) {
           for (int i = 0; i < FlutterBluePlus.connectedDevices.length; i++) {
             await FlutterBluePlus.connectedDevices[i]
                 .disconnect()
-                .then((value) {});
+                .then((value) {
+        //Navigator.of(context).pop();
+
+        //Navigator.of(context).pop(true);
+
+                });
           }
         }
+       // LPRDeviceHandler().isSelfDisconnected=false;
         Navigator.of(context).pop(true);
       },
       child: Screenshot(
+        //key: tripState,
         controller: controller,
         child: SafeArea(
           child: Scaffold(
@@ -3715,6 +3749,12 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                       setState(() {});
                     }
                   });
+                                                        LPRDeviceHandler().setDeviceConnectCallBack(() {
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  });
+
                   Utils.customPrint('CONNECTED TO DEVICE BLE');
                 }).catchError((onError) {
                   Utils.customPrint('ERROR BLE: $onError');
@@ -3748,6 +3788,12 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                         setState(() {});
                       }
                     });
+                                                          LPRDeviceHandler().setDeviceConnectCallBack(() {
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  });
+
                   });
                   bluetoothName = r.device.platformName.isEmpty
                       ? r.device.remoteId.str
@@ -3779,6 +3825,12 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                       setState(() {});
                     }
                   });
+                                                        LPRDeviceHandler().setDeviceConnectCallBack(() {
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  });
+
                 });
                 bluetoothName = r.device.platformName.isEmpty
                     ? r.device.remoteId.str
@@ -5010,6 +5062,13 @@ if(mounted){
                                           setState(() {});
                                         }
                                       });
+                                      LPRDeviceHandler().setDeviceConnectCallBack((){
+if(mounted){
+  setState(() {
+    
+  });
+}
+                                      });
                                     },
                                     onBluetoothConnection: (value) {
                                       if (mounted) {
@@ -5028,6 +5087,12 @@ if(mounted){
                                           setState(() {});
                                         }
                                       });
+                                                                            LPRDeviceHandler().setDeviceConnectCallBack(() {
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  });
+
                                     },
                                   ))
                               : Container(
@@ -5070,12 +5135,19 @@ if(mounted){
                                       });
                                       LPRDeviceHandler()
                                           .setDeviceDisconnectCallback(() {
+
                                         if (mounted) {
                                           setState(() {});
                                         }
                                       });
 
 
+
+                                      LPRDeviceHandler().setDeviceConnectCallBack(() {
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  });
 
                                       
                                     },
@@ -5096,7 +5168,15 @@ if(mounted){
                                           setState(() {});
                                         }
                                       });
+
+                                      LPRDeviceHandler().setDeviceConnectCallBack(() {
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  });
+                  
                                     },
+                                    
                                   )),
                         ),
 
