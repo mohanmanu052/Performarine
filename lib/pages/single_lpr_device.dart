@@ -186,16 +186,16 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
             }
             else{
             LPRDeviceHandler().setLPRDevice(widget.device!,);
-            LPRDeviceHandler().listenToDeviceConnectionState(
-              isListeningStartTripState: true,
-              callBackconnectedDeviceName: (name ){
-                                              if(widget.onDeviceConnectedCallback!=null){
-                              widget.onDeviceConnectedCallback!(name);
-                              }
+            // LPRDeviceHandler().listenToDeviceConnectionState(
+            //   isListeningStartTripState: true,
+            //   callBackconnectedDeviceName: (name ){
+            //                                   if(widget.onDeviceConnectedCallback!=null){
+            //                   widget.onDeviceConnectedCallback!(name);
+            //                   }
 
-              }
+            //   }
 
-            );
+            // );
 
             }
           }).catchError((onError) {
