@@ -169,7 +169,7 @@ bool isSilentDiscoonect=false;
               isLPRReconnectPopupshowing = true;
 
                 }
-            if (!getForgotStatus && getLprStatus) {
+            if (!getForgotStatus && getLprStatus&&!isListeningStartTripState) {
               showDeviceDisconnectedDialog(connectedDevice,callBackconnectedDeviceName: callBackconnectedDeviceName,isListeningStartTripState: isListeningStartTripState);
               isLPRReconnectPopupshowing = true;
             }
