@@ -165,6 +165,7 @@ bool isSilentDiscoonect=false;
             bool getLprStatus =
                 pref.getBool('onStartTripLPRDeviceConnected') ?? false;
                 if(isListeningStartTripState&&!isSilentDiscoonect){
+                  print('111111111111111111111111111');
                 showDeviceDisconnectedDialog(connectedDevice,callBackconnectedDeviceName: callBackconnectedDeviceName,isListeningStartTripState: isListeningStartTripState);
               isLPRReconnectPopupshowing = true;
 
@@ -414,7 +415,7 @@ LPRDeviceHandler()
 
                                         }
                                                     if (onDeviceConnectedCallback != null){
-              onDeviceConnectedCallback!.call();
+              onDeviceConnectedCallback?.call();
           }
 
                                        // setDeviceConnectCallBack();

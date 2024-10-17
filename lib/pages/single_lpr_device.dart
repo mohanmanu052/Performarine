@@ -109,6 +109,7 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
 
                 }else{
                 LPRDeviceHandler().setLPRDevice(widget.device!);
+                LPRDeviceHandler().isSilentDiscoonect=false;
                             LPRDeviceHandler().listenToDeviceConnectionState(isListeningStartTripState: true,
                             
                             callBackconnectedDeviceName: (bluetoothDeviceName) {
@@ -129,7 +130,7 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
             //   Utils.showSnackBar(context,scaffoldKey: widget.scafoldKey,message: 'Some error occured while connecting please try again later');
             // }
 
-                Utils.customPrint('CONNECT ERROR: $onError');
+                Utils.customPrint('CONNECT ERROR2: $onError');
                 EasyLoading.dismiss();
               });
 
@@ -170,7 +171,11 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
           widget.device!.connect().then((value) {
             print('the device got connected------------');
                           if(widget.onDeviceConnectedCallback!=null){
+                            
                 widget.onDeviceConnectedCallback!(widget.device!.platformName);
+              }else{
+
+                
               }
 
             if(widget.comingFrom=='lpr_test'){
@@ -186,26 +191,28 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
             }
             else{
             LPRDeviceHandler().setLPRDevice(widget.device!,);
-            // LPRDeviceHandler().listenToDeviceConnectionState(
-            //   isListeningStartTripState: true,
-            //   callBackconnectedDeviceName: (name ){
-            //                                   if(widget.onDeviceConnectedCallback!=null){
-            //                   widget.onDeviceConnectedCallback!(name);
-            //                   }
+                            LPRDeviceHandler().isSilentDiscoonect=false;
+
+            LPRDeviceHandler().listenToDeviceConnectionState(
+              isListeningStartTripState: true,
+              callBackconnectedDeviceName: (name ){
+                                              if(widget.onDeviceConnectedCallback!=null){
+                              widget.onDeviceConnectedCallback!(name);
+                              }
 
             //   }
 
             // );
 
-            }
+              });}
           }).catchError((onError) {
-                widget.onerrorCallback!(onError);
+                widget.onerrorCallback??(onError);
 
             // if(widget.scafoldKey!=null){
             //   Utils.showSnackBar(context,scaffoldKey: widget.scafoldKey,message: 'Some error occured while connecting please try again later');
             // }
 
-            Utils.customPrint('CONNECT ERROR: $onError');
+            Utils.customPrint('CONNECT ERROR1: $onError');
             EasyLoading.dismiss();
           });
 
@@ -225,7 +232,7 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
               });
             }
             EasyLoading.dismiss();
-            if(widget.dialogContext!=null){
+            if(widget.dialogContext?.mounted??false){
             Navigator.pop(widget.dialogContext!);
             }
           });
