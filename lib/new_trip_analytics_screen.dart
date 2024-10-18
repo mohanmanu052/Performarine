@@ -198,7 +198,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
             ),
             title: commonText(
                 context: context,
-                text: 'Trip Analytics',
+                text:tripData?.name!=null&&tripData!.name!.isNotEmpty?tripData?.name: 'Trip Analytics',
                 fontWeight: FontWeight.w600,
                 textColor: Colors.black87,
                 textSize: displayWidth(context) * 0.042,

@@ -94,6 +94,7 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
               widget.device!.connect().then((value) {
                 if(widget.onDeviceConnectedCallback!=null){
                 widget.onDeviceConnectedCallback!(widget.device!.platformName);
+                print('device got connected 1------------------');
                 }
                 if(widget.comingFrom=='lpr_test'){
                                 widget.selectedBluettothDevice!(widget.device!);
@@ -108,6 +109,21 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
 
                 }else{
                 LPRDeviceHandler().setLPRDevice(widget.device!);
+                            //UnComment Code To Connect Lpr In PrestartScreen
+
+                // LPRDeviceHandler().isSilentDiscoonect=false;
+                //             LPRDeviceHandler().listenToDeviceConnectionState(isListeningStartTripState: true,
+                            
+                //             callBackconnectedDeviceName: (bluetoothDeviceName) {
+                //               if(widget.onDeviceConnectedCallback!=null){
+                //               widget.onDeviceConnectedCallback!(bluetoothDeviceName);
+                //               }
+                //               // setState(() {
+                                
+                //               // });
+                //             },
+                //             );
+
 
                 }
               }).catchError((onError) {
@@ -116,7 +132,7 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
             //   Utils.showSnackBar(context,scaffoldKey: widget.scafoldKey,message: 'Some error occured while connecting please try again later');
             // }
 
-                Utils.customPrint('CONNECT ERROR: $onError');
+                Utils.customPrint('CONNECT ERROR2: $onError');
                 EasyLoading.dismiss();
               });
 
@@ -155,8 +171,13 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
           //  await storage.write(key: 'lprDeviceId', value: widget.device!.remoteId.str);
           debugPrint("SINGLE SELECTED BLE ID ${widget.device!.remoteId.str}");
           widget.device!.connect().then((value) {
+            print('the device got connected------------');
                           if(widget.onDeviceConnectedCallback!=null){
+                            
                 widget.onDeviceConnectedCallback!(widget.device!.platformName);
+              }else{
+
+                
               }
 
             if(widget.comingFrom=='lpr_test'){
@@ -173,15 +194,31 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
             else{
             LPRDeviceHandler().setLPRDevice(widget.device!,);
 
-            }
+            //UnComment Code To Connect Lpr In PrestartScreen
+            //                 LPRDeviceHandler().isSilentDiscoonect=false;
+
+            // LPRDeviceHandler().listenToDeviceConnectionState(
+            //   isListeningStartTripState: true,
+            //   callBackconnectedDeviceName: (name ){
+            //                                   if(widget.onDeviceConnectedCallback!=null){
+            //                   widget.onDeviceConnectedCallback!(name);
+            //                   }
+
+            // //   }
+
+            // // );
+
+            //   });
+              
+              }
           }).catchError((onError) {
-                widget.onerrorCallback!(onError);
+                widget.onerrorCallback??(onError);
 
             // if(widget.scafoldKey!=null){
             //   Utils.showSnackBar(context,scaffoldKey: widget.scafoldKey,message: 'Some error occured while connecting please try again later');
             // }
 
-            Utils.customPrint('CONNECT ERROR: $onError');
+            Utils.customPrint('CONNECT ERROR1: $onError');
             EasyLoading.dismiss();
           });
 
@@ -201,7 +238,9 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
               });
             }
             EasyLoading.dismiss();
+            if(widget.dialogContext?.mounted??false){
             Navigator.pop(widget.dialogContext!);
+            }
           });
         }
 

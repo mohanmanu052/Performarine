@@ -44,10 +44,11 @@ class LPRDeviceHandler {
 
   LPRDeviceHandler get instance => _instance;
   bool isLPRReconnectPopupshowing = false;
-
+bool isSilentDiscoonect=false;
   BluetoothDevice? connectedDevice;
   BuildContext? context;
   VoidCallback? onDeviceDisconnectCallback;
+  VoidCallback? onDeviceConnectedCallback;
   StreamSubscription<List<ScanResult>>? autoConnectStreamSubscription;
   StreamSubscription<bool>? autoConnectIsScanningStreamSubscription;
   StreamSubscription<BluetoothConnectionState>?
@@ -76,8 +77,8 @@ class LPRDeviceHandler {
     var pref = await Utils.initSharedPreferences();
     pref.setBool('device_forget', false);
 
-    Utils.customPrint(
-        'BLE - CONNECTED DEVICE: ${connectedDevice!.remoteId.str}');
+    // Utils.customPrint(
+    //     'BLE - CONNECTED DEVICE: ${connectedDevice!.remoteId.str}');
     bool? isTripStarted = pref.getBool('trip_started') ?? false;
     if (isTripStarted) {
       listenToDeviceConnectionState();
@@ -86,6 +87,9 @@ class LPRDeviceHandler {
 
   setDeviceDisconnectCallback(VoidCallback callback) {
     this.onDeviceDisconnectCallback = callback;
+  }
+  setDeviceConnectCallBack(VoidCallback callback){
+    this.onDeviceConnectedCallback=callback;
   }
 
   void listenToDeviceConnectionState(
@@ -97,6 +101,7 @@ class LPRDeviceHandler {
       Function(String status)? callBackLprUartTxStatus,
       Function(String bluetoothDeviceName)? callBackconnectedDeviceName,
       Function(String lprSteamingData)? callBackLprStreamingData,
+      bool isListeningStartTripState=false,
       bool isLoadLocalLprFile = false}) async {
     File? lprFile;
     int fileIndex = 0;
@@ -143,7 +148,11 @@ class LPRDeviceHandler {
           // if(lprFileSink!=null){
           //   lprFileSink?.close();
           // }
+// if(isListeningStartTripState){
 
+
+
+// }
           Utils.customPrint(
               'BLE - DEVICE GOT DISCONNECTED: ${connectedDevice!.remoteId.str} - $event');
 
@@ -154,16 +163,22 @@ class LPRDeviceHandler {
 
             bool getForgotStatus = pref.getBool('device_forget') ?? false;
             bool getLprStatus =
-                pref!.getBool('onStartTripLPRDeviceConnected') ?? false;
-            if (!getForgotStatus && getLprStatus) {
-              showDeviceDisconnectedDialog(connectedDevice);
+                pref.getBool('onStartTripLPRDeviceConnected') ?? false;
+                if(isListeningStartTripState&&!isSilentDiscoonect){
+                //  print('111111111111111111111111111');
+                showDeviceDisconnectedDialog(connectedDevice,callBackconnectedDeviceName: callBackconnectedDeviceName,isListeningStartTripState: isListeningStartTripState);
+              isLPRReconnectPopupshowing = true;
+
+                }
+            if (!getForgotStatus && getLprStatus&&!isListeningStartTripState) {
+              showDeviceDisconnectedDialog(connectedDevice,callBackconnectedDeviceName: callBackconnectedDeviceName,isListeningStartTripState: isListeningStartTripState);
               isLPRReconnectPopupshowing = true;
             }
 
             if (onDeviceDisconnectCallback != null)
               onDeviceDisconnectCallback!.call();
           }
-        } else if (event == BluetoothConnectionState.connected) {
+        } else if (event == BluetoothConnectionState.connected&&!isListeningStartTripState) {
 //Setting the lprfile name
 //        lprFileName = 'lpr_$fileIndex.csv';
 //        //Getting The Path Of the File
@@ -255,14 +270,14 @@ class LPRDeviceHandler {
           }
 
           Utils.customPrint(
-              'BLE - DEVICE GOT CONNECTED: ${connectedDevice!.remoteId.str} - $event');
+              'BLE - DEVICE GOT CONNECTED 1: ${connectedDevice!.remoteId.str} - $event');
         }
       });
     }
   }
 
   void showDeviceDisconnectedDialog(BluetoothDevice? previouslyConnectedDevice,
-      {int bottomNavIndex = 0, bool isNavigateToMaps = false}) {
+      {int bottomNavIndex = 0, bool isNavigateToMaps = false,Function? callBackconnectedDeviceName, bool? isListeningStartTripState}) {
     isSelfDisconnected = false;
     bool isDailogShowing = true;
     Get.dialog(
@@ -388,8 +403,22 @@ class LPRDeviceHandler {
                                       .connect()
                                       .then((value) {
                                     connectedDevice = previouslyConnectedDevice;
+
                                     LPRDeviceHandler()
                                         .setLPRDevice(connectedDevice!);
+                                        if(isListeningStartTripState??false){
+LPRDeviceHandler()
+                                        .listenToDeviceConnectionState(isListeningStartTripState: true,callBackconnectedDeviceName: (data){});
+                                        }
+                                        if(callBackconnectedDeviceName!=null){
+                                        callBackconnectedDeviceName(connectedDevice?.name);
+
+                                        }
+                                                    if (onDeviceConnectedCallback != null){
+              onDeviceConnectedCallback?.call();
+          }
+
+                                       // setDeviceConnectCallBack();
                                     Fluttertoast.showToast(
                                         msg:
                                             'Device Connected ${connectedDevice?.advName.toString()}',
@@ -425,6 +454,7 @@ class LPRDeviceHandler {
                                     //   Get.back();
                                     //Navigator.pop(context!);
                                   }).catchError((onError) {
+                                   // print('the error was----'+onError.toString());
                                     Utils.customPrint(
                                         'BLE - CAUGHT ERROR WHILE CONNECTING TO PREVIOUSLY CONNECTED DEVICE: ${previouslyConnectedDevice.remoteId.str}');
                                     EasyLoading.dismiss();
@@ -534,7 +564,7 @@ class LPRDeviceHandler {
                       sharedPreferences!.getStringList('trip_data');
                   bool? runningTrip =
                       sharedPreferences!.getBool("trip_started");
-
+if(tripData!=null&&tripData.isNotEmpty){
                   Navigator.push(
                     context!,
                     MaterialPageRoute(
@@ -545,6 +575,7 @@ class LPRDeviceHandler {
                             vesselName: tripData[2],
                             tripIsRunningOrNot: runningTrip)),
                   );
+}
                 }).catchError((onError) {
                   Utils.customPrint('ERROR BLE: $onError');
                 });
@@ -746,6 +777,8 @@ class LPRDeviceHandler {
 
                                     Navigator.pop(context);
 
+                                    if(tripData!=null&&tripData.isNotEmpty){
+
                                     Navigator.push(
                                       dialogContext,
                                       MaterialPageRoute(
@@ -758,7 +791,7 @@ class LPRDeviceHandler {
                                                   tripIsRunningOrNot:
                                                       runningTrip)),
                                     );
-                                  },
+                                  }},
                                 )),
                       ),
 

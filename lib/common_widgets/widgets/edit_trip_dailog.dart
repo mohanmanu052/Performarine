@@ -17,7 +17,7 @@ class EditTripDailog {
       String? initalvalue,
       }) async {
     TextEditingController nameController = TextEditingController();
-    FocusNode nameFocusNode = FocusNode();
+   //flut FocusNode nameFocusNode = FocusNode();
 nameController.text=initalvalue??'';
     showDialog(
         context: context!,
@@ -63,7 +63,7 @@ nameController.text=initalvalue??'';
                       margin: EdgeInsets.symmetric(horizontal: 20),
                       child: CommonTextField(
                           controller: nameController,
-                          focusNode: nameFocusNode,
+                         // focusNode: nameFocusNode,
                           labelText: 'Name Of Trip',
                           hintText: 'Name Of Trip',
                           suffixText: null,
