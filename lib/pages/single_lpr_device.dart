@@ -109,18 +109,20 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
 
                 }else{
                 LPRDeviceHandler().setLPRDevice(widget.device!);
-                LPRDeviceHandler().isSilentDiscoonect=false;
-                            LPRDeviceHandler().listenToDeviceConnectionState(isListeningStartTripState: true,
+                            //UnComment Code To Connect Lpr In PrestartScreen
+
+                // LPRDeviceHandler().isSilentDiscoonect=false;
+                //             LPRDeviceHandler().listenToDeviceConnectionState(isListeningStartTripState: true,
                             
-                            callBackconnectedDeviceName: (bluetoothDeviceName) {
-                              if(widget.onDeviceConnectedCallback!=null){
-                              widget.onDeviceConnectedCallback!(bluetoothDeviceName);
-                              }
-                              // setState(() {
+                //             callBackconnectedDeviceName: (bluetoothDeviceName) {
+                //               if(widget.onDeviceConnectedCallback!=null){
+                //               widget.onDeviceConnectedCallback!(bluetoothDeviceName);
+                //               }
+                //               // setState(() {
                                 
-                              // });
-                            },
-                            );
+                //               // });
+                //             },
+                //             );
 
 
                 }
@@ -191,20 +193,24 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
             }
             else{
             LPRDeviceHandler().setLPRDevice(widget.device!,);
-                            LPRDeviceHandler().isSilentDiscoonect=false;
 
-            LPRDeviceHandler().listenToDeviceConnectionState(
-              isListeningStartTripState: true,
-              callBackconnectedDeviceName: (name ){
-                                              if(widget.onDeviceConnectedCallback!=null){
-                              widget.onDeviceConnectedCallback!(name);
-                              }
+            //UnComment Code To Connect Lpr In PrestartScreen
+            //                 LPRDeviceHandler().isSilentDiscoonect=false;
 
-            //   }
+            // LPRDeviceHandler().listenToDeviceConnectionState(
+            //   isListeningStartTripState: true,
+            //   callBackconnectedDeviceName: (name ){
+            //                                   if(widget.onDeviceConnectedCallback!=null){
+            //                   widget.onDeviceConnectedCallback!(name);
+            //                   }
 
-            // );
+            // //   }
 
-              });}
+            // // );
+
+            //   });
+              
+              }
           }).catchError((onError) {
                 widget.onerrorCallback??(onError);
 

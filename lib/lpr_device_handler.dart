@@ -165,7 +165,7 @@ bool isSilentDiscoonect=false;
             bool getLprStatus =
                 pref.getBool('onStartTripLPRDeviceConnected') ?? false;
                 if(isListeningStartTripState&&!isSilentDiscoonect){
-                  print('111111111111111111111111111');
+                //  print('111111111111111111111111111');
                 showDeviceDisconnectedDialog(connectedDevice,callBackconnectedDeviceName: callBackconnectedDeviceName,isListeningStartTripState: isListeningStartTripState);
               isLPRReconnectPopupshowing = true;
 
@@ -454,7 +454,7 @@ LPRDeviceHandler()
                                     //   Get.back();
                                     //Navigator.pop(context!);
                                   }).catchError((onError) {
-                                    print('the error was----'+onError.toString());
+                                   // print('the error was----'+onError.toString());
                                     Utils.customPrint(
                                         'BLE - CAUGHT ERROR WHILE CONNECTING TO PREVIOUSLY CONNECTED DEVICE: ${previouslyConnectedDevice.remoteId.str}');
                                     EasyLoading.dismiss();
