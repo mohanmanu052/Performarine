@@ -457,6 +457,7 @@ class _SyncDataCloudToMobileScreenState
             var downloadImageFromCloud;
             var downloadedCompressImageFile;
             if (cloudImage.isNotEmpty) {
+              
               downloadImageFromCloud = await DownloadTrip()
                   .downloadImageFromCloud(context, scaffoldKey, cloudImage);
 

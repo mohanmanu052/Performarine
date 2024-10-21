@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:dio/dio.dart' as d;
 import 'package:device_info_plus/device_info_plus.dart';
@@ -181,17 +182,33 @@ class DownloadTrip {
     var isStoragePermitted;
     if (Platform.isAndroid) {
       androidInfo = await DeviceInfoPlugin().androidInfo;
+          log('the file names was--- url${imageUrl.toString()}');
 
       String fileName = imageUrl.split('/').last.length > 30
           ? '${imageUrl.split('/').last.split('-').first}.${imageUrl.split('/').last.split('.').last}'
           : imageUrl.split('/').last;
+          log('the file names was---${fileName.toString()}');
+if(fileName.length>20){
+    String imagePath = imageUrl.split('/').last;
 
+  // Find the last occurrence of ".jpg"
+  String lastImagePath = imagePath.substring(imagePath.lastIndexOf('_') + 1);
+
+  fileName= fileName.substring(0,20);
+  fileName='${fileName}.${lastImagePath}';
+          log('the file names was---name${fileName.toString()}');
+
+}
       if (androidInfo.version.sdkInt < 29) {
         isStoragePermitted = await Permission.storage.status;
 
         if (isStoragePermitted.isGranted) {
           Utils.customPrint('DIR PATH R ${ourDirectory!.path}');
           CustomLogger().logWithFile(Level.info, "DIR PATH R ${ourDirectory!.path} -> $page");
+         if(fileName.length>11){
+           fileName.substring(0,10);
+         }
+         
           cloudImagePath = '${ourDirectory!.path}/$fileName';
 
           if (File(cloudImagePath).existsSync()) {
@@ -211,6 +228,7 @@ class DownloadTrip {
         } else {
           await Utils.getStoragePermission(context);
           var isStoragePermitted = await Permission.storage.status;
+         
 
           if (isStoragePermitted.isGranted) {
             cloudImagePath = "${ourDirectory!.path}/$fileName";
