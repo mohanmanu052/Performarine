@@ -780,11 +780,11 @@ Function? setStateCallBackTrip;
       String deviceId = '';
       BluetoothDevice? connectedBluetoothDevice;
 
-      autoConnectStreamSubscription =
-          FlutterBluePlus.scanResults.listen((value) {
-        Utils.customPrint('BLED - SCAN RESULT - ${value.isEmpty}');
-        streamOfScanResultList = value;
-      });
+      // autoConnectStreamSubscription =
+      //     FlutterBluePlus.scanResults.listen((value) {
+      //   Utils.customPrint('BLED - SCAN RESULT - ${value.isEmpty}');
+      //   streamOfScanResultList = value;
+      // });
 
       autoConnectIsScanningStreamSubscription =
           FlutterBluePlus.isScanning.listen((event) {
@@ -1192,6 +1192,25 @@ Function? setStateCallBackTrip;
               elevation: 0,
               leading: IconButton(
                 onPressed: () async {
+                          bool? isTripStarted =
+            sharedPreferences!.getBool('trip_started') ?? false;
+
+                              LPRDeviceHandler().isSilentDiscoonect=true;
+            setState(() {
+              
+            });
+        if (!isTripStarted ?? false) {
+          for (int i = 0; i < FlutterBluePlus.connectedDevices.length; i++) {
+            await FlutterBluePlus.connectedDevices[i]
+                .disconnect()
+                .then((value) {
+        //Navigator.of(context).pop();
+
+        //Navigator.of(context).pop(true);
+
+                });
+          }}
+
                   if (commonProvider.bottomNavIndex == 1) {
                     SystemChrome.setPreferredOrientations([
                       DeviceOrientation.portraitUp,

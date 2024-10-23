@@ -109,7 +109,9 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
 
                 }else{
                 LPRDeviceHandler().setLPRDevice(widget.device!);
-                            LPRDeviceHandler().listenToDeviceConnectionState(isListeningStartTripState: true,
+                LPRDeviceHandler().isListeningStartTripState=true;
+                LPRDeviceHandler().isSilentDiscoonect=false;
+                            LPRDeviceHandler().listenToDeviceConnectionState(
                             
                             callBackconnectedDeviceName: (bluetoothDeviceName) {
                               if(widget.onDeviceConnectedCallback!=null){
@@ -186,16 +188,18 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
             }
             else{
             LPRDeviceHandler().setLPRDevice(widget.device!,);
-            // LPRDeviceHandler().listenToDeviceConnectionState(
-            //   isListeningStartTripState: true,
-            //   callBackconnectedDeviceName: (name ){
-            //                                   if(widget.onDeviceConnectedCallback!=null){
-            //                   widget.onDeviceConnectedCallback!(name);
-            //                   }
+            LPRDeviceHandler().isListeningStartTripState=true;
+            LPRDeviceHandler().isSilentDiscoonect=false;
+            LPRDeviceHandler().listenToDeviceConnectionState(
+              //isListeningStartTripState: true,
+              callBackconnectedDeviceName: (name ){
+                                              if(widget.onDeviceConnectedCallback!=null){
+                              widget.onDeviceConnectedCallback!(name);
+                              }
 
-            //   }
+              }
 
-            // );
+            );
 
             }
           }).catchError((onError) {
@@ -225,8 +229,12 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
               });
             }
             EasyLoading.dismiss();
-            if(widget.dialogContext!=null){
+            try{
+            if(widget.dialogContext!=null&&widget.dialogContext!.mounted){
+
             Navigator.pop(widget.dialogContext!);
+            }}catch(err){
+
             }
           });
         }

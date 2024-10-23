@@ -45,13 +45,14 @@ class LPRDeviceHandler {
   LPRDeviceHandler get instance => _instance;
   bool isLPRReconnectPopupshowing = false;
 bool isSilentDiscoonect=false;
+bool isListeningStartTripState=false;
   BluetoothDevice? connectedDevice;
   BuildContext? context;
   VoidCallback? onDeviceDisconnectCallback;
   VoidCallback? onDeviceConnectedCallback;
   StreamSubscription<List<ScanResult>>? autoConnectStreamSubscription;
   StreamSubscription<bool>? autoConnectIsScanningStreamSubscription;
-  StreamSubscription<BluetoothConnectionState>?
+   StreamSubscription<BluetoothConnectionState>?
       bluetoothConnectionStateListener;
   BluetoothService? lprService;
 
@@ -101,7 +102,7 @@ bool isSilentDiscoonect=false;
       Function(String status)? callBackLprUartTxStatus,
       Function(String bluetoothDeviceName)? callBackconnectedDeviceName,
       Function(String lprSteamingData)? callBackLprStreamingData,
-      bool isListeningStartTripState=false,
+      //bool isListeningStartTripState=false,
       bool isLoadLocalLprFile = false}) async {
     File? lprFile;
     int fileIndex = 0;
@@ -135,15 +136,18 @@ bool isSilentDiscoonect=false;
     String? lprFileName;
     IOSink? lprFileSink;
     String tripId = '';
-
+print('coming to the listen---------------');
     List<String>? tripData = sharedPreferences!.getStringList('trip_data');
     if (tripData != null) {
       tripId = tripData[0];
     }
+                            print('is start trip listening state was---------------------'+isListeningStartTripState.toString());
 
     if (connectedDevice != null) {
       bluetoothConnectionStateListener =
           connectedDevice!.connectionState.listen((event) async {
+                            print('is start trip listening state was---------------------hhh'+isListeningStartTripState.toString());
+
         if (event == BluetoothConnectionState.disconnected) {
           // if(lprFileSink!=null){
           //   lprFileSink?.close();
@@ -169,9 +173,16 @@ bool isSilentDiscoonect=false;
               isLPRReconnectPopupshowing = true;
 
                 }
+          
             if (!getForgotStatus && getLprStatus) {
+//if(!isLPRReconnectPopupshowing){
+
               showDeviceDisconnectedDialog(connectedDevice,callBackconnectedDeviceName: callBackconnectedDeviceName,isListeningStartTripState: isListeningStartTripState);
-              isLPRReconnectPopupshowing = true;
+          
+                                        isLPRReconnectPopupshowing = true;
+
+//}
+
             }
 
             if (onDeviceDisconnectCallback != null)
@@ -406,8 +417,9 @@ bool isSilentDiscoonect=false;
                                     LPRDeviceHandler()
                                         .setLPRDevice(connectedDevice!);
                                         if(isListeningStartTripState??false){
+                                          isListeningStartTripState=true;
 LPRDeviceHandler()
-                                        .listenToDeviceConnectionState(isListeningStartTripState: true,callBackconnectedDeviceName: (data){});
+                                        .listenToDeviceConnectionState(callBackconnectedDeviceName: (data){});
                                         }
                                         if(callBackconnectedDeviceName!=null){
                                         callBackconnectedDeviceName(connectedDevice?.name);
@@ -459,12 +471,16 @@ LPRDeviceHandler()
                                     EasyLoading.dismiss();
                                     autoConnectToDevice(isDailogShowing,
                                         isMapScreenNavigation:
-                                            isNavigateToMaps);
+                                            isNavigateToMaps,
+                                            callBackconnectedDeviceName: callBackconnectedDeviceName
+                                            );
                                     // Get.back();
                                   });
                                 } else {
                                   autoConnectToDevice(isDailogShowing,
-                                      isMapScreenNavigation: isNavigateToMaps);
+                                      isMapScreenNavigation: isNavigateToMaps,
+                                      callBackconnectedDeviceName: callBackconnectedDeviceName
+                                      );
                                 }
                               },
                                   displayWidth(Get.context!) * 0.65,
@@ -497,7 +513,7 @@ LPRDeviceHandler()
   }
 
   autoConnectToDevice(bool isDailogShowing,
-      {bool isMapScreenNavigation = false}) async {
+      {bool isMapScreenNavigation = false,Function? callBackconnectedDeviceName}) async {
     connectedDevice = null;
     final FlutterSecureStorage storage = FlutterSecureStorage();
     var lprDeviceId = sharedPreferences!.getString('lprDeviceId');
@@ -609,7 +625,9 @@ if(tripData!=null&&tripData.isNotEmpty){
                   Future.delayed(Duration(seconds: 2), () {
                     EasyLoading.dismiss();
                     showBluetoothListDialog(context!, null, null,
-                        isMapScreenNavigation: isMapScreenNavigation);
+                        isMapScreenNavigation: isMapScreenNavigation,
+                        callbackConnectedDeviceName: callBackconnectedDeviceName
+                        );
                   });
                 }
               }
@@ -640,7 +658,9 @@ if(tripData!=null&&tripData.isNotEmpty){
                 Future.delayed(Duration(seconds: 2), () {
                   EasyLoading.dismiss();
                   showBluetoothListDialog(context!, null, null,
-                      isMapScreenNavigation: isMapScreenNavigation);
+                      isMapScreenNavigation: isMapScreenNavigation,
+                                              callbackConnectedDeviceName: callBackconnectedDeviceName
+);
                 });
               }
             }
@@ -648,7 +668,10 @@ if(tripData!=null&&tripData.isNotEmpty){
             Future.delayed(Duration(seconds: 2), () {
               EasyLoading.dismiss();
               showBluetoothListDialog(context!, null, null,
-                  isMapScreenNavigation: isMapScreenNavigation);
+                  isMapScreenNavigation: isMapScreenNavigation,
+                                          callbackConnectedDeviceName: callBackconnectedDeviceName
+
+                  );
             });
           }
         }
@@ -663,7 +686,7 @@ if(tripData!=null&&tripData.isNotEmpty){
 
   showBluetoothListDialog(BuildContext context, String? connectedDeviceId,
       BluetoothDevice? connectedBluetoothDevice,
-      {bool isMapScreenNavigation = false}) {
+      {bool isMapScreenNavigation = false,Function? callbackConnectedDeviceName}) {
     // setState(() {
     //   progress = 0.9;
     //   lprSensorProgress = 0.0;
@@ -755,6 +778,19 @@ if(tripData!=null&&tripData.isNotEmpty){
                                   connectedDeviceId: connectedDeviceId,
                                   connectedBluetoothDevice:
                                       connectedBluetoothDevice,
+                                                                            onConnetedCallBack: (p0) {
+                                                                                                                                  if (onDeviceConnectedCallback != null){
+              onDeviceConnectedCallback!.call();
+          }
+
+
+                                                                              print('the connceted callback called-----------');
+                                        
+                                      },
+                                      onErrCallback: (data){
+                                        
+                                      },
+
                                   onSelected: (value) {},
                                   onBluetoothConnection: (value) {},
                                 ))
@@ -767,6 +803,17 @@ if(tripData!=null&&tripData.isNotEmpty){
                                   connectedDeviceId: connectedDeviceId,
                                   connectedBluetoothDevice:
                                       connectedBluetoothDevice,
+                                      onConnetedCallBack: (p0) {
+                                                                                                                                                                                if (onDeviceConnectedCallback != null){
+              onDeviceConnectedCallback!.call();
+          }
+
+                                                                        print('the connceted callback called-----------');
+
+                                      },
+                                      onErrCallback: (data){
+
+                                      },
                                   onSelected: (value) {},
                                   onBluetoothConnection: (value) {
                                     List<String>? tripData = sharedPreferences!
@@ -809,17 +856,52 @@ if(tripData!=null&&tripData.isNotEmpty){
                               onTap: () {
                                 Utils.customPrint("Tapped on scan button");
 
-                                var listener = FlutterBluePlus.startScan(
-                                    timeout: const Duration(seconds: 2),
-                                    oneByOne: true);
+                                  FlutterBluePlus.isScanning.listen((event) {
+                                    if (event) {
+                                      // if (mounted&&_builderKey.currentState!=null) {
+                                      //   setDialogState(() {
+                                      //     isScanningBluetooth = true;
+                                      //   });
+                                      // }
+                                    }
+                                    else
+                                      {
+                                        // if (mounted&&_builderKey.currentState!=null) {
+                                        //   setDialogState(() {
+                                        //     isScanningBluetooth = false;
+                                        //   });
+                                        //}
+                                      }
+                                  });
 
-                                Future.delayed(Duration(seconds: 2), () {
-                                  /* setDialogState(() {
-                                     isScanningBluetooth = false;
-                                   });*/
-                                });
+                                  if (!FlutterBluePlus.isScanningNow) {
+                                    FlutterBluePlus.startScan(
+                                        timeout: const Duration(seconds: 2));
+                                  }
 
-                                isRefreshList = true;
+                                  if (FlutterBluePlus.isScanningNow) {
+                                    debugPrint(
+                                        "ALREADY SCANNING PLEASE WAIT !!!");
+                                  }
+
+                                  // if (mounted) {
+                                  //   Future.delayed(Duration(seconds: 2), () {
+                                  //     /* setDialogState(() {
+                                  //    isScanningBluetooth = false;
+                                  //  });*/
+                                  //   });
+                                  // }
+isRefreshList=true;
+                                  // if (mounted) {
+                                  //   setState(() {
+                                  //     isRefreshList = true;
+                                  //     progress = 0.9;
+                                  //     lprSensorProgress = 0.0;
+                                  //     isStartButton = false;
+                                  //     bluetoothName = '';
+                                  //   });
+                                  // }
+                                
                               },
                               child: Container(
                                 decoration: BoxDecoration(

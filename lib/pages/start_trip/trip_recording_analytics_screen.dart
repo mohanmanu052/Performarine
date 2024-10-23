@@ -154,8 +154,9 @@ class _TripRecordingAnalyticsScreenState
         });
       }
     });
-
+LPRDeviceHandler().isListeningStartTripState=false;
     LPRDeviceHandler().listenToDeviceConnectionState(
+    //  isListeningStartTripState: false,
       callBackLprTanspernetserviecId:
           (String lprTransperntServiceId1, String lprUartTX1) {
         lprTransperntServiceId = lprTransperntServiceId1;

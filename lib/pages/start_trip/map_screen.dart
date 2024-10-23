@@ -159,7 +159,9 @@ String? lprStreamingData='No Lpr Streaming Data Found';
         });
       }
     });
+    LPRDeviceHandler().isListeningStartTripState=false;
           LPRDeviceHandler().listenToDeviceConnectionState(
+          //  isListeningStartTripState: false,
             callBackLprTanspernetserviecId: (String lprTransperntServiceId1,String lprUartTX1){
 lprTransperntServiceId=lprTransperntServiceId1;
 lprUartTX=lprUartTX1;
