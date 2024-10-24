@@ -75,7 +75,8 @@ class _TripRecordingAnalyticsScreenState
       isuploadTrip = false,
       isTripEnded = false,
       isEndTripBtnClicked = false,
-      isDataUpdated = false;
+      isDataUpdated = false,
+      isLPRReconnectButtonShown=false;
 
   late CommonProvider commonProvider;
 
@@ -85,7 +86,6 @@ class _TripRecordingAnalyticsScreenState
   String? lprUartTxStatus;
   String? connectedBluetoothDeviceName;
   String? lprStreamingData = 'No Lpr Streaming Data Found';
-
   @override
   void initState() {
     // TODO: implement initState
@@ -135,14 +135,14 @@ class _TripRecordingAnalyticsScreenState
     await sharedPreferences!.reload();
 
     durationTimer = Timer.periodic(Duration(milliseconds: 100), (timer) {
-      Utils.customPrint(
-          '##TDATA updated time delay from 1 sec to 400 MS by abhi');
+      // Utils.customPrint(
+      //     '##TDATA updated time delay from 1 sec to 400 MS by abhi');
       tripDistance = sharedPreferences!.getString('tripDistance') ?? "0";
       tripSpeed = sharedPreferences!.getString('tripSpeed') ?? "0.0";
       tripAvgSpeed = sharedPreferences!.getString('tripAvgSpeed') ?? "0.0";
 
-      Utils.customPrint("TRIP ANALYTICS SPEED $tripSpeed");
-      Utils.customPrint("TRIP ANALYTICS AVG SPEED $tripAvgSpeed");
+      // Utils.customPrint("TRIP ANALYTICS SPEED $tripSpeed");
+      // Utils.customPrint("TRIP ANALYTICS AVG SPEED $tripAvgSpeed");
 
       var durationTime = DateTime.now().toUtc().difference(createdAtTime);
       tripDuration = Utils.calculateTripDuration(
@@ -175,6 +175,7 @@ LPRDeviceHandler().isListeningStartTripState=false;
         lprStreamingData = lprSteamingData1;
       },
     );
+
   }
 
   getData() async {
@@ -183,6 +184,8 @@ LPRDeviceHandler().isListeningStartTripState=false;
 
     List<CreateVessel> vesselDetails =
         await _databaseService.getVesselNameByID(widget.vesselId!);
+   var sharePref=await   Utils.initSharedPreferences();
+isLPRReconnectButtonShown=sharePref.getBool('onStartTripLPRDeviceConnected')??false;
 
     setState(() {
       tripData = tripDetails;
@@ -498,6 +501,18 @@ LPRDeviceHandler().isListeningStartTripState=false;
                     ),
                   ],
                 ),
+
+SizedBox(height: 20,),
+
+Visibility(
+  visible: isLPRReconnectButtonShown,
+  child: CommonButtons.getAcceptButton('Re-Connect LPR', context, blueColor, (){
+
+    LPRDeviceHandler().showBluetoothListDialog(context, null, null,isTripNavigate: false,callbackConnectedDeviceName: (){
+
+    });
+  }, displayWidth(context) / 1.6, displayHeight(context) * 0.055, backgroundColor, Colors.white, 16, blueColor, ''))
+
               ],
             ),
             Column(
@@ -521,7 +536,6 @@ LPRDeviceHandler().isListeningStartTripState=false;
                         borderColor: endTripBtnColor,
                         width: displayWidth(context),
                         onTap: () async {
-                          print('the stop Trip is clickedd-------------222');
 
                           await SystemChrome.setPreferredOrientations([
                             DeviceOrientation.portraitUp,
@@ -540,6 +554,7 @@ LPRDeviceHandler().isListeningStartTripState=false;
                           if (!isSmallTrip) {
                             Utils().showDeleteTripDialog(context,
                                 endTripBtnClick: () {
+                                  LPRDeviceHandler().isSilentDiscoonect=true;
                               endTrip(isTripDeleted: true);
 
                               Utils.customPrint(

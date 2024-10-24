@@ -10,6 +10,7 @@ import 'package:logger/logger.dart';
 import 'package:performarine/analytics/create_zip.dart';
 import 'package:performarine/analytics/location_service_repository.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
+import 'package:performarine/lpr_device_handler.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:wakelock/wakelock.dart';
@@ -52,7 +53,9 @@ class EndTrip {
       {
         sharedPreferences!.setString('lprDeviceId', connectedDevicesList.first.remoteId.str);
         // await storage.write(key: 'lprDeviceId', value: connectedDevicesList.first.remoteId.str);
+        LPRDeviceHandler().isSilentDiscoonect=true;
         await connectedDevicesList.first.disconnect();
+
       }
     }
 

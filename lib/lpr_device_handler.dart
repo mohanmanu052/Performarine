@@ -137,6 +137,10 @@ bool isListeningStartTripState=false;
     IOSink? lprFileSink;
     String tripId = '';
 print('coming to the listen---------------');
+
+if(bluetoothConnectionStateListener!=null){
+  bluetoothConnectionStateListener?.cancel();
+}
     List<String>? tripData = sharedPreferences!.getStringList('trip_data');
     if (tripData != null) {
       tripId = tripData[0];
@@ -149,6 +153,9 @@ print('coming to the listen---------------');
                             print('is start trip listening state was---------------------hhh'+isListeningStartTripState.toString());
 
         if (event == BluetoothConnectionState.disconnected) {
+
+                                        print('lpr Buetotth list showing 1114');
+
           // if(lprFileSink!=null){
           //   lprFileSink?.close();
           // }
@@ -173,15 +180,15 @@ print('coming to the listen---------------');
               isLPRReconnectPopupshowing = true;
 
                 }
-          
-            if (!getForgotStatus && getLprStatus) {
-//if(!isLPRReconnectPopupshowing){
+
+            if (!getForgotStatus && getLprStatus&&!isSilentDiscoonect) {
+if(!isLPRReconnectPopupshowing){
 
               showDeviceDisconnectedDialog(connectedDevice,callBackconnectedDeviceName: callBackconnectedDeviceName,isListeningStartTripState: isListeningStartTripState);
           
                                         isLPRReconnectPopupshowing = true;
 
-//}
+}
 
             }
 
@@ -359,7 +366,9 @@ print('coming to the listen---------------');
                               child: CommonButtons.getAcceptButton(
                                   'Continue Without LPR', Get.context!, blueColor,
                                   () {
+                                    isLPRReconnectPopupshowing=false;
                                     Navigator.pop(context);
+
                                // endTrip();
                               },
                                   orientation == Orientation.portrait
@@ -403,6 +412,7 @@ print('coming to the listen---------------');
                                   Get.context!, Colors.transparent, () async {
                                 isDailogShowing = false;
                                 Get.back();
+                                isLPRReconnectPopupshowing=false;
                                 EasyLoading.show(
                                     status: 'Connecting...',
                                     maskType: EasyLoadingMaskType.black);
@@ -412,6 +422,7 @@ print('coming to the listen---------------');
                                   previouslyConnectedDevice
                                       .connect()
                                       .then((value) {
+                                        print('coming to connected device----');
                                     connectedDevice = previouslyConnectedDevice;
 
                                     LPRDeviceHandler()
@@ -419,7 +430,8 @@ print('coming to the listen---------------');
                                         if(isListeningStartTripState??false){
                                           isListeningStartTripState=true;
 LPRDeviceHandler()
-                                        .listenToDeviceConnectionState(callBackconnectedDeviceName: (data){});
+                                        .listenToDeviceConnectionState(callBackconnectedDeviceName: (data){
+                                        });
                                         }
                                         if(callBackconnectedDeviceName!=null){
                                         callBackconnectedDeviceName(connectedDevice?.name);
@@ -469,6 +481,7 @@ LPRDeviceHandler()
                                     Utils.customPrint(
                                         'BLE - CAUGHT ERROR WHILE CONNECTING TO PREVIOUSLY CONNECTED DEVICE: ${previouslyConnectedDevice.remoteId.str}');
                                     EasyLoading.dismiss();
+                                 //   print('lpr Buetotth list showing 6666666');
                                     autoConnectToDevice(isDailogShowing,
                                         isMapScreenNavigation:
                                             isNavigateToMaps,
@@ -477,6 +490,8 @@ LPRDeviceHandler()
                                     // Get.back();
                                   });
                                 } else {
+                                                                      print('lpr Buetotth list showing 77777');
+
                                   autoConnectToDevice(isDailogShowing,
                                       isMapScreenNavigation: isNavigateToMaps,
                                       callBackconnectedDeviceName: callBackconnectedDeviceName
@@ -562,7 +577,9 @@ LPRDeviceHandler()
                   .toList();
               if (storedDeviceIdResultList.isNotEmpty) {
                 ScanResult r = storedDeviceIdResultList.first;
-                r.device.connect().then((value) {
+                r.device.connectionState.first.then((state) {
+                                   // r.device.connectionState.first.then((state) {
+                    if (state == BluetoothConnectionState.connected) {
                   Fluttertoast.showToast(
                       msg: "Connected to ${r.device.platformName}",
                       toastLength: Toast.LENGTH_SHORT,
@@ -591,12 +608,27 @@ if(tripData!=null&&tripData.isNotEmpty){
                             tripIsRunningOrNot: runningTrip)),
                   );
 }
+
+                    }else{
+                                      FlutterBluePlus.stopScan();
+                EasyLoading.dismiss();
+
+                                          showBluetoothListDialog(context!, null, null,
+                        isMapScreenNavigation: isMapScreenNavigation,
+                        callbackConnectedDeviceName: callBackconnectedDeviceName
+                        );
+
+                    }
+                    
+                    
+                    //});
                 }).catchError((onError) {
+                  print('coming to errrr11111111111111');
                   Utils.customPrint('ERROR BLE: $onError');
                 });
 
-                FlutterBluePlus.stopScan();
-                EasyLoading.dismiss();
+                // FlutterBluePlus.stopScan();
+                // EasyLoading.dismiss();
               } else {
                 List<ScanResult> lprNameResultList = streamOfScanResultList
                     .where((element) => element.device.platformName
@@ -623,6 +655,7 @@ if(tripData!=null&&tripData.isNotEmpty){
                   EasyLoading.dismiss();
                 } else {
                   Future.delayed(Duration(seconds: 2), () {
+                    print('lpr Buetotth list showing 1111');
                     EasyLoading.dismiss();
                     showBluetoothListDialog(context!, null, null,
                         isMapScreenNavigation: isMapScreenNavigation,
@@ -657,6 +690,12 @@ if(tripData!=null&&tripData.isNotEmpty){
               } else {
                 Future.delayed(Duration(seconds: 2), () {
                   EasyLoading.dismiss();
+                  // if(isLPRReconnectPopupshowing){
+                  //   Get.back();
+                  //   isLPRReconnectPopupshowing=false;
+                  // }
+                                     print('lpr Buetotth list showing 11112');
+
                   showBluetoothListDialog(context!, null, null,
                       isMapScreenNavigation: isMapScreenNavigation,
                                               callbackConnectedDeviceName: callBackconnectedDeviceName
@@ -667,6 +706,8 @@ if(tripData!=null&&tripData.isNotEmpty){
           } else {
             Future.delayed(Duration(seconds: 2), () {
               EasyLoading.dismiss();
+                                  print('lpr Buetotth list showing 1113');
+
               showBluetoothListDialog(context!, null, null,
                   isMapScreenNavigation: isMapScreenNavigation,
                                           callbackConnectedDeviceName: callBackconnectedDeviceName
@@ -677,6 +718,7 @@ if(tripData!=null&&tripData.isNotEmpty){
         }
       });
     } else {
+      print('coming to else-------------');
       // Show snack bar -> "Connected to <device_name> device."
       Future.delayed(Duration(seconds: 4), () async {
         EasyLoading.dismiss();
@@ -686,7 +728,7 @@ if(tripData!=null&&tripData.isNotEmpty){
 
   showBluetoothListDialog(BuildContext context, String? connectedDeviceId,
       BluetoothDevice? connectedBluetoothDevice,
-      {bool isMapScreenNavigation = false,Function? callbackConnectedDeviceName}) {
+      {bool isMapScreenNavigation = false,Function? callbackConnectedDeviceName,bool isTripNavigate=true}) {
     // setState(() {
     //   progress = 0.9;
     //   lprSensorProgress = 0.0;
@@ -778,13 +820,32 @@ if(tripData!=null&&tripData.isNotEmpty){
                                   connectedDeviceId: connectedDeviceId,
                                   connectedBluetoothDevice:
                                       connectedBluetoothDevice,
-                                                                            onConnetedCallBack: (p0) {
+                                                                            onConnetedCallBack: (value) {
                                                                                                                                   if (onDeviceConnectedCallback != null){
+
+                                                                                                                                                  Fluttertoast.showToast(
+                                      msg:
+                                          "Connected to ${value}",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.black,
+                                      textColor: Colors.white,
+
+                                      fontSize: 16.0);
+
+                                                                                                                                  
+          
+
+
+
+                                                                                                                                    
               onDeviceConnectedCallback!.call();
+
+              
           }
 
 
-                                                                              print('the connceted callback called-----------');
                                         
                                       },
                                       onErrCallback: (data){
@@ -803,12 +864,22 @@ if(tripData!=null&&tripData.isNotEmpty){
                                   connectedDeviceId: connectedDeviceId,
                                   connectedBluetoothDevice:
                                       connectedBluetoothDevice,
-                                      onConnetedCallBack: (p0) {
+                                      onConnetedCallBack: (value) {
                                                                                                                                                                                 if (onDeviceConnectedCallback != null){
               onDeviceConnectedCallback!.call();
+
+
+              Fluttertoast.showToast(
+                                      msg:
+                                          "Connected to ${value}",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.black,
+                                      textColor: Colors.white,
+                                      fontSize: 16.0);
           }
 
-                                                                        print('the connceted callback called-----------');
 
                                       },
                                       onErrCallback: (data){
@@ -822,7 +893,7 @@ if(tripData!=null&&tripData.isNotEmpty){
                                         .getBool("trip_started");
 
                                     Navigator.pop(context);
-
+if(isTripNavigate){
                                     if(tripData!=null&&tripData.isNotEmpty){
 
                                     Navigator.push(
@@ -837,6 +908,7 @@ if(tripData!=null&&tripData.isNotEmpty){
                                                   tripIsRunningOrNot:
                                                       runningTrip)),
                                     );
+                                    }
                                   }},
                                 )),
                       ),
