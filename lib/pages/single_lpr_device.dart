@@ -134,7 +134,7 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
             //   Utils.showSnackBar(context,scaffoldKey: widget.scafoldKey,message: 'Some error occured while connecting please try again later');
             // }
 
-                Utils.customPrint('CONNECT ERROR: $onError');
+                Utils.customPrint('CONNECT ERROR2: $onError');
                 EasyLoading.dismiss();
               });
 
@@ -206,7 +206,9 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
 
             );
 
-            }
+            //   });
+              
+              }
           }).catchError((onError) {
                 widget.onerrorCallback!(onError);
                                   Fluttertoast.showToast(
@@ -223,7 +225,7 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
             //   Utils.showSnackBar(context,scaffoldKey: widget.scafoldKey,message: 'Some error occured while connecting please try again later');
             // }
 
-            Utils.customPrint('CONNECT ERROR: $onError');
+            Utils.customPrint('CONNECT ERROR1: $onError');
             EasyLoading.dismiss();
           });
 

@@ -76,7 +76,7 @@ class StartTripRecordingScreen extends StatefulWidget {
 
 class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     with WidgetsBindingObserver, TickerProviderStateMixin {
-  GlobalKey<StartTripRecordingScreenState> tripState = GlobalKey();
+ // GlobalKey<StartTripRecordingScreenState> tripState = GlobalKey();
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
   List<VesselDropdownItem> vesselData = [];
@@ -1219,6 +1219,24 @@ Function? setStateCallBackTrip;
                       DeviceOrientation.landscapeRight,
                     ]);
                   }
+        // bool? isTripStarted =
+        //     sharedPreferences!.getBool('trip_started') ?? false;
+            LPRDeviceHandler().isSilentDiscoonect=true;
+            setState(() {
+              
+            });
+        if (!isTripStarted ?? false) {
+          for (int i = 0; i < FlutterBluePlus.connectedDevices.length; i++) {
+            await FlutterBluePlus.connectedDevices[i]
+                .disconnect()
+                .then((value) {
+        //Navigator.of(context).pop();
+
+        //Navigator.of(context).pop(true);
+
+                });
+          }
+        }
 
                   Navigator.of(context).pop(true);
                 },
