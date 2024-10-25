@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
@@ -92,9 +93,9 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
               //  await storage.write(key: 'lprDeviceId', value: widget.device!.remoteId.str);
               debugPrint("SINGLE SELECTED BLE ID ${widget.device!.remoteId.str}");
               widget.device!.connect().then((value) {
+
                 if(widget.onDeviceConnectedCallback!=null){
                 widget.onDeviceConnectedCallback!(widget.device!.platformName);
-                print('device got connected 1------------------');
                 }
                 if(widget.comingFrom=='lpr_test'){
                                 widget.selectedBluettothDevice!(widget.device!);
@@ -111,6 +112,8 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
                 LPRDeviceHandler().setLPRDevice(widget.device!);
                 LPRDeviceHandler().isListeningStartTripState=true;
                 LPRDeviceHandler().isSilentDiscoonect=false;
+                            LPRDeviceHandler().connectedDevice=widget.device;
+
                             LPRDeviceHandler().listenToDeviceConnectionState(
                             
                             callBackconnectedDeviceName: (bluetoothDeviceName) {
@@ -170,10 +173,6 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
           //  await storage.write(key: 'lprDeviceId', value: widget.device!.remoteId.str);
           debugPrint("SINGLE SELECTED BLE ID ${widget.device!.remoteId.str}");
           widget.device!.connect().then((value) {
-            print('the device got connected------------');
-                          if(widget.onDeviceConnectedCallback!=null){
-                widget.onDeviceConnectedCallback!(widget.device!.platformName);
-              }
 
             if(widget.comingFrom=='lpr_test'){
               widget.selectedBluettothDevice!(widget.device!);
@@ -187,9 +186,15 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
 // );
             }
             else{
+
             LPRDeviceHandler().setLPRDevice(widget.device!,);
             LPRDeviceHandler().isListeningStartTripState=true;
+            LPRDeviceHandler().connectedDevice=widget.device;
             LPRDeviceHandler().isSilentDiscoonect=false;
+                                      if(widget.onDeviceConnectedCallback!=null){
+                widget.onDeviceConnectedCallback!(widget.device!.platformName);
+              }
+
             LPRDeviceHandler().listenToDeviceConnectionState(
               //isListeningStartTripState: true,
               callBackconnectedDeviceName: (name ){
@@ -204,6 +209,15 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
             }
           }).catchError((onError) {
                 widget.onerrorCallback!(onError);
+                                  Fluttertoast.showToast(
+                                      msg:
+                                          "Error occurred while connecting to Bluetooth",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.black,
+                                      textColor: Colors.white,
+                                      fontSize: 16.0);
 
             // if(widget.scafoldKey!=null){
             //   Utils.showSnackBar(context,scaffoldKey: widget.scafoldKey,message: 'Some error occured while connecting please try again later');

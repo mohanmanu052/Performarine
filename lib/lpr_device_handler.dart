@@ -136,7 +136,6 @@ bool isListeningStartTripState=false;
     String? lprFileName;
     IOSink? lprFileSink;
     String tripId = '';
-print('coming to the listen---------------');
 
 if(bluetoothConnectionStateListener!=null){
   bluetoothConnectionStateListener?.cancel();
@@ -145,16 +144,12 @@ if(bluetoothConnectionStateListener!=null){
     if (tripData != null) {
       tripId = tripData[0];
     }
-                            print('is start trip listening state was---------------------'+isListeningStartTripState.toString());
 
     if (connectedDevice != null) {
       bluetoothConnectionStateListener =
           connectedDevice!.connectionState.listen((event) async {
-                            print('is start trip listening state was---------------------hhh'+isListeningStartTripState.toString());
 
         if (event == BluetoothConnectionState.disconnected) {
-
-                                        print('lpr Buetotth list showing 1114');
 
           // if(lprFileSink!=null){
           //   lprFileSink?.close();
@@ -422,7 +417,6 @@ if(!isLPRReconnectPopupshowing){
                                   previouslyConnectedDevice
                                       .connect()
                                       .then((value) {
-                                        print('coming to connected device----');
                                     connectedDevice = previouslyConnectedDevice;
 
                                     LPRDeviceHandler()
@@ -444,7 +438,7 @@ LPRDeviceHandler()
                                        // setDeviceConnectCallBack();
                                     Fluttertoast.showToast(
                                         msg:
-                                            'Device Connected ${connectedDevice?.advName.toString()}',
+                                            'Device Connected ${connectedDevice?.localName.toString()}',
                                         toastLength: Toast.LENGTH_SHORT,
                                         gravity: ToastGravity.CENTER,
                                         timeInSecForIosWeb: 1,
@@ -477,11 +471,9 @@ LPRDeviceHandler()
                                     //   Get.back();
                                     //Navigator.pop(context!);
                                   }).catchError((onError) {
-                                    print('the error was----'+onError.toString());
                                     Utils.customPrint(
                                         'BLE - CAUGHT ERROR WHILE CONNECTING TO PREVIOUSLY CONNECTED DEVICE: ${previouslyConnectedDevice.remoteId.str}');
                                     EasyLoading.dismiss();
-                                 //   print('lpr Buetotth list showing 6666666');
                                     autoConnectToDevice(isDailogShowing,
                                         isMapScreenNavigation:
                                             isNavigateToMaps,
@@ -490,7 +482,6 @@ LPRDeviceHandler()
                                     // Get.back();
                                   });
                                 } else {
-                                                                      print('lpr Buetotth list showing 77777');
 
                                   autoConnectToDevice(isDailogShowing,
                                       isMapScreenNavigation: isNavigateToMaps,
@@ -623,7 +614,6 @@ if(tripData!=null&&tripData.isNotEmpty){
                     
                     //});
                 }).catchError((onError) {
-                  print('coming to errrr11111111111111');
                   Utils.customPrint('ERROR BLE: $onError');
                 });
 
@@ -655,7 +645,6 @@ if(tripData!=null&&tripData.isNotEmpty){
                   EasyLoading.dismiss();
                 } else {
                   Future.delayed(Duration(seconds: 2), () {
-                    print('lpr Buetotth list showing 1111');
                     EasyLoading.dismiss();
                     showBluetoothListDialog(context!, null, null,
                         isMapScreenNavigation: isMapScreenNavigation,
@@ -694,7 +683,6 @@ if(tripData!=null&&tripData.isNotEmpty){
                   //   Get.back();
                   //   isLPRReconnectPopupshowing=false;
                   // }
-                                     print('lpr Buetotth list showing 11112');
 
                   showBluetoothListDialog(context!, null, null,
                       isMapScreenNavigation: isMapScreenNavigation,
@@ -706,7 +694,6 @@ if(tripData!=null&&tripData.isNotEmpty){
           } else {
             Future.delayed(Duration(seconds: 2), () {
               EasyLoading.dismiss();
-                                  print('lpr Buetotth list showing 1113');
 
               showBluetoothListDialog(context!, null, null,
                   isMapScreenNavigation: isMapScreenNavigation,
@@ -718,7 +705,6 @@ if(tripData!=null&&tripData.isNotEmpty){
         }
       });
     } else {
-      print('coming to else-------------');
       // Show snack bar -> "Connected to <device_name> device."
       Future.delayed(Duration(seconds: 4), () async {
         EasyLoading.dismiss();
@@ -999,7 +985,6 @@ isRefreshList=true;
                                 List<BluetoothDevice> connectedDeviceList =
                                     FlutterBluePlus.connectedDevices;
                                 if (connectedDeviceList.isNotEmpty) {
-                                  print('connected to the device------');
 
                                   Fluttertoast.showToast(
                                       msg:
@@ -1014,8 +999,6 @@ isRefreshList=true;
                                   FlutterBluePlus.stopScan();
                                   Navigator.pop(context);
                                 } else {
-                                  print(
-                                      'connected to the device------empty dismiss');
 
                                   Navigator.pop(context);
                                   showDeviceDisconnectedDialog(null);

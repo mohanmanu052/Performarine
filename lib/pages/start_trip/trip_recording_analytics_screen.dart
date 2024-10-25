@@ -8,6 +8,7 @@ import 'package:background_locator_2/settings/ios_settings.dart';
 import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
@@ -155,8 +156,27 @@ class _TripRecordingAnalyticsScreenState
       }
     });
 LPRDeviceHandler().isListeningStartTripState=false;
+                                      LPRDeviceHandler().setDeviceConnectCallBack((){
+if(mounted){
+  connectedBluetoothDeviceName=LPRDeviceHandler().connectedDevice?.localName;
+  setState(() {
+    
+  });
+}});
+
+                                      LPRDeviceHandler().setDeviceDisconnectCallback((){
+
+                                        connectedBluetoothDeviceName='Re-Connect LPR';
+if(mounted){
+  setState(() {
+    
+  });
+}});
+
+
     LPRDeviceHandler().listenToDeviceConnectionState(
     //  isListeningStartTripState: false,
+    
       callBackLprTanspernetserviecId:
           (String lprTransperntServiceId1, String lprUartTX1) {
         lprTransperntServiceId = lprTransperntServiceId1;
@@ -164,6 +184,9 @@ LPRDeviceHandler().isListeningStartTripState=false;
       },
       callBackconnectedDeviceName: (bluetoothDeviceName1) {
         connectedBluetoothDeviceName = bluetoothDeviceName1;
+        setState(() {
+          
+        });
       },
       callBackLprTanspernetserviecIdStatus: (String status) {
         lprTransperntServiceIdStatus = status;
@@ -174,6 +197,7 @@ LPRDeviceHandler().isListeningStartTripState=false;
       callBackLprStreamingData: (lprSteamingData1) {
         lprStreamingData = lprSteamingData1;
       },
+      
     );
 
   }
@@ -506,11 +530,30 @@ SizedBox(height: 20,),
 
 Visibility(
   visible: isLPRReconnectButtonShown,
-  child: CommonButtons.getAcceptButton('Re-Connect LPR', context, blueColor, (){
+  child: CommonButtons.getAcceptButton(connectedBluetoothDeviceName??'Re-Connect LPR', context, blueColor, (){
+if(LPRDeviceHandler().
+          connectedDevice!=null&& LPRDeviceHandler().
+          connectedDevice!.isConnected){
+                                  Fluttertoast.showToast(
+                                      msg:
+                                          "Device already connected to ${LPRDeviceHandler().connectedDevice?.localName}",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.black,
+                                      textColor: Colors.white,
+                                      fontSize: 16.0);
 
-    LPRDeviceHandler().showBluetoothListDialog(context, null, null,isTripNavigate: false,callbackConnectedDeviceName: (){
+
+          }else{
+    LPRDeviceHandler().showBluetoothListDialog(context, null, null,isTripNavigate: false,
+    callbackConnectedDeviceName: (){
+
+
+
 
     });
+          }
   }, displayWidth(context) / 1.6, displayHeight(context) * 0.055, backgroundColor, Colors.white, 16, blueColor, ''))
 
               ],
@@ -829,7 +872,6 @@ Visibility(
                                     : CommonButtons.getAcceptButton(
                                         'End Trip', context, Colors.transparent,
                                         () async {
-                                          print('the stop Trip is clickedd-------------222');
 
                                           await SystemChrome.setPreferredOrientations([
                                             DeviceOrientation.portraitUp,
