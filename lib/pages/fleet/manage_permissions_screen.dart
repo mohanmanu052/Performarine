@@ -144,6 +144,15 @@ if(vesselsSyncDetails){
 
         for(int i = 0; i <data.length; i++)
           {
+                if(selectedVessel!=null&&selectedVessel.isNotEmpty){
+      for(var vesseldata1 in selectedVessel){
+        if(vesseldata1.id==data[i].id){
+          data[i].isSelected=true;
+          multipleSelected.add(vesseldata1.id);
+        }
+      }
+    }
+
             if(data[i].createdBy == commonProvider!.loginModel!.userId)
               {
                setState(() {
