@@ -17,6 +17,7 @@ class EditTripDailog {
       String? initalvalue,
       }) async {
     TextEditingController nameController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
    //flut FocusNode nameFocusNode = FocusNode();
 nameController.text=initalvalue??'';
     showDialog(
@@ -61,31 +62,34 @@ nameController.text=initalvalue??'';
 
                     Container(
                       margin: EdgeInsets.symmetric(horizontal: 20),
-                      child: CommonTextField(
-                          controller: nameController,
-                         // focusNode: nameFocusNode,
-                          labelText: 'Name Of Trip',
-                          hintText: 'Name Of Trip',
-                          suffixText: null,
-                          textInputAction: TextInputAction.next,
-                          textInputType: TextInputType.text,
-                          textCapitalization: TextCapitalization.words,
-                          maxLength: 50,
-                          prefixIcon: null,
-                          requestFocusNode: null,
-                          obscureText: false,
-                          onTap: () {},
-                          onChanged: (String value) {},
-                          validator: (value) {
-                            if (value!.trim().isEmpty) {
-                              return 'Enter Trip Name';
-                            }
-                            return null;
-                          },
-                          onSaved: (String value) {
-                            // CustomLogger().logWithFile(Level.info, "vessel name $value -> $page");
-                            // Utils.customPrint(value);
-                          }),
+                      child: Form(
+                        key:_formKey ,
+                        child: CommonTextField(
+                            controller: nameController,
+                           // focusNode: nameFocusNode,
+                            labelText: 'Name Of Trip',
+                            hintText: 'Name Of Trip',
+                            suffixText: null,
+                            textInputAction: TextInputAction.next,
+                            textInputType: TextInputType.text,
+                            textCapitalization: TextCapitalization.words,
+                            maxLength: 50,
+                            prefixIcon: null,
+                            requestFocusNode: null,
+                            obscureText: false,
+                            onTap: () {},
+                            onChanged: (String value) {},
+                            validator: (value) {
+                              if (value!.trim().isEmpty) {
+                                return 'Enter Trip Name';
+                              }
+                              return null;
+                            },
+                            onSaved: (String value) {
+                              // CustomLogger().logWithFile(Level.info, "vessel name $value -> $page");
+                              // Utils.customPrint(value);
+                            }),
+                      ),
                     ),
 
                     //hintText: 'Name Of Trip',
@@ -103,11 +107,14 @@ nameController.text=initalvalue??'';
                         buttonPrimaryColor: postiveButtonColor ?? blueColor,
                         borderColor: postiveButtonColor ?? blueColor,
                         onTap: (){
+                          if(_formKey.currentState!.validate()){
                           if(onPositiveButtonTap != null)
                             {
                               onPositiveButtonTap(nameController.text);
                             }
-                        },
+                          }
+},
+                        
                         //  width: 170,
                         height: displayHeight(context) * 0.050,
                       ),

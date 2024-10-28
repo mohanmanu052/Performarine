@@ -158,8 +158,8 @@ class _TripRecordingAnalyticsScreenState
 LPRDeviceHandler().isListeningStartTripState=false;
                                       LPRDeviceHandler().setDeviceConnectCallBack((){
 if(mounted){
-  connectedBluetoothDeviceName=LPRDeviceHandler().connectedDevice?.localName;
-  setState(() {
+  connectedBluetoothDeviceName='Connected to ${LPRDeviceHandler().connectedDevice?.localName}';
+setState(() {
     
   });
 }});
@@ -183,7 +183,7 @@ if(mounted){
         lprUartTX = lprUartTX1;
       },
       callBackconnectedDeviceName: (bluetoothDeviceName1) {
-        connectedBluetoothDeviceName = bluetoothDeviceName1;
+        connectedBluetoothDeviceName ='Connected to $bluetoothDeviceName1';
         setState(() {
           
         });
@@ -554,7 +554,7 @@ if(LPRDeviceHandler().
 
     });
           }
-  }, displayWidth(context) / 1.6, displayHeight(context) * 0.055, backgroundColor, Colors.white, 16, blueColor, ''))
+  }, displayWidth(context) / 1.6, displayHeight(context) * 0.060, backgroundColor, Colors.white, 16, blueColor, ''))
 
               ],
             ),
