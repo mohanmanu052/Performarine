@@ -689,24 +689,18 @@ class _SingleMyDelegateInviteCardState
                               'false',
                               myDelegateInvite!.invitationLink!)
                           .then((value) {
-                        if (value != null) {
-                          if (value.status!) {
-                            setState(() {
-                              isRejectBtnClicked = false;
-                            });
+                        if (value.status!) {
+                          setState(() {
+                            isRejectBtnClicked = false;
+                          });
 
-                            widget.onTap!.call();
-                          } else {
-                            setState(() {
-                              isRejectBtnClicked = false;
-                            });
-                          }
+                          widget.onTap!.call();
                         } else {
                           setState(() {
                             isRejectBtnClicked = false;
                           });
                         }
-                      }).catchError((e) {
+                                            }).catchError((e) {
                         setState(() {
                           isRejectBtnClicked = false;
                         });
@@ -761,25 +755,19 @@ class _SingleMyDelegateInviteCardState
                               'true',
                               myDelegateInvite!.invitationLink!)
                           .then((value) {
-                        if (value != null) {
-                          if (value.status!) {
+                        if (value.status!) {
 
-                           setState(() {
-                             getUserConfigData(context, value);
+                         setState(() {
+                           getUserConfigData(context, value);
 
-                           });
+                         });
 
-                          } else {
-                            setState(() {
-                              isAcceptBtnClicked = false;
-                            });
-                          }
                         } else {
                           setState(() {
                             isAcceptBtnClicked = false;
                           });
                         }
-                      }).catchError((e) {
+                                            }).catchError((e) {
                         setState(() {
                           isAcceptBtnClicked = false;
                         });

@@ -120,14 +120,14 @@ class _BottomNavigationState extends State<BottomNavigation>
     dynamic arg = Get.arguments;
     if (arg != null) {
       Map<String, dynamic> arguments = Get.arguments as Map<String, dynamic>;
-      bool isComingFrom = arguments?['isComingFromReset'] ?? false;
-      String updatedToken = arguments?['token'] ?? "";
+      bool isComingFrom = arguments['isComingFromReset'] ?? false;
+      String updatedToken = arguments['token'] ?? "";
 
       setState(() {});
       bool? isTripStarted = sharedPreferences!.getBool('trip_started');
       Utils.customPrint("isComingFromReset: ${isComingFrom}");
       if (mounted) {
-        if (isComingFrom != null && isComingFrom) {
+        if (isComingFrom) {
           Future.delayed(Duration(microseconds: 500), () {
             Utils.customPrint(
                 "XXXXXXXXX ${isThereCurrentDialogShowing(context)}");
@@ -158,14 +158,12 @@ class _BottomNavigationState extends State<BottomNavigation>
   checkCurrentUser() {
     if(Get.arguments!=null){
     Map<String, dynamic> arguments = Get.arguments as Map<String, dynamic>;
-    if (arguments != null) {
-      if(arguments['isLoggedinUser']!=null&&arguments['isLoggedinUser']==false){
-        Future.delayed(Duration(seconds: 1)).then((value) {showNotCurrentUserDailog(context);
-        } );
+    if(arguments['isLoggedinUser']!=null&&arguments['isLoggedinUser']==false){
+      Future.delayed(Duration(seconds: 1)).then((value) {showNotCurrentUserDailog(context);
+      } );
 
-        ;
-      }}
-//   if(arguments[])
+      ;
+    }//   if(arguments[])
 // }
     }
   }
@@ -296,15 +294,15 @@ class _BottomNavigationState extends State<BottomNavigation>
         if (arg != null) {
           Map<String, dynamic> arguments =
               Get.arguments as Map<String, dynamic>;
-          bool isComingFrom = arguments?['isComingFromReset'] ?? false;
-          String updatedToken = arguments?['token'] ?? "";
+          bool isComingFrom = arguments['isComingFromReset'] ?? false;
+          String updatedToken = arguments['token'] ?? "";
 
           if (mounted) {
             setState(() {});
           }
           Utils.customPrint("isComingFromReset: ${isComingFrom}");
           if (mounted) {
-            if (isComingFrom != null && isComingFrom) {
+            if (isComingFrom) {
               Future.delayed(Duration(microseconds: 500), () {
                 Utils.customPrint(
                     "XXXXXXXXX ${isThereCurrentDialogShowing(context)}");
@@ -317,22 +315,20 @@ class _BottomNavigationState extends State<BottomNavigation>
 
                 if (!isThereCurrentDialogShowing(context)) {
                   WidgetsBinding.instance.addPostFrameCallback((duration) {
-                    if (isComingFrom != null) {
-                      if (!isComingFrom) {
-                      //  print("RESET PASSWORD LIFECYCLE");
+                    if (!isComingFrom) {
+                    //  print("RESET PASSWORD LIFECYCLE");
 
-                        // if(isTripStarted ?? false){
-                        //   print("Trip runnnig status3: $isTripStarted");
-                        //  //  showResetPasswordDialogBox(context);
-                        // } else {
-                        Get.to(ResetPassword(
-                          token: widget.token,
-                          isCalledFrom: 'Dashboard',
-                        ));
-                        // }
-                      }
+                      // if(isTripStarted ?? false){
+                      //   print("Trip runnnig status3: $isTripStarted");
+                      //  //  showResetPasswordDialogBox(context);
+                      // } else {
+                      Get.to(ResetPassword(
+                        token: widget.token,
+                        isCalledFrom: 'Dashboard',
+                      ));
+                      // }
                     }
-                  });
+                                    });
                   setState(() {});
                 }
               });
@@ -1174,10 +1170,9 @@ Navigator.pop(context);
                                                 .difference(createdAtTime);
                                             String tripDuration =
                                                 Utils.calculateTripDuration(
-                                                    ((durationTime
-                                                                .inMilliseconds) /
-                                                            1000)
-                                                        .toInt());
+                                                    (durationTime
+                                                                .inMilliseconds) ~/
+                                                            1000);
 
                                             Utils.customPrint(
                                                 "DURATION !!!!!! $tripDuration");
@@ -1280,7 +1275,7 @@ Navigator.pop(context);
                                                     TripRecordingScreen(
                                                       bottomNavIndex: _bottomNavIndex,
                                                         tripId: tripData[0],
-                                                        vesselId: tripData![1],
+                                                        vesselId: tripData[1],
                                                         vesselName: tripData[2],
                                                         tripIsRunningOrNot:
                                                             runningTrip)),
@@ -1431,7 +1426,7 @@ Navigator.pop(context);
 
     var durationTime = DateTime.now().toUtc().difference(createdAtTime);
     String tripDuration = Utils.calculateTripDuration(
-        ((durationTime.inMilliseconds) / 1000).toInt());
+        (durationTime.inMilliseconds) ~/ 1000);
 
     Utils.customPrint(
         'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');

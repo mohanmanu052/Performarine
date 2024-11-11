@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:background_locator_2/background_locator.dart';
 import 'package:background_locator_2/settings/android_settings.dart';
@@ -14,7 +13,6 @@ import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/lpr_device_handler.dart';
 import 'package:performarine/new_trip_analytics_screen.dart';
-import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
@@ -26,13 +24,11 @@ import '../../common_widgets/utils/colors.dart';
 import '../../common_widgets/utils/utils.dart';
 import '../../common_widgets/widgets/common_buttons.dart';
 import '../../common_widgets/widgets/common_widgets.dart';
-import '../../common_widgets/widgets/user_feed_back.dart';
 import '../../main.dart';
 import '../../models/trip.dart';
 import '../../models/vessel.dart';
 import '../../services/database_service.dart';
 import '../bottom_navigation.dart';
-import '../feedback_report.dart';
 
 class TripRecordingAnalyticsScreen extends StatefulWidget {
   final bool? tripIsRunningOrNot;

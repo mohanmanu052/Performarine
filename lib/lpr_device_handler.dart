@@ -595,9 +595,9 @@ if(tripData!=null&&tripData.isNotEmpty){
                     context!,
                     MaterialPageRoute(
                         builder: (context) => TripRecordingScreen(
-                            tripId: tripData![0],
+                            tripId: tripData[0],
                             calledFrom: 'bottom_nav',
-                            vesselId: tripData![1],
+                            vesselId: tripData[1],
                             vesselName: tripData[2],
                             tripIsRunningOrNot: runningTrip)),
                   );
@@ -893,7 +893,7 @@ if(isTripNavigate){
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               TripRecordingScreen(
-                                                  tripId: tripData![0],
+                                                  tripId: tripData[0],
                                                   calledFrom: 'bottom_nav',
                                                   vesselId: tripData[1],
                                                   vesselName: tripData[2],
@@ -1057,7 +1057,7 @@ isRefreshList=true;
 
     var durationTime = DateTime.now().toUtc().difference(createdAtTime);
     String tripDuration = Utils.calculateTripDuration(
-        ((durationTime.inMilliseconds) / 1000).toInt());
+        (durationTime.inMilliseconds) ~/ 1000);
 
     Utils.customPrint("DURATION !!!!!! $tripDuration");
 
@@ -1104,7 +1104,7 @@ isRefreshList=true;
 
     var durationTime = DateTime.now().toUtc().difference(createdAtTime);
     String tripDuration = Utils.calculateTripDuration(
-        ((durationTime.inMilliseconds) / 1000).toInt());
+        (durationTime.inMilliseconds) ~/ 1000);
 
     Utils.customPrint(
         'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
@@ -1126,8 +1126,8 @@ isRefreshList=true;
                 context!,
                 MaterialPageRoute(
                     builder: (context) => NewTripAnalyticsScreen(
-                          tripId: currentTrip!.id,
-                          vesselId: currentTrip?.vesselId,
+                          tripId: currentTrip.id,
+                          vesselId: currentTrip.vesselId,
                           calledFrom: 'End Trip',
                         )));
 

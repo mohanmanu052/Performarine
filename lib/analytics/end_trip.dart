@@ -59,12 +59,9 @@ class EndTrip {
       }
     }
 
-    if(currentPosition != null)
-    {
-      latitude = currentPosition.latitude.toString();
-      longitude = currentPosition.longitude.toString();
-    }
-    /*port.listen((dynamic data) async {
+    latitude = currentPosition.latitude.toString();
+    longitude = currentPosition.longitude.toString();
+      /*port.listen((dynamic data) async {
       LocationDto? locationDto =
           data != null ? await LocationDto.fromJson(data) : null;
       if (locationDto != null) {

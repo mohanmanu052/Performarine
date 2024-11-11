@@ -127,19 +127,27 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
         .logWithFile(Level.info, "INTRO START $isTripStarted -> $page");
 
     setState(() {
-      isTripRunningCurrently = isTripStarted!;
+      isTripRunningCurrently = isTripStarted;
     });
 
-    if (isTripRunningCurrently == null) {
-      Future.delayed(const Duration(seconds: 3), () {
-        if (mounted) {
-          setState(() {
-            isBtnVisible = true;
-          });
-        }
-      });
-    } else if (!isTripRunningCurrently!) {
-      Future.delayed(const Duration(seconds: 3), () {
+    if (!isTripRunningCurrently!) {
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
+        setState(() {
+          isBtnVisible = true;
+        });
+      }
+    });
+  } else {
+    final NotificationAppLaunchDetails? notificationAppLaunchDetails =
+    await flutterLocalNotificationsPlugin
+        .getNotificationAppLaunchDetails();
+
+    if (notificationAppLaunchDetails == null) {
+      Utils.customPrint('NotificationAppLaunchDetails IS NULL');
+      CustomLogger().logWithFile(
+          Level.info, "NotificationAppLaunchDetails IS NULL -> $page");
+      Future.delayed(Duration(seconds: 3), () {
         if (mounted) {
           setState(() {
             isBtnVisible = true;
@@ -147,14 +155,11 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
         }
       });
     } else {
-      final NotificationAppLaunchDetails? notificationAppLaunchDetails =
-      await flutterLocalNotificationsPlugin
-          .getNotificationAppLaunchDetails();
-
-      if (notificationAppLaunchDetails == null) {
-        Utils.customPrint('NotificationAppLaunchDetails IS NULL');
+      if (!notificationAppLaunchDetails.didNotificationLaunchApp) {
+        Utils.customPrint('NotificationAppLaunchDetails IS FALSE');
         CustomLogger().logWithFile(
-            Level.info, "NotificationAppLaunchDetails IS NULL -> $page");
+            Level.info, "NotificationAppLaunchDetails IS FALSE -> $page");
+
         Future.delayed(Duration(seconds: 3), () {
           if (mounted) {
             setState(() {
@@ -163,11 +168,39 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
           }
         });
       } else {
-        if (!notificationAppLaunchDetails.didNotificationLaunchApp) {
-          Utils.customPrint('NotificationAppLaunchDetails IS FALSE');
-          CustomLogger().logWithFile(
-              Level.info, "NotificationAppLaunchDetails IS FALSE -> $page");
+        Utils.customPrint('NotificationAppLaunchDetails IS TRUE');
+        CustomLogger().logWithFile(
+            Level.info, "NotificationAppLaunchDetails IS TRUE -> $page");
 
+        if (notificationAppLaunchDetails.notificationResponse!.id == 889 ||
+            notificationAppLaunchDetails.notificationResponse!.id == 776 ||
+            notificationAppLaunchDetails.notificationResponse!.id == 1) {
+          List<String>? tripData =
+          sharedPreferences!.getStringList('trip_data');
+
+          /*Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => TripAnalyticsScreen(
+                      tripId: tripData![0],
+                      vesselId: tripData[1],
+                      isAppKilled: true,
+                      tripIsRunningOrNot: isTripStarted)),
+              ModalRoute.withName(""));*/
+
+          sharedPreferences!.setBool('key_lat_time_dialog_open', false);
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => TripRecordingScreen(
+                      tripId: tripData![0],
+                      vesselName: tripData[2],
+                      vesselId: tripData[1],
+                      isAppKilled: true,
+                      calledFrom: 'notification',
+                      tripIsRunningOrNot: isTripStarted)),
+              ModalRoute.withName(""));
+        } else {
           Future.delayed(Duration(seconds: 3), () {
             if (mounted) {
               setState(() {
@@ -175,51 +208,10 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
               });
             }
           });
-        } else {
-          Utils.customPrint('NotificationAppLaunchDetails IS TRUE');
-          CustomLogger().logWithFile(
-              Level.info, "NotificationAppLaunchDetails IS TRUE -> $page");
-
-          if (notificationAppLaunchDetails.notificationResponse!.id == 889 ||
-              notificationAppLaunchDetails.notificationResponse!.id == 776 ||
-              notificationAppLaunchDetails.notificationResponse!.id == 1) {
-            List<String>? tripData =
-            sharedPreferences!.getStringList('trip_data');
-
-            /*Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => TripAnalyticsScreen(
-                        tripId: tripData![0],
-                        vesselId: tripData[1],
-                        isAppKilled: true,
-                        tripIsRunningOrNot: isTripStarted)),
-                ModalRoute.withName(""));*/
-
-            sharedPreferences!.setBool('key_lat_time_dialog_open', false);
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => TripRecordingScreen(
-                        tripId: tripData![0],
-                        vesselName: tripData[2],
-                        vesselId: tripData[1],
-                        isAppKilled: true,
-                        calledFrom: 'notification',
-                        tripIsRunningOrNot: isTripStarted)),
-                ModalRoute.withName(""));
-          } else {
-            Future.delayed(Duration(seconds: 3), () {
-              if (mounted) {
-                setState(() {
-                  isBtnVisible = true;
-                });
-              }
-            });
-          }
         }
       }
     }
+  }
   }
 
   /// To check user already log in or new user
@@ -423,7 +415,7 @@ class _NewSplashScreenState extends State<NewSplashScreen> {
             //  Future.delayed(Duration(seconds: 2), () {
                 isComingFromUnilinkMain = true;
                 Get.offAll(ResetPassword(
-                    token: initialLink!.queryParameters['verify'].toString(),
+                    token: initialLink.queryParameters['verify'].toString(),
                     isCalledFrom: "Main"));
             //  });
             }
@@ -603,7 +595,7 @@ if(isSameUser){
             if (isUserLoggedIn != null) {
               if (isUserLoggedIn) {
                 //sharedPreferences!.setBool('reset_dialog_opened', false);
-                bool isSameUser=await        JwtUtils.getDecodedData(uri!.queryParameters['verify'].toString());
+                bool isSameUser=await        JwtUtils.getDecodedData(uri.queryParameters['verify'].toString());
                 String fleetId=JwtUtils.getFleetId(uri.queryParameters['verify'].toString());
                 if(isSameUser){
                   Get.to(

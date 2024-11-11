@@ -1268,7 +1268,7 @@ lprTransperntServiceIdStatus=status;
                                                     TripRecordingScreen(
                                                       //bottomNavIndex: _bottomNavIndex,
                                                         tripId: tripData[0],
-                                                        vesselId: tripData![1],
+                                                        vesselId: tripData[1],
                                                         vesselName: tripData[2],
                                                         tripIsRunningOrNot:
                                                             runningTrip)));

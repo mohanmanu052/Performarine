@@ -255,38 +255,32 @@ class _ResetPasswordState extends State<ResetPassword> {
                                     });
 
                                     commonProvider.resetPassword(context, widget.token! != null ? widget.token! : "", newPasswordController.text.trim(), scaffoldKey).then((value){
-                                      if(value != null){
-                                        setState(() {
-                                          isBtnClick = false;
-                                        });
-                                      Utils.customPrint("Status code of change password is: ${value.statusCode}");
-                                        CustomLogger().logWithFile(Level.info, "Status code of change password is: ${value.statusCode}  -> $page");
+                                      setState(() {
+                                        isBtnClick = false;
+                                      });
+                                    Utils.customPrint("Status code of change password is: ${value.statusCode}");
+                                      CustomLogger().logWithFile(Level.info, "Status code of change password is: ${value.statusCode}  -> $page");
 
-                                        if(value.statusCode == 200 && value.message == "Password reset was successfully completed!"){
-                                          if(widget.isCalledFrom == "Dashboard"){
-                                              Navigator.pop(context);
-                                          } else{
-                                            signOut();
-                                          }
-
-                                        } else if(value.message == "link Expired !!"){
-                                          if(widget.isCalledFrom == "Dashboard"){
+                                      if(value.statusCode == 200 && value.message == "Password reset was successfully completed!"){
+                                        if(widget.isCalledFrom == "Dashboard"){
                                             Navigator.pop(context);
-                                          } else{
-                                            CustomLogger().logWithFile(Level.info, "User navigating into sign in scren -> $page");
-                                            Navigator.pushAndRemoveUntil(
-                                                context,
-                                                MaterialPageRoute(builder: (context) => const SignInScreen(calledFrom:'ResetPassword')),
-                                                ModalRoute.withName(""));
-                                          }
-
+                                        } else{
+                                          signOut();
                                         }
-                                      } else{
-                                        setState(() {
-                                          isBtnClick = false;
-                                        });
+
+                                      } else if(value.message == "link Expired !!"){
+                                        if(widget.isCalledFrom == "Dashboard"){
+                                          Navigator.pop(context);
+                                        } else{
+                                          CustomLogger().logWithFile(Level.info, "User navigating into sign in scren -> $page");
+                                          Navigator.pushAndRemoveUntil(
+                                              context,
+                                              MaterialPageRoute(builder: (context) => const SignInScreen(calledFrom:'ResetPassword')),
+                                              ModalRoute.withName(""));
+                                        }
+
                                       }
-                                    }).catchError((e){
+                                                                        }).catchError((e){
                                       setState(() {
                                         isBtnClick = false;
                                       });

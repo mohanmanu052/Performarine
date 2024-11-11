@@ -1017,7 +1017,7 @@ void calculateTooltipRegion(
     regionRect.add(point.outlierRegion);
     regionRect.add(point.outlierRegionPosition);
     if (seriesRendererDetails.seriesType.contains('stacked') == true) {
-      regionData.add((point.cumulativeValue).toString());
+      regionData.add(point.cumulativeValue.toString());
     }
     regionData.add('$isTrendline');
     if (isTrendline) {

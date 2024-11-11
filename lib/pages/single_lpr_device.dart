@@ -142,8 +142,7 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
 
               widget.setSetter!(() {
                 widget.onBluetoothConnection!(true);
-                widget.onSelected!(widget.device!.platformName == null ||
-                    widget.device!.platformName.isEmpty
+                widget.onSelected!(widget.device!.platformName.isEmpty
                     ? widget.device!.remoteId.str
                     : widget.device!.platformName);
               });
@@ -233,8 +232,7 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
 
           widget.setSetter!(() {
             widget.onBluetoothConnection!(true);
-            widget.onSelected!(widget.device!.platformName == null ||
-                widget.device!.platformName.isEmpty
+            widget.onSelected!(widget.device!.platformName.isEmpty
                 ? widget.device!.remoteId.str
                 : widget.device!.platformName);
           });

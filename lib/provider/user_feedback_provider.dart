@@ -7,8 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 
-import 'package:performarine/models/common_model.dart';
-import 'package:performarine/models/upload_trip_model.dart';
 import 'package:performarine/pages/delete_account/session_expired_screen.dart';
 import '../models/user_feedback_model.dart';
 import 'common_provider.dart';

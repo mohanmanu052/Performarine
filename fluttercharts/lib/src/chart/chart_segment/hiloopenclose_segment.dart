@@ -251,14 +251,10 @@ class HiloOpenCloseSegment extends ChartSegment {
                   ? _segmentProperties.highPoint.x
                   : _segmentProperties.high,
               _isTransposed
-                  ? (_oldSegment != null
-                      ? _oldSegment!._segmentProperties.lowPoint.x
-                      : null)
+                  ? (_oldSegment?._segmentProperties.lowPoint.x)
                   : _oldSegment?._segmentProperties.low,
               _isTransposed
-                  ? (_oldSegment != null
-                      ? _oldSegment!._segmentProperties.highPoint.x
-                      : null)
+                  ? (_oldSegment?._segmentProperties.highPoint.x)
                   : _oldSegment?._segmentProperties.high,
               _segmentProperties.openX,
               _segmentProperties.openY,
@@ -271,14 +267,10 @@ class HiloOpenCloseSegment extends ChartSegment {
               _oldSegment?._segmentProperties.closeX,
               _oldSegment?._segmentProperties.closeY,
               _isTransposed
-                  ? (_oldSegment != null
-                      ? _oldSegment!._centerLowPoint.y
-                      : null)
+                  ? (_oldSegment?._centerLowPoint.y)
                   : _oldSegment?._centerLow,
               _isTransposed
-                  ? (_oldSegment != null
-                      ? _oldSegment!._centerHighPoint.y
-                      : null)
+                  ? (_oldSegment?._centerHighPoint.y)
                   : _oldSegment?._centerHigh,
               animationFactor,
               strokePaint!,

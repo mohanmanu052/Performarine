@@ -1737,7 +1737,7 @@ class TrackballRenderingDetails {
                 getDateTimeLabelFormat(axisDetails.axisRenderer,
                     interval.toInt(), prevInterval.toInt());
         x = dateFormat.format(DateTime.fromMillisecondsSinceEpoch(
-            (dataPoint.x).millisecondsSinceEpoch));
+            dataPoint.x.millisecondsSinceEpoch));
       }
       labelValue = seriesRendererDetails.seriesType.contains('hilo') == true ||
               seriesRendererDetails.seriesType.contains('range') == true ||

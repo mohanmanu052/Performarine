@@ -130,11 +130,9 @@ class GetUserConfigApiProvider with ChangeNotifier {
           Navigator.of(ctx!).pop();
         });
 
-        if (scaffoldKey != null) {
-          Utils.showSnackBar(context,
-              scaffoldKey: scaffoldKey, message: decodedData['message']);
-        }
-
+        Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey, message: decodedData['message']);
+      
         getUserConfigModel = null;
       }
       else if(decodedData['statusCode'] == 401)
@@ -168,11 +166,9 @@ class GetUserConfigApiProvider with ChangeNotifier {
           Navigator.of(ctx!).pop();
         });
 
-        if (scaffoldKey != null) {
-          Utils.showSnackBar(context,
-              scaffoldKey: scaffoldKey, message: decodedData['message']);
-        }
-
+        Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey, message: decodedData['message']);
+      
         Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         Utils.customPrint('EXE RESP: $response');
         CustomLogger().logWithFile(Level.info, "EXE RESP STATUS CODE: ${response.statusCode} -> $page");

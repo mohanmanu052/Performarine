@@ -1797,7 +1797,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
 
       var durationTime = updatedAtTime.difference(createdAtTime);
       tripDuration = Utils.calculateTripDuration(
-          ((durationTime.inMilliseconds) / 1000).toInt());
+          (durationTime.inMilliseconds) ~/ 1000);
     }
 
     String? tripDistance = tripData.distance ?? '1';
@@ -1958,7 +1958,7 @@ class _TripAnalyticsScreenState extends State<TripAnalyticsScreen> {
    if(vesselData!.createdBy == commonProvider.loginModel!.userId)
      {
        if (!vesselIsSync) {
-         Utils.customPrint('VESSEL DATA ${vesselData!.id}');
+         Utils.customPrint('VESSEL DATA ${vesselData.id}');
 
          commonProvider.addVesselRequestModel = CreateVessel();
          commonProvider.addVesselRequestModel!.id = vesselData.id;
@@ -2363,7 +2363,7 @@ bool? runningTrip = sharedPreferences!
                                                     TripRecordingScreen(
                                                       //bottomNavIndex: _bottomNavIndex,
                                                         tripId: tripData[0],
-                                                        vesselId: tripData![1],
+                                                        vesselId: tripData[1],
                                                         vesselName: tripData[2],
                                                         tripIsRunningOrNot:
                                                             runningTrip)));

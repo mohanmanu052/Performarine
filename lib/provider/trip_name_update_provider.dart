@@ -65,22 +65,18 @@ class TripNameUpdateProvider with ChangeNotifier {
             "EXE RESP STATUS CODE: ${response.statusCode} -> $page");
         CustomLogger().logWithFile(Level.error, "EXE RESP: $response -> $page");
 
-        if (scaffoldKey != null) {
-          // Utils.showSnackBar(context,
-          //     scaffoldKey: scaffoldKey, message: decodedData['message']);
-        }
-        return Future.value(CommonModel());
+        // Utils.showSnackBar(context,
+        //     scaffoldKey: scaffoldKey, message: decodedData['message']);
+              return Future.value(CommonModel());
 
         // speedReportsModel = null;
       } else if (decodedData['statusCode'] == 401) {
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => SessionExpiredScreen()));
       } else {
-        if (scaffoldKey != null) {
-          // Utils.showSnackBar(context,
-          //     scaffoldKey: scaffoldKey, message: decodedData['message']);
-        }
-
+        // Utils.showSnackBar(context,
+        //     scaffoldKey: scaffoldKey, message: decodedData['message']);
+      
         Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         Utils.customPrint('EXE RESP: $response');
 

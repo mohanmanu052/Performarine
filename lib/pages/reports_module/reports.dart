@@ -380,43 +380,37 @@ class _ReportsModuleState extends State<ReportsModule>
           CustomLogger()
               .logWithFile(Level.info, "value is: ${value.status} -> $page");
 
-          if (value != null) {
-            Utils.customPrint("value 1 is: ${value.status}");
-            setState(() {
-              isVesselDataLoading = true;
-              vesselList = value.vessels ?? [];
-            });
+          Utils.customPrint("value 1 is: ${value.status}");
+          setState(() {
+            isVesselDataLoading = true;
+            vesselList = value.vessels ?? [];
+          });
 
-            Utils.customPrint(
-                "value of get user config by id: ${value.vessels}");
-            CustomLogger().logWithFile(Level.info,
-                "value of get user config by id: ${value.vessels} -> $page");
+          Utils.customPrint(
+              "value of get user config by id: ${value.vessels}");
+          CustomLogger().logWithFile(Level.info,
+              "value of get user config by id: ${value.vessels} -> $page");
 
-            if (value.vessels!.length == 0) {
-              isVesselsFound = true;
+          if (value.vessels!.length == 0) {
+            isVesselsFound = true;
+          }
+
+          if(widget.isTypeFleet!)
+            {
+              vesselData = List<DropdownItem>.from(value.vessels!.map(
+                      (vessel) => DropdownItem(id: vessel.id, name: vessel.name)));
+            }
+          else
+            {
+              vesselData = List<DropdownItem>.from(value.vessels!.where((element) => commonProvider.loginModel!.userId == element.createdBy).toList().map(
+                      (vessel) => DropdownItem(id: vessel.id, name: vessel.name)));
             }
 
-            if(widget.isTypeFleet!)
-              {
-                vesselData = List<DropdownItem>.from(value.vessels!.map(
-                        (vessel) => DropdownItem(id: vessel.id, name: vessel.name)));
-              }
-            else
-              {
-                vesselData = List<DropdownItem>.from(value.vessels!.where((element) => commonProvider.loginModel!.userId == element.createdBy).toList().map(
-                        (vessel) => DropdownItem(id: vessel.id, name: vessel.name)));
-              }
 
-
-            Utils.customPrint("vesselData: ${vesselData.length}");
-            CustomLogger().logWithFile(
-                Level.info, "vesselData: ${vesselData.length} -> $page");
-          } else {
-            setState(() {
-              isVesselDataLoading = true;
-            });
-          }
-        }).catchError((e) {
+          Utils.customPrint("vesselData: ${vesselData.length}");
+          CustomLogger().logWithFile(
+              Level.info, "vesselData: ${vesselData.length} -> $page");
+                }).catchError((e) {
           if (mounted)
             setState(() {
               isVesselDataLoading = true;
@@ -472,50 +466,44 @@ class _ReportsModuleState extends State<ReportsModule>
           .tripListData(
               vesselID, context, commonProvider.loginModel!.token!, scaffoldKey)
           .then((value) {
-        if (value != null) {
-          setState(() {
-            isTripIdListLoading = true;
-          });
+        setState(() {
+          isTripIdListLoading = true;
+        });
 
-          Utils.customPrint("value of trip list: ${value.data}");
-          CustomLogger().logWithFile(
-              Level.info, "value of trip list: ${value.data} -> $page");
-          tripIdList!.clear();
-          dateTimeList!.clear();
-          distanceList!.clear();
-          timeList!.clear();
-          children!.clear();
-          childrenValue!.clear();
-          for (int i = 0; i < value.data!.length; i++) {
-            isTripsAreAvailable = false;
-            tripIdList!.add(value.data![i].id!);
-            if (value.data![i].createdAt != null) {
-              dateTimeList!.add(tripDate(value.data![i].createdAt.toString()));
-              //distanceList!.add(100.222.toStringAsFixed(1));
+        Utils.customPrint("value of trip list: ${value.data}");
+        CustomLogger().logWithFile(
+            Level.info, "value of trip list: ${value.data} -> $page");
+        tripIdList!.clear();
+        dateTimeList!.clear();
+        distanceList!.clear();
+        timeList!.clear();
+        children!.clear();
+        childrenValue!.clear();
+        for (int i = 0; i < value.data!.length; i++) {
+          isTripsAreAvailable = false;
+          tripIdList!.add(value.data![i].id!);
+          if (value.data![i].createdAt != null) {
+            dateTimeList!.add(tripDate(value.data![i].createdAt.toString()));
+            //distanceList!.add(100.222.toStringAsFixed(1));
 
-              distanceList!.add(value.data![i].distance!.toStringAsFixed(1));
-              timeList!.add(value.data![i].duration.toString());
-            }
-            children!.add("Trip ${i.toString()}");
+            distanceList!.add(value.data![i].distance!.toStringAsFixed(1));
+            timeList!.add(value.data![i].duration.toString());
           }
-          childrenValue = List.generate(children!.length, (index) => false);
-
-          Utils.customPrint("trip id list: $tripIdList");
-          Utils.customPrint("children: ${children}");
-          Utils.customPrint("dateTimeList: $dateTimeList");
-
-          CustomLogger()
-              .logWithFile(Level.info, "trip id list: $tripIdList -> $page");
-          CustomLogger()
-              .logWithFile(Level.info, "children: ${children} -> $page");
-          CustomLogger()
-              .logWithFile(Level.info, "dateTimeList: $dateTimeList -> $page");
-        } else {
-          setState(() {
-            isTripIdListLoading = false;
-          });
+          children!.add("Trip ${i.toString()}");
         }
-      }).catchError((e) {
+        childrenValue = List.generate(children!.length, (index) => false);
+
+        Utils.customPrint("trip id list: $tripIdList");
+        Utils.customPrint("children: ${children}");
+        Utils.customPrint("dateTimeList: $dateTimeList");
+
+        CustomLogger()
+            .logWithFile(Level.info, "trip id list: $tripIdList -> $page");
+        CustomLogger()
+            .logWithFile(Level.info, "children: ${children} -> $page");
+        CustomLogger()
+            .logWithFile(Level.info, "dateTimeList: $dateTimeList -> $page");
+            }).catchError((e) {
         setState(() {
           isTripIdListLoading = true;
         });
@@ -688,7 +676,7 @@ class _ReportsModuleState extends State<ReportsModule>
 
                     onPointTap: (ChartPointDetails args) {
                       reportsDataTableKey.currentState!
-                          .setSelectedRowIndex!(args.seriesIndex!);
+                          .setSelectedRowIndex(args.seriesIndex!);
                       tooltipactivationMode = ActivationMode.singleTap;
 
                       for (int i = 0; i < durationGraphData.length; i++) {
@@ -806,7 +794,7 @@ class _ReportsModuleState extends State<ReportsModule>
                         'avg column series args point index was---- ${args.pointIndex}     ${args.seriesIndex}');
 
                     reportsDataTableKey
-                        .currentState!.setSelectedRowIndex!(args.seriesIndex!);
+                        .currentState!.setSelectedRowIndex(args.seriesIndex!);
                     tooltipactivationMode = ActivationMode.singleTap;
 
                     reportsDataTableKey.currentState!.setState(() {
@@ -1080,7 +1068,7 @@ class _ReportsModuleState extends State<ReportsModule>
   @override
   void initState() {
     // super.initState();
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
 
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
@@ -1434,16 +1422,13 @@ class _ReportsModuleState extends State<ReportsModule>
                                                             onChanged: (item) {
                                                               if (item !=
                                                                   null) {
-                                                                if (item !=
-                                                                    null) {
-                                                                  selectedFleetvalue =
-                                                                      item;
-                                                                  // Remove error for the first dropdown
-                                                                  _formKey
-                                                                      .currentState
-                                                                      ?.validate();
-                                                                }
-                                                              }
+                                                                selectedFleetvalue =
+                                                                    item;
+                                                                // Remove error for the first dropdown
+                                                                _formKey
+                                                                    .currentState
+                                                                    ?.validate();
+                                                                                                                            }
                                                               // getVesselDetails(
                                                               //     item?.id ?? "");
                                                               // Utils.customPrint(
@@ -1560,11 +1545,11 @@ class _ReportsModuleState extends State<ReportsModule>
                                                                         .circular(
                                                                         20),
                                                                 thickness:
-                                                                    MaterialStateProperty
+                                                                    WidgetStateProperty
                                                                         .all<double>(
                                                                             6),
                                                                 thumbVisibility:
-                                                                    MaterialStateProperty
+                                                                    WidgetStateProperty
                                                                         .all<bool>(
                                                                             true),
                                                               ),
@@ -1821,12 +1806,10 @@ class _ReportsModuleState extends State<ReportsModule>
                                                             FontWeight.w500),
                                                     onChanged: (item) {
                                                       if (item != null) {
-                                                        if (item != null) {
-                                                          // Remove error for the first dropdown
-                                                          _formKey.currentState
-                                                              ?.validate();
-                                                        }
-                                                      }
+                                                        // Remove error for the first dropdown
+                                                        _formKey.currentState
+                                                            ?.validate();
+                                                                                                            }
                                                       getVesselDetails(
                                                           item?.id ?? "");
                                                       Utils.customPrint(
@@ -1937,10 +1920,10 @@ class _ReportsModuleState extends State<ReportsModule>
                                                         radius: const Radius
                                                             .circular(20),
                                                         thickness:
-                                                            MaterialStateProperty
+                                                            WidgetStateProperty
                                                                 .all<double>(6),
                                                         thumbVisibility:
-                                                            MaterialStateProperty
+                                                            WidgetStateProperty
                                                                 .all<bool>(
                                                                     true),
                                                       ),
@@ -2189,10 +2172,10 @@ class _ReportsModuleState extends State<ReportsModule>
                                           offset: const Offset(0, 0),
                                           scrollbarTheme: ScrollbarThemeData(
                                             radius: const Radius.circular(20),
-                                            thickness: MaterialStateProperty
+                                            thickness: WidgetStateProperty
                                                 .all<double>(6),
                                             thumbVisibility:
-                                                MaterialStateProperty.all<bool>(
+                                                WidgetStateProperty.all<bool>(
                                                     true),
                                           ),
                                         ),
@@ -2300,7 +2283,7 @@ class _ReportsModuleState extends State<ReportsModule>
                                                         null &&
                                                     selectedEndDateFromCal !=
                                                         null) &&
-                                                selectedDateForEndDate!.isBefore(
+                                                selectedDateForEndDate.isBefore(
                                                     selectedDateForStartDate)) {
                                               isBtnClick = false;
                                               Utils.showSnackBar(context,

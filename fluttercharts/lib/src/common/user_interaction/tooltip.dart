@@ -571,7 +571,7 @@ class TooltipBehavior {
 
   @override
   int get hashCode {
-     List<Object?> values = <Object?>[
+     final List<Object?> values = <Object?>[
       textStyle,
       activationMode,
       animationDuration,
@@ -604,7 +604,7 @@ class TooltipBehavior {
   /// * x & y - logical pixel values to position the tooltip.
   void showByPixel(double x, double y) {
     if (_stateProperties != null) {
-       TooltipRenderingDetails renderingDetails =
+       final TooltipRenderingDetails renderingDetails =
           TooltipHelper.getRenderingDetails(
               _stateProperties.renderingDetails.tooltipBehaviorRenderer);
       renderingDetails.internalShowByPixel(x, y);
@@ -622,17 +622,17 @@ class TooltipBehavior {
   void show(dynamic x, double y, [String? xAxisName, String? yAxisName]) {
     if (_stateProperties != null &&
         _stateProperties.chart is SfCartesianChart) {
-       dynamic chart = _stateProperties.chart;
-       RenderingDetails renderingDetails =
+       final dynamic chart = _stateProperties.chart;
+       final RenderingDetails renderingDetails =
           _stateProperties.renderingDetails;
-       TooltipBehaviorRenderer tooltipBehaviorRenderer =
+       final TooltipBehaviorRenderer tooltipBehaviorRenderer =
           renderingDetails.tooltipBehaviorRenderer;
       bool? isInsidePointRegion = false;
       ChartAxisRendererDetails? xAxisDetails, yAxisDetails;
       if (xAxisName != null && yAxisName != null) {
-        for ( ChartAxisRenderer axisRenderer
+        for ( final ChartAxisRenderer axisRenderer
             in _stateProperties.chartAxis.axisRenderersCollection) {
-           ChartAxisRendererDetails axisDetails =
+           final ChartAxisRendererDetails axisDetails =
               AxisHelper.getAxisRendererDetails(axisRenderer);
           if (axisDetails.name == xAxisName) {
             xAxisDetails = axisDetails;
@@ -644,7 +644,7 @@ class TooltipBehavior {
         xAxisDetails = _stateProperties.chartAxis.primaryXAxisDetails;
         yAxisDetails = _stateProperties.chartAxis.primaryYAxisDetails;
       }
-       ChartLocation position = calculatePoint(
+       final ChartLocation position = calculatePoint(
           (x is DateTime &&
                   (xAxisDetails! is DateTimeCategoryAxisDetails) == false)
               ? x.millisecondsSinceEpoch
@@ -664,13 +664,13 @@ class TooltipBehavior {
       for (int i = 0;
           i < _stateProperties.chartSeries.visibleSeriesRenderers.length;
           i++) {
-         SeriesRendererDetails seriesRendererDetails =
+         final SeriesRendererDetails seriesRendererDetails =
             SeriesHelper.getSeriesRendererDetails(
                 _stateProperties.chartSeries.visibleSeriesRenderers[i]);
         if (seriesRendererDetails.visible! == true &&
             seriesRendererDetails.series.enableTooltip == true &&
             seriesRendererDetails.regionalData != null) {
-           double padding = (seriesRendererDetails.seriesType ==
+           final double padding = (seriesRendererDetails.seriesType ==
                       'bubble' ||
                   seriesRendererDetails.seriesType == 'scatter' ||
                   seriesRendererDetails.seriesType.contains('column') == true ||
@@ -679,8 +679,8 @@ class TooltipBehavior {
               : 15; // regional padding to detect smooth touch
           seriesRendererDetails.regionalData!
               .forEach((dynamic regionRect, dynamic values) {
-             Rect region = regionRect[0];
-             Rect paddedRegion = Rect.fromLTRB(
+             final Rect region = regionRect[0];
+             final Rect paddedRegion = Rect.fromLTRB(
                 region.left - padding,
                 region.top - padding,
                 region.right + padding,
@@ -697,7 +697,7 @@ class TooltipBehavior {
       } else if (renderingDetails.tooltipBehaviorRenderer
               ._tooltipRenderingDetails.tooltipTemplate ==
           null) {
-         SfTooltipState? tooltipState =
+         final SfTooltipState? tooltipState =
             tooltipBehaviorRenderer._tooltipRenderingDetails.chartTooltipState;
         if (isInsidePointRegion ?? false) {
           tooltipBehaviorRenderer._tooltipRenderingDetails
@@ -723,7 +723,7 @@ class TooltipBehavior {
   void showByIndex(int seriesIndex, int pointIndex) {
     print('coming to toolTipShowingByIndex----');
     if (_stateProperties != null) {
-       TooltipRenderingDetails renderingDetails =
+       final TooltipRenderingDetails renderingDetails =
           TooltipHelper.getRenderingDetails(
               _stateProperties.renderingDetails.tooltipBehaviorRenderer);
       renderingDetails.internalShowByIndex(seriesIndex, pointIndex);
@@ -733,7 +733,7 @@ class TooltipBehavior {
   /// Hides the tooltip if it is displayed.
   void hide() {
     if (_stateProperties != null) {
-       TooltipBehaviorRenderer tooltipBehaviorRenderer =
+       final TooltipBehaviorRenderer tooltipBehaviorRenderer =
           _stateProperties.renderingDetails.tooltipBehaviorRenderer;
       // ignore: unnecessary_null_comparison
       if (tooltipBehaviorRenderer != null) {
@@ -764,7 +764,7 @@ class TooltipBehaviorRenderer with ChartBehavior {
     _tooltipRenderingDetails = TooltipRenderingDetails(_stateProperties);
   }
 
-   dynamic _stateProperties;
+   final dynamic _stateProperties;
 
   /// Specifies the rendering details of tooltip.
   late TooltipRenderingDetails _tooltipRenderingDetails;

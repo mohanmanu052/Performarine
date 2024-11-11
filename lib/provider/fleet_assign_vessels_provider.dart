@@ -38,7 +38,7 @@ class FleetAssignVesselsProvider with ChangeNotifier{
           body: jsonEncode(data), headers: headers);
 
       Utils.customPrint('Fleet List RES : ' + response.body);
-      CustomLogger().logWithFile(Level.info, "Fleet List RES : ' + ' ${response?.body}");
+      CustomLogger().logWithFile(Level.info, "Fleet List RES : ' + ' ${response.body}");
 
 var decodedData=json.decode(response.body);
       if (response.statusCode == HttpStatus.ok) {
@@ -55,10 +55,10 @@ var decodedData=json.decode(response.body);
 
          return responseModel;
       } else if (response.statusCode == HttpStatus.gatewayTimeout) {
-        Utils.customPrint('EXE RESP STATUS CODE: ${response?.statusCode}');
+        Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         Utils.customPrint('EXE RESP: $response');
 
-        CustomLogger().logWithFile(Level.error, "EXE RESP STATUS CODE: ${response?.statusCode} ");
+        CustomLogger().logWithFile(Level.error, "EXE RESP STATUS CODE: ${response.statusCode} ");
         CustomLogger().logWithFile(Level.error, "EXE RESP: $response");
 
         if (scaffoldKey != null) {
@@ -79,10 +79,10 @@ var decodedData=json.decode(response.body);
               scaffoldKey: scaffoldKey, message: decodedData['message']);
         }
 
-        Utils.customPrint('EXE RESP STATUS CODE: ${response?.statusCode}');
+        Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         Utils.customPrint('EXE RESP: $response');
 
-        CustomLogger().logWithFile(Level.info, "EXE RESP STATUS CODE: ${response?.statusCode} ->");
+        CustomLogger().logWithFile(Level.info, "EXE RESP STATUS CODE: ${response.statusCode} ->");
         CustomLogger().logWithFile(Level.info, "EXE RESP: $response");
       }
      responseModel = null;
@@ -122,7 +122,7 @@ var decodedData=json.decode(response.body);
           body: jsonEncode(data), headers: headers);
 
       log('Assigned Vessel : ' + response.body);
-      CustomLogger().logWithFile(Level.info, "Assigned Vessel : ' + ' ${response?.body}");
+      CustomLogger().logWithFile(Level.info, "Assigned Vessel : ' + ' ${response.body}");
 
 var decodedData=json.decode(response.body);
       if (response.statusCode == HttpStatus.ok) {
@@ -139,10 +139,10 @@ var decodedData=json.decode(response.body);
 
          return responseModel;
       } else if (response.statusCode == HttpStatus.gatewayTimeout) {
-        Utils.customPrint('EXE RESP STATUS CODE: ${response?.statusCode}');
+        Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         Utils.customPrint('EXE RESP: $response');
 
-        CustomLogger().logWithFile(Level.error, "EXE RESP STATUS CODE: ${response?.statusCode} ");
+        CustomLogger().logWithFile(Level.error, "EXE RESP STATUS CODE: ${response.statusCode} ");
         CustomLogger().logWithFile(Level.error, "EXE RESP: $response");
 
         if (scaffoldKey != null) {
@@ -163,10 +163,10 @@ var decodedData=json.decode(response.body);
               scaffoldKey: scaffoldKey, message: decodedData['message']);
         }
 
-        Utils.customPrint('EXE RESP STATUS CODE: ${response?.statusCode}');
+        Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         Utils.customPrint('EXE RESP: $response');
 
-        CustomLogger().logWithFile(Level.info, "EXE RESP STATUS CODE: ${response?.statusCode} ->");
+        CustomLogger().logWithFile(Level.info, "EXE RESP STATUS CODE: ${response.statusCode} ->");
         CustomLogger().logWithFile(Level.info, "EXE RESP: $response");
       }
      responseModel = null;

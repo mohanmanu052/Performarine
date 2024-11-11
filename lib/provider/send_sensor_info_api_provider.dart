@@ -111,11 +111,9 @@ class SendSensorInfoApiProvider with ChangeNotifier {
             if(uploadTripModel == null){
               CustomLogger().logWithFile(Level.error, "Error while parsing json data on uploadTripModellll -> $page");
             }
-            if (scaffoldKey != null) {
-              Utils.showSnackBar(context,
-                  scaffoldKey: scaffoldKey, message: decodedData['message']);
-            }
-            uploadTripModel = UploadTripModel.fromJson(decodedData);
+            Utils.showSnackBar(context,
+                scaffoldKey: scaffoldKey, message: decodedData['message']);
+                      uploadTripModel = UploadTripModel.fromJson(decodedData);
           }
           return uploadTripModel;
         } else if (response.statusCode == HttpStatus.gatewayTimeout) {
@@ -125,13 +123,11 @@ class SendSensorInfoApiProvider with ChangeNotifier {
           CustomLogger().logWithFile(Level.error, "EXE RESP STATUS CODE: ${response.statusCode} -> $page");
           CustomLogger().logWithFile(Level.error, "EXE RESP: $response -> $page");
 
-          if (scaffoldKey != null) {
-            if (!calledFromSignOut) {
-              Utils.showSnackBar(context,
-                  scaffoldKey: scaffoldKey, message: decodedData['message']);
-            }
+          if (!calledFromSignOut) {
+            Utils.showSnackBar(context,
+                scaffoldKey: scaffoldKey, message: decodedData['message']);
           }
-
+        
           uploadTripModel = null;
         } else if(decodedData['statusCode'] == 401)
           {
@@ -141,13 +137,11 @@ class SendSensorInfoApiProvider with ChangeNotifier {
                 builder: (context) => SessionExpiredScreen()));
 
           }else {
-          if (scaffoldKey != null) {
-            if (!calledFromSignOut) {
-              Utils.showSnackBar(context,
-                  scaffoldKey: scaffoldKey, message: decodedData['message']);
-            }
+          if (!calledFromSignOut) {
+            Utils.showSnackBar(context,
+                scaffoldKey: scaffoldKey, message: decodedData['message']);
           }
-
+        
           Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
           Utils.customPrint('EXE RESP: $response');
           CustomLogger().logWithFile(Level.info, "EXE RESP STATUS CODE: ${response.statusCode} -> $page");
@@ -160,15 +154,14 @@ class SendSensorInfoApiProvider with ChangeNotifier {
 
         CustomLogger().logWithFile(Level.error, "ERROR DIO: $error\n$stackTrace -> $page");
         CustomLogger().logWithFile(Level.warning, "Failed to upload trip. Please check internet connection and try again.-> $page");
-        if (scaffoldKey != null) {
-          if (!calledFromSignOut) {
-            Utils.showSnackBar(context,
-                scaffoldKey: scaffoldKey,
-                message:
-                    'Failed to upload trip. Please check internet connection and try again.');}
-        }
-        flutterLocalNotificationsPlugin.cancel(9989);
+        if (!calledFromSignOut) {
+          Utils.showSnackBar(context,
+              scaffoldKey: scaffoldKey,
+              message:
+                  'Failed to upload trip. Please check internet connection and try again.');}
+              flutterLocalNotificationsPlugin.cancel(9989);
         uploadTripModel = null;
+        return null;
       });
     } on SocketException catch (_) {
       //_networkConnectivity.disposeStream();
@@ -203,7 +196,6 @@ class MultipartRequest extends http.MultipartRequest {
   /// That will emit the request body.
   http.ByteStream finalize() {
     final byteStream = super.finalize();
-    if (onProgress == null) return byteStream;
 
     final total = this.contentLength;
     int bytes = 0;

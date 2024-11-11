@@ -98,30 +98,20 @@ class _SingleMemberDetailsCardState extends State<SingleMemberDetailsCard> {
 
                               commonProvider.removeFleetMember(context, commonProvider.loginModel!.token!, body, widget.scaffoldKey!).then((value)
                               {
-                                if(value != null)
+                                if(value.status!)
                                 {
-                                  if(value.status!)
-                                  {
-                                    setState(() {
-                                      removeMemberBtnColor = false;
-                                    });
-                                    widget.onTap!.call();
-                                  }
-                                  else
-                                  {
-                                    setState(() {
-                                      removeMemberBtnColor = false;
-                                    });
-                                  }
+                                  setState(() {
+                                    removeMemberBtnColor = false;
+                                  });
+                                  widget.onTap!.call();
                                 }
                                 else
                                 {
                                   setState(() {
                                     removeMemberBtnColor = false;
                                   });
-
                                 }
-                              }).catchError((e){
+                                                            }).catchError((e){
                                 setState(() {
                                   removeMemberBtnColor = false;
                                 });

@@ -598,7 +598,7 @@ setState(() {
                               ),
                               //if (vesselsData != null&&!isvesselDataLoading)
                                 SizedBox(
-                                  child:vesselsData != null&&!isvesselDataLoading? Container(
+                                  child:!isvesselDataLoading? Container(
                                     height: displayHeight(context) / 1.7,
                                     child: ListView.builder(
                                         shrinkWrap: true,

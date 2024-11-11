@@ -1325,24 +1325,15 @@ class VesselSingleViewState extends State<VesselSingleView> {
       });
       commonProvider.vesselDelegateData(context, commonProvider.loginModel!.token!, widget.vessel!.id!, scaffoldKey).then((value)
       {
-        if(value != null)
+        if(value.status!)
         {
-          if(value.status!)
-          {
-            debugPrint("DELEGATE COUNT 1 $delegateCount");
-            delegateCount = value.myVesselDelegaties![0].delegateCount.toString();
-            debugPrint("DELEGATE COUNT $delegateCount");
-            setState(() {
-              isDelegateApiCalled = false;
-            });
+          debugPrint("DELEGATE COUNT 1 $delegateCount");
+          delegateCount = value.myVesselDelegaties![0].delegateCount.toString();
+          debugPrint("DELEGATE COUNT $delegateCount");
+          setState(() {
+            isDelegateApiCalled = false;
+          });
 
-          }
-          else
-          {
-            setState(() {
-              isDelegateApiCalled = false;
-            });
-          }
         }
         else
         {
@@ -1350,7 +1341,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
             isDelegateApiCalled = false;
           });
         }
-      }).catchError((e){
+            }).catchError((e){
         if(mounted)
           {
             setState(() {

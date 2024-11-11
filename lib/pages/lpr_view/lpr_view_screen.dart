@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
@@ -8,9 +7,7 @@ import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/common_widgets/widgets/custom_add_sensor_dialog.dart';
-import 'package:performarine/common_widgets/widgets/dash_rect.dart';
 import 'package:performarine/common_widgets/widgets/dash_rect_button.dart';
-import 'package:performarine/common_widgets/widgets/dotted_line.dart';
 import 'package:performarine/common_widgets/widgets/user_feed_back.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
 import 'package:performarine/pages/feedback_report.dart';

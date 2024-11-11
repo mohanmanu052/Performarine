@@ -85,15 +85,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
     if(arg !=  null)
     {
       Map<String, dynamic> arguments = Get.arguments as Map<String, dynamic>;
-      bool isComingFrom = arguments?['isComingFromReset'] ?? false;
-      String updatedToken = arguments?['token'] ?? "";
+      bool isComingFrom = arguments['isComingFromReset'] ?? false;
+      String updatedToken = arguments['token'] ?? "";
 
       setState(() {});
 
 
     Utils.customPrint("isComingFromReset: ${isComingFrom}");
       if(mounted){
-        if(isComingFrom != null && isComingFrom )
+        if(isComingFrom )
         {
 
           Future.delayed(Duration(microseconds: 500), (){
@@ -184,15 +184,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
         if(arg !=  null)
         {
           Map<String, dynamic> arguments = Get.arguments as Map<String, dynamic>;
-          bool isComingFrom = arguments?['isComingFromReset'] ?? false;
-          String updatedToken = arguments?['token'] ?? "";
+          bool isComingFrom = arguments['isComingFromReset'] ?? false;
+          String updatedToken = arguments['token'] ?? "";
 
           if(mounted){
             setState(() {});
           }
           Utils.customPrint("isComingFromReset: ${isComingFrom}");
           if(mounted){
-            if(isComingFrom != null && isComingFrom )
+            if(isComingFrom )
             {
               Future.delayed(Duration(microseconds: 500), (){
                 Utils.customPrint("XXXXXXXXX ${_isThereCurrentDialogShowing(context)}");
@@ -645,8 +645,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                           .difference(createdAtTime);
                                       String tripDuration =
                                       Utils.calculateTripDuration(
-                                          ((durationTime.inMilliseconds) / 1000)
-                                              .toInt());
+                                          (durationTime.inMilliseconds) ~/ 1000);
 
                                       Utils.customPrint("DURATION !!!!!! $tripDuration");
 
@@ -722,7 +721,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
                                                     TripRecordingScreen(
                                                       //bottomNavIndex: _bottomNavIndex,
                                                         tripId: tripData[0],
-                                                        vesselId: tripData![1],
+                                                        vesselId: tripData[1],
                                                         vesselName: tripData[2],
                                                         tripIsRunningOrNot:
                                                             runningTrip)));
@@ -809,8 +808,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin, Widg
         .difference(createdAtTime);
     String tripDuration =
     Utils.calculateTripDuration(
-        ((durationTime.inMilliseconds) / 1000)
-            .toInt());
+        (durationTime.inMilliseconds) ~/ 1000);
 
     Utils.customPrint(
         'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');

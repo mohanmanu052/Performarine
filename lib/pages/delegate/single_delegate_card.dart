@@ -112,30 +112,21 @@ class _SingleDelegateCardState extends State<SingleDelegateCard> {
 
                                   commonProvider.removeDelegate(context, commonProvider.loginModel!.token!, widget.vesselID!, delegates!.id, widget.scaffoldKey!).then((value)
                                   {
-                                    if(value != null)
-                                      {
-                                        if(value.status!)
-                                          {
-                                            setState(() {
-                                              isDeleteDelegateClicked = false;
-                                            });
+                                      if(value.status!)
+                                        {
+                                          setState(() {
+                                            isDeleteDelegateClicked = false;
+                                          });
 
-                                            widget.onTap!.call();
-                                          }
-                                        else
-                                          {
-                                            setState(() {
-                                              isDeleteDelegateClicked = false;
-                                            });
-                                          }
-                                      }
-                                    else
-                                      {
-                                        setState(() {
-                                          isDeleteDelegateClicked = false;
-                                        });
-                                      }
-                                  }).catchError((e){
+                                          widget.onTap!.call();
+                                        }
+                                      else
+                                        {
+                                          setState(() {
+                                            isDeleteDelegateClicked = false;
+                                          });
+                                        }
+                                                                      }).catchError((e){
                                     setState(() {
                                       isDeleteDelegateClicked = false;
                                     });

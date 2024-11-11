@@ -575,7 +575,7 @@ class DateTimeAxisDetails extends ChartAxisRendererDetails {
       [bool? isXVisibleRange, bool? isYVisibleRange]) {
     isSingleDataPoint = seriesRendererDetails.dataPoints.length == 1;
     if (point.x != null) {
-      point.xValue = (point.x).millisecondsSinceEpoch;
+      point.xValue = point.x.millisecondsSinceEpoch;
     }
     final bool anchorRangeToVisiblePoints =
         seriesRendererDetails.yAxisDetails!.axis.anchorRangeToVisiblePoints;

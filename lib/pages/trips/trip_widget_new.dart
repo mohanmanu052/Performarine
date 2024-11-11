@@ -890,7 +890,7 @@ class _TripWidgetNewState extends State<TripWidgetNew> {
       {
         if (!vesselIsSync) {
 
-          Utils.customPrint('VESSEL DATA ${vesselData!.id}');
+          Utils.customPrint('VESSEL DATA ${vesselData.id}');
           CustomLogger().logWithFile(Level.info, "VESSEL DATA ${vesselData.id} -> $page");
 
           commonProvider.addVesselRequestModel = CreateVessel();

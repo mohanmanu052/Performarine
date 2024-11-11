@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
-import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'dart:math' as math;
 
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 
-import '../utils/constants.dart';
 
 //To show dashed rectangle
 class DashedRectButton extends StatelessWidget {

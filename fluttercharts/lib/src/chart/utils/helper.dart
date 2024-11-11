@@ -1780,7 +1780,7 @@ ChartLocation getAnnotationLocation(CartesianChartAnnotation annotation,
           }
         } else if (xAxisRenderer is DateTimeAxisRenderer) {
           xValue = annotation.x is DateTime
-              ? (annotation.x).millisecondsSinceEpoch
+              ? annotation.x.millisecondsSinceEpoch
               : annotation.x;
         } else if (xAxisRenderer is DateTimeCategoryAxisRenderer) {
           final DateTimeCategoryAxisDetails dateTimeCategoryAxisDetails =
@@ -1800,7 +1800,7 @@ ChartLocation getAnnotationLocation(CartesianChartAnnotation annotation,
           }
         } else {
           xValue = annotation.x is DateTime
-              ? (annotation.x).millisecondsSinceEpoch
+              ? annotation.x.millisecondsSinceEpoch
               : annotation.x;
         }
       } else if (yAxisName == axisRendererDetails.name ||
@@ -3892,8 +3892,8 @@ void calculateDateTimeVisibleRange(
             ? axisRenderer.calculateInterval(visibleRange, availableSize)
             : visibleRange.interval;
     if (axisRenderer is DateTimeAxisRenderer) {
-      visibleRange.minimum = (visibleRange.minimum).floor();
-      visibleRange.maximum = (visibleRange.maximum).floor();
+      visibleRange.minimum = visibleRange.minimum.floor();
+      visibleRange.maximum = visibleRange.maximum.floor();
     }
     if (axisRendererDetails.axis.rangeController != null &&
         stateProperties.isRedrawByZoomPan &&

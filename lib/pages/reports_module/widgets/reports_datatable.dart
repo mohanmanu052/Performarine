@@ -11,7 +11,7 @@ class ReportsDataTable extends StatefulWidget {
   Orientation? orientation;
   Function(int index, dynamic personData, Orientation orientation)?
       onTapCallBack;
-  dynamic? globalkey;
+  dynamic globalkey;
 
   int? barIndex;
 
@@ -135,7 +135,7 @@ class ReportsDataTableState extends State<ReportsDataTable> {
 //       selectedRowIndex = isSelected??false ? widget.tripList.indexOf(person) : -1;
 //     });
 //  },
-                    color: MaterialStateProperty.all(
+                    color: WidgetStateProperty.all(
                       selectedRowIndex == widget.tripList.indexOf(person)
                           ? reroprtHighlightBackgroundColor // Change the background color for the selected row
                           : null, // Use null to keep the default background color

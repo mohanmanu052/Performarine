@@ -90,31 +90,22 @@ class _FleetInvitesSingleCardState extends State<FleetInvitesSingleCard> {
 
                             commonProvider.fleetMemberInvitation(context, commonProvider.loginModel!.token!,
                                 widget.fleetInvites!.invitationToken!, 'false', widget.scaffoldKey!).then((value) {
-                              if(value != null)
+                              if(value.status!)
                               {
-                                if(value.status!)
-                                {
-                                  setState(() {
-                                    isRejectBtnClicked = false;
-                                  });
+                                setState(() {
+                                  isRejectBtnClicked = false;
+                                });
 
-                                  widget.onTap!.call();
-                                }
-                                else
-                                {
-                                  setState(() {
-                                    isRejectBtnClicked = false;
-                                  });
-
-                                }
+                                widget.onTap!.call();
                               }
                               else
                               {
                                 setState(() {
                                   isRejectBtnClicked = false;
                                 });
+
                               }
-                            }).catchError((e){
+                                                        }).catchError((e){
                               setState(() {
                                 isRejectBtnClicked = false;
                               });
@@ -166,22 +157,13 @@ class _FleetInvitesSingleCardState extends State<FleetInvitesSingleCard> {
 
                                   commonProvider.fleetMemberInvitation(context, commonProvider.loginModel!.token!,
                                       widget.fleetInvites!.invitationToken!, 'true', widget.scaffoldKey!).then((value) {
-                                    if(value != null)
+                                    if(value.status!)
                                     {
-                                      if(value.status!)
-                                      {
-                                        setState(() {
-                                          isAcceptBtnClicked = false;
-                                        });
+                                      setState(() {
+                                        isAcceptBtnClicked = false;
+                                      });
 
-                                        widget.onTap!.call();
-                                      }
-                                      else
-                                      {
-                                        setState(() {
-                                          isAcceptBtnClicked = false;
-                                        });
-                                      }
+                                      widget.onTap!.call();
                                     }
                                     else
                                     {
@@ -189,7 +171,7 @@ class _FleetInvitesSingleCardState extends State<FleetInvitesSingleCard> {
                                         isAcceptBtnClicked = false;
                                       });
                                     }
-                                  }).catchError((e){
+                                                                    }).catchError((e){
                                     setState(() {
                                       isAcceptBtnClicked = false;
                                     });

@@ -332,8 +332,8 @@ class BoxAndWhiskerPainter extends CustomPainter {
         point = dataPoints[pointIndex];
         assert(point.y != null,
             'The yValues of the box and whisker series should not be null.');
-        (point.y).remove(null);
-        (point.y).sort();
+        point.y.remove(null);
+        point.y.sort();
         seriesRenderer._findBoxPlotValues(point.y, point, series.boxPlotMode);
         seriesRendererDetails.calculateRegionData(
             seriesRendererDetails.stateProperties,

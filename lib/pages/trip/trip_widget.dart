@@ -210,8 +210,7 @@ class _TripWidgetState extends State<TripWidget> {
               widget.calledFrom != 'VesselSingleView'
                   ? Expanded(
                       flex: 0,
-                      child: vesselImageUrl == null ||
-                              vesselImageUrl.isEmpty ||
+                      child: vesselImageUrl.isEmpty ||
                               vesselImageUrl == 'string' ||
                               vesselImageUrl == '[]' ||
                               vesselImageUrl == ''
@@ -325,7 +324,7 @@ class _TripWidgetState extends State<TripWidget> {
 
                                                                     }
 
-                                                                    if(data!=null&&data.message!=null){
+                                                                    if(data.message!=null){
           Utils.showSnackBar(context,
               scaffoldKey: widget.scaffoldKey, message: data.message);
 

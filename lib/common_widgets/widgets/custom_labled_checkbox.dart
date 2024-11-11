@@ -19,12 +19,11 @@ class CustomLabeledCheckbox extends StatelessWidget {
     required this.value,
     required this.onChanged,
     this.orientation,
-    this.checkboxType: CheckboxType.Child,
+    this.checkboxType = CheckboxType.Child,
     required this.activeColor,
-  })  : assert(label != null),
-        assert(checkboxType != null),
+  })  : assert(checkboxType != null),
         assert(
-          (checkboxType == CheckboxType.Child && value != null) ||
+          (checkboxType == CheckboxType.Child) ||
               checkboxType == CheckboxType.Parent,
         ),
         tristate = checkboxType == CheckboxType.Parent ? true : false;
@@ -38,12 +37,8 @@ class CustomLabeledCheckbox extends StatelessWidget {
   Orientation? orientation;
 
   void _onChanged() {
-    if (value != null) {
-      onChanged(!value);
-    } else {
-      onChanged(value);
+    onChanged(!value);
     }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,14 +87,13 @@ class CustomLabeledCheckboxOne extends StatelessWidget {
       {required this.label,
       required this.value,
       required this.onChanged,
-      this.checkboxType: CheckboxType.Child,
+      this.checkboxType = CheckboxType.Child,
       required this.activeColor,
       this.dateTime,
       this.tripId})
-      : assert(label != null),
-        assert(checkboxType != null),
+      : assert(checkboxType != null),
         assert(
-          (checkboxType == CheckboxType.Child && value != null) ||
+          (checkboxType == CheckboxType.Child) ||
               checkboxType == CheckboxType.Parent,
         ),
         tristate = checkboxType == CheckboxType.Parent ? true : false;
@@ -114,12 +108,8 @@ class CustomLabeledCheckboxOne extends StatelessWidget {
   String? tripId;
 
   void _onChanged() {
-    if (value != null) {
-      onChanged(!value);
-    } else {
-      onChanged(value);
+    onChanged(!value);
     }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -170,7 +160,7 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
       {required this.label,
       required this.value,
       required this.onChanged,
-      this.checkboxType: CheckboxType.Child,
+      this.checkboxType = CheckboxType.Child,
       required this.activeColor,
       this.dateTime,
       this.distance,
@@ -178,10 +168,9 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
       this.isfleetType,
       this.imageUrl,
       this.time})
-      : assert(label != null),
-        assert(checkboxType != null),
+      : assert(checkboxType != null),
         assert(
-          (checkboxType == CheckboxType.Child && value != null) ||
+          (checkboxType == CheckboxType.Child) ||
               checkboxType == CheckboxType.Parent,
         ),
         tristate = checkboxType == CheckboxType.Parent ? true : false;
@@ -200,12 +189,8 @@ class CustomLabeledCheckboxNew extends StatelessWidget {
   bool? isfleetType;
 
   void _onChanged() {
-    if (value != null) {
-      onChanged(!value);
-    } else {
-      onChanged(value);
+    onChanged(!value);
     }
-  }
 
   @override
   Widget build(BuildContext context) {

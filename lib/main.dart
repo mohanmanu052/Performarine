@@ -188,7 +188,7 @@ createFolder() async{
   try{
     fileee = File(debugLogFilePath);
 
-    if(fileee != null && fileee.existsSync()){
+    if(fileee.existsSync()){
       String data = await fileee.readAsString(encoding: Latin1Codec());
 
       Utils.customPrint("main data is: ${data.toString()}");

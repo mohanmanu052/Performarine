@@ -1562,10 +1562,10 @@ Function? setStateCallBackTrip;
                                                   ScrollbarThemeData(
                                                 radius:
                                                     const Radius.circular(20),
-                                                thickness: MaterialStateProperty
+                                                thickness: WidgetStateProperty
                                                     .all<double>(6),
                                                 thumbVisibility:
-                                                    MaterialStateProperty.all<
+                                                    WidgetStateProperty.all<
                                                         bool>(true),
                                               ),
                                             ),
@@ -2609,12 +2609,12 @@ Function? setStateCallBackTrip;
                   padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   child: ElevatedButton(
                     style: ButtonStyle(
-                      elevation: MaterialStateProperty.all(null),
-                      padding: MaterialStateProperty.all(EdgeInsets.all(0)),
-                      backgroundColor: MaterialStateProperty.all(blueColor),
-                      textStyle: MaterialStateProperty.all(
+                      elevation: WidgetStateProperty.all(null),
+                      padding: WidgetStateProperty.all(EdgeInsets.all(0)),
+                      backgroundColor: WidgetStateProperty.all(blueColor),
+                      textStyle: WidgetStateProperty.all(
                           TextStyle(color: Colors.blue)),
-                      shape: MaterialStateProperty.all(
+                      shape: WidgetStateProperty.all(
                           new RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5))),
                     ),
@@ -3211,11 +3211,9 @@ Function? setStateCallBackTrip;
 
     geo.Position currentPosition = await geo.Geolocator.getCurrentPosition();
 
-    if (currentPosition != null) {
-      latitude = currentPosition.latitude.toString();
-      longitude = currentPosition.longitude.toString();
-    }
-
+    latitude = currentPosition.latitude.toString();
+    longitude = currentPosition.longitude.toString();
+  
     await fetchDeviceData();
 
    // debugPrint("TRIP NAME IS EMPTY ? ${tripNameController.text.trim().isEmpty}");
@@ -3359,10 +3357,8 @@ Function? setStateCallBackTrip;
                 calledFrom: widget.calledFrom)),
       );
 
-      if (result != null) {
-        Utils.customPrint('VESSEL SINGLE VIEW RESULT $result');
-      }
-    }
+      Utils.customPrint('VESSEL SINGLE VIEW RESULT $result');
+        }
     return;
   }
 
@@ -4976,7 +4972,7 @@ Function? setStateCallBackTrip;
     // });
 
     // checkAndGetLPRList();
-    if (mounted && context != null) {
+    if (mounted) {
       if (autoConnectStreamSubscription != null)
         autoConnectStreamSubscription!.cancel();
       if (autoConnectIsScanningStreamSubscription != null)
@@ -5059,10 +5055,8 @@ Function? setStateCallBackTrip;
                                   height: displayHeight(context) * 0.28,
                                   child: LPRBluetoothList(
                                                                             onErrCallback: (err){
-                                          if(scaffoldKey!=null){
-                                            Utils.showSnackBar(context1,scaffoldKey: scaffoldKey,message: 'Some error occured please try again later');
-                                          }
-
+                                          Utils.showSnackBar(context1,scaffoldKey: scaffoldKey,message: 'Some error occured please try again later');
+                                        
                                         },
 
                                     scafoldKey: scaffoldKey,
@@ -5142,10 +5136,8 @@ if(mounted){
                                     connectedBluetoothDevice:
                                         connectedBluetoothDevice,
                                         onErrCallback: (err){
-                                          if(scaffoldKey!=null){
-                                            Utils.showSnackBar(context1,scaffoldKey: scaffoldKey,message: 'Some error occured please try again later');
-                                          }
-
+                                          Utils.showSnackBar(context1,scaffoldKey: scaffoldKey,message: 'Some error occured please try again later');
+                                        
                                         },
                                         onConnetedCallBack: (connectedDevice) {
 
@@ -5320,7 +5312,7 @@ if(mounted){
                                   setDialogState(() {
                                     isScanningBluetooth = false;
                                   });
-                                  if (mounted && context != null) {
+                                  if (mounted) {
                                     Navigator.pop(context);
                                   } else {
                                     Get.back();

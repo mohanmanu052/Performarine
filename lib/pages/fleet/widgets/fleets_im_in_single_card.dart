@@ -175,21 +175,12 @@ class _FleetsImInSingleCardState extends State<FleetsImInSingleCard> {
                         });
                         commonProvider.leaveFleet(context, commonProvider.loginModel!.token!, widget.fleetsIamIn!.fleetId!, widget.scaffoldKey!).then((value)
                         {
-                          if(value != null)
+                          if(value.status!)
                           {
-                            if(value.status!)
-                            {
-                              setState(() {
-                                leaveFleetBtn = false;
-                              });
-                              widget.onTap!.call();
-                            }
-                            else
-                            {
-                              setState(() {
-                                leaveFleetBtn = false;
-                              });
-                            }
+                            setState(() {
+                              leaveFleetBtn = false;
+                            });
+                            widget.onTap!.call();
                           }
                           else
                           {
@@ -197,7 +188,7 @@ class _FleetsImInSingleCardState extends State<FleetsImInSingleCard> {
                               leaveFleetBtn = false;
                             });
                           }
-                        }).catchError((e) {
+                                                }).catchError((e) {
                           setState(() {
                             leaveFleetBtn = false;
                           });

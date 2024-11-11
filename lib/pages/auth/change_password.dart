@@ -245,30 +245,24 @@ class _ChangePasswordState extends State<ChangePassword> {
                                   isBtnClick = true;
                                 });
                                 commonProvider.changePassword(context,commonProvider.loginModel!.token!, currentPasswordController.text.trim(), newPasswordController.text.trim(), scaffoldKey).then((value){
-                                  if(value != null){
-                                    setState(() {
-                                      isBtnClick = false;
-                                    });
+                                  setState(() {
+                                    isBtnClick = false;
+                                  });
 
-                                  Utils.customPrint("Status code of change password is: ${value.statusCode}");
-                                    CustomLogger().logWithFile(Level.info, "Status code of change password is: ${value.statusCode} -> $page");
+                                Utils.customPrint("Status code of change password is: ${value.statusCode}");
+                                  CustomLogger().logWithFile(Level.info, "Status code of change password is: ${value.statusCode} -> $page");
 
-                                    if(value.status!){
+                                  if(value.status!){
 
-                                      if(widget.isChange!){
+                                    if(widget.isChange!){
 
-                                        Navigator.pop(context);
-                                      }else{
-                                        Navigator.pop(context);
-                                        Navigator.pop(context);
-                                      }
+                                      Navigator.pop(context);
+                                    }else{
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
                                     }
-                                  } else{
-                                    setState(() {
-                                      isBtnClick = false;
-                                    });
                                   }
-                                }).catchError((e){
+                                                                }).catchError((e){
                                   setState(() {
                                     isBtnClick = false;
                                   });

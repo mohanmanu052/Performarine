@@ -2,12 +2,12 @@ import 'dart:ui' as dart_ui;
 
 import 'package:flutter/material.dart';
 
-import './../../common/event_args.dart' show MarkerRenderArgs;
 import '../chart_series/series_renderer_properties.dart';
 import '../chart_series/waterfall_series.dart';
 import '../chart_series/xy_data_series.dart';
 import '../common/data_label_renderer.dart';
 import '../utils/helper.dart';
+import './../../common/event_args.dart' show MarkerRenderArgs;
 import 'common.dart';
 
 export 'package:syncfusion_flutter_core/core.dart'

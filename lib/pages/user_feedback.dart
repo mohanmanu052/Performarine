@@ -36,7 +36,7 @@ class _UserFeedbackState extends State<UserFeedback> {
                 children: [
                   ElevatedButton(
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(Colors.purple),
+                        backgroundColor: WidgetStateProperty.all<Color>(Colors.purple),
                       ),
                       onPressed: (){
                         final image = controller.capture();
@@ -52,7 +52,7 @@ class _UserFeedbackState extends State<UserFeedback> {
 
                   ElevatedButton(
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                        backgroundColor: WidgetStateProperty.all<Color>(Colors.blue),
                       ),
                       onPressed: (){
                         handleScreenshotAndAPI();

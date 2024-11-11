@@ -99,27 +99,23 @@ class _SignInScreenState extends State<SignInScreen> {
       canPop: false,
       onPopInvoked: (didPop) async {
         if (didPop) return;
-        if (widget.calledFrom != null) {
-          if (widget.calledFrom.isNotEmpty || widget.calledFrom == '') {
-            if (widget.calledFrom == 'SignUp' ||
-                widget.calledFrom == 'sideMenu' ||
-                widget.calledFrom == 'HomePage' ||
-                widget.calledFrom == 'ResetPassword' ||
-                widget.calledFrom == 'forgotPassword') {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => NewIntroScreen()),
-                  ModalRoute.withName(""));
-            } else {
-              Navigator.of(context).pop();
-            }
+        if (widget.calledFrom.isNotEmpty || widget.calledFrom == '') {
+          if (widget.calledFrom == 'SignUp' ||
+              widget.calledFrom == 'sideMenu' ||
+              widget.calledFrom == 'HomePage' ||
+              widget.calledFrom == 'ResetPassword' ||
+              widget.calledFrom == 'forgotPassword') {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => NewIntroScreen()),
+                ModalRoute.withName(""));
           } else {
             Navigator.of(context).pop();
           }
         } else {
           Navigator.of(context).pop();
         }
-      },
+            },
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: Colors.white,
@@ -251,24 +247,22 @@ class _SignInScreenState extends State<SignInScreen> {
                                           isGoogleSignInBtnClicked = false;
                                         });
 
-                                        if (value != null) {
-                                          if (value.status!) {
-                                            setState(() {
-                                              isGoogleSignInBtnClicked = false;
-                                            });
-                                            var bool = await Utils()
-                                                .check(scaffoldKey);
+                                        if (value.status!) {
+                                          setState(() {
+                                            isGoogleSignInBtnClicked = false;
+                                          });
+                                          var bool = await Utils()
+                                              .check(scaffoldKey);
 
-                                            Navigator.pushAndRemoveUntil(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      SyncDataCloudToMobileScreen(),
-                                                ),
-                                                ModalRoute.withName(""));
-                                          }
+                                          Navigator.pushAndRemoveUntil(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    SyncDataCloudToMobileScreen(),
+                                              ),
+                                              ModalRoute.withName(""));
                                         }
-                                      }).catchError((e) {
+                                                                            }).catchError((e) {
                                         if (mounted) {
                                           setState(() {
                                             isGoogleSignInBtnClicked = false;
@@ -350,24 +344,22 @@ class _SignInScreenState extends State<SignInScreen> {
                                     isAppleSignInBtnClicked = false;
                                   });
 
-                                  if (value != null) {
-                                    if (value.status!) {
-                                      setState(() {
-                                        isAppleSignInBtnClicked = false;
-                                      });
-                                      var bool =
-                                          await Utils().check(scaffoldKey);
+                                  if (value.status!) {
+                                    setState(() {
+                                      isAppleSignInBtnClicked = false;
+                                    });
+                                    var bool =
+                                        await Utils().check(scaffoldKey);
 
-                                      Navigator.pushAndRemoveUntil(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                SyncDataCloudToMobileScreen(),
-                                          ),
-                                          ModalRoute.withName(""));
-                                    }
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              SyncDataCloudToMobileScreen(),
+                                        ),
+                                        ModalRoute.withName(""));
                                   }
-                                }).catchError((e) {
+                                                                }).catchError((e) {
                                   if (mounted) {
                                     setState(() {
                                       isAppleSignInBtnClicked = false;
@@ -568,18 +560,16 @@ class _SignInScreenState extends State<SignInScreen> {
                                               isLoginBtnClicked = false;
                                             });
 
-                                            if (value != null) {
-                                              if (value.status!) {
-                                                Navigator.pushAndRemoveUntil(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          SyncDataCloudToMobileScreen(),
-                                                    ),
-                                                    ModalRoute.withName(""));
-                                              }
+                                            if (value.status!) {
+                                              Navigator.pushAndRemoveUntil(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        SyncDataCloudToMobileScreen(),
+                                                  ),
+                                                  ModalRoute.withName(""));
                                             }
-                                          }).catchError((e) {
+                                                                                    }).catchError((e) {
                                             setState(() {
                                               isLoginBtnClicked = false;
                                             });

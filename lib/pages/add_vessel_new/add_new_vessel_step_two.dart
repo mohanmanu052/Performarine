@@ -106,7 +106,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
   @override
   void didUpdateWidget(covariant AddNewVesselStepTwo oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if(commonProvider.selectedImageFiles != null && commonProvider.selectedImageFiles.isNotEmpty){
+    if(commonProvider.selectedImageFiles.isNotEmpty){
       finalSelectedFiles = commonProvider.selectedImageFiles;
     } else{
       isDeleted = true;
@@ -267,7 +267,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         onChanged: (String value) {
                         },
                         validator: (value) {
-                          if (value!.trim().isEmpty||value!.trim()=='.') {
+                          if (value!.trim().isEmpty||value.trim()=='.') {
                             return 'Enter Vessel Freeboard';
                           }
 
@@ -300,7 +300,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         onChanged: (String value) {
                         },
                         validator: (value) {
-                          if (value!.trim().isEmpty||value!.trim()=='.') {
+                          if (value!.trim().isEmpty||value.trim()=='.') {
                             return 'Enter Vessel Length Overall';
                           }
                           return null;
@@ -332,7 +332,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         onChanged: (String value) {
                         },
                         validator: (value) {
-                          if (value!.trim().isEmpty||value!.trim()=='.') {
+                          if (value!.trim().isEmpty||value.trim()=='.') {
                             return 'Enter Vessel Beam';
                           }
 
@@ -366,7 +366,7 @@ class _AddNewVesselStepTwoState extends State<AddNewVesselStepTwo> with Automati
                         onChanged: (String value) {
                         },
                         validator: (value) {
-                          if (value!.trim().isEmpty||value!.trim()=='.') {
+                          if (value!.trim().isEmpty||value.trim()=='.') {
                             return 'Enter Vessel Draft';
                           }
 
@@ -461,7 +461,7 @@ if (dotCount > 1) {
 
 
 
-                          if (value!.trim().isEmpty||value!.trim()=='.') {
+                          if (value.trim().isEmpty||value.trim()=='.') {
                             return 'Enter Vessel Size';
                           }
 

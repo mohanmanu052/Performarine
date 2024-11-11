@@ -137,6 +137,7 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
               else {
                 return null;
               }
+              return null;
             },
             onChanged: (value){
               /*if (formKey.currentState!.validate()) {
@@ -281,6 +282,7 @@ class _CreateNewFleetScreenState extends State<CreateNewFleetScreen> {
                         if (value!.isEmpty) {
                           return 'Please enter fleet name';
                         }
+                        return null;
                       },
                     ),
                   ),

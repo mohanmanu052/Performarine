@@ -264,8 +264,7 @@ class _TripListScreenState extends State<TripListScreen> {
                                     .difference(createdAtTime);
                                 String tripDuration =
                                     Utils.calculateTripDuration(
-                                        ((durationTime.inMilliseconds) / 1000)
-                                            .toInt());
+                                        (durationTime.inMilliseconds) ~/ 1000);
 
                                 String? tripDistance = sharedPreferences!.getString('tripDistance') ?? "0";
                                 String? tripSpeed = sharedPreferences!.getString('tripSpeed') ?? "0.0";
@@ -1088,12 +1087,9 @@ LoginModel loginData=await getEmail();
 
     Position currentPosition = await Geolocator.getCurrentPosition();
 
-    if(currentPosition != null)
-    {
-      latitude = currentPosition.latitude.toString();
-      longitude = currentPosition.longitude.toString();
-    }
-
+    latitude = currentPosition.latitude.toString();
+    longitude = currentPosition.longitude.toString();
+  
     Utils.customPrint("current lod:$currentLoad");
     CustomLogger().logWithFile(Level.info, "current lod:$currentLoad -> $page");
     final String getTripId = ObjectId().toString();

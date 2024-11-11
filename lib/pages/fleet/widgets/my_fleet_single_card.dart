@@ -93,21 +93,12 @@ class _MyFleetSingleCardState extends State<MyFleetSingleCard> {
 
                                       commonProvider.editFleetDetails(context, commonProvider.loginModel!.token!, value.first, value.last, widget.scaffoldKey!).then((value)
                                       {
-                                        if(value != null)
+                                        if(value.status!)
                                         {
-                                          if(value.status!)
-                                          {
-                                            setState(() {
-                                              isUpdateBtnClicked = false;
-                                            });
-                                            widget.onTap!.call();
-                                          }
-                                          else
-                                          {
-                                            setState(() {
-                                              isUpdateBtnClicked = false;
-                                            });
-                                          }
+                                          setState(() {
+                                            isUpdateBtnClicked = false;
+                                          });
+                                          widget.onTap!.call();
                                         }
                                         else
                                         {
@@ -115,7 +106,7 @@ class _MyFleetSingleCardState extends State<MyFleetSingleCard> {
                                             isUpdateBtnClicked = false;
                                           });
                                         }
-                                      }).catchError((e){
+                                                                            }).catchError((e){
                                         setState(() {
                                           isUpdateBtnClicked = false;
                                         });
@@ -268,21 +259,12 @@ class _MyFleetSingleCardState extends State<MyFleetSingleCard> {
                                   });
                                   commonProvider.deleteFleet(context, commonProvider.loginModel!.token!, widget.myFleets!.id!, widget.scaffoldKey!).then((value)
                                   {
-                                    if(value != null)
+                                    if(value.status!)
                                     {
-                                      if(value.status!)
-                                      {
-                                        setState(() {
-                                          deleteFleetBtn = false;
-                                        });
-                                        widget.onTap!.call();
-                                      }
-                                      else
-                                        {
-                                          setState(() {
-                                            deleteFleetBtn = false;
-                                          });
-                                        }
+                                      setState(() {
+                                        deleteFleetBtn = false;
+                                      });
+                                      widget.onTap!.call();
                                     }
                                     else
                                       {
@@ -290,7 +272,7 @@ class _MyFleetSingleCardState extends State<MyFleetSingleCard> {
                                           deleteFleetBtn = false;
                                         });
                                       }
-                                  }).catchError((e) {
+                                                                    }).catchError((e) {
                                     setState(() {
                                       deleteFleetBtn = false;
                                     });

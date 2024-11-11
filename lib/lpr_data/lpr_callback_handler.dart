@@ -78,11 +78,11 @@ callBackLprTanspernetserviecId(_lprTransparentServiceUUID.str128,_lprUartTX.str1
 
     if (connectedDevice != null) {
       bluetoothConnectionStateListener =
-          connectedDevice!.connectionState.listen((event) async {
+          connectedDevice.connectionState.listen((event) async {
         if (event == BluetoothConnectionState.disconnected) {
         } else if (event == BluetoothConnectionState.connected) {
           List<BluetoothService> services =
-              await connectedDevice!.discoverServices();
+              await connectedDevice.discoverServices();
 //This Function Will Return The Connected BlueTooth Name On Map Screen
           callBackconnectedDeviceName!(connectedDevice.platformName);
           callBackLprUartTxStatus!('Not Connected');
@@ -139,7 +139,7 @@ callBackLprTanspernetserviecId(_lprTransparentServiceUUID.str128,_lprUartTX.str1
             //Callback it will return the exception to Map Screen
             callBackLprTanspernetserviecIdStatus!(ex.toString());
             Utils.customPrint(
-                'LPR Streaming Data Error: connected Device remote Str ${connectedDevice!.remoteId.str}  err : ${ex.toString()}');
+                'LPR Streaming Data Error: connected Device remote Str ${connectedDevice.remoteId.str}  err : ${ex.toString()}');
           }
 
 //Testing Purpose This Will Load Data From Sample LPRData File From Assets Production Time It will be removed
@@ -150,7 +150,7 @@ callBackLprTanspernetserviecId(_lprTransparentServiceUUID.str128,_lprUartTX.str1
 // }
 
           Utils.customPrint(
-              'BLE - DEVICE GOT CONNECTED: ${connectedDevice!.remoteId.str} - $event');
+              'BLE - DEVICE GOT CONNECTED: ${connectedDevice.remoteId.str} - $event');
         }
       });
     }

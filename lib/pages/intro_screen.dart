@@ -1,12 +1,10 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:app_links/app_links.dart';
 import 'package:background_locator_2/background_locator.dart';
 import 'package:background_locator_2/settings/android_settings.dart';
 import 'package:background_locator_2/settings/ios_settings.dart';
 import 'package:background_locator_2/settings/locator_settings.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -21,11 +19,8 @@ import 'package:performarine/main.dart';
 import 'package:performarine/pages/auth_new/reset_password.dart';
 import 'package:performarine/pages/auth_new/sign_in_screen.dart';
 import 'package:performarine/pages/fleet/my_fleet_screen.dart';
-import 'package:performarine/pages/home_page.dart';
-import 'package:performarine/pages/new_intro_screen.dart';
 import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
 import 'package:performarine/pages/sync_data_cloud_to_mobile_screen.dart';
-import 'package:performarine/pages/trip_analytics.dart';
 
 import '../common_widgets/utils/constants.dart';
 import '../common_widgets/widgets/log_level.dart';

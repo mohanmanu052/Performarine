@@ -277,25 +277,23 @@ class _SignInScreenState extends State<SignInScreen> {
                                                       false;
                                                 });
 
-                                                if (value != null) {
-                                                  if (value.status!) {
-                                                    setState(() {
-                                                      isGoogleSignInBtnClicked =
-                                                          false;
-                                                    });
-                                                    var bool = await Utils()
-                                                        .check(scaffoldKey);
+                                                if (value.status!) {
+                                                  setState(() {
+                                                    isGoogleSignInBtnClicked =
+                                                        false;
+                                                  });
+                                                  var bool = await Utils()
+                                                      .check(scaffoldKey);
 
-                                                    Navigator.pushAndRemoveUntil(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              SyncDataCloudToMobileScreen(),
-                                                        ),
-                                                        ModalRoute.withName(""));
-                                                  }
+                                                  Navigator.pushAndRemoveUntil(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            SyncDataCloudToMobileScreen(),
+                                                      ),
+                                                      ModalRoute.withName(""));
                                                 }
-                                              }).catchError((e) {
+                                                                                            }).catchError((e) {
                                                 setState(() {
                                                   isGoogleSignInBtnClicked =
                                                       false;
@@ -365,18 +363,16 @@ class _SignInScreenState extends State<SignInScreen> {
                                             isLoginBtnClicked = false;
                                           });
 
-                                          if (value != null) {
-                                            if (value.status!) {
-                                              Navigator.pushAndRemoveUntil(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        SyncDataCloudToMobileScreen(),
-                                                  ),
-                                                  ModalRoute.withName(""));
-                                            }
+                                          if (value.status!) {
+                                            Navigator.pushAndRemoveUntil(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SyncDataCloudToMobileScreen(),
+                                                ),
+                                                ModalRoute.withName(""));
                                           }
-                                        }).catchError((e) {
+                                                                                }).catchError((e) {
                                           setState(() {
                                             isLoginBtnClicked = false;
                                           });

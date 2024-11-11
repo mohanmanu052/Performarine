@@ -55,11 +55,9 @@ class DeleteTripApiProvider with ChangeNotifier
         CustomLogger().logWithFile(Level.error, "EXE RESP STATUS CODE: ${response.statusCode} -> $page");
         CustomLogger().logWithFile(Level.error, "EXE RESP: $response -> $page");
 
-        if (scaffoldKey != null) {
-          Utils.showSnackBar(context,
-              scaffoldKey: scaffoldKey, message: decodedData['message']);
-        }
-
+        Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey, message: decodedData['message']);
+      
         deleteTripModel = null;
       } else if(decodedData['statusCode'] == 401)
       {
@@ -69,11 +67,9 @@ class DeleteTripApiProvider with ChangeNotifier
             MaterialPageRoute(
                 builder: (context) => SessionExpiredScreen()));
       } else {
-        if (scaffoldKey != null) {
-          Utils.showSnackBar(context,
-              scaffoldKey: scaffoldKey, message: decodedData['message']);
-        }
-
+        Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey, message: decodedData['message']);
+      
         kReleaseMode
             ? null
             : Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
