@@ -976,9 +976,6 @@ lprTransperntServiceIdStatus=status;
                                                           Duration(seconds: 1),
                                                           () {
                                                         if (!isSmallTrip) {
-                                                          print('the widget is called from-----' +
-                                                              widget.calledFrom
-                                                                  .toString());
                                                           Utils.customPrint(
                                                               "SMALL TRIPP IDDD ${tripData!.id!}");
                                                           DatabaseService()

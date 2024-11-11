@@ -218,7 +218,7 @@ if(!isLPRReconnectPopupshowing){
                 lprService = element;
                 callBackLprTanspernetserviecIdStatus!('Connected');
                 lprService!.characteristics.forEach((dataCharacteristic) {
-                  if (dataCharacteristic.uuid == _lprUartTX) {
+                 if (dataCharacteristic.uuid == _lprUartTX) {
                     callBackLprUartTxStatus!('Connected');
                     dataCharacteristic.setNotifyValue(true);
                     //Start listening to the incoming data
@@ -230,13 +230,15 @@ if(!isLPRReconnectPopupshowing){
 
 
 
-                        debugPrint("LPR DATA WRITING CODE $dataLine ");
+                     //   debugPrint("LPR DATA WRITING CODE $dataLine ");
 //Saving The Data Into The File
                         DownloadTrip().saveLPRData(dataLine,lprFile);
                         //Call Back Returning the data we can use this globally
                         callBackLprStreamingData!(dataLine);
                       } else {
 //DownloadTrip().saveLPRData('test LPR',lprFile!,lprFileSink!);
+
+// Future.delayed(Duration(seconds: 1),(){
 
 
 //   final lines = LineSplitter().convert(fileContent);
@@ -247,8 +249,8 @@ if(!isLPRReconnectPopupshowing){
 
 //   DownloadTrip().saveLPRData(data,lprFile);
 
- //});
-
+//  });
+// });
 // for (String line in lines) {
 //   //Utils.customPrint('Lpr file local data: $line');
 //   DownloadTrip().saveLPRData(line,lprFile);
@@ -257,7 +259,7 @@ if(!isLPRReconnectPopupshowing){
 // }
                       }
                     });
-                 }
+                }
                 });
              }
             });
@@ -715,7 +717,8 @@ if(tripData!=null&&tripData.isNotEmpty){
 
   showBluetoothListDialog(BuildContext context, String? connectedDeviceId,
       BluetoothDevice? connectedBluetoothDevice,
-      {bool isMapScreenNavigation = false,Function? callbackConnectedDeviceName,bool isTripNavigate=true}) {
+
+      {bool isMapScreenNavigation = false,Function? callbackConnectedDeviceName,bool isTripNavigate=true,bool? isStartTripState}) {
     // setState(() {
     //   progress = 0.9;
     //   lprSensorProgress = 0.0;
@@ -802,6 +805,7 @@ if(tripData!=null&&tripData.isNotEmpty){
                                 width: displayWidth(context),
                                 height: displayHeight(context) * 0.28,
                                 child: LPRBluetoothList(
+                                  isStartTripState: isStartTripState,
                                   dialogContext: dialogContext,
                                   setDialogSet: setDialogState,
                                   connectedDeviceId: connectedDeviceId,
@@ -846,6 +850,7 @@ if(tripData!=null&&tripData.isNotEmpty){
                                 width: displayWidth(context),
                                 height: displayHeight(context) * 0.28,
                                 child: LPRBluetoothList(
+                                  isStartTripState: isStartTripState,
                                   dialogContext: dialogContext,
                                   setDialogSet: setDialogState,
                                   connectedDeviceId: connectedDeviceId,
@@ -939,8 +944,8 @@ if(isTripNavigate){
                                   }
 
                                   if (FlutterBluePlus.isScanningNow) {
-                                    debugPrint(
-                                        "ALREADY SCANNING PLEASE WAIT !!!");
+                                    // debugPrint(
+                                    //     "ALREADY SCANNING PLEASE WAIT !!!");
                                   }
 
                                   // if (mounted) {
@@ -1161,7 +1166,7 @@ Future<void> saveToFileInDownloads(
 
       // Open the file for writing (append mode)
       _fileSink = file.openWrite(mode: FileMode.append);
-      debugPrint("File opened: ${file.path}");
+     // debugPrint("File opened: ${file.path}");
     }
 
     // Write the data to the file

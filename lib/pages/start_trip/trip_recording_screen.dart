@@ -165,7 +165,6 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>
             elevation: 0,
             leading: IconButton(
               onPressed: () async {
-                debugPrint('CALLED FROM ${widget.calledFrom}');
                 Wakelock.disable().then((value) async {
                   if (widget.calledFrom != null) {
                     if (widget.calledFrom!.isNotEmpty) {

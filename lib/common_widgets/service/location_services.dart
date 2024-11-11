@@ -60,7 +60,6 @@ class LocationServices implements IUserCurrentLocation {
     LocationPermission permission;
     //Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    print('coming to getUserCurrentLocation-------');
     if (!serviceEnabled) {
       // Location services are not enabled don't continue
       // accessing the position and request users of the

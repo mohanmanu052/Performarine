@@ -40,7 +40,6 @@ class _AddNewVesselPageState extends State<AddNewVesselPage> {
   void initState() {
 
     super.initState();
-    print('the called from is -----'+widget.bottomNavIndex.toString());
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
     pageController = PageController();

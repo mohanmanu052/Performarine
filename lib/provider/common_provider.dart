@@ -829,12 +829,12 @@ if(value.speedDuration!=0){
   double finalValue = total24HrsDuration - valueToSubtract;
 
   // Print the results
-  print('Basic Value: $total24HrsDuration');
-  // print('Total Duration: $totalDuration');
-  // print('Speed Duration: $speedDuration');
-  print('Percentage Difference: ${percentageDifference.toStringAsFixed(2)}%');
-  print('Value to Subtract: $valueToSubtract');
-  print('Final Value: $finalValue');
+  // print('Basic Value: $total24HrsDuration');
+  // // print('Total Duration: $totalDuration');
+  // // print('Speed Duration: $speedDuration');
+  // print('Percentage Difference: ${percentageDifference.toStringAsFixed(2)}%');
+  // print('Value to Subtract: $valueToSubtract');
+  // print('Final Value: $finalValue');
               data1.add(SalesData(DateTime.parse(value.createdAt!), value.totalDuration!,finalValue < 0 ? 0 :finalValue),);
 
 }else{

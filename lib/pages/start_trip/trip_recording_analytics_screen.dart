@@ -530,7 +530,13 @@ SizedBox(height: 20,),
 
 Visibility(
   visible: isLPRReconnectButtonShown,
-  child: CommonButtons.getAcceptButton(connectedBluetoothDeviceName??'Re-Connect LPR', context, blueColor, (){
+  child: 
+  
+  
+  CommonButtons.getAcceptButton(connectedBluetoothDeviceName??'Re-Connect LPR', context, 
+  borderRadius: 15,
+  fontWeight: FontWeight.w400,
+  blueColor, (){
 if(LPRDeviceHandler().
           connectedDevice!=null&& LPRDeviceHandler().
           connectedDevice!.isConnected){
@@ -547,6 +553,7 @@ if(LPRDeviceHandler().
 
           }else{
     LPRDeviceHandler().showBluetoothListDialog(context, null, null,isTripNavigate: false,
+    isStartTripState: false,
     callbackConnectedDeviceName: (){
 
 
@@ -554,7 +561,10 @@ if(LPRDeviceHandler().
 
     });
           }
-  }, displayWidth(context) / 1.6, displayHeight(context) * 0.060, backgroundColor, Colors.white, 16, blueColor, ''))
+  }, displayWidth(context) / 1.6, displayHeight(context) * 0.065, backgroundColor, connectedBluetoothDeviceName!=null&&connectedBluetoothDeviceName!.isNotEmpty&&connectedBluetoothDeviceName!='Re-Connect LPR'?Colors.black:Colors.white, 14,connectedBluetoothDeviceName!=null&&connectedBluetoothDeviceName!.isNotEmpty&&connectedBluetoothDeviceName!='Re-Connect LPR'?Colors.white: blueColor, '')
+  
+  
+  )
 
               ],
             ),

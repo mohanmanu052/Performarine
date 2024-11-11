@@ -421,10 +421,10 @@ class _SyncDataCloudToMobileScreenState
               //deleteVesselID.add(value.vessels![i].id!);
               vesselLocalID.remove(value.vessels![i].id);
              // debugPrint("VESSEL CONTAIN IDSSS $deleteVesselID");
-              debugPrint("VESSEL CONTAIN IDSSS DELETED  $vesselLocalID");
+           //   debugPrint("VESSEL CONTAIN IDSSS DELETED  $vesselLocalID");
             }
 
-            debugPrint("VESSEL CONTAIN IDSSS DELETED 1  $vesselLocalID");
+            //debugPrint("VESSEL CONTAIN IDSSS DELETED 1  $vesselLocalID");
 
 
             Utils.customPrint('SYNC FROM CLOUD CREATED BY ID : ${value.vessels![i].createdBy}');
@@ -623,7 +623,7 @@ class _SyncDataCloudToMobileScreenState
 
             if (vesselData != null) {
 
-              debugPrint("TRIP NAME WHILE ${value.trips![i].tripName == null}");
+            //  debugPrint("TRIP NAME WHILE ${value.trips![i].tripName == null}");
 
               Trip tripData = Trip(
                   id: value.trips![i].id,

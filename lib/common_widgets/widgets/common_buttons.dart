@@ -158,7 +158,9 @@ class CommonButtons {
     double textSize,
     Color buttonPrimaryColor,
     String orgId, {
-    FontWeight fontWeight = FontWeight.bold,String fontFamily = outfit
+    FontWeight fontWeight = FontWeight.bold,String fontFamily = outfit,
+double borderRadius=5
+
   }) {
     if (width == null) {
       width = displayWidth(context) * 0.45;
@@ -175,7 +177,7 @@ class CommonButtons {
           width: width,
           decoration: BoxDecoration(
             border: Border.all(color: borderColor, width: 1.5),
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(borderRadius),
             color: buttonPrimaryColor,
           ),
           padding: EdgeInsets.all(4),

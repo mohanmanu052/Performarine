@@ -198,7 +198,6 @@ class _BottomNavigationState extends State<BottomNavigation>
     // TODO: implement initState
     super.initState();
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-print('the get arguments was----'+Get.arguments.toString());
     WidgetsBinding.instance.addObserver(this);
     checkCurrentUser();
 
@@ -320,7 +319,7 @@ print('the get arguments was----'+Get.arguments.toString());
                   WidgetsBinding.instance.addPostFrameCallback((duration) {
                     if (isComingFrom != null) {
                       if (!isComingFrom) {
-                        print("RESET PASSWORD LIFECYCLE");
+                      //  print("RESET PASSWORD LIFECYCLE");
 
                         // if(isTripStarted ?? false){
                         //   print("Trip runnnig status3: $isTripStarted");

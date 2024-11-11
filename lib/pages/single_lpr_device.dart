@@ -31,6 +31,7 @@ class SingleLPRDevice extends StatefulWidget {
 Function(String)? onDeviceConnectedCallback;
 GlobalKey<ScaffoldState>? scafoldKey;
 final Function(dynamic)? onerrorCallback;
+bool? isStartTripState;
   SingleLPRDevice(
       {Key? key,
       this.device,
@@ -43,6 +44,7 @@ final Function(dynamic)? onerrorCallback;
       this.connectedBluetoothDevice,
       this.comingFrom,
       this.scafoldKey,
+      this.isStartTripState,
       this.onerrorCallback,
       this.selectedBluettothDevice,
       this.onSingleDeviceTapped})
@@ -110,7 +112,7 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
 
                 }else{
                 LPRDeviceHandler().setLPRDevice(widget.device!);
-                LPRDeviceHandler().isListeningStartTripState=true;
+                LPRDeviceHandler().isListeningStartTripState=widget.isStartTripState??true;
                 LPRDeviceHandler().isSilentDiscoonect=false;
                             LPRDeviceHandler().connectedDevice=widget.device;
 
@@ -188,7 +190,7 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
             else{
 
             LPRDeviceHandler().setLPRDevice(widget.device!,);
-            LPRDeviceHandler().isListeningStartTripState=true;
+            LPRDeviceHandler().isListeningStartTripState=widget.isStartTripState??true;
             LPRDeviceHandler().connectedDevice=widget.device;
             LPRDeviceHandler().isSilentDiscoonect=false;
                                       if(widget.onDeviceConnectedCallback!=null){

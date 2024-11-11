@@ -159,7 +159,6 @@ Function? setStateCallBackTrip;
 
     //checkAllPermission(false);
 
-    debugPrint("SCREEN CALLED FROM ${widget.calledFrom}");
 
     commonProvider = context.read<CommonProvider>();
     getVesselAndTripsData();
@@ -1632,8 +1631,8 @@ Function? setStateCallBackTrip;
                                                     tooltip:
                                                         FlutterSliderTooltip(
                                                             custom: (value) {
-                                                              debugPrint(
-                                                                  "NUMBER OF PASS 1 $value");
+                                                              // debugPrint(
+                                                              //     "NUMBER OF PASS 1 $value");
                                                               String data = value
                                                                   .toInt()
                                                                   .toString();
@@ -1684,8 +1683,8 @@ Function? setStateCallBackTrip;
                                                       passengerValue = val == 11
                                                           ? (val.toInt() - 1)
                                                           : val.toInt();
-                                                      print(
-                                                          "On dragging: value: $value, val: $val, val1: $val1");
+                                                      // print(
+                                                      //     "On dragging: value: $value, val: $val, val1: $val1");
                                                       numberOfPassengers =
                                                           passengerValue;
                                                       textEditingController
@@ -2662,10 +2661,10 @@ Function? setStateCallBackTrip;
                         });
                         FocusScope.of(context).requestFocus(new FocusNode());
 
-                        kReleaseMode
-                            ? null
-                            : debugPrint(
-                                'Number of passengers $numberOfPassengers');
+                        // kReleaseMode
+                        //     ? null
+                        //     : debugPrint(
+                        //         'Number of passengers $numberOfPassengers');
 
                         // popupAnimationController.reset();
                       } else {
@@ -3219,7 +3218,7 @@ Function? setStateCallBackTrip;
 
     await fetchDeviceData();
 
-    debugPrint("TRIP NAME IS EMPTY ? ${tripNameController.text.trim().isEmpty}");
+   // debugPrint("TRIP NAME IS EMPTY ? ${tripNameController.text.trim().isEmpty}");
 
 
     try {
@@ -3345,7 +3344,6 @@ Function? setStateCallBackTrip;
       List<String>? tripData = sharedPreferences!.getStringList('trip_data');
       final tripDetails = await _databaseService.getTrip(tripData![0]);
 
-      print('CALLED FROM: ${widget.calledFrom}');
       await SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
       ]);

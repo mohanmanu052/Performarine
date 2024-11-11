@@ -93,7 +93,6 @@ class _TripWidgetState extends State<TripWidget> {
       DeviceOrientation.portraitUp,
     ]);
 
-    debugPrint("SCREEN CALLED FROM ${widget.calledFrom}");
 
     commonProvider = context.read<CommonProvider>();
     deviceDetails = DeviceInfoPlugin();

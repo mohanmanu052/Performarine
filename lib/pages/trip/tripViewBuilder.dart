@@ -68,7 +68,6 @@ class _TripViewListingState extends State<TripViewListing> {
     // TODO: implement initState
     super.initState();
 
-    debugPrint("TRIP WIDGET SCREEN CALLED FROM ${widget.calledFrom}");
 
     isBtnClick = false;
     commonProvider = context.read<CommonProvider>();
