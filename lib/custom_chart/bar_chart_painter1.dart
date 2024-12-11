@@ -108,7 +108,7 @@ Function(Offset offestValues,String tooltipText)? toolTipCallBack;
         paint.color = Colors.yellow;
         if (!difference.isNegative) {
           canvas.drawRect(
-            Rect.fromLTWH(x + barWidth + spacing, yPositionDiff, barWidth,
+            Rect.fromLTWH(x + barWidth + spacing, yPositionDiff+3, barWidth,
                 barHeightDiff * animationValue),
             paint,
           );
@@ -137,7 +137,7 @@ Function(Offset offestValues,String tooltipText)? toolTipCallBack;
                     spacing +
                     barWidth / 2 -
                     textPainterDiff.width / 2,
-                yPositionDiff - 0),
+                yPositionDiff +7),
           );
         }
       }
@@ -208,7 +208,7 @@ Function(Offset offestValues,String tooltipText)? toolTipCallBack;
         'Total: ${selectedData!.totalDuration.toStringAsFixed(2)}';
       } else if (selectedBarType == BarChartBarType.BELOW_5KT) {
         tooltipText =
-        '< 5KT: ${selectedData!.speedDuration.toStringAsFixed(2)}';
+        '> 5KT: ${selectedData!.speedDuration.toStringAsFixed(2)}';
       } else if (selectedBarType == BarChartBarType.FUELSAVED) {
         final double difference =
         (selectedData!.totalDuration - selectedData!.speedDuration).abs();
@@ -313,7 +313,7 @@ Rect? below5KtRect;
      // );
 
 
-      if (data[i].speedDuration != 0.0) {
+     if (data[i].speedDuration != 0.0) {
         final double yPositionDiff = size.height -
             barHeight2 * animationValue -
             barHeightDiff * animationValue -
@@ -327,11 +327,13 @@ Rect? below5KtRect;
                 barHeightDiff * animationValue);
            // paint,
            //);
-        }}
+       }
+        
+        }
 
 
             if(totalDurationRect.contains(position)){
-       var positiontemp=       Offset(position.dx+30,position.dy);
+       var positiontemp=       Offset(position.dx,position.dy);
               OnBarTap!(BarChartBarType.TOTAL_DURATION,positiontemp,data[i]);
     return super.hitTest(position);
 
@@ -340,7 +342,9 @@ Rect? below5KtRect;
 
     return super.hitTest(position);
 
-      }else if(fuelSavedRect!.contains(position)){
+      }
+      
+      else if(fuelSavedRect!=null&&fuelSavedRect.contains(position)){
 
               OnBarTap!(BarChartBarType.FUELSAVED,position,data[i]);
 
