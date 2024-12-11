@@ -17,15 +17,15 @@ import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_text_feild.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
-import 'package:performarine/lpr_data/connect_ble_devices.dart';
+import 'package:performarine/custom_chart/custom_barchart_widget.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/login_model.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
+import 'package:performarine/new_trip_analytics_screen.dart';
 import 'package:performarine/pages/add_vessel_new/add_new_vessel_screen.dart';
 import 'package:performarine/pages/auth_new/change_password.dart';
 import 'package:performarine/pages/auth_new/sign_in_screen.dart';
-import 'package:performarine/pages/delegate/delegates_screen.dart';
 import 'package:performarine/pages/delegate/my_delegate_invites_screen.dart';
 import 'package:performarine/pages/delete_account/delete_account_screen.dart';
 import 'package:performarine/pages/fleet/fleet_reports.dart';
@@ -1309,6 +1309,24 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                         "User Navigating to Add New Vessel Screen -> $page");
                                     Navigator.of(context).pop();
 
+                                    List<SalesData> data = [
+                                      SalesData(DateTime.parse('2023-08-15'), 1.0, 0.2),
+                                      SalesData(DateTime.parse('2023-08-15'), 2.0, 1.5),
+                                      SalesData(DateTime.parse('2023-08-17'), 3.0, 2.9),
+                                      SalesData(DateTime.parse('2023-08-18'), 4.0, 1.0),
+                                      SalesData(DateTime.parse('2023-08-19'), 5.0, 4.0),
+                                      SalesData(DateTime.parse('2023-08-12'), 3.0, 1.0),
+                                      SalesData(DateTime.parse('2023-08-19'), 1.0, 0.4),
+                                      SalesData(DateTime.parse('2023-08-10'), 2.0, 2.0),
+                                      SalesData(DateTime.parse('2023-08-19'), 0.8, 0.2),
+                                      SalesData(DateTime.parse('2023-08-19'), 2.4, 2.0),
+                                      SalesData(DateTime.parse('2023-08-19'), 1.4, 1.0),
+                                      SalesData(DateTime.parse('2023-08-19'), 2.0, 1.2),
+                                      SalesData(DateTime.parse('2023-08-19'), 4.0, 1.0),
+                                      SalesData(DateTime.parse('2023-08-19'), 3.0, 0.8),
+                                      SalesData(DateTime.parse('2023-08-10'), 2.0, 0.4),
+                                    ];
+
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -1318,6 +1336,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                                     widget.bottomNavIndex,
                                               )),
                                     );
+
+
                                   },
                                   child: commonText(
                                       context: context,
