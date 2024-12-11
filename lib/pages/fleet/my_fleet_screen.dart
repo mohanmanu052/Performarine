@@ -2,14 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
-import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
-import 'package:performarine/common_widgets/widgets/custom_fleet_dailog.dart';
 import 'package:performarine/models/fleet_dashboard_model.dart';
-import 'package:performarine/models/fleet_list_model.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
-import 'package:performarine/pages/fleet/fleet_vessel_screen.dart';
 import 'package:performarine/pages/fleet/send_invite_screen.dart';
 import 'package:performarine/pages/fleet/widgets/fleet_invites_single_card.dart';
 import 'package:performarine/pages/fleet/widgets/fleets_im_in_single_card.dart';
@@ -23,7 +18,6 @@ import '../../common_widgets/widgets/common_buttons.dart';
 import '../../common_widgets/widgets/user_feed_back.dart';
 import '../feedback_report.dart';
 import 'create_new_fleet_screen.dart';
-import 'manage_permissions_screen.dart';
 
 
 class MyFleetScreen extends StatefulWidget {

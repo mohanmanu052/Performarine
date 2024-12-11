@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import './../axis/axis.dart';
 import '../../../charts.dart';
 import '../chart_segment/chart_segment.dart';
 import '../chart_series/series.dart';
@@ -11,6 +10,7 @@ import '../common/common.dart';
 import '../common/renderer.dart';
 import '../common/segment_properties.dart';
 import '../utils/helper.dart';
+import './../axis/axis.dart';
 
 /// Creates series renderer for error bar series.
 class ErrorBarSeriesRenderer extends XyDataSeriesRenderer {

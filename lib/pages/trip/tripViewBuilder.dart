@@ -68,7 +68,6 @@ class _TripViewListingState extends State<TripViewListing> {
     // TODO: implement initState
     super.initState();
 
-    debugPrint("TRIP WIDGET SCREEN CALLED FROM ${widget.calledFrom}");
 
     isBtnClick = false;
     commonProvider = context.read<CommonProvider>();
@@ -206,9 +205,8 @@ class _TripViewListingState extends State<TripViewListing> {
                                               .difference(createdAtTime);
                                           String tripDuration =
                                           Utils.calculateTripDuration(
-                                              ((durationTime.inMilliseconds) /
-                                                  1000)
-                                                  .toInt());
+                                              (durationTime.inMilliseconds) ~/
+                                                  1000);
                                           debugPrint("DURATION !!!!!! $tripDuration");
 
                                           bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
@@ -250,9 +248,8 @@ class _TripViewListingState extends State<TripViewListing> {
                                                       .difference(createdAtTime);
                                                   String tripDuration =
                                                   Utils.calculateTripDuration(
-                                                      ((durationTime.inMilliseconds) /
-                                                          1000)
-                                                          .toInt());
+                                                      (durationTime.inMilliseconds) ~/
+                                                          1000);
                                                   debugPrint("DURATION !!!!!! $tripDuration");
 
                                                   endTripMethod(tripDuration, snapshot.data![index],isSmallTrip);
@@ -319,9 +316,8 @@ class _TripViewListingState extends State<TripViewListing> {
                                               .difference(createdAtTime);
                                           String tripDuration =
                                           Utils.calculateTripDuration(
-                                              ((durationTime.inMilliseconds) /
-                                                  1000)
-                                                  .toInt());
+                                              (durationTime.inMilliseconds) ~/
+                                                  1000);
                                           debugPrint("DURATION !!!!!! $tripDuration");
 
                                           bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
@@ -363,9 +359,8 @@ class _TripViewListingState extends State<TripViewListing> {
                                                       .difference(createdAtTime);
                                                   String tripDuration =
                                                   Utils.calculateTripDuration(
-                                                      ((durationTime.inMilliseconds) /
-                                                          1000)
-                                                          .toInt());
+                                                      (durationTime.inMilliseconds) ~/
+                                                          1000);
                                                   debugPrint("DURATION !!!!!! $tripDuration");
 
                                                   endTripMethod(tripDuration, snapshot.data![index],isSmallTrip);
@@ -488,9 +483,8 @@ if(mounted){
         .difference(createdAtTime);
     String tripDuration =
     Utils.calculateTripDuration(
-        ((durationTime.inMilliseconds) /
-            1000)
-            .toInt());
+        (durationTime.inMilliseconds) ~/
+            1000);
 
     Utils.customPrint('***DIST: ${currentTrip.toJson()}');
 

@@ -14,6 +14,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "263893378527-0kier8ts3eb6456b9vd6nkss9h12es1i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.performarine.app",
+            "certificate_hash": "a9f467c88fb48e8eaf9b6acf8cdb3cde66b16c38"
+          }
+        },
+        {
+          "client_id": "263893378527-brdn000g454q2ho8a88okikgjvgpcgba.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.performarine.app",
+            "certificate_hash": "9baba35a2d628229f404a321999ae6e58d6a0ac8"
+          }
+        },
+        {
           "client_id": "263893378527-jo4vcglg0gka3sgh3mjg8btbqb17u8rs.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -22,7 +38,47 @@
           }
         },
         {
-          "client_id": "263893378527-picqsnrv7pso5ekunqlb6if9i2bbfj6r.apps.googleusercontent.com",
+          "client_id": "263893378527-o9ksjl8behed6plmk0cfd45hjamljqqi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.performarine.app",
+            "certificate_hash": "cb6d76d9cd35e6def1221aa865f038bd9def28e3"
+          }
+        },
+        {
+          "client_id": "263893378527-p0sradf3hrq7ctejmk0l2shghmmgkmpj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.performarine.app",
+            "certificate_hash": "d10eae0a801d4e463e3a1db9b59180e88bc0bcda"
+          }
+        },
+        {
+          "client_id": "263893378527-ppqrd2k1il530kl74428to3br0a83962.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.performarine.app",
+            "certificate_hash": "6740455ee59f049d535c97342475e112b3ada925"
+          }
+        },
+        {
+          "client_id": "263893378527-u0dh6luad3hsh9pbandcolgg3kv4sqn6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.performarine.app",
+            "certificate_hash": "9ef8547c55baf32f14ca77bcdc9d10b627fc40b5"
+          }
+        },
+        {
+          "client_id": "263893378527-unqk06p897j46l8p4ip5i3q21vqtlc15.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.performarine.app",
+            "certificate_hash": "6e77f0daf2c4a3427d3affc0028d3f95b57bcadc"
+          }
+        },
+        {
+          "client_id": "263893378527-0sfs5ki9j3bt5gp0rov8eisito15psq7.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -35,7 +91,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "263893378527-picqsnrv7pso5ekunqlb6if9i2bbfj6r.apps.googleusercontent.com",
+              "client_id": "263893378527-0sfs5ki9j3bt5gp0rov8eisito15psq7.apps.googleusercontent.com",
               "client_type": 3
             },
             {

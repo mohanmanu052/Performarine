@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:path_provider/path_provider.dart';
 
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart' as perm;
@@ -60,7 +58,6 @@ class LocationServices implements IUserCurrentLocation {
     LocationPermission permission;
     //Test if location services are enabled.
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    print('coming to getUserCurrentLocation-------');
     if (!serviceEnabled) {
       // Location services are not enabled don't continue
       // accessing the position and request users of the

@@ -435,8 +435,8 @@ ChartLocation getPerpendicularDistance(
             height * (math.sin((360 - point.midAngle!) * math.pi / 180)));
   } else if (point.midAngle! > 0 && point.midAngle! < 90) {
     increasedLocation = ChartLocation(
-        startPoint.x + height * (math.cos((point.midAngle)! * math.pi / 180)),
-        startPoint.y + height * (math.sin((point.midAngle)! * math.pi / 180)));
+        startPoint.x + height * (math.cos(point.midAngle! * math.pi / 180)),
+        startPoint.y + height * (math.sin(point.midAngle! * math.pi / 180)));
   } else if (point.midAngle! > 0 && point.midAngle! < 90) {
     increasedLocation = ChartLocation(
         startPoint.x -

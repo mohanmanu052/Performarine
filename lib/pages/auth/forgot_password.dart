@@ -155,7 +155,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                 isBtnClick = true;
                               });
                               commonProvider.forgotPassword(context, emailController.text.toLowerCase().trim(), scaffoldKey).then((value){
-                                if(value != null && value.status!){
+                                if(value.status!){
                                   setState(() {
                                     isBtnClick = false;
                                   });

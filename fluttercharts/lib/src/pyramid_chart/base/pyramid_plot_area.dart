@@ -497,9 +497,7 @@ class PyramidPlotArea extends StatelessWidget {
       }
     }
     final ChartInteraction? currentActive = isPoint
-        ? stateProperties.renderingDetails.currentActive != null
-            ? stateProperties.renderingDetails.currentActive!
-            : null
+        ? stateProperties.renderingDetails.currentActive
         : null;
     ChartTouchInteractionArgs touchArgs;
     if (currentActive != null) {

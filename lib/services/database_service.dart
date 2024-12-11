@@ -572,4 +572,11 @@ Future<bool> checkIfTripExist(String tripId) async {
       whereArgs: [id],
     );
   }
+
+  /// Update vessel details
+  Future<void> updateTripName(String tripId, String tripName) async {
+    final db = await _databaseService.database;
+   int count =  await db.rawUpdate(
+        'UPDATE trips SET name = ?, isSync = ?, isCloud = ? WHERE id = ?', [tripName, 1, 0, tripId]);
+  }
 }

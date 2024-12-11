@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:background_locator_2/background_locator.dart';
 import 'package:background_locator_2/settings/android_settings.dart';
@@ -8,12 +7,12 @@ import 'package:background_locator_2/settings/ios_settings.dart';
 import 'package:background_locator_2/settings/locator_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/lpr_device_handler.dart';
 import 'package:performarine/new_trip_analytics_screen.dart';
-import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
@@ -25,13 +24,11 @@ import '../../common_widgets/utils/colors.dart';
 import '../../common_widgets/utils/utils.dart';
 import '../../common_widgets/widgets/common_buttons.dart';
 import '../../common_widgets/widgets/common_widgets.dart';
-import '../../common_widgets/widgets/user_feed_back.dart';
 import '../../main.dart';
 import '../../models/trip.dart';
 import '../../models/vessel.dart';
 import '../../services/database_service.dart';
 import '../bottom_navigation.dart';
-import '../feedback_report.dart';
 
 class TripRecordingAnalyticsScreen extends StatefulWidget {
   final bool? tripIsRunningOrNot;
@@ -75,7 +72,8 @@ class _TripRecordingAnalyticsScreenState
       isuploadTrip = false,
       isTripEnded = false,
       isEndTripBtnClicked = false,
-      isDataUpdated = false;
+      isDataUpdated = false,
+      isLPRReconnectButtonShown=false;
 
   late CommonProvider commonProvider;
 
@@ -85,7 +83,6 @@ class _TripRecordingAnalyticsScreenState
   String? lprUartTxStatus;
   String? connectedBluetoothDeviceName;
   String? lprStreamingData = 'No Lpr Streaming Data Found';
-
   @override
   void initState() {
     // TODO: implement initState
@@ -135,14 +132,14 @@ class _TripRecordingAnalyticsScreenState
     await sharedPreferences!.reload();
 
     durationTimer = Timer.periodic(Duration(milliseconds: 100), (timer) {
-      Utils.customPrint(
-          '##TDATA updated time delay from 1 sec to 400 MS by abhi');
+      // Utils.customPrint(
+      //     '##TDATA updated time delay from 1 sec to 400 MS by abhi');
       tripDistance = sharedPreferences!.getString('tripDistance') ?? "0";
       tripSpeed = sharedPreferences!.getString('tripSpeed') ?? "0.0";
       tripAvgSpeed = sharedPreferences!.getString('tripAvgSpeed') ?? "0.0";
 
-      Utils.customPrint("TRIP ANALYTICS SPEED $tripSpeed");
-      Utils.customPrint("TRIP ANALYTICS AVG SPEED $tripAvgSpeed");
+      // Utils.customPrint("TRIP ANALYTICS SPEED $tripSpeed");
+      // Utils.customPrint("TRIP ANALYTICS AVG SPEED $tripAvgSpeed");
 
       var durationTime = DateTime.now().toUtc().difference(createdAtTime);
       tripDuration = Utils.calculateTripDuration(
@@ -154,15 +151,38 @@ class _TripRecordingAnalyticsScreenState
         });
       }
     });
+LPRDeviceHandler().isListeningStartTripState=false;
+                                      LPRDeviceHandler().setDeviceConnectCallBack((){
+if(mounted){
+  connectedBluetoothDeviceName='Connected to ${LPRDeviceHandler().connectedDevice?.localName}';
+setState(() {
+    
+  });
+}});
+
+                                      LPRDeviceHandler().setDeviceDisconnectCallback((){
+
+                                        connectedBluetoothDeviceName='Re-Connect LPR';
+if(mounted){
+  setState(() {
+    
+  });
+}});
+
 
     LPRDeviceHandler().listenToDeviceConnectionState(
+    //  isListeningStartTripState: false,
+    
       callBackLprTanspernetserviecId:
           (String lprTransperntServiceId1, String lprUartTX1) {
         lprTransperntServiceId = lprTransperntServiceId1;
         lprUartTX = lprUartTX1;
       },
       callBackconnectedDeviceName: (bluetoothDeviceName1) {
-        connectedBluetoothDeviceName = bluetoothDeviceName1;
+        connectedBluetoothDeviceName ='Connected to $bluetoothDeviceName1';
+        setState(() {
+          
+        });
       },
       callBackLprTanspernetserviecIdStatus: (String status) {
         lprTransperntServiceIdStatus = status;
@@ -173,7 +193,9 @@ class _TripRecordingAnalyticsScreenState
       callBackLprStreamingData: (lprSteamingData1) {
         lprStreamingData = lprSteamingData1;
       },
+      
     );
+
   }
 
   getData() async {
@@ -182,6 +204,8 @@ class _TripRecordingAnalyticsScreenState
 
     List<CreateVessel> vesselDetails =
         await _databaseService.getVesselNameByID(widget.vesselId!);
+   var sharePref=await   Utils.initSharedPreferences();
+isLPRReconnectButtonShown=sharePref.getBool('onStartTripLPRDeviceConnected')??false;
 
     setState(() {
       tripData = tripDetails;
@@ -497,6 +521,47 @@ class _TripRecordingAnalyticsScreenState
                     ),
                   ],
                 ),
+
+SizedBox(height: 20,),
+
+Visibility(
+  visible: isLPRReconnectButtonShown,
+  child: 
+  
+  
+  CommonButtons.getAcceptButton(connectedBluetoothDeviceName??'Re-Connect LPR', context, 
+  borderRadius: 15,
+  fontWeight: FontWeight.w400,
+  blueColor, (){
+if(LPRDeviceHandler().
+          connectedDevice!=null&& LPRDeviceHandler().
+          connectedDevice!.isConnected){
+                                  Fluttertoast.showToast(
+                                      msg:
+                                          "Device already connected to ${LPRDeviceHandler().connectedDevice?.localName}",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.black,
+                                      textColor: Colors.white,
+                                      fontSize: 16.0);
+
+
+          }else{
+    LPRDeviceHandler().showBluetoothListDialog(context, null, null,isTripNavigate: false,
+    isStartTripState: false,
+    callbackConnectedDeviceName: (){
+
+
+
+
+    });
+          }
+  }, displayWidth(context) / 1.6, displayHeight(context) * 0.065, backgroundColor, connectedBluetoothDeviceName!=null&&connectedBluetoothDeviceName!.isNotEmpty&&connectedBluetoothDeviceName!='Re-Connect LPR'?Colors.black:Colors.white, 14,connectedBluetoothDeviceName!=null&&connectedBluetoothDeviceName!.isNotEmpty&&connectedBluetoothDeviceName!='Re-Connect LPR'?Colors.white: blueColor, '')
+  
+  
+  )
+
               ],
             ),
             Column(
@@ -520,7 +585,6 @@ class _TripRecordingAnalyticsScreenState
                         borderColor: endTripBtnColor,
                         width: displayWidth(context),
                         onTap: () async {
-                          print('the stop Trip is clickedd-------------222');
 
                           await SystemChrome.setPreferredOrientations([
                             DeviceOrientation.portraitUp,
@@ -539,6 +603,7 @@ class _TripRecordingAnalyticsScreenState
                           if (!isSmallTrip) {
                             Utils().showDeleteTripDialog(context,
                                 endTripBtnClick: () {
+                                  LPRDeviceHandler().isSilentDiscoonect=true;
                               endTrip(isTripDeleted: true);
 
                               Utils.customPrint(
@@ -813,7 +878,6 @@ class _TripRecordingAnalyticsScreenState
                                     : CommonButtons.getAcceptButton(
                                         'End Trip', context, Colors.transparent,
                                         () async {
-                                          print('the stop Trip is clickedd-------------222');
 
                                           await SystemChrome.setPreferredOrientations([
                                             DeviceOrientation.portraitUp,

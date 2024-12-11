@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:dio/dio.dart' as d;
 import 'package:device_info_plus/device_info_plus.dart';
@@ -181,17 +182,33 @@ class DownloadTrip {
     var isStoragePermitted;
     if (Platform.isAndroid) {
       androidInfo = await DeviceInfoPlugin().androidInfo;
+          log('the file names was--- url${imageUrl.toString()}');
 
       String fileName = imageUrl.split('/').last.length > 30
           ? '${imageUrl.split('/').last.split('-').first}.${imageUrl.split('/').last.split('.').last}'
           : imageUrl.split('/').last;
+          log('the file names was---${fileName.toString()}');
+if(fileName.length>20){
+    String imagePath = imageUrl.split('/').last;
 
+  // Find the last occurrence of ".jpg"
+  String lastImagePath = imagePath.substring(imagePath.lastIndexOf('_') + 1);
+
+  fileName= fileName.substring(0,20);
+  fileName='${fileName}.${lastImagePath}';
+          log('the file names was---name${fileName.toString()}');
+
+}
       if (androidInfo.version.sdkInt < 29) {
         isStoragePermitted = await Permission.storage.status;
 
         if (isStoragePermitted.isGranted) {
           Utils.customPrint('DIR PATH R ${ourDirectory!.path}');
           CustomLogger().logWithFile(Level.info, "DIR PATH R ${ourDirectory!.path} -> $page");
+         if(fileName.length>11){
+           fileName.substring(0,10);
+         }
+         
           cloudImagePath = '${ourDirectory!.path}/$fileName';
 
           if (File(cloudImagePath).existsSync()) {
@@ -211,6 +228,7 @@ class DownloadTrip {
         } else {
           await Utils.getStoragePermission(context);
           var isStoragePermitted = await Permission.storage.status;
+         
 
           if (isStoragePermitted.isGranted) {
             cloudImagePath = "${ourDirectory!.path}/$fileName";
@@ -509,7 +527,7 @@ class DownloadTrip {
 //       }
 
 
-  Future<void> saveLPRData(String data,)async{
+  Future<void> saveLPRData(String data,File lprFile)async{
         String tripId = '';
 
         int fileIndex = 0;
@@ -522,10 +540,6 @@ class DownloadTrip {
 
 
 
-    String lprFileName = 'lpr_$fileIndex.csv';
-        String lprFilePath = await GetFile().getlprFile(tripId, lprFileName);
-      //  File file = File(filePath);
-        File lprFile = File(lprFilePath);
        // int fileSize = await GetFile().checkFileSize(file);
         int lprFileSize = await GetFile().checkLPRFileSize(lprFile);
 
@@ -538,7 +552,11 @@ class DownloadTrip {
           CustomLogger().logWithFile(Level.info, "STOPPED WRITING -> $page");
           CustomLogger().logWithFile(Level.info, "CREATING NEW FILE -> $page");
           fileIndex = fileIndex + 1;
-          lprFileName = 'lpr_$fileIndex.csv';
+    String lprFileName = 'lpr_$fileIndex.csv';
+        String lprFilePath = await GetFile().getlprFile(tripId, lprFileName);
+      //  File file = File(filePath);
+         lprFile = File(lprFilePath);
+
 
           /// STOP WRITING & CREATE NEW FILE
         } else {
@@ -547,10 +565,15 @@ class DownloadTrip {
           String finalString = '';
 
           /// Creating csv file Strings by combining all the values
-          finalString = data;
+          
+        //  finalString = data;
+       finalString = await formatData(data, tripId);
 
           /// Writing into a csv file
-          lprFile.writeAsString('$finalString', mode: FileMode.append);
+          //Todo : Production Use For LPR 
+          //lprFile.writeAsStringSync('$finalString', mode: FileMode.append);
+//UnComment This While we are working with dummy data on testing purpose
+          lprFile.writeAsStringSync('$finalString', mode: FileMode.append);
 
           Utils.customPrint('LPR Data $data');
                     Utils.customPrint('LPR Path Wsa '+lprFile.path);
@@ -570,4 +593,32 @@ class DownloadTrip {
 
 // }
   
+
+    String formatData(String data, String tripId) {
+
+  List<String> parts = data.split(',');
+String epchoTime = parts.last;
+
+  // The first part is '$GPRMC'
+  String identifier = parts[0];
+
+  // The rest of the parts form the list
+  List<String> dataList = parts.sublist(1);
+  final replacedList = dataList.map((e) => e.trim()).join(', ');
+  DateTime? dateTimeUtc=DateTime.now();
+try{
+     dateTimeUtc = DateTime.fromMillisecondsSinceEpoch(int.parse(epchoTime) * 1000, isUtc: true);
+
+}catch(err){
+
+}
+    //DateTime dateTimeUtc = DateTime.fromMillisecondsSinceEpoch(int.parse(epchoTime) * 1000, isUtc: true);
+
+// Format DateTime to a UTC string (optional)
+String formattedDate = dateTimeUtc!.toUtc().toIso8601String();
+
+  return '"$identifier","[$replacedList]","$formattedDate","$tripId"\n';
+
+  }
+
 }

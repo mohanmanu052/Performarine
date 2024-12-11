@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:performarine/common_widgets/utils/colors.dart';
-import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 
 class SearchWidget extends StatefulWidget {
   final Function(String)? onSelect;

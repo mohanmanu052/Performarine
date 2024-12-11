@@ -2714,6 +2714,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
           queryParameters = {
             "id": getTrip[i].id,
             "load": getTrip[i].currentLoad,
+            "tripName":getTrip[i].name,
             "sensorInfo": sensorInfo['sensorInfo'],
             "deviceInfo": {
               "deviceId": Platform.isAndroid ? androidDeviceInfo!.id : '',
@@ -3290,60 +3291,51 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                                                             .scaffoldKey!)
                                                                     .then(
                                                                         (value) {
-                                                                  if (value !=
-                                                                      null) {
-                                                                    if (value
-                                                                        .status!) {
-                                                                      setDialogState(
-                                                                          () {
-                                                                        isUploadStarted =
-                                                                            false;
-                                                                      });
-                                                                      Future.delayed(
-                                                                          Duration(
-                                                                              seconds: 2),
-                                                                          () async {
-                                                                        final storage =
-                                                                            new FlutterSecureStorage();
-                                                                        //String? loginData = sharedPreferences!.getString('loginData');
-                                                                        String?
-                                                                            loginData =
-                                                                            await storage.read(key: 'loginData');
-                                                                        if (loginData !=
-                                                                            null) {
-                                                                          LoginModel
-                                                                              loginModel =
-                                                                              LoginModel.fromJson(json.decode(loginData));
-                                                                          loginModel.userFirstName = firstNameEditingController
-                                                                              .text
-                                                                              .trim();
-                                                                          loginModel.userLastName = lastNameEditingController
-                                                                              .text
-                                                                              .trim();
-                                                                          firstNameEditingController
-                                                                              .clear();
-                                                                          lastNameEditingController
-                                                                              .clear();
-                                                                          // sharedPreferences!.setString('loginData', jsonEncode(loginModel.toJson()));
-                                                                          await storage.write(
-                                                                              key: 'loginData',
-                                                                              value: jsonEncode(loginModel.toJson()));
-                                                                          commonProvider
-                                                                              .init();
-                                                                          setState(
-                                                                              () {});
-                                                                        }
+                                                                  if (value
+                                                                      .status!) {
+                                                                    setDialogState(
+                                                                        () {
+                                                                      isUploadStarted =
+                                                                          false;
+                                                                    });
+                                                                    Future.delayed(
+                                                                        Duration(
+                                                                            seconds: 2),
+                                                                        () async {
+                                                                      final storage =
+                                                                          new FlutterSecureStorage();
+                                                                      //String? loginData = sharedPreferences!.getString('loginData');
+                                                                      String?
+                                                                          loginData =
+                                                                          await storage.read(key: 'loginData');
+                                                                      if (loginData !=
+                                                                          null) {
+                                                                        LoginModel
+                                                                            loginModel =
+                                                                            LoginModel.fromJson(json.decode(loginData));
+                                                                        loginModel.userFirstName = firstNameEditingController
+                                                                            .text
+                                                                            .trim();
+                                                                        loginModel.userLastName = lastNameEditingController
+                                                                            .text
+                                                                            .trim();
+                                                                        firstNameEditingController
+                                                                            .clear();
+                                                                        lastNameEditingController
+                                                                            .clear();
+                                                                        // sharedPreferences!.setString('loginData', jsonEncode(loginModel.toJson()));
+                                                                        await storage.write(
+                                                                            key: 'loginData',
+                                                                            value: jsonEncode(loginModel.toJson()));
+                                                                        commonProvider
+                                                                            .init();
+                                                                        setState(
+                                                                            () {});
+                                                                      }
 
-                                                                        Navigator.of(context)
-                                                                            .pop();
-                                                                      });
-                                                                    } else {
-                                                                      setDialogState(
-                                                                          () {
-                                                                        isUploadStarted =
-                                                                            false;
-                                                                      });
-                                                                    }
+                                                                      Navigator.of(context)
+                                                                          .pop();
+                                                                    });
                                                                   } else {
                                                                     setDialogState(
                                                                         () {
@@ -3351,7 +3343,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                                                           false;
                                                                     });
                                                                   }
-                                                                }).catchError(
+                                                                                                                                }).catchError(
                                                                         (e) {
                                                                   setDialogState(
                                                                       () {

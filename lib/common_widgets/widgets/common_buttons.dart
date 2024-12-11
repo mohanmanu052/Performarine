@@ -23,10 +23,10 @@ class CommonButtons {
     return ElevatedButton(
         onPressed: onTap,
         style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(buttonPrimaryColor),
-            fixedSize: MaterialStateProperty.all(
+            backgroundColor: WidgetStateProperty.all(buttonPrimaryColor),
+            fixedSize: WidgetStateProperty.all(
                 Size(width, displayHeight(context!) * 0.065)),
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(
+            shape: WidgetStateProperty.all(RoundedRectangleBorder(
                 side: BorderSide(color: borderColor!),
                 borderRadius: BorderRadius.circular(10.0)))),
         child: Center(
@@ -71,10 +71,10 @@ class CommonButtons {
     return ElevatedButton(
         onPressed: onTap,
         style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(buttonPrimaryColor),
-            fixedSize: MaterialStateProperty.all(
+            backgroundColor: WidgetStateProperty.all(buttonPrimaryColor),
+            fixedSize: WidgetStateProperty.all(
                 Size(width, height)),
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(
+            shape: WidgetStateProperty.all(RoundedRectangleBorder(
                 side: BorderSide(color: borderColor!),
                 borderRadius: BorderRadius.circular(10.0)))),
         child: Center(
@@ -158,12 +158,10 @@ class CommonButtons {
     double textSize,
     Color buttonPrimaryColor,
     String orgId, {
-    FontWeight fontWeight = FontWeight.bold,String fontFamily = outfit
-  }) {
-    if (width == null) {
-      width = displayWidth(context) * 0.45;
-    }
+    FontWeight fontWeight = FontWeight.bold,String fontFamily = outfit,
+double borderRadius=5
 
+  }) {
     if (height == null) {
       height:
       displayHeight(context) * 0.08;
@@ -175,7 +173,7 @@ class CommonButtons {
           width: width,
           decoration: BoxDecoration(
             border: Border.all(color: borderColor, width: 1.5),
-            borderRadius: BorderRadius.circular(5),
+            borderRadius: BorderRadius.circular(borderRadius),
             color: buttonPrimaryColor,
           ),
           padding: EdgeInsets.all(4),
@@ -207,10 +205,10 @@ class CommonButtons {
     return ElevatedButton(
         onPressed: onTap,
         style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(buttonPrimaryColor),
-            fixedSize: MaterialStateProperty.all(
+            backgroundColor: WidgetStateProperty.all(buttonPrimaryColor),
+            fixedSize: WidgetStateProperty.all(
                 Size(width, displayHeight(context!) * 0.065)),
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(
+            shape: WidgetStateProperty.all(RoundedRectangleBorder(
                 side: BorderSide(color: borderColor!),
                 borderRadius: BorderRadius.circular(5.0)))),
         child: Center(
@@ -240,10 +238,10 @@ class CommonButtons {
     return ElevatedButton(
         onPressed: onTap,
         style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(buttonPrimaryColor),
-            fixedSize: MaterialStateProperty.all(
+            backgroundColor: WidgetStateProperty.all(buttonPrimaryColor),
+            fixedSize: WidgetStateProperty.all(
                 Size(width, displayHeight(context!) * 0.065)),
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(
+            shape: WidgetStateProperty.all(RoundedRectangleBorder(
                 side: BorderSide(color: borderColor!),
                 ))),
         child: Center(
@@ -274,10 +272,10 @@ class CommonButtons {
     return ElevatedButton(
         onPressed: onTap,
         style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(buttonPrimaryColor),
-            fixedSize: MaterialStateProperty.all(
+            backgroundColor: WidgetStateProperty.all(buttonPrimaryColor),
+            fixedSize: WidgetStateProperty.all(
                 Size(width, displayHeight(context!) * 0.065)),
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(
+            shape: WidgetStateProperty.all(RoundedRectangleBorder(
                 side: BorderSide(color: borderColor!),
                 borderRadius: BorderRadius.circular(5.0)))),
         child: Center(

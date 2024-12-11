@@ -43,6 +43,7 @@ import 'package:performarine/pages/start_trip/trip_recording_screen.dart';
 import 'package:performarine/pages/start_trip/utils/start_trip_lpr_permission.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
+import 'package:performarine/services/location_method_channel_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
@@ -75,7 +76,7 @@ class StartTripRecordingScreen extends StatefulWidget {
 
 class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     with WidgetsBindingObserver, TickerProviderStateMixin {
-  GlobalKey<StartTripRecordingScreenState> tripState = GlobalKey();
+ // GlobalKey<StartTripRecordingScreenState> tripState = GlobalKey();
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
 
   List<VesselDropdownItem> vesselData = [];
@@ -116,7 +117,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
   String? selectedVesselName, vesselId, sliderCount = '10+';
 
   Timer? notiTimer;
-
+Function? setStateCallBackTrip;
   IosDeviceInfo? iosDeviceInfo;
   AndroidDeviceInfo? androidDeviceInfo;
 
@@ -141,7 +142,6 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
   void initState() {
     // TODO: implement initState
     super.initState();
-
     // Future.delayed(Duration(seconds: 1)).then((value) {
     //
     //   if(tripState.currentState!=null){
@@ -159,7 +159,6 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
     //checkAllPermission(false);
 
-    debugPrint("SCREEN CALLED FROM ${widget.calledFrom}");
 
     commonProvider = context.read<CommonProvider>();
     getVesselAndTripsData();
@@ -545,7 +544,11 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                     fontSize: 16.0);
 
                 Future.delayed(Duration(seconds: 1), () async {
+                 // _requestBackgroundLocationPermission(context);
+
+                 
                   AppSettings.openAppSettings(type: AppSettingsType.location);
+                 
                   checkGPS(context);
                 });
               } else {
@@ -591,8 +594,10 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                         fontSize: 16.0);
 
                     Future.delayed(Duration(seconds: 1), () async {
-                      AppSettings.openAppSettings(
-                          type: AppSettingsType.location);
+                                    //    _requestBackgroundLocationPermission(context);
+
+                      // AppSettings.openAppSettings(
+                      //     type: AppSettingsType.location);
                       checkGPS(context);
                     });
                   } else {
@@ -774,11 +779,11 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
       String deviceId = '';
       BluetoothDevice? connectedBluetoothDevice;
 
-      autoConnectStreamSubscription =
-          FlutterBluePlus.scanResults.listen((value) {
-        Utils.customPrint('BLED - SCAN RESULT - ${value.isEmpty}');
-        streamOfScanResultList = value;
-      });
+      // autoConnectStreamSubscription =
+      //     FlutterBluePlus.scanResults.listen((value) {
+      //   Utils.customPrint('BLED - SCAN RESULT - ${value.isEmpty}');
+      //   streamOfScanResultList = value;
+      // });
 
       autoConnectIsScanningStreamSubscription =
           FlutterBluePlus.isScanning.listen((event) {
@@ -803,6 +808,12 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                       setState(() {});
                     }
                   });
+                  LPRDeviceHandler().setDeviceConnectCallBack(() {
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  });
+                  
                   setState(() {});
                 }).catchError((onError) {
                   Utils.customPrint('ERROR BLE: $onError');
@@ -841,6 +852,12 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                         setState(() {});
                       }
                     });
+                                                          LPRDeviceHandler().setDeviceConnectCallBack(() {
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  });
+
                     setState(() {});
                   });
                   bluetoothName = r.device.platformName.isEmpty
@@ -886,6 +903,12 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                       setState(() {});
                     }
                   });
+                                                        LPRDeviceHandler().setDeviceConnectCallBack(() {
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  });
+
                   setState(() {});
                 });
                 bluetoothName = r.device.platformName.isEmpty
@@ -1037,6 +1060,12 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
           setState(() {});
         }
       });
+                                            LPRDeviceHandler().setDeviceConnectCallBack(() {
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  });
+
     }
   }
 
@@ -1117,7 +1146,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
     return PopScope(
       canPop: false,
-      // key: tripState,
+       //key: tripState,
       onPopInvoked: (didPop) async {
         if (didPop) return;
         if (commonProvider.bottomNavIndex == 1) {
@@ -1131,16 +1160,27 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
         bool? isTripStarted =
             sharedPreferences!.getBool('trip_started') ?? false;
+            LPRDeviceHandler().isSilentDiscoonect=true;
+            setState(() {
+              
+            });
         if (!isTripStarted ?? false) {
           for (int i = 0; i < FlutterBluePlus.connectedDevices.length; i++) {
             await FlutterBluePlus.connectedDevices[i]
                 .disconnect()
-                .then((value) {});
+                .then((value) {
+        //Navigator.of(context).pop();
+
+        //Navigator.of(context).pop(true);
+
+                });
           }
         }
+       // LPRDeviceHandler().isSelfDisconnected=false;
         Navigator.of(context).pop(true);
       },
       child: Screenshot(
+        //key: tripState,
         controller: controller,
         child: SafeArea(
           child: Scaffold(
@@ -1151,6 +1191,25 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
               elevation: 0,
               leading: IconButton(
                 onPressed: () async {
+                          bool? isTripStarted =
+            sharedPreferences!.getBool('trip_started') ?? false;
+
+                              LPRDeviceHandler().isSilentDiscoonect=true;
+            setState(() {
+              
+            });
+        if (!isTripStarted ?? false) {
+          for (int i = 0; i < FlutterBluePlus.connectedDevices.length; i++) {
+            await FlutterBluePlus.connectedDevices[i]
+                .disconnect()
+                .then((value) {
+        //Navigator.of(context).pop();
+
+        //Navigator.of(context).pop(true);
+
+                });
+          }}
+
                   if (commonProvider.bottomNavIndex == 1) {
                     SystemChrome.setPreferredOrientations([
                       DeviceOrientation.portraitUp,
@@ -1159,6 +1218,24 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                       DeviceOrientation.landscapeRight,
                     ]);
                   }
+        // bool? isTripStarted =
+        //     sharedPreferences!.getBool('trip_started') ?? false;
+            LPRDeviceHandler().isSilentDiscoonect=true;
+            setState(() {
+              
+            });
+        if (!isTripStarted ?? false) {
+          for (int i = 0; i < FlutterBluePlus.connectedDevices.length; i++) {
+            await FlutterBluePlus.connectedDevices[i]
+                .disconnect()
+                .then((value) {
+        //Navigator.of(context).pop();
+
+        //Navigator.of(context).pop(true);
+
+                });
+          }
+        }
 
                   Navigator.of(context).pop(true);
                 },
@@ -1340,16 +1417,21 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                         height: displayHeight(context) * 0.012,
                                       ),
                                       Container(
-                                        height: displayHeight(context) * 0.06,
+                                        height: displayHeight(context) * 0.07,
                                         child: TextFormField(
                                           controller: tripNameController,
+                                          maxLength: 50,
+
                                           decoration: InputDecoration(
                                             labelText: 'Enter Trip Name',
+                                            counter: null,
+                                            counterText: '',
                                             labelStyle: TextStyle(
                                                 color: Colors.black54,
                                                 fontSize:
                                                     displayWidth(context) *
                                                         0.032,
+                                                        
                                                 fontFamily: outfit,
                                                 fontWeight: FontWeight.w400),
                                             filled: true,
@@ -1480,10 +1562,10 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                   ScrollbarThemeData(
                                                 radius:
                                                     const Radius.circular(20),
-                                                thickness: MaterialStateProperty
+                                                thickness: WidgetStateProperty
                                                     .all<double>(6),
                                                 thumbVisibility:
-                                                    MaterialStateProperty.all<
+                                                    WidgetStateProperty.all<
                                                         bool>(true),
                                               ),
                                             ),
@@ -1549,8 +1631,8 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                     tooltip:
                                                         FlutterSliderTooltip(
                                                             custom: (value) {
-                                                              debugPrint(
-                                                                  "NUMBER OF PASS 1 $value");
+                                                              // debugPrint(
+                                                              //     "NUMBER OF PASS 1 $value");
                                                               String data = value
                                                                   .toInt()
                                                                   .toString();
@@ -1601,8 +1683,8 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                                       passengerValue = val == 11
                                                           ? (val.toInt() - 1)
                                                           : val.toInt();
-                                                      print(
-                                                          "On dragging: value: $value, val: $val, val1: $val1");
+                                                      // print(
+                                                      //     "On dragging: value: $value, val: $val, val1: $val1");
                                                       numberOfPassengers =
                                                           passengerValue;
                                                       textEditingController
@@ -2527,12 +2609,12 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                   padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   child: ElevatedButton(
                     style: ButtonStyle(
-                      elevation: MaterialStateProperty.all(null),
-                      padding: MaterialStateProperty.all(EdgeInsets.all(0)),
-                      backgroundColor: MaterialStateProperty.all(blueColor),
-                      textStyle: MaterialStateProperty.all(
+                      elevation: WidgetStateProperty.all(null),
+                      padding: WidgetStateProperty.all(EdgeInsets.all(0)),
+                      backgroundColor: WidgetStateProperty.all(blueColor),
+                      textStyle: WidgetStateProperty.all(
                           TextStyle(color: Colors.blue)),
-                      shape: MaterialStateProperty.all(
+                      shape: WidgetStateProperty.all(
                           new RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5))),
                     ),
@@ -2579,10 +2661,10 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                         });
                         FocusScope.of(context).requestFocus(new FocusNode());
 
-                        kReleaseMode
-                            ? null
-                            : debugPrint(
-                                'Number of passengers $numberOfPassengers');
+                        // kReleaseMode
+                        //     ? null
+                        //     : debugPrint(
+                        //         'Number of passengers $numberOfPassengers');
 
                         // popupAnimationController.reset();
                       } else {
@@ -2925,7 +3007,12 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                           buttonText: 'Ok',
                           buttonOnTap: () async {
                             Get.back();
+                            if(Platform.isAndroid){
+                              _requestBackgroundLocationPermission(context);
+                            }else{
                             openAppSettings();
+
+                            }
                           });
                     }).then((value) {
                   isLocationDialogBoxOpen = false;
@@ -3080,8 +3167,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
         if (await Permission.bluetooth.isPermanentlyDenied) {
           Utils.showSnackBar(scaffoldKey.currentContext!,
               scaffoldKey: scaffoldKey,
-              message:
-                  'Bluetooth permission is needed. Please enable bluetooth permission from app\'s settings.');
+              message: 'Bluetooth permission is needed. Please enable bluetooth permission from app\'s settings.');
 
           Future.delayed(Duration(seconds: 3), () async {
             openedSettingsPageForPermission = true;
@@ -3125,19 +3211,18 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
 
     geo.Position currentPosition = await geo.Geolocator.getCurrentPosition();
 
-    if (currentPosition != null) {
-      latitude = currentPosition.latitude.toString();
-      longitude = currentPosition.longitude.toString();
-    }
-
+    latitude = currentPosition.latitude.toString();
+    longitude = currentPosition.longitude.toString();
+  
     await fetchDeviceData();
 
-    debugPrint("NUMBER OF PASS 4 $numberOfPassengers");
+   // debugPrint("TRIP NAME IS EMPTY ? ${tripNameController.text.trim().isEmpty}");
+
 
     try {
       await _databaseService.insertTrip(Trip(
         id: getTripId,
-        name: tripNameController.text.trim(),
+        name: tripNameController.text.trim().isEmpty ? '' : tripNameController.text.trim(),
         vesselId: vesselId,
         vesselName: selectedVesselName!.trim(),
         currentLoad: 'Empty',
@@ -3257,7 +3342,6 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
       List<String>? tripData = sharedPreferences!.getStringList('trip_data');
       final tripDetails = await _databaseService.getTrip(tripData![0]);
 
-      print('CALLED FROM: ${widget.calledFrom}');
       await SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
       ]);
@@ -3273,10 +3357,8 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                 calledFrom: widget.calledFrom)),
       );
 
-      if (result != null) {
-        Utils.customPrint('VESSEL SINGLE VIEW RESULT $result');
-      }
-    }
+      Utils.customPrint('VESSEL SINGLE VIEW RESULT $result');
+        }
     return;
   }
 
@@ -3698,6 +3780,12 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                       setState(() {});
                     }
                   });
+                                                        LPRDeviceHandler().setDeviceConnectCallBack(() {
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  });
+
                   Utils.customPrint('CONNECTED TO DEVICE BLE');
                 }).catchError((onError) {
                   Utils.customPrint('ERROR BLE: $onError');
@@ -3731,6 +3819,12 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                         setState(() {});
                       }
                     });
+                                                          LPRDeviceHandler().setDeviceConnectCallBack(() {
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  });
+
                   });
                   bluetoothName = r.device.platformName.isEmpty
                       ? r.device.remoteId.str
@@ -3762,6 +3856,12 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                       setState(() {});
                     }
                   });
+                                                        LPRDeviceHandler().setDeviceConnectCallBack(() {
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  });
+
                 });
                 bluetoothName = r.device.platformName.isEmpty
                     ? r.device.remoteId.str
@@ -4872,7 +4972,7 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
     // });
 
     // checkAndGetLPRList();
-    if (mounted && context != null) {
+    if (mounted) {
       if (autoConnectStreamSubscription != null)
         autoConnectStreamSubscription!.cancel();
       if (autoConnectIsScanningStreamSubscription != null)
@@ -4955,10 +5055,8 @@ class StartTripRecordingScreenState extends State<StartTripRecordingScreen>
                                   height: displayHeight(context) * 0.28,
                                   child: LPRBluetoothList(
                                                                             onErrCallback: (err){
-                                          if(scaffoldKey!=null){
-                                            Utils.showSnackBar(context1,scaffoldKey: scaffoldKey,message: 'Some error occured please try again later');
-                                          }
-
+                                          Utils.showSnackBar(context1,scaffoldKey: scaffoldKey,message: 'Some error occured please try again later');
+                                        
                                         },
 
                                     scafoldKey: scaffoldKey,
@@ -4993,6 +5091,13 @@ if(mounted){
                                           setState(() {});
                                         }
                                       });
+                                      LPRDeviceHandler().setDeviceConnectCallBack((){
+if(mounted){
+  setState(() {
+    
+  });
+}
+                                      });
                                     },
                                     onBluetoothConnection: (value) {
                                       if (mounted) {
@@ -5011,6 +5116,12 @@ if(mounted){
                                           setState(() {});
                                         }
                                       });
+                                                                            LPRDeviceHandler().setDeviceConnectCallBack(() {
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  });
+
                                     },
                                   ))
                               : Container(
@@ -5025,10 +5136,8 @@ if(mounted){
                                     connectedBluetoothDevice:
                                         connectedBluetoothDevice,
                                         onErrCallback: (err){
-                                          if(scaffoldKey!=null){
-                                            Utils.showSnackBar(context1,scaffoldKey: scaffoldKey,message: 'Some error occured please try again later');
-                                          }
-
+                                          Utils.showSnackBar(context1,scaffoldKey: scaffoldKey,message: 'Some error occured please try again later');
+                                        
                                         },
                                         onConnetedCallBack: (connectedDevice) {
 
@@ -5053,12 +5162,19 @@ if(mounted){
                                       });
                                       LPRDeviceHandler()
                                           .setDeviceDisconnectCallback(() {
+
                                         if (mounted) {
                                           setState(() {});
                                         }
                                       });
 
 
+
+                                      LPRDeviceHandler().setDeviceConnectCallBack(() {
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  });
 
                                       
                                     },
@@ -5079,7 +5195,15 @@ if(mounted){
                                           setState(() {});
                                         }
                                       });
+
+                                      LPRDeviceHandler().setDeviceConnectCallBack(() {
+                    if (mounted) {
+                      setState(() {});
+                    }
+                  });
+                  
                                     },
+                                    
                                   )),
                         ),
 
@@ -5188,7 +5312,7 @@ if(mounted){
                                   setDialogState(() {
                                     isScanningBluetooth = false;
                                   });
-                                  if (mounted && context != null) {
+                                  if (mounted) {
                                     Navigator.pop(context);
                                   } else {
                                     Get.back();
@@ -5479,9 +5603,13 @@ if(mounted){
                   var permission = await Permission.locationAlways.request();
                   if (permission.isGranted) {
                   } else {
+                //  _requestBackgroundLocationPermission(context);
+
                     await openAppSettings();
                   }
                 } else {
+          //  _requestBackgroundLocationPermission(context);
+
                   await openAppSettings();
                 }
                 Get.back();
@@ -5490,6 +5618,18 @@ if(mounted){
       isLocationDialogBoxOpen = false;
     });
   }
+
+    Future<void> _requestBackgroundLocationPermission(BuildContext context) async {
+    final result = await LocationMethodChannelPermission.requestLocationPermission();
+    if (result == "success") {
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Text('Please click "Always allow" permission in the app settings.'),
+      //   ),
+      // );
+    }
+  }
+
 }
 
 class VesselDropdownItem {

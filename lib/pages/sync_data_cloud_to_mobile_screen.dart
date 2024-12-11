@@ -14,7 +14,6 @@ import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
-import 'package:performarine/pages/home_page.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
 import 'package:provider/provider.dart';
@@ -421,10 +420,10 @@ class _SyncDataCloudToMobileScreenState
               //deleteVesselID.add(value.vessels![i].id!);
               vesselLocalID.remove(value.vessels![i].id);
              // debugPrint("VESSEL CONTAIN IDSSS $deleteVesselID");
-              debugPrint("VESSEL CONTAIN IDSSS DELETED  $vesselLocalID");
+           //   debugPrint("VESSEL CONTAIN IDSSS DELETED  $vesselLocalID");
             }
 
-            debugPrint("VESSEL CONTAIN IDSSS DELETED 1  $vesselLocalID");
+            //debugPrint("VESSEL CONTAIN IDSSS DELETED 1  $vesselLocalID");
 
 
             Utils.customPrint('SYNC FROM CLOUD CREATED BY ID : ${value.vessels![i].createdBy}');
@@ -457,6 +456,7 @@ class _SyncDataCloudToMobileScreenState
             var downloadImageFromCloud;
             var downloadedCompressImageFile;
             if (cloudImage.isNotEmpty) {
+              
               downloadImageFromCloud = await DownloadTrip()
                   .downloadImageFromCloud(context, scaffoldKey, cloudImage);
 
@@ -622,6 +622,8 @@ class _SyncDataCloudToMobileScreenState
 
             if (vesselData != null) {
 
+            //  debugPrint("TRIP NAME WHILE ${value.trips![i].tripName == null}");
+
               Trip tripData = Trip(
                   id: value.trips![i].id,
                   vesselId: value.trips![i].vesselId,
@@ -640,9 +642,9 @@ class _SyncDataCloudToMobileScreenState
                   time: value.trips![i].duration,
                   distance: value.trips![i].distance.toString(),
                   speed: value.trips![i].speed.toString(),
-                  name:value.trips![i].tripName.toString() ,
+                  name: value.trips![i].tripName == null ? '' : value.trips![i].tripName.toString() ,
                   avgSpeed: value.trips![i].avgSpeed.toString(),
-                  isCloud: 1);
+                  isCloud: 1,);
 
               Utils.customPrint('USER CONFIG DATA JSON ${tripData.toJson()}');
               CustomLogger().logWithFile(Level.info, "USER CONFIG DATA JSON ${tripData.toJson()} -> $page");

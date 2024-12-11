@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logger/logger.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
@@ -30,6 +31,7 @@ class SingleLPRDevice extends StatefulWidget {
 Function(String)? onDeviceConnectedCallback;
 GlobalKey<ScaffoldState>? scafoldKey;
 final Function(dynamic)? onerrorCallback;
+bool? isStartTripState;
   SingleLPRDevice(
       {Key? key,
       this.device,
@@ -42,6 +44,7 @@ final Function(dynamic)? onerrorCallback;
       this.connectedBluetoothDevice,
       this.comingFrom,
       this.scafoldKey,
+      this.isStartTripState,
       this.onerrorCallback,
       this.selectedBluettothDevice,
       this.onSingleDeviceTapped})
@@ -92,6 +95,7 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
               //  await storage.write(key: 'lprDeviceId', value: widget.device!.remoteId.str);
               debugPrint("SINGLE SELECTED BLE ID ${widget.device!.remoteId.str}");
               widget.device!.connect().then((value) {
+
                 if(widget.onDeviceConnectedCallback!=null){
                 widget.onDeviceConnectedCallback!(widget.device!.platformName);
                 }
@@ -108,6 +112,22 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
 
                 }else{
                 LPRDeviceHandler().setLPRDevice(widget.device!);
+                LPRDeviceHandler().isListeningStartTripState=widget.isStartTripState??true;
+                LPRDeviceHandler().isSilentDiscoonect=false;
+                            LPRDeviceHandler().connectedDevice=widget.device;
+
+                            LPRDeviceHandler().listenToDeviceConnectionState(
+                            
+                            callBackconnectedDeviceName: (bluetoothDeviceName) {
+                              if(widget.onDeviceConnectedCallback!=null){
+                              widget.onDeviceConnectedCallback!(bluetoothDeviceName);
+                              }
+                              // setState(() {
+                                
+                              // });
+                            },
+                            );
+
 
                 }
               }).catchError((onError) {
@@ -116,14 +136,13 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
             //   Utils.showSnackBar(context,scaffoldKey: widget.scafoldKey,message: 'Some error occured while connecting please try again later');
             // }
 
-                Utils.customPrint('CONNECT ERROR: $onError');
+                Utils.customPrint('CONNECT ERROR2: $onError');
                 EasyLoading.dismiss();
               });
 
               widget.setSetter!(() {
                 widget.onBluetoothConnection!(true);
-                widget.onSelected!(widget.device!.platformName == null ||
-                    widget.device!.platformName.isEmpty
+                widget.onSelected!(widget.device!.platformName.isEmpty
                     ? widget.device!.remoteId.str
                     : widget.device!.platformName);
               });
@@ -155,9 +174,6 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
           //  await storage.write(key: 'lprDeviceId', value: widget.device!.remoteId.str);
           debugPrint("SINGLE SELECTED BLE ID ${widget.device!.remoteId.str}");
           widget.device!.connect().then((value) {
-                          if(widget.onDeviceConnectedCallback!=null){
-                widget.onDeviceConnectedCallback!(widget.device!.platformName);
-              }
 
             if(widget.comingFrom=='lpr_test'){
               widget.selectedBluettothDevice!(widget.device!);
@@ -171,24 +187,52 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
 // );
             }
             else{
-            LPRDeviceHandler().setLPRDevice(widget.device!,);
 
-            }
+            LPRDeviceHandler().setLPRDevice(widget.device!,);
+            LPRDeviceHandler().isListeningStartTripState=widget.isStartTripState??true;
+            LPRDeviceHandler().connectedDevice=widget.device;
+            LPRDeviceHandler().isSilentDiscoonect=false;
+                                      if(widget.onDeviceConnectedCallback!=null){
+                widget.onDeviceConnectedCallback!(widget.device!.platformName);
+              }
+
+            LPRDeviceHandler().listenToDeviceConnectionState(
+              //isListeningStartTripState: true,
+              callBackconnectedDeviceName: (name ){
+                                              if(widget.onDeviceConnectedCallback!=null){
+                              widget.onDeviceConnectedCallback!(name);
+                              }
+
+              }
+
+            );
+
+            //   });
+              
+              }
           }).catchError((onError) {
                 widget.onerrorCallback!(onError);
+                                  Fluttertoast.showToast(
+                                      msg:
+                                          "Error occurred while connecting to Bluetooth",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.black,
+                                      textColor: Colors.white,
+                                      fontSize: 16.0);
 
             // if(widget.scafoldKey!=null){
             //   Utils.showSnackBar(context,scaffoldKey: widget.scafoldKey,message: 'Some error occured while connecting please try again later');
             // }
 
-            Utils.customPrint('CONNECT ERROR: $onError');
+            Utils.customPrint('CONNECT ERROR1: $onError');
             EasyLoading.dismiss();
           });
 
           widget.setSetter!(() {
             widget.onBluetoothConnection!(true);
-            widget.onSelected!(widget.device!.platformName == null ||
-                widget.device!.platformName.isEmpty
+            widget.onSelected!(widget.device!.platformName.isEmpty
                 ? widget.device!.remoteId.str
                 : widget.device!.platformName);
           });
@@ -201,7 +245,13 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
               });
             }
             EasyLoading.dismiss();
+            try{
+            if(widget.dialogContext!=null&&widget.dialogContext!.mounted){
+
             Navigator.pop(widget.dialogContext!);
+            }}catch(err){
+
+            }
           });
         }
 

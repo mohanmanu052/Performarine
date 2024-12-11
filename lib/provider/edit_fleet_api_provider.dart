@@ -65,11 +65,9 @@ class EditFleetApiProvider with ChangeNotifier
         CustomLogger().logWithFile(Level.error, "EXE RESP STATUS CODE: ${response.statusCode} -> $page");
         CustomLogger().logWithFile(Level.error, "EXE RESP: $response -> $page");
 
-        if (scaffoldKey != null) {
-          Utils.showSnackBar(context,
-              scaffoldKey: scaffoldKey, message: decodedData['message'], status: false);
-        }
-
+        Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey, message: decodedData['message'], status: false);
+      
         editFleetModel = null;
       }
       else if(decodedData['statusCode'] == 401)
@@ -79,11 +77,9 @@ class EditFleetApiProvider with ChangeNotifier
             MaterialPageRoute(
                 builder: (context) => SessionExpiredScreen()));
       } else {
-        if (scaffoldKey != null) {
-          Utils.showSnackBar(context,
-              scaffoldKey: scaffoldKey, message: decodedData['message'], status: false);
-        }
-
+        Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey, message: decodedData['message'], status: false);
+      
         Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         Utils.customPrint('EXE RESP: $response');
         CustomLogger().logWithFile(Level.info, "EXE RESP STATUS CODE: ${response.statusCode} -> $page");

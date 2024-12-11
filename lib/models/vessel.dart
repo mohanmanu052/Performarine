@@ -1,7 +1,5 @@
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/widgets.dart';
 
 class CreateVessel {
   String? id;
@@ -36,6 +34,7 @@ class CreateVessel {
   List<File?>? selectedImages;
   //String? displacement;
   dynamic hullType;
+  bool? isSelected;
 
   CreateVessel(
       {this.id,
@@ -69,7 +68,8 @@ class CreateVessel {
       this.imageURLs,
       this.selectedImages,
         //this.displacement
-        this.hullType
+        this.hullType,
+        this.isSelected
       });
 
   CreateVessel.fromJson(Map<String, dynamic> json) {

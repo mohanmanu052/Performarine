@@ -112,7 +112,7 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
   @override
   void didUpdateWidget(covariant AddNewVesselStepOne oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if(commonProvider.selectedImageFiles != null  && commonProvider.selectedImageFiles.isNotEmpty){
+    if(commonProvider.selectedImageFiles.isNotEmpty){
       finalSelectedFiles = commonProvider.selectedImageFiles;
     }
   }
@@ -506,6 +506,8 @@ class _AddNewVesselStepOneState extends State<AddNewVesselStepOne> with Automati
                           onChanged: (String value) {
                           },
                           validator: (value) {
+                            return null;
+                          
                             /*if (value!.trim().isEmpty) {
                               return 'Enter Vessel Builder Name';
                             }

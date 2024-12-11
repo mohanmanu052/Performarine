@@ -52,11 +52,9 @@ CreateFleetResponse? fleetResponse;
         CustomLogger().logWithFile(Level.error, "EXE RESP STATUS CODE: ${response.statusCode} ");
         CustomLogger().logWithFile(Level.error, "EXE RESP: $response");
 
-        if (scaffoldKey != null) {
-          Utils.showSnackBar(context,
-              scaffoldKey: scaffoldKey, message: decodedData['message']);
-        }
-
+        Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey, message: decodedData['message']);
+      
         fleetResponse = null;
       }else if(decodedData['statusCode'] == 401)
       {
@@ -65,11 +63,9 @@ CreateFleetResponse? fleetResponse;
             MaterialPageRoute(
                 builder: (context) => SessionExpiredScreen()));
       } else {
-        if (scaffoldKey != null) {
-          Utils.showSnackBar(context,
-              scaffoldKey: scaffoldKey, message: decodedData['message']);
-        }
-
+        Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey, message: decodedData['message']);
+      
         Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         Utils.customPrint('EXE RESP: $response');
 

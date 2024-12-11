@@ -65,7 +65,7 @@ ExportDataModel?  exportData;
         Utils.showSnackBar(context,
             scaffoldKey: scaffoldKey, message: decodedData['message']);
 
-        return exportData!;
+        return exportData;
       } else if (response.statusCode == HttpStatus.gatewayTimeout) {
         Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         Utils.customPrint('EXE RESP: $response');
@@ -73,11 +73,9 @@ ExportDataModel?  exportData;
         CustomLogger().logWithFile(Level.error, "EXE RESP STATUS CODE: ${response.statusCode} -> $page");
         CustomLogger().logWithFile(Level.error, "EXE RESP: $response -> $page");
 
-        if (scaffoldKey != null) {
-          Utils.showSnackBar(context,
-              scaffoldKey: scaffoldKey, message: decodedData['message']);
-        }
-
+        Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey, message: decodedData['message']);
+      
         reportModel = null;
       } else if(decodedData['statusCode'] == 401)
       {
@@ -87,11 +85,9 @@ ExportDataModel?  exportData;
                 builder: (context) => SessionExpiredScreen()));
       }
       else {
-        if (scaffoldKey != null) {
-          Utils.showSnackBar(context,
-              scaffoldKey: scaffoldKey, message: decodedData['message']);
-        }
-
+        Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey, message: decodedData['message']);
+      
         Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         Utils.customPrint('EXE RESP: $response');
 
@@ -200,11 +196,9 @@ String extractFileNameFromUrl(String url) {
         CustomLogger().logWithFile(Level.error, "EXE RESP STATUS CODE: ${response.statusCode} -> $page");
         CustomLogger().logWithFile(Level.error, "EXE RESP: $response -> $page");
 
-        if (scaffoldKey != null) {
-          Utils.showSnackBar(context,
-              scaffoldKey: scaffoldKey, message: decodedData['message']);
-        }
-
+        Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey, message: decodedData['message']);
+      
         reportModel = null;
       } else if(decodedData['statusCode'] == 401)
       {
@@ -213,11 +207,9 @@ String extractFileNameFromUrl(String url) {
             MaterialPageRoute(
                 builder: (context) => SessionExpiredScreen()));
       }else {
-        if (scaffoldKey != null) {
-          Utils.showSnackBar(context,
-              scaffoldKey: scaffoldKey, message: decodedData['message']);
-        }
-
+        Utils.showSnackBar(context,
+            scaffoldKey: scaffoldKey, message: decodedData['message']);
+      
         Utils.customPrint('EXE RESP STATUS CODE: ${response.statusCode}');
         Utils.customPrint('EXE RESP: $response');
 

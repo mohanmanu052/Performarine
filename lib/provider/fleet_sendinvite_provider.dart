@@ -5,10 +5,7 @@ import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-import 'package:performarine/common_widgets/utils/urls.dart';
-import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/log_level.dart';
 import 'package:performarine/models/create_fleet_response.dart';
 import 'package:performarine/pages/delete_account/session_expired_screen.dart';

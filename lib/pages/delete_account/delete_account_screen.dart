@@ -756,36 +756,27 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
   {
 
     commonProvider.deleteAccount(context, commonProvider.loginModel!.token!, scaffoldKey).then((value){
-      if(value != null)
-        {
-          if(value.status!)
-            {
-              setState(() {
-                isDeleteAccountBtnCalled = false;
-              });
+        if(value.status!)
+          {
+            setState(() {
+              isDeleteAccountBtnCalled = false;
+            });
 
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        SuccessfullyDeletedAccountScreen(
-                        )),
-              );
-            }
-          else
-            {
-              setState(() {
-                isDeleteAccountBtnCalled = false;
-              });
-            }
-        }
-      else
-        {
-          setState(() {
-            isDeleteAccountBtnCalled = false;
-          });
-        }
-    }).catchError((e){setState(() {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      SuccessfullyDeletedAccountScreen(
+                      )),
+            );
+          }
+        else
+          {
+            setState(() {
+              isDeleteAccountBtnCalled = false;
+            });
+          }
+          }).catchError((e){setState(() {
       isDeleteAccountBtnCalled = false;
     });});
   }
@@ -890,6 +881,8 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
           queryParameters = {
             "id": getTrip[i].id,
             "load": getTrip[i].currentLoad,
+             "tripName":getTrip[i].name,
+
             "sensorInfo": sensorInfo['sensorInfo'],
             "deviceInfo": {
               "deviceId": Platform.isAndroid ? androidDeviceInfo!.id : '',

@@ -9,6 +9,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:performarine/analytics/download_trip.dart';
 import 'package:performarine/analytics/end_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
@@ -43,13 +44,15 @@ class LPRDeviceHandler {
 
   LPRDeviceHandler get instance => _instance;
   bool isLPRReconnectPopupshowing = false;
-
+bool isSilentDiscoonect=false;
+bool isListeningStartTripState=false;
   BluetoothDevice? connectedDevice;
   BuildContext? context;
   VoidCallback? onDeviceDisconnectCallback;
+  VoidCallback? onDeviceConnectedCallback;
   StreamSubscription<List<ScanResult>>? autoConnectStreamSubscription;
   StreamSubscription<bool>? autoConnectIsScanningStreamSubscription;
-  StreamSubscription<BluetoothConnectionState>?
+   StreamSubscription<BluetoothConnectionState>?
       bluetoothConnectionStateListener;
   BluetoothService? lprService;
 
@@ -75,8 +78,8 @@ class LPRDeviceHandler {
     var pref = await Utils.initSharedPreferences();
     pref.setBool('device_forget', false);
 
-    Utils.customPrint(
-        'BLE - CONNECTED DEVICE: ${connectedDevice!.remoteId.str}');
+    // Utils.customPrint(
+    //     'BLE - CONNECTED DEVICE: ${connectedDevice!.remoteId.str}');
     bool? isTripStarted = pref.getBool('trip_started') ?? false;
     if (isTripStarted) {
       listenToDeviceConnectionState();
@@ -85,6 +88,9 @@ class LPRDeviceHandler {
 
   setDeviceDisconnectCallback(VoidCallback callback) {
     this.onDeviceDisconnectCallback = callback;
+  }
+  setDeviceConnectCallBack(VoidCallback callback){
+    this.onDeviceConnectedCallback=callback;
   }
 
   void listenToDeviceConnectionState(
@@ -96,6 +102,7 @@ class LPRDeviceHandler {
       Function(String status)? callBackLprUartTxStatus,
       Function(String bluetoothDeviceName)? callBackconnectedDeviceName,
       Function(String lprSteamingData)? callBackLprStreamingData,
+      //bool isListeningStartTripState=false,
       bool isLoadLocalLprFile = false}) async {
     File? lprFile;
     int fileIndex = 0;
@@ -130,6 +137,9 @@ class LPRDeviceHandler {
     IOSink? lprFileSink;
     String tripId = '';
 
+if(bluetoothConnectionStateListener!=null){
+  bluetoothConnectionStateListener?.cancel();
+}
     List<String>? tripData = sharedPreferences!.getStringList('trip_data');
     if (tripData != null) {
       tripId = tripData[0];
@@ -138,11 +148,17 @@ class LPRDeviceHandler {
     if (connectedDevice != null) {
       bluetoothConnectionStateListener =
           connectedDevice!.connectionState.listen((event) async {
+
         if (event == BluetoothConnectionState.disconnected) {
+
           // if(lprFileSink!=null){
           //   lprFileSink?.close();
           // }
+// if(isListeningStartTripState){
 
+
+
+// }
           Utils.customPrint(
               'BLE - DEVICE GOT DISCONNECTED: ${connectedDevice!.remoteId.str} - $event');
 
@@ -153,16 +169,29 @@ class LPRDeviceHandler {
 
             bool getForgotStatus = pref.getBool('device_forget') ?? false;
             bool getLprStatus =
-                pref!.getBool('onStartTripLPRDeviceConnected') ?? false;
-            if (!getForgotStatus && getLprStatus) {
-              showDeviceDisconnectedDialog(connectedDevice);
+                pref.getBool('onStartTripLPRDeviceConnected') ?? false;
+                if(isListeningStartTripState&&!isSilentDiscoonect){
+                //  print('111111111111111111111111111');
+                showDeviceDisconnectedDialog(connectedDevice,callBackconnectedDeviceName: callBackconnectedDeviceName,isListeningStartTripState: isListeningStartTripState);
               isLPRReconnectPopupshowing = true;
+
+                }
+
+            if (!getForgotStatus && getLprStatus&&!isSilentDiscoonect) {
+if(!isLPRReconnectPopupshowing){
+
+              showDeviceDisconnectedDialog(connectedDevice,callBackconnectedDeviceName: callBackconnectedDeviceName,isListeningStartTripState: isListeningStartTripState);
+          
+                                        isLPRReconnectPopupshowing = true;
+
+}
+
             }
 
             if (onDeviceDisconnectCallback != null)
               onDeviceDisconnectCallback!.call();
           }
-        } else if (event == BluetoothConnectionState.connected) {
+        } else if (event == BluetoothConnectionState.connected&&!isListeningStartTripState) {
 //Setting the lprfile name
 //        lprFileName = 'lpr_$fileIndex.csv';
 //        //Getting The Path Of the File
@@ -177,6 +206,10 @@ class LPRDeviceHandler {
 //This Function Will Return The Connected BlueTooth Name On Map Screen
           callBackconnectedDeviceName!(connectedDevice!.platformName);
           callBackLprUartTxStatus!('Not Connected');
+    String lprFileName = 'lpr_$fileIndex.csv';
+        String lprFilePath = await GetFile().getlprFile(tripId, lprFileName);
+      //  File file = File(filePath);
+        File lprFile = File(lprFilePath);
 
           try {
             //This Will Check LprService element UUID Matches With LPRTransparentServiceUUID
@@ -184,37 +217,51 @@ class LPRDeviceHandler {
               if (element.uuid == _lprTransparentServiceUUID) {
                 lprService = element;
                 callBackLprTanspernetserviecIdStatus!('Connected');
-
                 lprService!.characteristics.forEach((dataCharacteristic) {
-                  if (dataCharacteristic.uuid == _lprUartTX) {
+                 if (dataCharacteristic.uuid == _lprUartTX) {
                     callBackLprUartTxStatus!('Connected');
                     dataCharacteristic.setNotifyValue(true);
                     //Start listening to the incoming data
                     dataCharacteristic.value.listen((event) async {
                       if (!event.isEmpty) {
-                        String dataLine = utf8.decode(event);
 
-                        debugPrint("LPR DATA WRITING CODE $dataLine ");
+                        String dataLine = utf8.decode(event);                       
+                        // saveToFileInDownloads('$dataLine\n',tripId,0);
+
+
+
+                     //   debugPrint("LPR DATA WRITING CODE $dataLine ");
 //Saving The Data Into The File
-                        DownloadTrip().saveLPRData(dataLine);
+                        DownloadTrip().saveLPRData(dataLine,lprFile);
                         //Call Back Returning the data we can use this globally
                         callBackLprStreamingData!(dataLine);
                       } else {
 //DownloadTrip().saveLPRData('test LPR',lprFile!,lprFileSink!);
 
-// List<String> lines = fileContent.split('\n');
+// Future.delayed(Duration(seconds: 1),(){
 
+
+//   final lines = LineSplitter().convert(fileContent);
+//  var stream= Stream<String>.fromIterable(lines);
+//  stream.listen((data){
+// saveToFileInDownloads(data,tripId,0);
+//   Utils.customPrint('Lpr file local data: $data');
+
+//   DownloadTrip().saveLPRData(data,lprFile);
+
+//  });
+// });
 // for (String line in lines) {
 //   //Utils.customPrint('Lpr file local data: $line');
-//   DownloadTrip().saveLPRData(line);
-//     callBackLprStreamingData!(line);
+//   DownloadTrip().saveLPRData(line,lprFile);
+//     //callBackLprStreamingData!(line);
 
 // }
                       }
                     });
-                  }
+                }
                 });
-              }
+             }
             });
             // lprService = services.singleWhere((element) =>
             // element.uuid ==
@@ -238,14 +285,14 @@ class LPRDeviceHandler {
           }
 
           Utils.customPrint(
-              'BLE - DEVICE GOT CONNECTED: ${connectedDevice!.remoteId.str} - $event');
+              'BLE - DEVICE GOT CONNECTED 1: ${connectedDevice!.remoteId.str} - $event');
         }
       });
     }
   }
 
   void showDeviceDisconnectedDialog(BluetoothDevice? previouslyConnectedDevice,
-      {int bottomNavIndex = 0, bool isNavigateToMaps = false}) {
+      {int bottomNavIndex = 0, bool isNavigateToMaps = false,Function? callBackconnectedDeviceName, bool? isListeningStartTripState}) {
     isSelfDisconnected = false;
     bool isDailogShowing = true;
     Get.dialog(
@@ -315,9 +362,12 @@ class LPRDeviceHandler {
                           children: [
                             Center(
                               child: CommonButtons.getAcceptButton(
-                                  'End Trip', Get.context!, endTripBtnColor,
+                                  'Continue Without LPR', Get.context!, blueColor,
                                   () {
-                                endTrip();
+                                    isLPRReconnectPopupshowing=false;
+                                    Navigator.pop(context);
+
+                               // endTrip();
                               },
                                   orientation == Orientation.portrait
                                       ? displayWidth(Get.context!) / 1.5
@@ -330,7 +380,7 @@ class LPRDeviceHandler {
                                   orientation == Orientation.portrait
                                       ? displayWidth(Get.context!) * 0.036
                                       : displayWidth(Get.context!) * 0.023,
-                                  endTripBtnColor,
+                                  blueColor,
                                   '',
                                   fontWeight: FontWeight.w500
 
@@ -360,6 +410,7 @@ class LPRDeviceHandler {
                                   Get.context!, Colors.transparent, () async {
                                 isDailogShowing = false;
                                 Get.back();
+                                isLPRReconnectPopupshowing=false;
                                 EasyLoading.show(
                                     status: 'Connecting...',
                                     maskType: EasyLoadingMaskType.black);
@@ -370,11 +421,27 @@ class LPRDeviceHandler {
                                       .connect()
                                       .then((value) {
                                     connectedDevice = previouslyConnectedDevice;
+
                                     LPRDeviceHandler()
                                         .setLPRDevice(connectedDevice!);
+                                        if(isListeningStartTripState??false){
+                                          isListeningStartTripState=true;
+LPRDeviceHandler()
+                                        .listenToDeviceConnectionState(callBackconnectedDeviceName: (data){
+                                        });
+                                        }
+                                        if(callBackconnectedDeviceName!=null){
+                                        callBackconnectedDeviceName(connectedDevice?.name);
+
+                                        }
+                                                    if (onDeviceConnectedCallback != null){
+              onDeviceConnectedCallback?.call();
+          }
+
+                                       // setDeviceConnectCallBack();
                                     Fluttertoast.showToast(
                                         msg:
-                                            'Device Connected ${connectedDevice?.advName.toString()}',
+                                            'Device Connected ${connectedDevice?.localName.toString()}',
                                         toastLength: Toast.LENGTH_SHORT,
                                         gravity: ToastGravity.CENTER,
                                         timeInSecForIosWeb: 1,
@@ -412,12 +479,17 @@ class LPRDeviceHandler {
                                     EasyLoading.dismiss();
                                     autoConnectToDevice(isDailogShowing,
                                         isMapScreenNavigation:
-                                            isNavigateToMaps);
+                                            isNavigateToMaps,
+                                            callBackconnectedDeviceName: callBackconnectedDeviceName
+                                            );
                                     // Get.back();
                                   });
                                 } else {
+
                                   autoConnectToDevice(isDailogShowing,
-                                      isMapScreenNavigation: isNavigateToMaps);
+                                      isMapScreenNavigation: isNavigateToMaps,
+                                      callBackconnectedDeviceName: callBackconnectedDeviceName
+                                      );
                                 }
                               },
                                   displayWidth(Get.context!) * 0.65,
@@ -450,7 +522,7 @@ class LPRDeviceHandler {
   }
 
   autoConnectToDevice(bool isDailogShowing,
-      {bool isMapScreenNavigation = false}) async {
+      {bool isMapScreenNavigation = false,Function? callBackconnectedDeviceName}) async {
     connectedDevice = null;
     final FlutterSecureStorage storage = FlutterSecureStorage();
     var lprDeviceId = sharedPreferences!.getString('lprDeviceId');
@@ -499,7 +571,9 @@ class LPRDeviceHandler {
                   .toList();
               if (storedDeviceIdResultList.isNotEmpty) {
                 ScanResult r = storedDeviceIdResultList.first;
-                r.device.connect().then((value) {
+                r.device.connectionState.first.then((state) {
+                                   // r.device.connectionState.first.then((state) {
+                    if (state == BluetoothConnectionState.connected) {
                   Fluttertoast.showToast(
                       msg: "Connected to ${r.device.platformName}",
                       toastLength: Toast.LENGTH_SHORT,
@@ -516,23 +590,38 @@ class LPRDeviceHandler {
                       sharedPreferences!.getStringList('trip_data');
                   bool? runningTrip =
                       sharedPreferences!.getBool("trip_started");
-
+if(tripData!=null&&tripData.isNotEmpty){
                   Navigator.push(
                     context!,
                     MaterialPageRoute(
                         builder: (context) => TripRecordingScreen(
-                            tripId: tripData![0],
+                            tripId: tripData[0],
                             calledFrom: 'bottom_nav',
-                            vesselId: tripData![1],
+                            vesselId: tripData[1],
                             vesselName: tripData[2],
                             tripIsRunningOrNot: runningTrip)),
                   );
+}
+
+                    }else{
+                                      FlutterBluePlus.stopScan();
+                EasyLoading.dismiss();
+
+                                          showBluetoothListDialog(context!, null, null,
+                        isMapScreenNavigation: isMapScreenNavigation,
+                        callbackConnectedDeviceName: callBackconnectedDeviceName
+                        );
+
+                    }
+                    
+                    
+                    //});
                 }).catchError((onError) {
                   Utils.customPrint('ERROR BLE: $onError');
                 });
 
-                FlutterBluePlus.stopScan();
-                EasyLoading.dismiss();
+                // FlutterBluePlus.stopScan();
+                // EasyLoading.dismiss();
               } else {
                 List<ScanResult> lprNameResultList = streamOfScanResultList
                     .where((element) => element.device.platformName
@@ -561,7 +650,9 @@ class LPRDeviceHandler {
                   Future.delayed(Duration(seconds: 2), () {
                     EasyLoading.dismiss();
                     showBluetoothListDialog(context!, null, null,
-                        isMapScreenNavigation: isMapScreenNavigation);
+                        isMapScreenNavigation: isMapScreenNavigation,
+                        callbackConnectedDeviceName: callBackconnectedDeviceName
+                        );
                   });
                 }
               }
@@ -591,16 +682,27 @@ class LPRDeviceHandler {
               } else {
                 Future.delayed(Duration(seconds: 2), () {
                   EasyLoading.dismiss();
+                  // if(isLPRReconnectPopupshowing){
+                  //   Get.back();
+                  //   isLPRReconnectPopupshowing=false;
+                  // }
+
                   showBluetoothListDialog(context!, null, null,
-                      isMapScreenNavigation: isMapScreenNavigation);
+                      isMapScreenNavigation: isMapScreenNavigation,
+                                              callbackConnectedDeviceName: callBackconnectedDeviceName
+);
                 });
               }
             }
           } else {
             Future.delayed(Duration(seconds: 2), () {
               EasyLoading.dismiss();
+
               showBluetoothListDialog(context!, null, null,
-                  isMapScreenNavigation: isMapScreenNavigation);
+                  isMapScreenNavigation: isMapScreenNavigation,
+                                          callbackConnectedDeviceName: callBackconnectedDeviceName
+
+                  );
             });
           }
         }
@@ -615,7 +717,8 @@ class LPRDeviceHandler {
 
   showBluetoothListDialog(BuildContext context, String? connectedDeviceId,
       BluetoothDevice? connectedBluetoothDevice,
-      {bool isMapScreenNavigation = false}) {
+
+      {bool isMapScreenNavigation = false,Function? callbackConnectedDeviceName,bool isTripNavigate=true,bool? isStartTripState}) {
     // setState(() {
     //   progress = 0.9;
     //   lprSensorProgress = 0.0;
@@ -702,11 +805,44 @@ class LPRDeviceHandler {
                                 width: displayWidth(context),
                                 height: displayHeight(context) * 0.28,
                                 child: LPRBluetoothList(
+                                  isStartTripState: isStartTripState,
                                   dialogContext: dialogContext,
                                   setDialogSet: setDialogState,
                                   connectedDeviceId: connectedDeviceId,
                                   connectedBluetoothDevice:
                                       connectedBluetoothDevice,
+                                                                            onConnetedCallBack: (value) {
+                                                                                                                                  if (onDeviceConnectedCallback != null){
+
+                                                                                                                                                  Fluttertoast.showToast(
+                                      msg:
+                                          "Connected to ${value}",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.black,
+                                      textColor: Colors.white,
+
+                                      fontSize: 16.0);
+
+                                                                                                                                  
+          
+
+
+
+                                                                                                                                    
+              onDeviceConnectedCallback!.call();
+
+              
+          }
+
+
+                                        
+                                      },
+                                      onErrCallback: (data){
+                                        
+                                      },
+
                                   onSelected: (value) {},
                                   onBluetoothConnection: (value) {},
                                 ))
@@ -714,11 +850,33 @@ class LPRDeviceHandler {
                                 width: displayWidth(context),
                                 height: displayHeight(context) * 0.28,
                                 child: LPRBluetoothList(
+                                  isStartTripState: isStartTripState,
                                   dialogContext: dialogContext,
                                   setDialogSet: setDialogState,
                                   connectedDeviceId: connectedDeviceId,
                                   connectedBluetoothDevice:
                                       connectedBluetoothDevice,
+                                      onConnetedCallBack: (value) {
+                                                                                                                                                                                if (onDeviceConnectedCallback != null){
+              onDeviceConnectedCallback!.call();
+
+
+              Fluttertoast.showToast(
+                                      msg:
+                                          "Connected to ${value}",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.black,
+                                      textColor: Colors.white,
+                                      fontSize: 16.0);
+          }
+
+
+                                      },
+                                      onErrCallback: (data){
+
+                                      },
                                   onSelected: (value) {},
                                   onBluetoothConnection: (value) {
                                     List<String>? tripData = sharedPreferences!
@@ -727,20 +885,23 @@ class LPRDeviceHandler {
                                         .getBool("trip_started");
 
                                     Navigator.pop(context);
+if(isTripNavigate){
+                                    if(tripData!=null&&tripData.isNotEmpty){
 
                                     Navigator.push(
                                       dialogContext,
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               TripRecordingScreen(
-                                                  tripId: tripData![0],
+                                                  tripId: tripData[0],
                                                   calledFrom: 'bottom_nav',
                                                   vesselId: tripData[1],
                                                   vesselName: tripData[2],
                                                   tripIsRunningOrNot:
                                                       runningTrip)),
                                     );
-                                  },
+                                    }
+                                  }},
                                 )),
                       ),
 
@@ -759,17 +920,52 @@ class LPRDeviceHandler {
                               onTap: () {
                                 Utils.customPrint("Tapped on scan button");
 
-                                var listener = FlutterBluePlus.startScan(
-                                    timeout: const Duration(seconds: 2),
-                                    oneByOne: true);
+                                  FlutterBluePlus.isScanning.listen((event) {
+                                    if (event) {
+                                      // if (mounted&&_builderKey.currentState!=null) {
+                                      //   setDialogState(() {
+                                      //     isScanningBluetooth = true;
+                                      //   });
+                                      // }
+                                    }
+                                    else
+                                      {
+                                        // if (mounted&&_builderKey.currentState!=null) {
+                                        //   setDialogState(() {
+                                        //     isScanningBluetooth = false;
+                                        //   });
+                                        //}
+                                      }
+                                  });
 
-                                Future.delayed(Duration(seconds: 2), () {
-                                  /* setDialogState(() {
-                                     isScanningBluetooth = false;
-                                   });*/
-                                });
+                                  if (!FlutterBluePlus.isScanningNow) {
+                                    FlutterBluePlus.startScan(
+                                        timeout: const Duration(seconds: 2));
+                                  }
 
-                                isRefreshList = true;
+                                  if (FlutterBluePlus.isScanningNow) {
+                                    // debugPrint(
+                                    //     "ALREADY SCANNING PLEASE WAIT !!!");
+                                  }
+
+                                  // if (mounted) {
+                                  //   Future.delayed(Duration(seconds: 2), () {
+                                  //     /* setDialogState(() {
+                                  //    isScanningBluetooth = false;
+                                  //  });*/
+                                  //   });
+                                  // }
+isRefreshList=true;
+                                  // if (mounted) {
+                                  //   setState(() {
+                                  //     isRefreshList = true;
+                                  //     progress = 0.9;
+                                  //     lprSensorProgress = 0.0;
+                                  //     isStartButton = false;
+                                  //     bluetoothName = '';
+                                  //   });
+                                  // }
+                                
                               },
                               child: Container(
                                 decoration: BoxDecoration(
@@ -795,7 +991,6 @@ class LPRDeviceHandler {
                                 List<BluetoothDevice> connectedDeviceList =
                                     FlutterBluePlus.connectedDevices;
                                 if (connectedDeviceList.isNotEmpty) {
-                                  print('connected to the device------');
 
                                   Fluttertoast.showToast(
                                       msg:
@@ -810,8 +1005,6 @@ class LPRDeviceHandler {
                                   FlutterBluePlus.stopScan();
                                   Navigator.pop(context);
                                 } else {
-                                  print(
-                                      'connected to the device------empty dismiss');
 
                                   Navigator.pop(context);
                                   showDeviceDisconnectedDialog(null);
@@ -864,7 +1057,7 @@ class LPRDeviceHandler {
 
     var durationTime = DateTime.now().toUtc().difference(createdAtTime);
     String tripDuration = Utils.calculateTripDuration(
-        ((durationTime.inMilliseconds) / 1000).toInt());
+        (durationTime.inMilliseconds) ~/ 1000);
 
     Utils.customPrint("DURATION !!!!!! $tripDuration");
 
@@ -911,7 +1104,7 @@ class LPRDeviceHandler {
 
     var durationTime = DateTime.now().toUtc().difference(createdAtTime);
     String tripDuration = Utils.calculateTripDuration(
-        ((durationTime.inMilliseconds) / 1000).toInt());
+        (durationTime.inMilliseconds) ~/ 1000);
 
     Utils.customPrint(
         'FINAL PATH: ${sharedPreferences!.getStringList('trip_data')}');
@@ -933,8 +1126,8 @@ class LPRDeviceHandler {
                 context!,
                 MaterialPageRoute(
                     builder: (context) => NewTripAnalyticsScreen(
-                          tripId: currentTrip!.id,
-                          vesselId: currentTrip?.vesselId,
+                          tripId: currentTrip.id,
+                          vesselId: currentTrip.vesselId,
                           calledFrom: 'End Trip',
                         )));
 
@@ -948,4 +1141,50 @@ class LPRDeviceHandler {
           Utils.customPrint('TRIPPPPPP ENDEDDD:');
         });
   }
+
+//Testing Purpose Write LPR  Raw Data Into Downloads Folder File For Testing Purpose Method  Should Not Go Into Production 
+  IOSink? _fileSink;
+
+Future<void> saveToFileInDownloads(
+    String data, String tripId, int fileIndex) async {
+  try {
+    if (_fileSink == null) {
+        Directory downloadsDirectory;
+
+        if (Platform.isAndroid) {
+          downloadsDirectory = Directory("storage/emulated/0/Download/");
+        } else {
+          downloadsDirectory = await getApplicationDocumentsDirectory();
+        }
+
+      if (!downloadsDirectory.existsSync()) {
+        downloadsDirectory.createSync(recursive: true);
+      }
+
+      String fileName = "lpr_$tripId$fileIndex.txt";
+      File file = File("${downloadsDirectory.path}/$fileName");
+
+      // Open the file for writing (append mode)
+      _fileSink = file.openWrite(mode: FileMode.append);
+     // debugPrint("File opened: ${file.path}");
+    }
+
+    // Write the data to the file
+    _fileSink!.writeln(data);
+
+    debugPrint("Data saved: $data");
+  } catch (e) {
+    debugPrint("Failed to write to file: $e");
+  }
+}
+
+Future<void> closeFile() async {
+  if (_fileSink != null) {
+    await _fileSink!.flush();
+    await _fileSink!.close();
+    _fileSink = null;
+    debugPrint("File closed.");
+  }
+}
+
 }

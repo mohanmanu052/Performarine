@@ -138,6 +138,7 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
             } else {
               return null;
             }
+            return null;
           },
           onFieldSubmitted: (value) {
             if (formKey.currentState!.validate()) {
@@ -409,8 +410,7 @@ class _SendInviteScreenState extends State<SendInviteScreen> {
                           width: displayWidth(context),
                           onTap: () async {
                             if (selectVesselFormKey.currentState!.validate()) {
-                              if (textControllersList.isNotEmpty &&
-                                  textControllersList != null) {
+                              if (textControllersList.isNotEmpty) {
                                 if (formKey.currentState!.validate()) {
                                   isLoading = true;
                                   setState(() {});

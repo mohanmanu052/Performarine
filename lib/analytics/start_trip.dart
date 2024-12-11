@@ -149,7 +149,7 @@ class StartTrip {
       /// Conversion of events coming from port into LocationDto(POJO class)
       LocationDto? locationDto =
           data != null ? LocationDto.fromJson(data) : null;
-print('coming to location DTO');
+//print('coming to location DTO');
      // Utils.customPrint("LOCATION DTO $locationDto");
       CustomLogger().logWithFile(Level.info, "LOCATION DTO $locationDto -> $page");
 

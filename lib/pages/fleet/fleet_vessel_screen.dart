@@ -218,23 +218,17 @@ class _FleetVesselScreenState extends State<FleetVesselScreen>
                                 value.last,
                                 _scafoldKey)
                             .then((value) {
-                          if (value != null) {
-                            if (value.status!) {
-                              setState(() {
-                                isUpdateFleetBtnClicked = false;
-                              });
-                              getFleetDetails();
-                            } else {
-                              setState(() {
-                                isUpdateFleetBtnClicked = false;
-                              });
-                            }
+                          if (value.status!) {
+                            setState(() {
+                              isUpdateFleetBtnClicked = false;
+                            });
+                            getFleetDetails();
                           } else {
                             setState(() {
                               isUpdateFleetBtnClicked = false;
                             });
                           }
-                        }).catchError((e) {
+                                                }).catchError((e) {
                           setState(() {
                             isUpdateFleetBtnClicked = false;
                           });

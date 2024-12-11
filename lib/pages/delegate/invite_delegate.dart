@@ -605,7 +605,7 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                                           startDate) ||
                                                           selectDay
                                                               .isAtSameMomentAs(
-                                                              startDate!)) {
+                                                              startDate)) {
                                                         Utils.showSnackBar(context,
                                                             scaffoldKey:
                                                             scaffoldKey,
@@ -822,26 +822,20 @@ class _InviteDelegateState extends State<InviteDelegate> {
                                         body,
                                         scaffoldKey)
                                         .then((value) {
-                                      if (value != null) {
-                                        if (value.status!) {
-                                          setState(() {
-                                            isInviteDelegateBtnClicked =
-                                            false;
-                                          });
+                                      if (value.status!) {
+                                        setState(() {
+                                          isInviteDelegateBtnClicked =
+                                          false;
+                                        });
 
-                                          Navigator.of(context).pop(true);
-                                        } else {
-                                          setState(() {
-                                            isInviteDelegateBtnClicked =
-                                            false;
-                                          });
-                                        }
+                                        Navigator.of(context).pop(true);
                                       } else {
                                         setState(() {
-                                          isInviteDelegateBtnClicked = false;
+                                          isInviteDelegateBtnClicked =
+                                          false;
                                         });
                                       }
-                                    }).catchError((e) {
+                                                                        }).catchError((e) {
                                       if(mounted)
                                         {
                                           setState(() {

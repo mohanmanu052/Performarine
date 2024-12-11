@@ -216,7 +216,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
             ),
             title: commonText(
                 context: context,
-                text: 'Trip Analytics',
+                text:tripData?.name!=null&&tripData!.name!.isNotEmpty?tripData?.name: 'Trip Analytics',
                 fontWeight: FontWeight.w600,
                 textColor: Colors.black87,
                 textSize: displayWidth(context) * 0.042,
@@ -1615,10 +1615,10 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                               },
                                               style: ButtonStyle(
                                                   backgroundColor:
-                                                      MaterialStateProperty.all(
+                                                      WidgetStateProperty.all(
                                                           blueColor),
                                                   fixedSize:
-                                                      MaterialStateProperty.all(
+                                                      WidgetStateProperty.all(
                                                           Size(
                                                               displayWidth(
                                                                   context),
@@ -1626,7 +1626,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                                       context) *
                                                                   0.065)),
                                                   shape:
-                                                      MaterialStateProperty.all(
+                                                      WidgetStateProperty.all(
                                                           RoundedRectangleBorder(
                                                     borderRadius:
                                                         BorderRadius.circular(
@@ -2003,29 +2003,23 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
           .deleteTrip(
               context, commonProvider.loginModel!.token!, tripId, scaffoldKey)
           .then((value) {
-        if (value != null) {
-          if (value.status!) {
-            isDeletedSuccessfully = value.status!;
-            DatabaseService().deleteTripFromDB(tripId).then((value) {
-              deleteFilePath('${ourDirectory!.path}/${tripId}.zip');
-              deleteFolder('${ourDirectory!.path}/${tripId}');
-              setState(() {
-                isDeleteTripBtnClicked = false;
-              });
-            });
-            onDeleteCallBack.call();
-
-            internalStateSetter!(() {
-              isBtnClick = false;
+        if (value.status!) {
+          isDeletedSuccessfully = value.status!;
+          DatabaseService().deleteTripFromDB(tripId).then((value) {
+            deleteFilePath('${ourDirectory!.path}/${tripId}.zip');
+            deleteFolder('${ourDirectory!.path}/${tripId}');
+            setState(() {
               isDeleteTripBtnClicked = false;
             });
-          }
-        } else {
-          setState(() {
+          });
+          onDeleteCallBack.call();
+
+          internalStateSetter!(() {
             isBtnClick = false;
+            isDeleteTripBtnClicked = false;
           });
         }
-      }).catchError((e) {
+            }).catchError((e) {
         internalStateSetter!(() {
           isBtnClick = false;
         });

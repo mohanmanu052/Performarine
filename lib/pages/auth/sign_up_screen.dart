@@ -244,37 +244,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           isGoogleSignInBtnClicked = false;
                                         });
 
-                                        if (value != null) {
-                                          setState(() {
-                                            isGoogleSignInBtnClicked = false;
-                                          });
+                                        setState(() {
+                                          isGoogleSignInBtnClicked = false;
+                                        });
 
-                                          if (value.status!) {
-                                            setState(() {
-                                              isGoogleSignInBtnClicked =
-                                                  false;
-                                            });
-                                            Future.delayed(
-                                                Duration(seconds: 2), () {
-                                              Navigator.pushAndRemoveUntil(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) => SignInScreen(calledFrom: 'SignUp'),
-                                                  ),
-                                                  ModalRoute.withName(""));
-                                            });
-                                          } else {
-                                            setState(() {
-                                              isGoogleSignInBtnClicked =
-                                                  false;
-                                            });
-                                          }
+                                        if (value.status!) {
+                                          setState(() {
+                                            isGoogleSignInBtnClicked =
+                                                false;
+                                          });
+                                          Future.delayed(
+                                              Duration(seconds: 2), () {
+                                            Navigator.pushAndRemoveUntil(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => SignInScreen(calledFrom: 'SignUp'),
+                                                ),
+                                                ModalRoute.withName(""));
+                                          });
                                         } else {
                                           setState(() {
-                                            isGoogleSignInBtnClicked = false;
+                                            isGoogleSignInBtnClicked =
+                                                false;
                                           });
                                         }
-                                      }).catchError((e) {
+                                                                            }).catchError((e) {
                                         setState(() {
                                           isGoogleSignInBtnClicked = false;
                                         });
@@ -638,28 +632,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       isRegistrationBtnClicked = false;
                                     });
 
-                                    if (value != null) {
+                                    setState(() {
+                                      isRegistrationBtnClicked = false;
+                                    });
+
+                                    if (value.status!) {
                                       setState(() {
                                         isRegistrationBtnClicked = false;
                                       });
 
-                                      if (value.status!) {
-                                        setState(() {
-                                          isRegistrationBtnClicked = false;
-                                        });
-
-                                        Future.delayed(Duration(seconds: 2),
-                                                () {
-                                              Navigator.pushAndRemoveUntil(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) => SignInScreen(calledFrom: 'SignUp'),
-                                                  ),
-                                                  ModalRoute.withName(""));
-                                            });
-                                      }
+                                      Future.delayed(Duration(seconds: 2),
+                                              () {
+                                            Navigator.pushAndRemoveUntil(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => SignInScreen(calledFrom: 'SignUp'),
+                                                ),
+                                                ModalRoute.withName(""));
+                                          });
                                     }
-                                  }).catchError((e) {
+                                                                    }).catchError((e) {
                                     setState(() {
                                       isRegistrationBtnClicked = false;
                                     });

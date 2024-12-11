@@ -401,32 +401,26 @@ class _FeedbackReportState extends State<FeedbackReport> {
                       isBtnClick = true;
                     });
 
-                    commonProvider?.sendUserFeedbackDio(
+                    commonProvider.sendUserFeedbackDio(
                         context,
-                        commonProvider!.loginModel!.token!,
+                        commonProvider.loginModel!.token!,
                         nameController.text,
                         descriptionController.text,
                         deviceDetails1!,
                         sendFiles,
                         scaffoldKey).then((value) async{
-                      if(value != null){
-                        setState(() {
-                          isBtnClick = false;
-                        });
-                        Utils.customPrint("status of send user feedback is: ${value.status}");
-                        CustomLogger().logWithFile(Level.info, "status of send user feedback is: ${value.status} -> $page");
-                        if(value.status!){
-                          deleteImageFile(imageFile!.path);
-                          sendFiles.clear();
-                          finalSelectedFiles.clear();
-                          Navigator.pop(context);
-                        }
-                      } else{
-                        setState(() {
-                          isBtnClick = false;
-                        });
+                      setState(() {
+                        isBtnClick = false;
+                      });
+                      Utils.customPrint("status of send user feedback is: ${value.status}");
+                      CustomLogger().logWithFile(Level.info, "status of send user feedback is: ${value.status} -> $page");
+                      if(value.status!){
+                        deleteImageFile(imageFile!.path);
+                        sendFiles.clear();
+                        finalSelectedFiles.clear();
+                        Navigator.pop(context);
                       }
-                    }).catchError((e){
+                                        }).catchError((e){
                       setState(() {
                         isBtnClick = false;
                       });
@@ -452,22 +446,16 @@ class _FeedbackReportState extends State<FeedbackReport> {
                         deviceDetails1!,
                         sendFiles,
                         scaffoldKey).then((value) async{
-                      if(value != null){
-                        setState(() {
-                          isBtnClick = false;
-                        });
-                        if(value.status!){
-                          deleteImageFile(imageFile!.path);
-                          sendFiles.clear();
-                          finalSelectedFiles.clear();
-                          Navigator.pop(context);
-                        }
-                      } else{
-                        setState(() {
-                          isBtnClick = false;
-                        });
+                      setState(() {
+                        isBtnClick = false;
+                      });
+                      if(value.status!){
+                        deleteImageFile(imageFile!.path);
+                        sendFiles.clear();
+                        finalSelectedFiles.clear();
+                        Navigator.pop(context);
                       }
-                    }).catchError((e){
+                                        }).catchError((e){
                       setState(() {
                         isBtnClick = false;
                       });

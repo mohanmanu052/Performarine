@@ -1,10 +1,8 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
-import 'package:performarine/models/vessel.dart';
 import 'package:performarine/models/vessel_delegate_model.dart';
 
 class DelegateVesselInfoCard extends StatelessWidget {

@@ -177,12 +177,20 @@ class _TripWidgetNewState extends State<TripWidgetNew> {
                           Container(
                             height: 30,
                             //width: displayWidth(context) * 0.3,
-                            child: commonText(
+                            child: widget.tripList!.name!.isEmpty
+                            ? commonText(
                                 context: context,
                                 text: 'Trip ID - #${widget.tripList?.id ?? ''}',
                                 fontWeight: FontWeight.w500,
                                 textColor: Colors.black,
                                 textSize: displayWidth(context) * 0.02,
+                                textAlign: TextAlign.start)
+                            : commonText(
+                                context: context,
+                                text: '${widget.tripList?.name ?? ''}',
+                                fontWeight: FontWeight.w500,
+                                textColor: Colors.black,
+                                textSize: displayWidth(context) * 0.022,
                                 textAlign: TextAlign.start),
                           ),
                           widget.tripList?.tripStatus == 0
@@ -575,6 +583,7 @@ class _TripWidgetNewState extends State<TripWidgetNew> {
     queryParameters = {
       "id": tripData.id,
       "load": tripData.currentLoad,
+      "tripName":tripData.name,
       "sensorInfo": sensorInfo['sensorInfo'],
       "deviceInfo": {
         "deviceId": Platform.isAndroid ? androidDeviceInfo!.id : '',
@@ -881,7 +890,7 @@ class _TripWidgetNewState extends State<TripWidgetNew> {
       {
         if (!vesselIsSync) {
 
-          Utils.customPrint('VESSEL DATA ${vesselData!.id}');
+          Utils.customPrint('VESSEL DATA ${vesselData.id}');
           CustomLogger().logWithFile(Level.info, "VESSEL DATA ${vesselData.id} -> $page");
 
           commonProvider.addVesselRequestModel = CreateVessel();

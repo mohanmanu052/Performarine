@@ -171,9 +171,8 @@ class _TripViewListState extends State<TripViewList> {
                                       .difference(createdAtTime);
                                   String tripDuration =
                                   Utils.calculateTripDuration(
-                                      ((durationTime.inMilliseconds) /
-                                          1000)
-                                          .toInt());
+                                      (durationTime.inMilliseconds) ~/
+                                          1000);
                                   debugPrint("DURATION !!!!!! $tripDuration");
 
                                   bool isSmallTrip =  Utils().checkIfTripDurationIsGraterThan10Seconds(tripDuration.split(":"));
@@ -213,9 +212,8 @@ class _TripViewListState extends State<TripViewList> {
                                               .difference(createdAtTime);
                                           String tripDuration =
                                           Utils.calculateTripDuration(
-                                              ((durationTime.inMilliseconds) /
-                                                  1000)
-                                                  .toInt());
+                                              (durationTime.inMilliseconds) ~/
+                                                  1000);
                                           debugPrint("DURATION !!!!!! $tripDuration");
 
                                           endTripMethod(tripDuration, snapshot.data![index]);
@@ -306,9 +304,8 @@ class _TripViewListState extends State<TripViewList> {
         .difference(createdAtTime);
     String tripDuration =
     Utils.calculateTripDuration(
-        ((durationTime.inMilliseconds) /
-            1000)
-            .toInt());
+        (durationTime.inMilliseconds) ~/
+            1000);
 
     Utils.customPrint('***DIST: ${currentTrip.toJson()}');
 

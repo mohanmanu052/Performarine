@@ -219,39 +219,33 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           vesselID, context, commonProvider.loginModel!.token!, scaffoldKey)
           .then((value) {
 
-        if (value != null) {
-          setState(() {
-            isTripIdListLoading = true;
-          });
+        setState(() {
+          isTripIdListLoading = true;
+        });
 
-          Utils.customPrint("value of trip list: ${value.data}");
-          CustomLogger().logWithFile(Level.info, "value of trip list: ${value.data} -> $page");
-          tripIdList!.clear();
-          dateTimeList!.clear();
-          for (int i = 0; i < value.data!.length; i++) {
-            tripIdList!.add(value.data![i].id!);
-            if (value.data![i].createdAt != null) {
-              dateTimeList!.add(tripDate(value.data![i].createdAt.toString()));
-            }
-            children!.add("Trip ${i.toString()}");
+        Utils.customPrint("value of trip list: ${value.data}");
+        CustomLogger().logWithFile(Level.info, "value of trip list: ${value.data} -> $page");
+        tripIdList!.clear();
+        dateTimeList!.clear();
+        for (int i = 0; i < value.data!.length; i++) {
+          tripIdList!.add(value.data![i].id!);
+          if (value.data![i].createdAt != null) {
+            dateTimeList!.add(tripDate(value.data![i].createdAt.toString()));
           }
-          childrenValue = List.generate(children!.length, (index) => false);
-
-
-          Utils.customPrint("trip id list: $tripIdList");
-          Utils.customPrint("children: ${children}");
-          Utils.customPrint("dateTimeList: $dateTimeList");
-
-          CustomLogger().logWithFile(Level.info, "trip id list: $tripIdList -> $page");
-          CustomLogger().logWithFile(Level.info, "children: ${children} -> $page");
-          CustomLogger().logWithFile(Level.info, "dateTimeList: $dateTimeList -> $page");
-
-        } else {
-          setState(() {
-            isTripIdListLoading = false;
-          });
+          children!.add("Trip ${i.toString()}");
         }
-      }).catchError((e) {
+        childrenValue = List.generate(children!.length, (index) => false);
+
+
+        Utils.customPrint("trip id list: $tripIdList");
+        Utils.customPrint("children: ${children}");
+        Utils.customPrint("dateTimeList: $dateTimeList");
+
+        CustomLogger().logWithFile(Level.info, "trip id list: $tripIdList -> $page");
+        CustomLogger().logWithFile(Level.info, "children: ${children} -> $page");
+        CustomLogger().logWithFile(Level.info, "dateTimeList: $dateTimeList -> $page");
+
+            }).catchError((e) {
         setState(() {
           isTripIdListLoading = true;
         });
@@ -282,30 +276,24 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           Utils.customPrint("value is: ${value!.status}");
           CustomLogger().logWithFile(Level.info, "value is: ${value.status} -> $page");
 
-          if (value != null) {
-            Utils.customPrint("value 1 is: ${value.status}");
-            setState(() {
-              isVesselDataLoading = true;
-            });
+          Utils.customPrint("value 1 is: ${value.status}");
+          setState(() {
+            isVesselDataLoading = true;
+          });
 
-            Utils.customPrint("value of get user config by id: ${value.vessels}");
-            CustomLogger().logWithFile(Level.info, "value of get user config by id: ${value.vessels} -> $page");
+          Utils.customPrint("value of get user config by id: ${value.vessels}");
+          CustomLogger().logWithFile(Level.info, "value of get user config by id: ${value.vessels} -> $page");
 
-            if(value.vessels!.length == 0){
-              isVesselsFound = true;
-            }
-            vesselData = List<DropdownItem>.from(value.vessels!.map(
-                    (vessel) => DropdownItem(id: vessel.id, name: vessel.name)));
-
-            Utils.customPrint("vesselData: ${vesselData.length}");
-            CustomLogger().logWithFile(Level.info, "vesselData: ${vesselData.length} -> $page");
-
-          } else {
-            setState(() {
-              isVesselDataLoading = true;
-            });
+          if(value.vessels!.length == 0){
+            isVesselsFound = true;
           }
-        }).catchError((e) {
+          vesselData = List<DropdownItem>.from(value.vessels!.map(
+                  (vessel) => DropdownItem(id: vessel.id, name: vessel.name)));
+
+          Utils.customPrint("vesselData: ${vesselData.length}");
+          CustomLogger().logWithFile(Level.info, "vesselData: ${vesselData.length} -> $page");
+
+                }).catchError((e) {
           setState(() {
             isVesselDataLoading = true;
           });
@@ -360,265 +348,258 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
           scaffoldKey)
           .then((value) {
         print('the trip list  was------- value was'+value!.data!.trips!.length.toString());
-        if (value != null) {
-          if (value.message == "Internal Server Error") {
+        if (value.message == "Internal Server Error") {
+          setState(() {
+            isCheckInternalServer = true;
+            isBtnClick = false;
+            // triSpeedList.clear();
+            totalData.clear();
+            finalData.clear();
+          });
+        } else if (!isCheckInternalServer! && value.statusCode == 200) {
+          if (mounted) {
             setState(() {
-              isCheckInternalServer = true;
+              isReportDataLoading = true;
               isBtnClick = false;
-              // triSpeedList.clear();
-              totalData.clear();
+              avgSpeed = null;
+              avgDuration = null;
+              avgFuelConsumption = null;
+              avgPower = null;
+              triSpeedList.clear();
+              tripList.clear();
+
+              duration1 = null;
+              avgSpeed1 = null;
+              fuelUsage = null;
+              powerUsage = null;
               finalData.clear();
-            });
-          } else if (!isCheckInternalServer! && value.statusCode == 200) {
-            if (mounted) {
-              setState(() {
-                isReportDataLoading = true;
-                isBtnClick = false;
-                avgSpeed = null;
-                avgDuration = null;
-                avgFuelConsumption = null;
-                avgPower = null;
-                triSpeedList.clear();
-                tripList.clear();
+              durationGraphData.clear();
 
-                duration1 = null;
-                avgSpeed1 = null;
-                fuelUsage = null;
-                powerUsage = null;
-                finalData.clear();
-                durationGraphData.clear();
-
-                durationColumnSeriesData.clear();
-                avgSpeedColumnSeriesData.clear();
-                fuelUsageColumnSeriesData.clear();
-                powerUsageColumnSeriesData.clear();
-              });
-            }
-
-            collapseExpansionTileKey();
-            isSHowGraph = true;
-            avgSpeed = double.parse(
-                value.data?.avgInfo?.avgSpeed?.toStringAsFixed(2) ?? '0');
-            var myAvgDuration =
-            (value.data?.avgInfo?.avgDuration ?? '').contains(".")
-                ? durationWithMilli3(
-                value.data?.avgInfo?.avgDuration ?? '0:0:0.0')
-                : durationWithSeconds(
-                value.data!.avgInfo!.avgDuration ?? '0:0:0');
-
-            Utils.customPrint("NEW AVG DATA ${value.data?.avgInfo?.avgDuration}");
-            CustomLogger().logWithFile(Level.info, "NEW AVG DATA ${value.data?.avgInfo?.avgDuration} -> $page");
-
-            avgDuration = myAvgDuration ?? 0;
-
-            avgFuelConsumption = value.data?.avgInfo?.avgFuelConsumption;
-            avgPower = value.data?.avgInfo?.avgPower ?? 0.0;
-            Utils.customPrint(
-                "duration: $avgDuration, avgPower : $avgPower, avgFuelConsumption: $avgFuelConsumption, avgSpeed: $avgSpeed");
-            CustomLogger().logWithFile(Level.info, "duration: $avgDuration, avgPower : $avgPower, avgFuelConsumption: $avgFuelConsumption, avgSpeed: $avgSpeed -> $page");
-            triSpeedList = List<TripModel>.from(value.data!.trips!.map(
-                    (tripData) => TripModel(
-                    date: tripData.date, tripsByDate: tripData.tripsByDate)));
-
-            durationGraphData = triSpeedList;
-
-            if (triSpeedList.length <= 1) {
-              chartWidth = displayWidth(context) * 1;
-            } else if (triSpeedList.length <= 2) {
-              chartWidth = displayWidth(context);
-            } else if (triSpeedList.length < 5) {
-              chartWidth = displayHeight(context) * 0.5;
-            } else if (triSpeedList.length < 10) {
-              chartWidth = displayHeight(context) * 1;
-            } else if (triSpeedList.length > 10) {
-              chartWidth = displayHeight(context) * 4;
-            } else if (triSpeedList.length > 20) {
-              chartWidth = displayHeight(context) * 7;
-            }
-            Utils.customPrint('list total data : ${durationGraphData}');
-            CustomLogger().logWithFile(Level.info, "list total data : ${durationGraphData} -> $page");
-
-            for (int i = 0; i < durationGraphData.length; i++) {
-              for (int j = 0;
-              j < durationGraphData[i].tripsByDate!.length;
-              j++) {
-                Utils.customPrint(
-                    "trip duration data is: ${durationGraphData[i].tripsByDate![j].id}");
-                CustomLogger().logWithFile(Level.info, "trip duration data is: ${durationGraphData[i].tripsByDate![j].id} -> $page");
-                if (duration(triSpeedList[i].tripsByDate![j].duration!) > 0) {
-                  durationColumnSeriesData.add(ColumnSeries<TripModel, String>(
-                    color: circularProgressColor,
-                    width: 0.4,
-                    enableTooltip: true,
-                    dataSource: triSpeedList,
-                    xValueMapper: (TripModel tripData, _) =>
-                    durationWithSeconds(
-                        triSpeedList[i].tripsByDate![j].duration!) >
-                        0
-                        ? triSpeedList[i].date
-                        : null,
-                    yValueMapper: (TripModel tripData, _) =>
-                    durationWithSeconds(
-                        triSpeedList[i].tripsByDate![j].duration!) >
-                        0
-                        ? durationWithSeconds(
-                        triSpeedList[i].tripsByDate![j].duration!)
-                        : null,
-                    onPointTap: (ChartPointDetails args) {
-                      if (mounted) {
-                        selectedIndex = triSpeedList[i].tripsByDate![j].id!;
-                        Utils.customPrint("selected index: $selectedIndex");
-                        CustomLogger().logWithFile(Level.info, "selected index: $selectedIndex -> $page");
-
-                      }
-                    },
-                    name: 'Trip Duration',
-                    emptyPointSettings:
-                    EmptyPointSettings(mode: EmptyPointMode.drop),
-                    dataLabelSettings: DataLabelSettings(isVisible: false),
-                    spacing: 0.1,
-                  ));
-                }
-                if (triSpeedList[i].tripsByDate![j].avgSpeed! > 0) {
-                  avgSpeedColumnSeriesData.add(ColumnSeries<TripModel, String>(
-                    color: circularProgressColor,
-                    dataSource: triSpeedList,
-                    width: 0.4,
-                    enableTooltip: true,
-                    xValueMapper: (TripModel tripData, _) =>
-                    triSpeedList[i].date,
-                    yValueMapper: (TripModel tripData, _) =>
-                    triSpeedList[i].tripsByDate![j].avgSpeed! > 0
-                        ? triSpeedList[i].tripsByDate![j].avgSpeed!
-                        : null,
-                    onPointTap: (ChartPointDetails args) {
-                      if (mounted) {
-                        selectedIndex = triSpeedList[i].tripsByDate![j].id!;
-                        Utils.customPrint("selected index: $selectedIndex");
-                        CustomLogger().logWithFile(Level.info, "selected index: $selectedIndex -> $page");
-
-                      }
-                    },
-                    name: 'Avg Speed',
-                    dataLabelSettings: DataLabelSettings(isVisible: false),
-                    spacing: 0.1,
-                  ));
-                }
-
-                if (triSpeedList[i].tripsByDate![j].fuelConsumption! > 0) {
-                  fuelUsageColumnSeriesData.add(ColumnSeries<TripModel, String>(
-                    color: circularProgressColor,
-                    width: 0.4,
-                    enableTooltip: true,
-                    dataSource: triSpeedList,
-                    xValueMapper: (TripModel tripData, _) =>
-                    triSpeedList[i].date,
-                    yValueMapper: (TripModel tripData, _) =>
-                    triSpeedList[i].tripsByDate![j].fuelConsumption! > 0
-                        ? triSpeedList[i].tripsByDate![j].fuelConsumption!
-                        : null,
-                    onPointTap: (ChartPointDetails args) {
-                      if (mounted) {
-                        setState(() async {
-                          selectedIndex =
-                          await triSpeedList[i].tripsByDate![j].id!;
-                          Utils.customPrint("selected index: $selectedIndex");
-                          CustomLogger().logWithFile(Level.info, "selected index: $selectedIndex -> $page");
-
-                        });
-                      }
-                    },
-                    name: 'Fuel Usage',
-                    dataLabelSettings: DataLabelSettings(isVisible: false),
-                    spacing: 0.1,
-                  ));
-                }
-
-                if (triSpeedList[i].tripsByDate![j].avgPower! > 0) {
-                  powerUsageColumnSeriesData
-                      .add(ColumnSeries<TripModel, String>(
-                    color: circularProgressColor,
-                    width: 0.4,
-                    enableTooltip: true,
-                    dataSource: triSpeedList,
-                    xValueMapper: (TripModel tripData, _) =>
-                    triSpeedList[i].date,
-                    yValueMapper: (TripModel tripData, _) =>
-                    triSpeedList[i].tripsByDate![j].avgPower! > 0
-                        ? triSpeedList[i].tripsByDate![j].avgPower!
-                        : null,
-                    onPointTap: (ChartPointDetails args) {
-                      if (mounted) {
-                        setState(() async {
-                          selectedIndex =
-                          await triSpeedList[i].tripsByDate![j].id!;
-                          Utils.customPrint("selected index: $selectedIndex");
-                          CustomLogger().logWithFile(Level.info, "selected index: $selectedIndex -> $page");
-
-                        });
-                      }
-                    },
-                    name: 'Power Usage',
-                    dataLabelSettings: DataLabelSettings(isVisible: false),
-                    spacing: 0.1,
-                  ));
-                }
-              }
-            }
-            tripList.clear();
-
-            for (int i = 0; i < triSpeedList.length; i++) {
-              for (int j = 0; j < triSpeedList[i].tripsByDate!.length; j++) {
-                Map<String, dynamic> data = {
-                  'date': triSpeedList[i].date!,
-                  'tripDetails': triSpeedList[i].tripsByDate![j].id,
-                  'duration': triSpeedList[i].tripsByDate![j].duration,
-                  'avgSpeed': '${triSpeedList[i].tripsByDate![j].avgSpeed}',
-                  'fuelUsage':
-                  triSpeedList[i].tripsByDate![j].fuelConsumption ?? 0.0,
-                  'powerUsage': triSpeedList[i].tripsByDate![j].avgPower ?? 0.0
-                };
-                tripList.add(data);
-
-              }
-            }
-
-            Utils.customPrint("length: ${tripList.length}, tripList: $tripList");
-            CustomLogger().logWithFile(Level.info, "length: ${tripList.length}, tripList: $tripList -> $page");
-
-            duration1 = durationWithMilli(
-                value.data?.avgInfo?.avgDuration ?? '0:0:0.0');
-            avgSpeed1 = value.data?.avgInfo?.avgSpeed ?? 0.0;
-            fuelUsage = value.data?.avgInfo?.avgFuelConsumption ?? 0.0;
-            powerUsage = value.data?.avgInfo?.avgPower ?? 0.0;
-            Utils.customPrint(
-                "duration: $duration1,avgSpeed1: $avgSpeed1,fuelUsage: $fuelUsage,powerUsage: $powerUsage  ");
-            CustomLogger().logWithFile(Level.info, "duration: $duration1,avgSpeed1: $avgSpeed1,fuelUsage: $fuelUsage,powerUsage: $powerUsage -> $page");
-
-            finalData = [
-              {
-                'date': '',
-                'tripDetails': 'Average',
-                'duration': "$duration1",
-                'avgSpeed': avgSpeed1,
-                'fuelUsage': fuelUsage,
-                'powerUsage': powerUsage
-              }
-            ];
-          } else {
-            setState(() {
-              isBtnClick = false;
-              isCheckInternalServer = false;
-              isReportDataLoading = false;
+              durationColumnSeriesData.clear();
+              avgSpeedColumnSeriesData.clear();
+              fuelUsageColumnSeriesData.clear();
+              powerUsageColumnSeriesData.clear();
             });
           }
+
+          collapseExpansionTileKey();
+          isSHowGraph = true;
+          avgSpeed = double.parse(
+              value.data?.avgInfo?.avgSpeed?.toStringAsFixed(2) ?? '0');
+          var myAvgDuration =
+          (value.data?.avgInfo?.avgDuration ?? '').contains(".")
+              ? durationWithMilli3(
+              value.data?.avgInfo?.avgDuration ?? '0:0:0.0')
+              : durationWithSeconds(
+              value.data!.avgInfo!.avgDuration ?? '0:0:0');
+
+          Utils.customPrint("NEW AVG DATA ${value.data?.avgInfo?.avgDuration}");
+          CustomLogger().logWithFile(Level.info, "NEW AVG DATA ${value.data?.avgInfo?.avgDuration} -> $page");
+
+          avgDuration = myAvgDuration ?? 0;
+
+          avgFuelConsumption = value.data?.avgInfo?.avgFuelConsumption;
+          avgPower = value.data?.avgInfo?.avgPower ?? 0.0;
+          Utils.customPrint(
+              "duration: $avgDuration, avgPower : $avgPower, avgFuelConsumption: $avgFuelConsumption, avgSpeed: $avgSpeed");
+          CustomLogger().logWithFile(Level.info, "duration: $avgDuration, avgPower : $avgPower, avgFuelConsumption: $avgFuelConsumption, avgSpeed: $avgSpeed -> $page");
+          triSpeedList = List<TripModel>.from(value.data!.trips!.map(
+                  (tripData) => TripModel(
+                  date: tripData.date, tripsByDate: tripData.tripsByDate)));
+
+          durationGraphData = triSpeedList;
+
+          if (triSpeedList.length <= 1) {
+            chartWidth = displayWidth(context) * 1;
+          } else if (triSpeedList.length <= 2) {
+            chartWidth = displayWidth(context);
+          } else if (triSpeedList.length < 5) {
+            chartWidth = displayHeight(context) * 0.5;
+          } else if (triSpeedList.length < 10) {
+            chartWidth = displayHeight(context) * 1;
+          } else if (triSpeedList.length > 10) {
+            chartWidth = displayHeight(context) * 4;
+          } else if (triSpeedList.length > 20) {
+            chartWidth = displayHeight(context) * 7;
+          }
+          Utils.customPrint('list total data : ${durationGraphData}');
+          CustomLogger().logWithFile(Level.info, "list total data : ${durationGraphData} -> $page");
+
+          for (int i = 0; i < durationGraphData.length; i++) {
+            for (int j = 0;
+            j < durationGraphData[i].tripsByDate!.length;
+            j++) {
+              Utils.customPrint(
+                  "trip duration data is: ${durationGraphData[i].tripsByDate![j].id}");
+              CustomLogger().logWithFile(Level.info, "trip duration data is: ${durationGraphData[i].tripsByDate![j].id} -> $page");
+              if (duration(triSpeedList[i].tripsByDate![j].duration!) > 0) {
+                durationColumnSeriesData.add(ColumnSeries<TripModel, String>(
+                  color: circularProgressColor,
+                  width: 0.4,
+                  enableTooltip: true,
+                  dataSource: triSpeedList,
+                  xValueMapper: (TripModel tripData, _) =>
+                  durationWithSeconds(
+                      triSpeedList[i].tripsByDate![j].duration!) >
+                      0
+                      ? triSpeedList[i].date
+                      : null,
+                  yValueMapper: (TripModel tripData, _) =>
+                  durationWithSeconds(
+                      triSpeedList[i].tripsByDate![j].duration!) >
+                      0
+                      ? durationWithSeconds(
+                      triSpeedList[i].tripsByDate![j].duration!)
+                      : null,
+                  onPointTap: (ChartPointDetails args) {
+                    if (mounted) {
+                      selectedIndex = triSpeedList[i].tripsByDate![j].id!;
+                      Utils.customPrint("selected index: $selectedIndex");
+                      CustomLogger().logWithFile(Level.info, "selected index: $selectedIndex -> $page");
+
+                    }
+                  },
+                  name: 'Trip Duration',
+                  emptyPointSettings:
+                  EmptyPointSettings(mode: EmptyPointMode.drop),
+                  dataLabelSettings: DataLabelSettings(isVisible: false),
+                  spacing: 0.1,
+                ));
+              }
+              if (triSpeedList[i].tripsByDate![j].avgSpeed! > 0) {
+                avgSpeedColumnSeriesData.add(ColumnSeries<TripModel, String>(
+                  color: circularProgressColor,
+                  dataSource: triSpeedList,
+                  width: 0.4,
+                  enableTooltip: true,
+                  xValueMapper: (TripModel tripData, _) =>
+                  triSpeedList[i].date,
+                  yValueMapper: (TripModel tripData, _) =>
+                  triSpeedList[i].tripsByDate![j].avgSpeed! > 0
+                      ? triSpeedList[i].tripsByDate![j].avgSpeed!
+                      : null,
+                  onPointTap: (ChartPointDetails args) {
+                    if (mounted) {
+                      selectedIndex = triSpeedList[i].tripsByDate![j].id!;
+                      Utils.customPrint("selected index: $selectedIndex");
+                      CustomLogger().logWithFile(Level.info, "selected index: $selectedIndex -> $page");
+
+                    }
+                  },
+                  name: 'Avg Speed',
+                  dataLabelSettings: DataLabelSettings(isVisible: false),
+                  spacing: 0.1,
+                ));
+              }
+
+              if (triSpeedList[i].tripsByDate![j].fuelConsumption! > 0) {
+                fuelUsageColumnSeriesData.add(ColumnSeries<TripModel, String>(
+                  color: circularProgressColor,
+                  width: 0.4,
+                  enableTooltip: true,
+                  dataSource: triSpeedList,
+                  xValueMapper: (TripModel tripData, _) =>
+                  triSpeedList[i].date,
+                  yValueMapper: (TripModel tripData, _) =>
+                  triSpeedList[i].tripsByDate![j].fuelConsumption! > 0
+                      ? triSpeedList[i].tripsByDate![j].fuelConsumption!
+                      : null,
+                  onPointTap: (ChartPointDetails args) {
+                    if (mounted) {
+                      setState(() async {
+                        selectedIndex =
+                        await triSpeedList[i].tripsByDate![j].id!;
+                        Utils.customPrint("selected index: $selectedIndex");
+                        CustomLogger().logWithFile(Level.info, "selected index: $selectedIndex -> $page");
+
+                      });
+                    }
+                  },
+                  name: 'Fuel Usage',
+                  dataLabelSettings: DataLabelSettings(isVisible: false),
+                  spacing: 0.1,
+                ));
+              }
+
+              if (triSpeedList[i].tripsByDate![j].avgPower! > 0) {
+                powerUsageColumnSeriesData
+                    .add(ColumnSeries<TripModel, String>(
+                  color: circularProgressColor,
+                  width: 0.4,
+                  enableTooltip: true,
+                  dataSource: triSpeedList,
+                  xValueMapper: (TripModel tripData, _) =>
+                  triSpeedList[i].date,
+                  yValueMapper: (TripModel tripData, _) =>
+                  triSpeedList[i].tripsByDate![j].avgPower! > 0
+                      ? triSpeedList[i].tripsByDate![j].avgPower!
+                      : null,
+                  onPointTap: (ChartPointDetails args) {
+                    if (mounted) {
+                      setState(() async {
+                        selectedIndex =
+                        await triSpeedList[i].tripsByDate![j].id!;
+                        Utils.customPrint("selected index: $selectedIndex");
+                        CustomLogger().logWithFile(Level.info, "selected index: $selectedIndex -> $page");
+
+                      });
+                    }
+                  },
+                  name: 'Power Usage',
+                  dataLabelSettings: DataLabelSettings(isVisible: false),
+                  spacing: 0.1,
+                ));
+              }
+            }
+          }
+          tripList.clear();
+
+          for (int i = 0; i < triSpeedList.length; i++) {
+            for (int j = 0; j < triSpeedList[i].tripsByDate!.length; j++) {
+              Map<String, dynamic> data = {
+                'date': triSpeedList[i].date!,
+                'tripDetails': triSpeedList[i].tripsByDate![j].id,
+                'duration': triSpeedList[i].tripsByDate![j].duration,
+                'avgSpeed': '${triSpeedList[i].tripsByDate![j].avgSpeed}',
+                'fuelUsage':
+                triSpeedList[i].tripsByDate![j].fuelConsumption ?? 0.0,
+                'powerUsage': triSpeedList[i].tripsByDate![j].avgPower ?? 0.0
+              };
+              tripList.add(data);
+
+            }
+          }
+
+          Utils.customPrint("length: ${tripList.length}, tripList: $tripList");
+          CustomLogger().logWithFile(Level.info, "length: ${tripList.length}, tripList: $tripList -> $page");
+
+          duration1 = durationWithMilli(
+              value.data?.avgInfo?.avgDuration ?? '0:0:0.0');
+          avgSpeed1 = value.data?.avgInfo?.avgSpeed ?? 0.0;
+          fuelUsage = value.data?.avgInfo?.avgFuelConsumption ?? 0.0;
+          powerUsage = value.data?.avgInfo?.avgPower ?? 0.0;
+          Utils.customPrint(
+              "duration: $duration1,avgSpeed1: $avgSpeed1,fuelUsage: $fuelUsage,powerUsage: $powerUsage  ");
+          CustomLogger().logWithFile(Level.info, "duration: $duration1,avgSpeed1: $avgSpeed1,fuelUsage: $fuelUsage,powerUsage: $powerUsage -> $page");
+
+          finalData = [
+            {
+              'date': '',
+              'tripDetails': 'Average',
+              'duration': "$duration1",
+              'avgSpeed': avgSpeed1,
+              'fuelUsage': fuelUsage,
+              'powerUsage': powerUsage
+            }
+          ];
         } else {
           setState(() {
             isBtnClick = false;
+            isCheckInternalServer = false;
             isReportDataLoading = false;
           });
         }
-      });
+            });
     } catch (e, s) {
       setState(() {
         isBtnClick = false;
@@ -1154,7 +1135,7 @@ class _SearchAndFiltersState extends State<SearchAndFilters> {
 
                                       if ((selectedStartDateFromCal != null &&
                                           selectedEndDateFromCal != null) &&
-                                          selectedDateForEndDate!.isBefore(
+                                          selectedDateForEndDate.isBefore(
                                               selectedDateForStartDate)) {
                                         isBtnClick = false;
                                         // setState(() {

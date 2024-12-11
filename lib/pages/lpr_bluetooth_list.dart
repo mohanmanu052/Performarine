@@ -15,6 +15,7 @@ class LPRBluetoothList extends StatefulWidget {
   final BluetoothDevice? connectedBluetoothDevice;
   GlobalKey<ScaffoldState>? scafoldKey;
   Function(dynamic)? onErrCallback;
+  bool? isStartTripState;
   LPRBluetoothList(
       {Key? key,
         this.dialogContext,
@@ -26,6 +27,7 @@ class LPRBluetoothList extends StatefulWidget {
         this.scafoldKey,
         this.onConnetedCallBack,
         this.onErrCallback,
+        this.isStartTripState,
         this.selectedBluetoothDevice,
         this.setDialogSet})
       : super(key: key);
@@ -72,6 +74,7 @@ getIsRemoteIdShown()async{
                 .map((d) {
              return isRemoteIdDevicesShown?
                SingleLPRDevice(
+                isStartTripState: widget.isStartTripState,
                 onerrorCallback: widget.onErrCallback,
                 scafoldKey: widget.scafoldKey,
               device: d.device,
@@ -95,6 +98,7 @@ getIsRemoteIdShown()async{
               },
                   
     ):d.device.platformName.isNotEmpty?SingleLPRDevice(
+      isStartTripState: widget.isStartTripState,
               device: d.device,
               onSelected: widget.onSelected,
                             onDeviceConnectedCallback: widget.onConnetedCallBack,

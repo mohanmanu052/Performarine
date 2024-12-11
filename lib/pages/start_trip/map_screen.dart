@@ -159,7 +159,9 @@ String? lprStreamingData='No Lpr Streaming Data Found';
         });
       }
     });
+    LPRDeviceHandler().isListeningStartTripState=false;
           LPRDeviceHandler().listenToDeviceConnectionState(
+          //  isListeningStartTripState: false,
             callBackLprTanspernetserviecId: (String lprTransperntServiceId1,String lprUartTX1){
 lprTransperntServiceId=lprTransperntServiceId1;
 lprUartTX=lprUartTX1;
@@ -974,9 +976,6 @@ lprTransperntServiceIdStatus=status;
                                                           Duration(seconds: 1),
                                                           () {
                                                         if (!isSmallTrip) {
-                                                          print('the widget is called from-----' +
-                                                              widget.calledFrom
-                                                                  .toString());
                                                           Utils.customPrint(
                                                               "SMALL TRIPP IDDD ${tripData!.id!}");
                                                           DatabaseService()
@@ -1269,7 +1268,7 @@ lprTransperntServiceIdStatus=status;
                                                     TripRecordingScreen(
                                                       //bottomNavIndex: _bottomNavIndex,
                                                         tripId: tripData[0],
-                                                        vesselId: tripData![1],
+                                                        vesselId: tripData[1],
                                                         vesselName: tripData[2],
                                                         tripIsRunningOrNot:
                                                             runningTrip)));

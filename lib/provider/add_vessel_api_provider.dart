@@ -129,13 +129,11 @@ class AddVesselApiProvider with ChangeNotifier {
         CustomLogger().logWithFile(Level.error, "EXE RESP STATUS CODE: ${responseValue.statusCode} -> $page");
         CustomLogger().logWithFile(Level.error, "EXE RESP: $responseValue -> $page");
 
-        if (scaffoldKey != null) {
-          if (!calledFromSignOut) {
-            Utils.showSnackBar(context,
-                scaffoldKey: scaffoldKey, message: decodedData['message']);
-          }
+        if (!calledFromSignOut) {
+          Utils.showSnackBar(context,
+              scaffoldKey: scaffoldKey, message: decodedData['message']);
         }
-
+      
         addVesselModel = null;
       } else if(decodedData['statusCode'] == 401)
       {
@@ -144,13 +142,11 @@ class AddVesselApiProvider with ChangeNotifier {
             MaterialPageRoute(
                 builder: (context) => SessionExpiredScreen()));
       } else {
-        if (scaffoldKey != null) {
-          if (calledFromSignOut) {
-            Utils.showSnackBar(context,
-                scaffoldKey: scaffoldKey, message: decodedData['message']);
-          }
+        if (calledFromSignOut) {
+          Utils.showSnackBar(context,
+              scaffoldKey: scaffoldKey, message: decodedData['message']);
         }
-        //
+              //
         // Utils.customPrint('EXE RESP STATUS CODE: ${responseValue.statusCode}');
         // Utils.customPrint('EXE RESP: $responseValue');
 

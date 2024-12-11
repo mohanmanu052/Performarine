@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:ui';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -1325,24 +1324,15 @@ class VesselSingleViewState extends State<VesselSingleView> {
       });
       commonProvider.vesselDelegateData(context, commonProvider.loginModel!.token!, widget.vessel!.id!, scaffoldKey).then((value)
       {
-        if(value != null)
+        if(value.status!)
         {
-          if(value.status!)
-          {
-            debugPrint("DELEGATE COUNT 1 $delegateCount");
-            delegateCount = value.myVesselDelegaties![0].delegateCount.toString();
-            debugPrint("DELEGATE COUNT $delegateCount");
-            setState(() {
-              isDelegateApiCalled = false;
-            });
+          debugPrint("DELEGATE COUNT 1 $delegateCount");
+          delegateCount = value.myVesselDelegaties![0].delegateCount.toString();
+          debugPrint("DELEGATE COUNT $delegateCount");
+          setState(() {
+            isDelegateApiCalled = false;
+          });
 
-          }
-          else
-          {
-            setState(() {
-              isDelegateApiCalled = false;
-            });
-          }
         }
         else
         {
@@ -1350,7 +1340,7 @@ class VesselSingleViewState extends State<VesselSingleView> {
             isDelegateApiCalled = false;
           });
         }
-      }).catchError((e){
+            }).catchError((e){
         if(mounted)
           {
             setState(() {

@@ -297,30 +297,24 @@ color: Theme.of(context).brightness == Brightness.dark
                                       newPasswordController.text.trim(),
                                       scaffoldKey)
                                   .then((value) {
-                                if (value != null) {
-                                  setState(() {
-                                    isBtnClick = false;
-                                  });
+                                setState(() {
+                                  isBtnClick = false;
+                                });
 
-                                  Utils.customPrint(
-                                      "Status code of change password is: ${value.statusCode}");
-                                  CustomLogger().logWithFile(Level.info,
-                                      "Status code of change password is: ${value.statusCode} -> $page");
+                                Utils.customPrint(
+                                    "Status code of change password is: ${value.statusCode}");
+                                CustomLogger().logWithFile(Level.info,
+                                    "Status code of change password is: ${value.statusCode} -> $page");
 
-                                  if (value.status!) {
-                                    if (widget.isChange!) {
-                                      Navigator.pop(context);
-                                    } else {
-                                      Navigator.pop(context);
-                                      Navigator.pop(context);
-                                    }
+                                if (value.status!) {
+                                  if (widget.isChange!) {
+                                    Navigator.pop(context);
+                                  } else {
+                                    Navigator.pop(context);
+                                    Navigator.pop(context);
                                   }
-                                } else {
-                                  setState(() {
-                                    isBtnClick = false;
-                                  });
                                 }
-                              }).catchError((e) {
+                                                            }).catchError((e) {
                                 setState(() {
                                   isBtnClick = false;
                                 });

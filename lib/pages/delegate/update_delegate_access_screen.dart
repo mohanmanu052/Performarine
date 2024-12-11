@@ -598,7 +598,7 @@ class _UpdateDelegateAccessScreenState
                                                           startDate) ||
                                                       selectDay
                                                           .isAtSameMomentAs(
-                                                              startDate!)) {
+                                                              startDate)) {
                                                     Utils.showSnackBar(context,
                                                         scaffoldKey:
                                                             scaffoldKey,
@@ -794,26 +794,20 @@ class _UpdateDelegateAccessScreenState
                                 body,
                                 scaffoldKey)
                                 .then((value) {
-                              if (value != null) {
-                                if (value.status!) {
-                                  setState(() {
-                                    isUpdateBtnClicked =
-                                    false;
-                                  });
+                              if (value.status!) {
+                                setState(() {
+                                  isUpdateBtnClicked =
+                                  false;
+                                });
 
-                                  Navigator.of(context).pop(true);
-                                } else {
-                                  setState(() {
-                                    isUpdateBtnClicked =
-                                    false;
-                                  });
-                                }
+                                Navigator.of(context).pop(true);
                               } else {
                                 setState(() {
-                                  isUpdateBtnClicked = false;
+                                  isUpdateBtnClicked =
+                                  false;
                                 });
                               }
-                            }).catchError((e) {
+                                                        }).catchError((e) {
                               setState(() {
                                 isUpdateBtnClicked = false;
                               });

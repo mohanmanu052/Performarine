@@ -180,7 +180,7 @@ class CustomFleetDailog {
                               iconStyleData: IconStyleData(
                                   icon: Icon(
                                 Icons.keyboard_arrow_down,
-                                size: 30,
+                                size: 0,
                               )),
                               isExpanded: true,
                               buttonStyleData: ButtonStyleData(
@@ -343,7 +343,7 @@ class CustomFleetDailog {
                               displayHeight(context) * 0.054,
                               Colors.transparent,
                               blueColor,
-                              displayHeight(context!) * 0.018,
+                              displayHeight(context) * 0.018,
                               Colors.transparent,
                               '',
                               fontWeight: FontWeight.w500),

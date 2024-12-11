@@ -533,7 +533,7 @@ class ChartLegend {
                 text: legendRenderContext.text,
                 shader: circularShader,
                 color: circularShader == null
-                    ? (legendRenderContext.iconColor)!
+                    ? legendRenderContext.iconColor!
                         .withOpacity(legend!.opacity)
                     : const Color.fromRGBO(211, 211, 211, 1),
                 imageProvider:

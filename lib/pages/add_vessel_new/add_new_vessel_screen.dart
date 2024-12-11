@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
@@ -40,7 +39,6 @@ class _AddNewVesselPageState extends State<AddNewVesselPage> {
   void initState() {
 
     super.initState();
-    print('the called from is -----'+widget.bottomNavIndex.toString());
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
     pageController = PageController();

@@ -2,14 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:performarine/analytics/location_callback_handler.dart';
-import 'package:performarine/analytics/start_trip.dart';
 import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/common_size_helper.dart';
-import 'package:performarine/common_widgets/widgets/common_widgets.dart';
 import 'package:performarine/models/trip.dart';
 import 'package:performarine/models/vessel.dart';
-import 'package:performarine/pages/start_trip/map_screen.dart';
 import 'package:performarine/pages/start_trip/trip_recording_analytics_screen.dart';
 import 'package:performarine/provider/common_provider.dart';
 import 'package:performarine/services/database_service.dart';
@@ -165,7 +161,6 @@ class _TripRecordingScreenState extends State<TripRecordingScreen>
             elevation: 0,
             leading: IconButton(
               onPressed: () async {
-                debugPrint('CALLED FROM ${widget.calledFrom}');
                 Wakelock.disable().then((value) async {
                   if (widget.calledFrom != null) {
                     if (widget.calledFrom!.isNotEmpty) {

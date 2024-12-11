@@ -4,11 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart';
-import 'package:intl/intl.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
-import 'package:performarine/lpr_device_handler.dart';
-import 'package:performarine/main.dart';
 import 'package:performarine/models/add_vessel_model.dart';
+import 'package:performarine/models/assign_vessel_model.dart';
 import 'package:performarine/models/common_model.dart';
 import 'package:performarine/models/create_fleet_response.dart';
 import 'package:performarine/models/delete_trip_model.dart';
@@ -54,6 +52,7 @@ import 'package:performarine/provider/report_module_provider.dart';
 import 'package:performarine/provider/reset_password_provider.dart';
 import 'package:performarine/provider/send_sensor_info_api_provider.dart';
 import 'package:performarine/provider/speed_reports_api_provider.dart';
+import 'package:performarine/provider/trip_name_update_provider.dart';
 import 'package:performarine/provider/update_userinfo_api_provider.dart';
 import 'package:performarine/provider/user_feedback_provider.dart';
 import 'package:performarine/provider/vessel_delegate_api_provider.dart';
@@ -605,6 +604,18 @@ class CommonProvider with ChangeNotifier {
     var res = await FleetAssignVesselsProvider().addVesselAndGrantAccess(
         context: context, token: token, scaffoldKey: scaffoldKey, data: data);
     return res;
+
+  }
+
+
+  Future<AssignVesselModel> getAssignedVessel(
+      {BuildContext? context,
+      String? token,
+      GlobalKey<ScaffoldState>? scaffoldKey,
+      Map<String, dynamic>? data}) async {
+    var res = await FleetAssignVesselsProvider().getAssignedVesselData(
+        context: context, token: token, scaffoldKey: scaffoldKey, data: data);
+    return res;
   }
 
   Future<FleetDashboardModel> fleetDashboardDetails(BuildContext context,
@@ -815,12 +826,12 @@ class CommonProvider with ChangeNotifier {
   double finalValue = total24HrsDuration - valueToSubtract;
 
   // Print the results
-  print('Basic Value: $total24HrsDuration');
-  // print('Total Duration: $totalDuration');
-  // print('Speed Duration: $speedDuration');
-  print('Percentage Difference: ${percentageDifference.toStringAsFixed(2)}%');
-  print('Value to Subtract: $valueToSubtract');
-  print('Final Value: $finalValue');
+  // print('Basic Value: $total24HrsDuration');
+  // // print('Total Duration: $totalDuration');
+  // // print('Speed Duration: $speedDuration');
+  // print('Percentage Difference: ${percentageDifference.toStringAsFixed(2)}%');
+  // print('Value to Subtract: $valueToSubtract');
+  // print('Final Value: $finalValue');
               data1.add(SalesData(DateTime.parse(value.createdAt!), value.totalDuration!,finalValue < 0 ? 0 :finalValue),);
 
 }else{
@@ -845,4 +856,14 @@ class CommonProvider with ChangeNotifier {
 
     return percentageDifference;
   }
+
+    Future<CommonModel> updateTripName(BuildContext context, String token,
+      String tripId,String tripName, GlobalKey<ScaffoldState> scaffoldKey) async {
+    //speedReportsModel = SpeedReportsModel();
+    CommonModel  responsData  = await TripNameUpdateProvider().updateTripName(context, token, tripId,tripName, scaffoldKey);
+return Future.value(responsData);
+
+  }
+
+
 }

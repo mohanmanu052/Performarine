@@ -188,7 +188,7 @@ createFolder() async{
   try{
     fileee = File(debugLogFilePath);
 
-    if(fileee != null && fileee.existsSync()){
+    if(fileee.existsSync()){
       String data = await fileee.readAsString(encoding: Latin1Codec());
 
       Utils.customPrint("main data is: ${data.toString()}");
@@ -394,7 +394,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     _appLinks=AppLinks();
 
     try {
-      print('coming to init deeplink-------');
+     // print('coming to init deeplink-------');
       _sub = _appLinks?.uriLinkStream.listen((Uri? uri) async{
 
        setState(() {

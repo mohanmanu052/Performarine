@@ -1,7 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:performarine/models/device_model.dart';
 
 class Trip {
   final String? id;

@@ -556,7 +556,7 @@ class SeriesRendererDetails {
       regionRect.add(point.pointColorMapper);
       regionRect.add(point.bubbleSize);
       if (seriesType.contains('stacked')) {
-        regionData.add((point.cumulativeValue).toString());
+        regionData.add(point.cumulativeValue.toString());
       }
       regionalData![regionRect] = regionData;
     }

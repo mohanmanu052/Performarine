@@ -186,6 +186,7 @@ Widget? selectImage(
           },
         );
       });
+  return null;
 }
 
 // Dashboard rich text on vesselSingleViewCard
@@ -362,7 +363,7 @@ Widget vesselSingleViewRichText({
       Column(
         children: [
           Text(
-            regNo != null && regNo != '' ? regNo : '-',
+            regNo != '' ? regNo : '-',
             textAlign: TextAlign.start,
             style: TextStyle(
               fontSize: displayWidth(context) * 0.038,
