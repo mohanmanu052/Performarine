@@ -1382,7 +1382,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                             SizedBox(
                                                               width: 4,
                                                             ),
-                                                            Text('< 5KT', style: TextStyle(color: Colors.black, fontSize: 10,  fontFamily: outfit),)
+                                                            Text('> 5KT', style: TextStyle(color: Colors.black, fontSize: 10,  fontFamily: outfit),)
                                                           ],
                                                         ),
                                                         SizedBox(

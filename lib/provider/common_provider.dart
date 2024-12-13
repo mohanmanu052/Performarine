@@ -816,6 +816,13 @@ class CommonProvider with ChangeNotifier {
 
         speedReportsModel!.data!.forEach((value){
 
+double totalDurationparse=double.parse(value.totalDuration!.toStringAsFixed(2));
+double speedValueParse=0.0;
+if(value.speedDuration!=null&&value.speedDuration!>0){
+  speedValueParse=double.parse(value.speedDuration!.toStringAsFixed(2));
+}
+
+
 /*if(value.speedDuration!=0){
   double percentageDifference = ((value.totalDuration! - value.speedDuration!) / value.totalDuration!) * 100;
 
@@ -838,7 +845,7 @@ class CommonProvider with ChangeNotifier {
               data1.add(SalesData(DateTime.parse(value.createdAt!), value.totalDuration!, value.speedDuration! < 0 ? 0 :value.speedDuration!.toDouble()),);
 
 }*/
-          data.add(SalesData(DateTime.parse(value.createdAt!), value.totalDuration!, value.speedDuration! < 0 ? 0 :value.speedDuration!.toDouble()),);
+          data.add(SalesData(DateTime.parse(value.createdAt!), totalDurationparse, speedValueParse < 0 ? 0 :speedValueParse),);
         });
 
 

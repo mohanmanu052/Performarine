@@ -108,7 +108,7 @@ Function(Offset offestValues,String tooltipText)? toolTipCallBack;
         paint.color = Colors.yellow;
         if (!difference.isNegative) {
           canvas.drawRect(
-            Rect.fromLTWH(x + barWidth + spacing, yPositionDiff+3, barWidth,
+            Rect.fromLTWH(x + barWidth + spacing, yPositionDiff, barWidth,
                 barHeightDiff * animationValue),
             paint,
           );
@@ -137,7 +137,7 @@ Function(Offset offestValues,String tooltipText)? toolTipCallBack;
                     spacing +
                     barWidth / 2 -
                     textPainterDiff.width / 2,
-                yPositionDiff +7),
+                yPositionDiff +2),
           );
         }
       }
