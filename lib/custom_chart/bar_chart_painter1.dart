@@ -224,7 +224,7 @@ Function(Offset offestValues,String tooltipText)? toolTipCallBack;
       textPainter.layout();
       paint.color = Colors.black.withOpacity(0.7);
       final tooltipRect = Rect.fromLTWH(
-        tooltipPosition!.dx - textPainter.width / 2 - 8,
+        tooltipPosition!.dx - textPainter.width / 2 +20,
         tooltipPosition!.dy - textPainter.height - 8,
         textPainter.width + 16,
         textPainter.height + 8,
@@ -236,7 +236,7 @@ Function(Offset offestValues,String tooltipText)? toolTipCallBack;
       textPainter.paint(
         canvas,
         Offset(
-          tooltipPosition!.dx - textPainter.width / 2,
+          tooltipPosition!.dx+30 - textPainter.width / 2,
           tooltipPosition!.dy - textPainter.height - 4,
         ),
       );
