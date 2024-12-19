@@ -800,9 +800,9 @@ class CommonProvider with ChangeNotifier {
     return deleteAccountModel!;
   }
 
-  List<SalesData> data = [];
+  List<TripSpeedData> data = [];
 
-  List<SalesData> data1 = [];
+  List<TripSpeedData> data1 = [];
 
   Future<SpeedReportsModel> speedReport(BuildContext context, String token,
       String vesselID, GlobalKey<ScaffoldState> scaffoldKey) async {
@@ -813,14 +813,32 @@ class CommonProvider with ChangeNotifier {
       {
        data.clear();
         //data1.clear();
+String timeType;
 
         speedReportsModel!.data!.forEach((value){
+if(value.speedDuration!=null&&value.speedDuration!>0&& value.speedDuration!<1){
+value.speedDuration=value.speedDuration!*60;
+timeType="Sec";
+}else{
+  timeType="Min";
+}
+
+
+if(value.totalDuration!=null&&value.totalDuration!<1){
+  value.totalDuration=value.totalDuration!*60;
+  timeType="Sec";
+
+}else{
+  timeType="Min";
+}
+
 
 double totalDurationparse=double.parse(value.totalDuration!.toStringAsFixed(2));
 double speedValueParse=0.0;
 if(value.speedDuration!=null&&value.speedDuration!>0){
   speedValueParse=double.parse(value.speedDuration!.toStringAsFixed(2));
 }
+
 
 
 /*if(value.speedDuration!=0){
@@ -845,7 +863,7 @@ if(value.speedDuration!=null&&value.speedDuration!>0){
               data1.add(SalesData(DateTime.parse(value.createdAt!), value.totalDuration!, value.speedDuration! < 0 ? 0 :value.speedDuration!.toDouble()),);
 
 }*/
-          data.add(SalesData(DateTime.parse(value.createdAt!), totalDurationparse, speedValueParse < 0 ? 0 :speedValueParse),);
+          data.add(TripSpeedData(DateTime.parse(value.createdAt!), totalDurationparse, speedValueParse < 0 ? 0 :speedValueParse,timeType: timeType),);
         });
 
 

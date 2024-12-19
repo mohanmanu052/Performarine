@@ -4,7 +4,7 @@ import 'package:performarine/custom_chart/bar_chart_enums.dart';
 import 'package:performarine/new_trip_analytics_screen.dart';
 
 class AnimatedBarChart extends StatefulWidget {
-  final List<SalesData> data;
+  final List<TripSpeedData> data;
 
   AnimatedBarChart({required this.data});
 
@@ -18,7 +18,7 @@ class _AnimatedBarChartState extends State<AnimatedBarChart>
   late Animation<double> _animation;
 
   Offset? tooltipPosition;
-  SalesData? selectedData;
+  TripSpeedData? selectedData;
   BarChartBarType selectedBarType=BarChartBarType.NONE;
 Function(String tappedBarType)? onBarTap;
   @override
@@ -41,7 +41,7 @@ Function(String tappedBarType)? onBarTap;
     super.dispose();
   }
 
-  void _handleTap(BarChartBarType tappedBarType,Offset position,SalesData data) {
+  void _handleTap(BarChartBarType tappedBarType,Offset position,TripSpeedData data) {
     setState(() {
           selectedBarType=tappedBarType;
                      tooltipPosition = position;

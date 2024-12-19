@@ -6,7 +6,7 @@ import 'package:performarine/custom_chart/animated_barchart.dart';
 import 'package:performarine/new_trip_analytics_screen.dart';
 
 class CustomBarChartWidget extends StatelessWidget {
-  final List<SalesData> data;
+  final List<TripSpeedData> data;
 
   CustomBarChartWidget({required this.data});
 

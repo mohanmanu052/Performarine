@@ -7,14 +7,14 @@ import 'package:performarine/custom_chart/bar_chart_enums.dart';
 import 'package:performarine/new_trip_analytics_screen.dart';
 
 class BarChartPainter1 extends CustomPainter {
-  final List<SalesData> data;
+  final List<TripSpeedData> data;
   final double animationValue;
   final Offset? tooltipPosition;
-  final SalesData? selectedData;
+  final TripSpeedData? selectedData;
   final BarChartBarType? selectedBarType;
   Size? cachedSize;
   Canvas? displayCanvas;
-  Function(BarChartBarType tappdeBarType,Offset position, SalesData selectedBarData)? OnBarTap;
+  Function(BarChartBarType tappdeBarType,Offset position, TripSpeedData selectedBarData)? OnBarTap;
   Paint? displayPaint;
 Function(Offset offestValues,String tooltipText)? toolTipCallBack;
   BarChartPainter1(this.data, this.animationValue, this.tooltipPosition,
@@ -205,14 +205,14 @@ Function(Offset offestValues,String tooltipText)? toolTipCallBack;
       String tooltipText = '';
       if (selectedBarType == BarChartBarType.TOTAL_DURATION) {
         tooltipText =
-        'Total: ${selectedData!.totalDuration.toStringAsFixed(2)}';
+        'Total: ${selectedData!.totalDuration.toStringAsFixed(2)} ${selectedData?.timeType??""}';
       } else if (selectedBarType == BarChartBarType.BELOW_5KT) {
         tooltipText =
-        '> 5KT: ${selectedData!.speedDuration.toStringAsFixed(2)}';
+        '> 5KT: ${selectedData!.speedDuration.toStringAsFixed(2)} ${selectedData?.timeType??""}';
       } else if (selectedBarType == BarChartBarType.FUELSAVED) {
         final double difference =
         (selectedData!.totalDuration - selectedData!.speedDuration).abs();
-        tooltipText = 'Fuel Saved: ${difference.toStringAsFixed(2)}';
+        tooltipText = '< 5KT: ${difference.toStringAsFixed(2)} ${selectedData?.timeType??""}';
       }
       final textPainter = TextPainter(
         text: TextSpan(
@@ -224,7 +224,7 @@ Function(Offset offestValues,String tooltipText)? toolTipCallBack;
       textPainter.layout();
       paint.color = Colors.black.withOpacity(0.7);
       final tooltipRect = Rect.fromLTWH(
-        tooltipPosition!.dx - textPainter.width / 2 +20,
+        tooltipPosition!.dx - textPainter.width / 2 +17,
         tooltipPosition!.dy - textPainter.height - 8,
         textPainter.width + 16,
         textPainter.height + 8,
@@ -236,7 +236,7 @@ Function(Offset offestValues,String tooltipText)? toolTipCallBack;
       textPainter.paint(
         canvas,
         Offset(
-          tooltipPosition!.dx+30 - textPainter.width / 2,
+          tooltipPosition!.dx+27 - textPainter.width / 2,
           tooltipPosition!.dy - textPainter.height - 4,
         ),
       );

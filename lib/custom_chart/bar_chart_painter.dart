@@ -3,7 +3,7 @@ import 'package:intl/intl.dart' as fm;
 import 'package:performarine/new_trip_analytics_screen.dart';
 
 class BarChartPainter extends CustomPainter {
-  final List<SalesData> data;
+  final List<TripSpeedData> data;
   final double barWidth;
   final double barSpacing;
   final Function(int, bool) onBarTap;

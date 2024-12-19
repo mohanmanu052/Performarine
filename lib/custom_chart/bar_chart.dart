@@ -4,7 +4,7 @@ import 'package:performarine/custom_chart/bar_chart_painter.dart';
 import 'package:performarine/new_trip_analytics_screen.dart';
 
 class BarChart extends StatefulWidget {
-  final List<SalesData> data;
+  final List<TripSpeedData> data;
 
   BarChart({required this.data});
 

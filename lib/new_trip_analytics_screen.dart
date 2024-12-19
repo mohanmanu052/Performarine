@@ -84,24 +84,6 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
     NewChartData(2014, 40)
   ];
 
-  List<SalesData> salesData = [
-    SalesData(DateTime.parse('2023-08-15'), 1.0, 0.2),
-    SalesData(DateTime.parse('2023-08-15'), 2.0, 1.5),
-    SalesData(DateTime.parse('2023-08-17'), 3.0, 2.9),
-    SalesData(DateTime.parse('2023-08-18'), 4.0, 1.0),
-    SalesData(DateTime.parse('2023-08-19'), 5.0, 4.0),
-    SalesData(DateTime.parse('2023-08-19'), 3.0, 1.0),
-    SalesData(DateTime.parse('2023-08-19'), 1.0, 0.4),
-    SalesData(DateTime.parse('2023-08-19'), 2.0, 2.0),
-    SalesData(DateTime.parse('2023-08-19'), 0.8, 0.2),
-    SalesData(DateTime.parse('2023-08-19'), 2.4, 2.0),
-    SalesData(DateTime.parse('2023-08-19'), 1.4, 1.0),
-    SalesData(DateTime.parse('2023-08-19'), 2.0, 1.2),
-    SalesData(DateTime.parse('2023-08-19'), 4.0, 1.0),
-    SalesData(DateTime.parse('2023-08-19'), 3.0, 0.8),
-    SalesData(DateTime.parse('2023-08-19'), 2.0, 0.4),
-  ];
-
   // List<SalesData> data = [
   //   SalesData('2023-08-15', '35', 25),
   //   SalesData('2023-08-15', '28', 38),
@@ -1398,7 +1380,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                             SizedBox(
                                                               width: 4,
                                                             ),
-                                                            Text('Fuel Saved', style: TextStyle(color: Colors.black, fontSize: 10,  fontFamily: outfit),)
+                                                            Text('< 5KT', style: TextStyle(color: Colors.black, fontSize: 10,  fontFamily: outfit),)
                                                           ],
                                                         ),
                                                       ],
@@ -2082,10 +2064,12 @@ class NewChartData {
   final double? y;
 }
 
-class SalesData {
-  SalesData(this.year, this.totalDuration, this.speedDuration);
+class TripSpeedData {
+  TripSpeedData(this.year, this.totalDuration, this.speedDuration,{this.timeType});
 
   final DateTime year;
+
+  final String? timeType;
   final double totalDuration;
   final double speedDuration;
 }

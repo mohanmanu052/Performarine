@@ -17,7 +17,6 @@ import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_text_feild.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
-import 'package:performarine/custom_chart/custom_barchart_widget.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/models/login_model.dart';
 import 'package:performarine/models/trip.dart';
@@ -1309,23 +1308,23 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                         "User Navigating to Add New Vessel Screen -> $page");
                                     Navigator.of(context).pop();
 
-                                    List<SalesData> data = [
-                                      SalesData(DateTime.parse('2023-08-15'), 1.0, 0.2),
-                                      SalesData(DateTime.parse('2023-08-15'), 2.0, 1.5),
-                                      SalesData(DateTime.parse('2023-08-17'), 3.0, 2.9),
-                                      SalesData(DateTime.parse('2023-08-18'), 4.0, 1.0),
-                                      SalesData(DateTime.parse('2023-08-19'), 5.0, 4.0),
-                                      SalesData(DateTime.parse('2023-08-12'), 3.0, 1.0),
-                                      SalesData(DateTime.parse('2023-08-19'), 1.0, 0.4),
-                                      SalesData(DateTime.parse('2023-08-10'), 2.0, 2.0),
-                                      SalesData(DateTime.parse('2023-08-19'), 0.8, 0.2),
-                                      SalesData(DateTime.parse('2023-08-19'), 2.4, 2.0),
-                                      SalesData(DateTime.parse('2023-08-19'), 1.4, 1.0),
-                                      SalesData(DateTime.parse('2023-08-19'), 2.0, 1.2),
-                                      SalesData(DateTime.parse('2023-08-19'), 4.0, 1.0),
-                                      SalesData(DateTime.parse('2023-08-19'), 3.0, 0.8),
-                                      SalesData(DateTime.parse('2023-08-10'), 2.0, 0.4),
-                                    ];
+                                    // List<SalesData> data = [
+                                    //   SalesData(DateTime.parse('2023-08-15'), 1.0, 0.2),
+                                    //   SalesData(DateTime.parse('2023-08-15'), 2.0, 1.5),
+                                    //   SalesData(DateTime.parse('2023-08-17'), 3.0, 2.9),
+                                    //   SalesData(DateTime.parse('2023-08-18'), 4.0, 1.0),
+                                    //   SalesData(DateTime.parse('2023-08-19'), 5.0, 4.0),
+                                    //   SalesData(DateTime.parse('2023-08-12'), 3.0, 1.0),
+                                    //   SalesData(DateTime.parse('2023-08-19'), 1.0, 0.4),
+                                    //   SalesData(DateTime.parse('2023-08-10'), 2.0, 2.0),
+                                    //   SalesData(DateTime.parse('2023-08-19'), 0.8, 0.2),
+                                    //   SalesData(DateTime.parse('2023-08-19'), 2.4, 2.0),
+                                    //   SalesData(DateTime.parse('2023-08-19'), 1.4, 1.0),
+                                    //   SalesData(DateTime.parse('2023-08-19'), 2.0, 1.2),
+                                    //   SalesData(DateTime.parse('2023-08-19'), 4.0, 1.0),
+                                    //   SalesData(DateTime.parse('2023-08-19'), 3.0, 0.8),
+                                    //   SalesData(DateTime.parse('2023-08-10'), 2.0, 0.4),
+                                    // ];
 
                                     Navigator.push(
                                       context,
