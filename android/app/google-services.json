@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "263893378527",
     "project_id": "performarine-9b4c5",
-    "storage_bucket": "performarine-9b4c5.appspot.com"
+    "storage_bucket": "performarine-9b4c5.firebasestorage.app"
   },
   "client": [
     {
@@ -43,6 +43,14 @@
           "android_info": {
             "package_name": "com.performarine.app",
             "certificate_hash": "cb6d76d9cd35e6def1221aa865f038bd9def28e3"
+          }
+        },
+        {
+          "client_id": "263893378527-og5etvrkk5vrcofrsoma9pemflj2sgoc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.performarine.app",
+            "certificate_hash": "8e507abfc6d2b8963f4847b3a004683de728df2a"
           }
         },
         {
