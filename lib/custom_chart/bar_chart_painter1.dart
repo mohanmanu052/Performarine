@@ -46,7 +46,7 @@ Function(Offset offestValues,String tooltipText)? toolTipCallBack;
       ..strokeWidth = 1;
     final double xAxisY = size.height -
         40; // Adjust this value to control the position of the x-axis
-    canvas.drawLine(Offset(0, xAxisY), Offset(size.width, xAxisY), axisPaint);
+    canvas.drawLine(Offset(0, xAxisY), Offset(size.width+300, xAxisY), axisPaint);
 
     for (int i = 0; i < data.length; i++) {
       final x = i * (2 * barWidth + spacing + groupSpacing);
