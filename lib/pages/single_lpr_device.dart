@@ -32,6 +32,9 @@ Function(String)? onDeviceConnectedCallback;
 GlobalKey<ScaffoldState>? scafoldKey;
 final Function(dynamic)? onerrorCallback;
 bool? isStartTripState;
+      Function(double fuelusage)? callbackFuelUsage;
+      Function(double avgValue)? callbackAvgValue;
+
   SingleLPRDevice(
       {Key? key,
       this.device,
@@ -46,6 +49,7 @@ bool? isStartTripState;
       this.scafoldKey,
       this.isStartTripState,
       this.onerrorCallback,
+      this.callbackAvgValue,this.callbackFuelUsage,
       this.selectedBluettothDevice,
       this.onSingleDeviceTapped})
       : super(key: key);
@@ -117,6 +121,8 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
                             LPRDeviceHandler().connectedDevice=widget.device;
 
                             LPRDeviceHandler().listenToDeviceConnectionState(
+                              callbackAvgValue: widget.callbackAvgValue,
+                              callbackFuelUsage: widget.callbackFuelUsage,
                             
                             callBackconnectedDeviceName: (bluetoothDeviceName) {
                               if(widget.onDeviceConnectedCallback!=null){
@@ -198,6 +204,10 @@ class _SingleLPRDeviceState extends State<SingleLPRDevice> {
 
             LPRDeviceHandler().listenToDeviceConnectionState(
               //isListeningStartTripState: true,
+                                            callbackAvgValue: widget.callbackAvgValue,
+                              callbackFuelUsage: widget.callbackFuelUsage,
+                            
+
               callBackconnectedDeviceName: (name ){
                                               if(widget.onDeviceConnectedCallback!=null){
                               widget.onDeviceConnectedCallback!(name);

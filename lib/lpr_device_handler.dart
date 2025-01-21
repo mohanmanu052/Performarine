@@ -16,6 +16,7 @@ import 'package:performarine/common_widgets/utils/colors.dart';
 import 'package:performarine/common_widgets/utils/constants.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/lpr_data/fuel_usage_calculations.dart';
 import 'package:performarine/main.dart';
 import 'package:performarine/new_trip_analytics_screen.dart';
 import 'package:performarine/pages/bottom_navigation.dart';
@@ -102,6 +103,9 @@ bool isListeningStartTripState=false;
       Function(String status)? callBackLprUartTxStatus,
       Function(String bluetoothDeviceName)? callBackconnectedDeviceName,
       Function(String lprSteamingData)? callBackLprStreamingData,
+      Function(double fuelusage)? callbackFuelUsage,
+      Function(double avgValue)? callbackAvgValue,
+
       //bool isListeningStartTripState=false,
       bool isLoadLocalLprFile = false}) async {
     File? lprFile;
@@ -214,7 +218,7 @@ if(!isLPRReconnectPopupshowing){
           try {
             //This Will Check LprService element UUID Matches With LPRTransparentServiceUUID
             services.forEach((element) {
-              if (element.uuid == _lprTransparentServiceUUID) {
+             if (element.uuid == _lprTransparentServiceUUID) {
                 lprService = element;
                 callBackLprTanspernetserviecIdStatus!('Connected');
                 lprService!.characteristics.forEach((dataCharacteristic) {
@@ -233,6 +237,20 @@ if(!isLPRReconnectPopupshowing){
                      //   debugPrint("LPR DATA WRITING CODE $dataLine ");
 //Saving The Data Into The File
                         DownloadTrip().saveLPRData(dataLine,lprFile);
+
+                          if(dataLine.contains('NMEA')){
+      Map<String, dynamic> usagedata = FuelUsageCalculations().calculateUsage(dataLine);
+      
+      if (callbackFuelUsage != null) {
+        callbackFuelUsage(usagedata['fuel_usage']);
+      }
+      
+      if (callbackAvgValue != null) {
+        callbackAvgValue(usagedata['avg_val']);
+      }
+  
+  } 
+
                         //Call Back Returning the data we can use this globally
                         callBackLprStreamingData!(dataLine);
                       } else {
@@ -241,7 +259,7 @@ if(!isLPRReconnectPopupshowing){
 // Future.delayed(Duration(seconds: 1),(){
 
 
-//   final lines = LineSplitter().convert(fileContent);
+ // final lines = LineSplitter().convert(fileContent);
 //  var stream= Stream<String>.fromIterable(lines);
 //  stream.listen((data){
 // saveToFileInDownloads(data,tripId,0);
@@ -251,17 +269,40 @@ if(!isLPRReconnectPopupshowing){
 
 //  });
 // });
-// for (String line in lines) {
-//   //Utils.customPrint('Lpr file local data: $line');
-//   DownloadTrip().saveLPRData(line,lprFile);
-//     //callBackLprStreamingData!(line);
 
-// }
+// for (String line in lines) {   
+
+ 
+  
+
+//   if(line.contains('NMEA')){
+//     await Future.delayed(Duration(seconds: 1), () async {
+//       Map<String, dynamic> usagedata = FuelUsageCalculations().calculateUsage(line);
+//       print('The calculation usage was-----${usagedata.toString()}');
+      
+//       if (callbackFuelUsage != null) {
+//         callbackFuelUsage(usagedata['fuel_usage']);
+//       }
+      
+//       if (callbackAvgValue != null) {
+//         callbackAvgValue(usagedata['avg_val']);
+//       }
+//     });
+  
+  //}
+ // }
+  //Utils.customPrint('Lpr file local data: $line');
+ // DownloadTrip().saveLPRData(line,lprFile);
+    //callBackLprStreamingData!(line);
+   
+  
+
+
                       }
                     });
                 }
                 });
-             }
+            }
             });
             // lprService = services.singleWhere((element) =>
             // element.uuid ==
@@ -292,7 +333,12 @@ if(!isLPRReconnectPopupshowing){
   }
 
   void showDeviceDisconnectedDialog(BluetoothDevice? previouslyConnectedDevice,
-      {int bottomNavIndex = 0, bool isNavigateToMaps = false,Function? callBackconnectedDeviceName, bool? isListeningStartTripState}) {
+      {int bottomNavIndex = 0, bool isNavigateToMaps = false,Function? callBackconnectedDeviceName, bool? isListeningStartTripState,
+            Function(double fuelusage)? callbackFuelUsage,
+      Function(double avgValue)? callbackAvgValue,
+
+
+      }) {
     isSelfDisconnected = false;
     bool isDailogShowing = true;
     Get.dialog(
@@ -480,6 +526,10 @@ LPRDeviceHandler()
                                     autoConnectToDevice(isDailogShowing,
                                         isMapScreenNavigation:
                                             isNavigateToMaps,
+                                                                                                            callbackAvgValue: callbackAvgValue,
+                              callbackFuelUsage: callbackFuelUsage,
+                            
+
                                             callBackconnectedDeviceName: callBackconnectedDeviceName
                                             );
                                     // Get.back();
@@ -488,7 +538,11 @@ LPRDeviceHandler()
 
                                   autoConnectToDevice(isDailogShowing,
                                       isMapScreenNavigation: isNavigateToMaps,
-                                      callBackconnectedDeviceName: callBackconnectedDeviceName
+                                      callBackconnectedDeviceName: callBackconnectedDeviceName,
+                                                                                                      callbackAvgValue: callbackAvgValue,
+                              callbackFuelUsage: callbackFuelUsage,
+                            
+
                                       );
                                 }
                               },
@@ -522,7 +576,13 @@ LPRDeviceHandler()
   }
 
   autoConnectToDevice(bool isDailogShowing,
-      {bool isMapScreenNavigation = false,Function? callBackconnectedDeviceName}) async {
+      {bool isMapScreenNavigation = false,Function? callBackconnectedDeviceName,
+      
+            Function(double fuelusage)? callbackFuelUsage,
+      Function(double avgValue)? callbackAvgValue,
+
+
+      }) async {
     connectedDevice = null;
     final FlutterSecureStorage storage = FlutterSecureStorage();
     var lprDeviceId = sharedPreferences!.getString('lprDeviceId');
@@ -651,7 +711,11 @@ if(tripData!=null&&tripData.isNotEmpty){
                     EasyLoading.dismiss();
                     showBluetoothListDialog(context!, null, null,
                         isMapScreenNavigation: isMapScreenNavigation,
-                        callbackConnectedDeviceName: callBackconnectedDeviceName
+                        callbackConnectedDeviceName: callBackconnectedDeviceName,
+                                                                                        callbackAvgValue: callbackAvgValue,
+                              callbackFuelUsage: callbackFuelUsage,
+                            
+
                         );
                   });
                 }
@@ -689,7 +753,11 @@ if(tripData!=null&&tripData.isNotEmpty){
 
                   showBluetoothListDialog(context!, null, null,
                       isMapScreenNavigation: isMapScreenNavigation,
-                                              callbackConnectedDeviceName: callBackconnectedDeviceName
+                                              callbackConnectedDeviceName: callBackconnectedDeviceName,
+                                                                                                              callbackAvgValue: callbackAvgValue,
+                              callbackFuelUsage: callbackFuelUsage,
+                            
+
 );
                 });
               }
@@ -700,7 +768,11 @@ if(tripData!=null&&tripData.isNotEmpty){
 
               showBluetoothListDialog(context!, null, null,
                   isMapScreenNavigation: isMapScreenNavigation,
-                                          callbackConnectedDeviceName: callBackconnectedDeviceName
+                                          callbackConnectedDeviceName: callBackconnectedDeviceName,
+                                                                                                          callbackAvgValue: callbackAvgValue,
+                              callbackFuelUsage: callbackFuelUsage,
+                            
+
 
                   );
             });
@@ -718,7 +790,13 @@ if(tripData!=null&&tripData.isNotEmpty){
   showBluetoothListDialog(BuildContext context, String? connectedDeviceId,
       BluetoothDevice? connectedBluetoothDevice,
 
-      {bool isMapScreenNavigation = false,Function? callbackConnectedDeviceName,bool isTripNavigate=true,bool? isStartTripState}) {
+      {bool isMapScreenNavigation = false,Function? callbackConnectedDeviceName,bool isTripNavigate=true,bool? isStartTripState,
+            Function(double fuelusage)? callbackFuelUsage,
+      Function(double avgValue)? callbackAvgValue,
+
+
+      
+      }) {
     // setState(() {
     //   progress = 0.9;
     //   lprSensorProgress = 0.0;
@@ -809,8 +887,13 @@ if(tripData!=null&&tripData.isNotEmpty){
                                   dialogContext: dialogContext,
                                   setDialogSet: setDialogState,
                                   connectedDeviceId: connectedDeviceId,
+                                                                callbackAvgValue: callbackAvgValue,
+                              callbackFuelUsage: callbackFuelUsage,
+                            
+
                                   connectedBluetoothDevice:
                                       connectedBluetoothDevice,
+                                      
                                                                             onConnetedCallBack: (value) {
                                                                                                                                   if (onDeviceConnectedCallback != null){
 
@@ -850,6 +933,10 @@ if(tripData!=null&&tripData.isNotEmpty){
                                 width: displayWidth(context),
                                 height: displayHeight(context) * 0.28,
                                 child: LPRBluetoothList(
+                                                                                                  callbackAvgValue: callbackAvgValue,
+                              callbackFuelUsage: callbackFuelUsage,
+                            
+
                                   isStartTripState: isStartTripState,
                                   dialogContext: dialogContext,
                                   setDialogSet: setDialogState,

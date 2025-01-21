@@ -29,6 +29,7 @@ import 'package:performarine/common_widgets/utils/urls.dart';
 import 'package:performarine/common_widgets/utils/utils.dart';
 import 'package:performarine/common_widgets/widgets/common_buttons.dart';
 import 'package:performarine/common_widgets/widgets/common_widgets.dart';
+import 'package:performarine/lpr_data/fuel_usage_calculations.dart';
 import 'package:performarine/lpr_device_handler.dart';
 import 'package:performarine/pages/auth_new/sign_in_screen.dart';
 import 'package:performarine/pages/delegate/delegates_screen.dart';
@@ -91,7 +92,7 @@ void main() async {
 
   //Firebase.initializeApp
   await Firebase.initializeApp();
-
+//FuelUsageCalculations().calculateUsage();
   try{
     FMTC.instance('mapStore').manage.createAsync();
 

@@ -10,14 +10,21 @@ class LPRBluetoothList extends StatefulWidget {
   final StateSetter? setDialogSet;
   final String? connectedDeviceId;
   Function(String)? onConnetedCallBack;
+        Function(double fuelusage)? callbackFuelUsage;
+      Function(double avgValue)? callbackAvgValue;
+
   final Function(BluetoothDevice)? selectedBluetoothDevice;
+  
   String? comingFrom;
   final BluetoothDevice? connectedBluetoothDevice;
   GlobalKey<ScaffoldState>? scafoldKey;
   Function(dynamic)? onErrCallback;
+
   bool? isStartTripState;
   LPRBluetoothList(
       {Key? key,
+      this.callbackAvgValue,
+      this.callbackFuelUsage,
         this.dialogContext,
         this.onSelected,
         this.onBluetoothConnection,
@@ -29,6 +36,7 @@ class LPRBluetoothList extends StatefulWidget {
         this.onErrCallback,
         this.isStartTripState,
         this.selectedBluetoothDevice,
+
         this.setDialogSet})
       : super(key: key);
   @override
@@ -78,6 +86,10 @@ getIsRemoteIdShown()async{
                 onerrorCallback: widget.onErrCallback,
                 scafoldKey: widget.scafoldKey,
               device: d.device,
+                                            callbackAvgValue: widget.callbackAvgValue,
+                              callbackFuelUsage: widget.callbackFuelUsage,
+                            
+
               onDeviceConnectedCallback: widget.onConnetedCallBack,
               onSelected: widget.onSelected,
               onBluetoothConnection: widget.onBluetoothConnection,
@@ -100,6 +112,10 @@ getIsRemoteIdShown()async{
     ):d.device.platformName.isNotEmpty?SingleLPRDevice(
       isStartTripState: widget.isStartTripState,
               device: d.device,
+                                            callbackAvgValue: widget.callbackAvgValue,
+                              callbackFuelUsage: widget.callbackFuelUsage,
+                            
+
               onSelected: widget.onSelected,
                             onDeviceConnectedCallback: widget.onConnetedCallBack,
                             onerrorCallback: widget.onErrCallback,

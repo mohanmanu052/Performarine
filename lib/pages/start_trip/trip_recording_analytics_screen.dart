@@ -82,6 +82,8 @@ class _TripRecordingAnalyticsScreenState
   String? lprUartTX;
   String? lprUartTxStatus;
   String? connectedBluetoothDeviceName;
+  double? avgvalue=0.0;
+  double? fuelUsage=0.0;
   String? lprStreamingData = 'No Lpr Streaming Data Found';
   @override
   void initState() {
@@ -193,6 +195,14 @@ if(mounted){
       callBackLprStreamingData: (lprSteamingData1) {
         lprStreamingData = lprSteamingData1;
       },
+
+      callbackAvgValue: (avgValue) {
+        avgvalue=avgValue;
+        
+      },callbackFuelUsage: (fuelusage) {
+        fuelUsage=fuelusage;
+        
+      },
       
     );
 
@@ -238,80 +248,123 @@ isLPRReconnectButtonShown=sharePref.getBool('onStartTripLPRDeviceConnected')??fa
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 15.0, vertical: 10),
-                    child: Row(
+                    child: 
+                    LPRDeviceHandler().connectedDevice?.isConnected??false?
+                    Row(
                       // crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        commonText(
-                          context: context,
-                          text: 'Fuel Cost',
-                          fontWeight: FontWeight.w400,
-                          textColor: Colors.black,
-                          textSize: displayWidth(context) * 0.036,
+                        Flexible(
+fit: FlexFit.tight,
+                          flex: 1,
+                          
+                          child: commonText(
+                            context: context,
+                            text: 'Fuel\n Usage',
+                            fontWeight: FontWeight.w400,
+                            textColor: Colors.black,
+                            textSize: displayWidth(context) * 0.036,
+                          ),
                         ),
                         SizedBox(
-                          width: displayWidth(context) * 0.005,
+                          width: displayWidth(context) * 0.01,
                         ),
                         SizedBox(
-                          height: displayHeight(context) * 0.12,
+                          height: displayHeight(context) * 0.11,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Row(
                                 children: [
-                                  commonText(
-                                    context: context,
-                                    text: '36',
-                                    fontWeight: FontWeight.w700,
-                                    textColor: Colors.black,
-                                    textSize: displayWidth(context) * 0.1,
+                                  Container(
+                                    width: displayWidth(context)*0.18,
+                                    child: commonText(
+                                      context: context,
+                                      text: fuelUsage.toString(),
+                                      fontWeight: FontWeight.w700,
+                                      textColor: Colors.black,
+                                      textSize: displayWidth(context) * 0.1,
+                                    ),
                                   ),
                                   SizedBox(
-                                    width: displayWidth(context) * 0.01,
+                                    width: displayWidth(context) * 0.03,
                                   ),
                                   Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         children: [
                                           commonText(
                                             context: context,
-                                            text: '\$',
+                                            text: '\dL/h',
                                             fontWeight: FontWeight.w700,
                                             textColor: Colors.black,
                                             textSize:
                                                 displayWidth(context) * 0.055,
                                           ),
                                           Icon(
-                                            Icons.arrow_downward_outlined,
+                                          fuelUsage!>avgvalue!?Icons.arrow_upward_outlined:fuelUsage!<avgvalue!?  Icons.arrow_downward_outlined:Icons.horizontal_rule_outlined,
                                             color: floatingBtnColor,
-                                            size: displayHeight(context) * 0.03,
+                                            size: displayHeight(context) * 0.04,
                                           )
                                         ],
                                       ),
                                       commonText(
+                                      
                                         context: context,
                                         text: 'Per hour',
                                         fontWeight: FontWeight.w400,
                                         textColor: Colors.black,
                                         textSize: displayWidth(context) * 0.03,
+                                        textAlign: TextAlign.left
                                       ),
                                     ],
                                   )
                                 ],
                               ),
                               SizedBox(
-                                height: displayHeight(context) * 0.005,
+                                height: displayHeight(context) * 0.002,
                               ),
                             ],
                           ),
                         ),
-                        Image.asset(
-                          'assets/icons/fuel_cost_img.png',
-                          height: displayHeight(context) * 0.05,
+                        Flexible(
+                          flex: 2,
+                          fit: FlexFit.tight,
+                          child: Image.asset(
+                            'assets/icons/fuel_cost_img.png',
+                            height: displayHeight(context) * 0.05,
+                            width: displayWidth(context)*0.3,
+                          ),
                         ),
                       ],
-                    ),
-                  ),
+                    ):Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+Flexible(
+  flex: 3,
+fit: FlexFit.tight,
+  child: commonText(
+    text: "No Data",
+    textSize: 18,
+    fontWeight: FontWeight.bold
+  
+  ),
+),
+Flexible(
+  flex: 2,
+  fit: FlexFit.tight,
+  child: Image.asset(
+                              'assets/icons/fuel_cost_img.png',
+                              height: displayHeight(context) * 0.05,
+                              width: displayWidth(context)*0.3,
+                            ),
+),
+                        
+                      ]
+                      
+                    )
+                   )
                 ),
                 SizedBox(
                   height: displayHeight(context) * 0.015,
@@ -550,6 +603,12 @@ if(LPRDeviceHandler().
           }else{
     LPRDeviceHandler().showBluetoothListDialog(context, null, null,isTripNavigate: false,
     isStartTripState: false,
+    callbackAvgValue: (avgValue) {
+      avgvalue=avgValue;
+    },callbackFuelUsage: (fuelusage) {
+      fuelUsage=fuelusage;
+    },
+
     callbackConnectedDeviceName: (){
 
 

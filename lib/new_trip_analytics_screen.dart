@@ -1348,7 +1348,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                             SizedBox(
                                                               width: 4,
                                                             ),
-                                                            Text('Total Duration', style: TextStyle(color: Colors.black, fontSize: 10,  fontFamily: outfit),)
+                                                            Text('ICE', style: TextStyle(color: Colors.black, fontSize: 10,  fontFamily: outfit),)
                                                           ],
                                                         ),
                                                         SizedBox(
@@ -1364,7 +1364,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                             SizedBox(
                                                               width: 4,
                                                             ),
-                                                            Text('> 5KT', style: TextStyle(color: Colors.black, fontSize: 10,  fontFamily: outfit),)
+                                                            Text('Hybrid', style: TextStyle(color: Colors.black, fontSize: 10,  fontFamily: outfit),)
                                                           ],
                                                         ),
                                                         SizedBox(
@@ -1380,7 +1380,7 @@ class _NewTripAnalyticsScreenState extends State<NewTripAnalyticsScreen> {
                                                             SizedBox(
                                                               width: 4,
                                                             ),
-                                                            Text('< 5KT', style: TextStyle(color: Colors.black, fontSize: 10,  fontFamily: outfit),)
+                                                            Text('Fuel Savings', style: TextStyle(color: Colors.black, fontSize: 10,  fontFamily: outfit),)
                                                           ],
                                                         ),
                                                       ],
