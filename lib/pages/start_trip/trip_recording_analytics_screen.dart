@@ -304,7 +304,7 @@ fit: FlexFit.tight,
                                           ),
                                           Icon(
                                           fuelUsage!>avgvalue!?Icons.arrow_upward_outlined:fuelUsage!<avgvalue!?  Icons.arrow_downward_outlined:Icons.horizontal_rule_outlined,
-                                            color: floatingBtnColor,
+                                            color: fuelUsage!>avgvalue!?Colors.red:fuelUsage!<avgvalue!? Colors.green:Colors.black,
                                             size: displayHeight(context) * 0.04,
                                           )
                                         ],
@@ -341,6 +341,19 @@ fit: FlexFit.tight,
                     ):Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
+                                                Flexible(
+fit: FlexFit.tight,
+                          flex: 1,
+                          
+                          child: commonText(
+                            context: context,
+                            text: 'Fuel\n Usage',
+                            fontWeight: FontWeight.w400,
+                            textColor: Colors.black,
+                            textSize: displayWidth(context) * 0.036,
+                          ),
+                        ),
+
 Flexible(
   flex: 3,
 fit: FlexFit.tight,
